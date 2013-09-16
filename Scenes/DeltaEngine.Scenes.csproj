@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DeltaEngine.Scenes</RootNamespace>
+    <AssemblyName>DeltaEngine.Scenes</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Content\Xml\DeltaEngine.Content.Xml.csproj">
+      <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
+      <Name>DeltaEngine.Content.Xml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DeltaEngine.csproj">
+      <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
+      <Name>DeltaEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Graphics\DeltaEngine.Graphics.csproj">
+      <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
+      <Name>DeltaEngine.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platforms\DeltaEngine.Platforms.csproj">
+      <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
+      <Name>DeltaEngine.Platforms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Profiling\DeltaEngine.Profiling.csproj">
+      <Project>{462DC673-E132-4A82-B49B-EC353D25B409}</Project>
+      <Name>DeltaEngine.Profiling</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rendering\DeltaEngine.Rendering.csproj">
+      <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
+      <Name>DeltaEngine.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rendering\Fonts\DeltaEngine.Rendering.Fonts.csproj">
+      <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
+      <Name>DeltaEngine.Rendering.Fonts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+      <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
+      <Name>DeltaEngine.Rendering.Shapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+      <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
+      <Name>DeltaEngine.Rendering.Sprites</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInterfaces\Controls\BaseSlider.cs" />
+    <Compile Include="UserInterfaces\Controls\DropdownList.cs" />
+    <Compile Include="UserInterfaces\Controls\Picture.cs" />
+    <Compile Include="UserInterfaces\Controls\Scrollbar.cs" />
+    <Compile Include="UserInterfaces\Controls\Interact.cs" />
+    <Compile Include="AutoArrangingMenu.cs" />
+    <Compile Include="UserInterfaces\Controls\InteractiveState.cs" />
+    <Compile Include="UserInterfaces\Controls\PercentageBar.cs" />
+    <Compile Include="UserInterfaces\Controls\SelectBox.cs" />
+    <Compile Include="UserInterfaces\Controls\Theme.cs" />
+    <Compile Include="UserInterfaces\Controls\Control.cs" />
+    <Compile Include="UserInterfaces\Controls\InteractiveButton.cs" />
+    <Compile Include="UserInterfaces\Controls\Button.cs" />
+    <Compile Include="Scene.cs" />
+    <Compile Include="UserInterfaces\Terminal\Console.cs" />
+    <Compile Include="UserInterfaces\Controls\Label.cs" />
+    <Compile Include="UserInterfaces\Controls\RadioButton.cs" />
+    <Compile Include="UserInterfaces\Controls\RadioDialog.cs" />
+    <Compile Include="UserInterfaces\Controls\Slider.cs" />
+    <Compile Include="UserInterfaces\Controls\TextBox.cs" />
+    <Compile Include="UserInterfaces\Controls\Tile.cs" />
+    <Compile Include="UserInterfaces\Controls\Tilemap.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

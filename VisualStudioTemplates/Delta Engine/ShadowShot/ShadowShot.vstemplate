@@ -1,0 +1,34 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+	<TemplateData>
+		<Name>Delta Engine ShadowShot</Name>
+		<Description>Sample ShadowShot game</Description>
+		<TemplateID>Microsoft.CSharp.DeltaEngine.ShadowShot</TemplateID>
+		<ProjectType>CSharp</ProjectType>
+		<RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
+		<NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+		<CreateNewFolder>true</CreateNewFolder>
+		<ProvideDefaultName>true</ProvideDefaultName>
+		<DefaultName>ShadowShot</DefaultName>
+		<Icon>DeltaEngineIcon.ico</Icon>
+	</TemplateData>
+	<TemplateContent>
+		<Project File="ShadowShot.csproj" ReplaceParameters="true">
+			<Folder Name="" TargetFolderName="">
+				<ProjectItem ReplaceParameters="true" TargetFileName="app.config">app.config</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="packages.config">packages.config</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Asteroid.cs">Asteroid.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Constants.cs">Constants.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="GameController.cs">GameController.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="GameInputControls.cs">GameInputControls.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Menu.cs">Menu.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="PlayerShip.cs">PlayerShip.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Projectile.cs">Projectile.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Properties" TargetFolderName="Properties">
+				<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+			</Folder>
+		</Project>
+	</TemplateContent>
+</VSTemplate>

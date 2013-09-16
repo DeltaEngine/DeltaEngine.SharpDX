@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7AB6D2FB-2116-4C37-B4C6-BBA8E55C09E1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CreepyTowers.Tests</RootNamespace>
+    <AssemblyName>CreepyTowers.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Content\Disk\DeltaEngine.Content.Disk.csproj">
+      <Project>{EE9847E1-9C76-4ACE-B531-D3EA84F7D741}</Project>
+      <Name>DeltaEngine.Content.Disk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DeltaEngine.csproj">
+      <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
+      <Name>DeltaEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Graphics\DeltaEngine.Graphics.csproj">
+      <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
+      <Name>DeltaEngine.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering\Cameras\DeltaEngine.Rendering.Cameras.csproj">
+      <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
+      <Name>DeltaEngine.Rendering.Cameras</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering\DeltaEngine.Rendering.csproj">
+      <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
+      <Name>DeltaEngine.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering\Models\DeltaEngine.Rendering.Models.csproj">
+      <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
+      <Name>DeltaEngine.Rendering.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering\Particles\DeltaEngine.Rendering.Particles.csproj">
+      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Name>DeltaEngine.Rendering.Particles</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+      <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
+      <Name>DeltaEngine.Rendering.Shapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+      <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
+      <Name>DeltaEngine.Rendering.Sprites</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Scenes\DeltaEngine.Scenes.csproj">
+      <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
+      <Name>DeltaEngine.Scenes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CreepyTowers.csproj">
+      <Project>{448B33E7-759E-4A40-B9A5-3CFD1E1F9446}</Project>
+      <Name>CreepyTowers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CreepyTowers.csproj">
+      <Project>{448B33E7-759E-4A40-B9A5-3CFD1E1F9446}</Project>
+      <Name>CreepyTowers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
+      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
+      <Name>DeltaEngine.TestWithSharpDX</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CreepPropertiesTests.cs" />
+    <Compile Include="CreepStateDamageOutputTests.cs" />
+    <Compile Include="GenerateWavesTests.cs" />
+    <Compile Include="GroupTests.cs" />
+    <Compile Include="IntroSceneTests.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Simple2D\CombatSystemTests.cs" />
+    <Compile Include="Simple2D\Creep2DTests.cs" />
+    <Compile Include="Simple2D\TestWithBasic2DDisplaySystem.cs" />
+    <Compile Include="Simple2D\Tower2DTests.cs" />
+    <Compile Include="TowerPropertiesTests.cs" />
+    <Compile Include="WaveTests.cs" />
+    <Compile Include="CreepTests.cs" />
+    <Compile Include="LevelGridXmlParserTests.cs" />
+    <Compile Include="GameTests.cs" />
+    <Compile Include="LevelTests.cs" />
+    <Compile Include="LevelsBathroomTests.cs" />
+    <Compile Include="ManagerTests.cs" />
+    <Compile Include="UIXmlParserTests.cs" />
+    <Compile Include="MainMenuTests.cs" />
+    <Compile Include="TowerTests.cs" />
+    <Compile Include="TutorialDialogueTests.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+</Project>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{$guid2$}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>$safeprojectname$</RootNamespace>
+    <AssemblyName>$safeprojectname$</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>$safeprojectname$.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>BlocksIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="DeltaEngine.Content.Xml">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Content.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Graphics">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Input">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Physics2D">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Physics2D.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Platforms">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Platforms.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering.Fonts">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering.Particles">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Particles.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering.Sprites">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Sprites.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Scenes">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Scenes.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.WindowsSharpDX">
+	  <HintPath>$(DeltaEnginePath)\DeltaEngine.WindowsSharpDX.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BlocksIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+      </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Brick.cs" />
+    <Compile Include="Controller.cs" />
+    <Compile Include="FruitBlocksContent.cs" />
+    <Compile Include="JewelBlocksContent.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="BlocksContent.cs" />
+    <Compile Include="MainMenu.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="RenderLayer.cs" />
+    <Compile Include="Block.cs" />
+    <Compile Include="Soundbank.cs" />
+    <Compile Include="UserInterface.cs" />
+    <Compile Include="UserInterfaceLandscape.cs" />
+    <Compile Include="UserInterfacePortrait.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

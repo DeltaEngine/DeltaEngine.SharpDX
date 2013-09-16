@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{448B33E7-759E-4A40-B9A5-3CFD1E1F9446}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CreepyTowers</RootNamespace>
+    <AssemblyName>CreepyTowers</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>CreepyTowers.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
+      <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
+      <Name>DeltaEngine.Content.Xml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DeltaEngine.csproj">
+      <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
+      <Name>DeltaEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Graphics\DeltaEngine.Graphics.csproj">
+      <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
+      <Name>DeltaEngine.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Physics2D\DeltaEngine.Physics2D.csproj">
+      <Project>{DC3AA434-09B9-43AD-8F43-431811FA054D}</Project>
+      <Name>DeltaEngine.Physics2D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\Cameras\DeltaEngine.Rendering.Cameras.csproj">
+      <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
+      <Name>DeltaEngine.Rendering.Cameras</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\DeltaEngine.Rendering.csproj">
+      <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
+      <Name>DeltaEngine.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\Fonts\DeltaEngine.Rendering.Fonts.csproj">
+      <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
+      <Name>DeltaEngine.Rendering.Fonts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\Models\DeltaEngine.Rendering.Models.csproj">
+      <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
+      <Name>DeltaEngine.Rendering.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\Particles\DeltaEngine.Rendering.Particles.csproj">
+      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Name>DeltaEngine.Rendering.Particles</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\Shapes3D\DeltaEngine.Rendering.Shapes3D.csproj">
+      <Project>{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}</Project>
+      <Name>DeltaEngine.Rendering.Shapes3D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+      <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
+      <Name>DeltaEngine.Rendering.Shapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+      <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
+      <Name>DeltaEngine.Rendering.Sprites</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
+      <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
+      <Name>DeltaEngine.Scenes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
+      <Project>{05569371-855C-4667-8228-20491337C431}</Project>
+      <Name>DeltaEngine.WindowsSharpDX</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CreepProperties.cs" />
+    <Compile Include="ClothCreepStateChanger.cs" />
+    <Compile Include="FadeEffect.cs" />
+    <Compile Include="GlassCreepStateChanger.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="GroupXmlParser.cs" />
+    <Compile Include="IntroScene.cs" />
+    <Compile Include="PathFinding\AStar.cs" />
+    <Compile Include="PathFinding\Graph.cs" />
+    <Compile Include="PathFinding\GraphSearch.cs" />
+    <Compile Include="PathFinding\PathFindingGraph.cs" />
+    <Compile Include="SandCreepStateChanger.cs" />
+    <Compile Include="Simple2D\Basic2DDisplaySystem.cs" />
+    <Compile Include="CalculateDamage.cs" />
+    <Compile Include="CreateSceneFromXml.cs" />
+    <Compile Include="CreepState.cs" />
+    <Compile Include="CreepStateChanger.cs" />
+    <Compile Include="LevelGridXmlParser.cs" />
+    <Compile Include="LevelBathroom.cs" />
+    <Compile Include="CreateCameraAndGrid.cs" />
+    <Compile Include="Creep.cs" />
+    <Compile Include="CreepPropertiesXmlParser.cs" />
+    <Compile Include="FindPossibleTargets.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="InputCommands.cs" />
+    <Compile Include="LevelGrid.cs" />
+    <Compile Include="Level.cs" />
+    <Compile Include="Manager.cs" />
+    <Compile Include="LevelLivingRoom.cs" />
+    <Compile Include="Simple2D\CalculateDamage2D.cs" />
+    <Compile Include="Simple2D\Creep2D.cs" />
+    <Compile Include="Simple2D\ClothCreepStateChanger2D.cs" />
+    <Compile Include="Simple2D\StateChanger.cs" />
+    <Compile Include="Simple2D\GlassCreepStateChanger2D.cs" />
+    <Compile Include="Simple2D\IronCreepStateChanger2D.cs" />
+    <Compile Include="Simple2D\PaperCreepStateChanger2D.cs" />
+    <Compile Include="Simple2D\PlasticCreepStateChanger2D.cs" />
+    <Compile Include="Simple2D\SandCreepStateChanger2D.cs" />
+    <Compile Include="Simple2D\Tower2D.cs" />
+    <Compile Include="Simple2D\WoodCreepStateChanger2D.cs" />
+    <Compile Include="TowerProperties.cs" />
+    <Compile Include="UIXmlParser.cs" />
+    <Compile Include="UIObject.cs" />
+    <Compile Include="GridProperties.cs" />
+    <Compile Include="Hud.cs" />
+    <Compile Include="MainMenu.cs" />
+    <Compile Include="MovememtInGrid.cs" />
+    <Compile Include="Names.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="RemapCoordinates.cs" />
+    <Compile Include="CreepyTowersRenderLayer.cs" />
+    <Compile Include="TimeCounter.cs" />
+    <Compile Include="Tower.cs" />
+    <Compile Include="TowerPropertiesXmlParser.cs" />
+    <Compile Include="TowerSelectionPanel.cs" />
+    <Compile Include="LevelChildsRoom.cs" />
+    <Compile Include="Messages.cs" />
+    <Compile Include="Wave.cs" />
+    <Compile Include="WaveManager.cs" />
+    <Compile Include="WaveXmlParser.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
