@@ -3,7 +3,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
@@ -15,9 +15,10 @@ namespace Asteroids
 	public class PlayerShip : Sprite, Updateable
 	{
 		public PlayerShip()
-			: base(new Material(Shader.Position2DColorUv, "ship1"), new Rectangle(Point.Half, new Size(.05f)))
+			: base(new Material(Shader.Position2DColorUv, "ship1"), new Rectangle(Vector2D.Half, 
+				new Size(.05f)))
 		{
-			Add(new Velocity2D(Point.Zero, MaximumPlayerVelocity));
+			Add(new Velocity2D(Vector2D.Zero, MaximumPlayerVelocity));
 			RenderLayer = (int)AsteroidsRenderLayer.Player;
 			projectileMaterial = new Material(Shader.Position2DColorUv, "projectile");
 			timeLastShot = GlobalTime.Current.Milliseconds;

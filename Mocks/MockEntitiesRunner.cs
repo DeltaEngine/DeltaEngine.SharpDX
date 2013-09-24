@@ -23,9 +23,28 @@ namespace DeltaEngine.Mocks
 
 		public void RunEntities()
 		{
+			isPaused = false;
+			UpdateGlobalTimeAndRunEntities();
+		}
+
+		private bool isPaused;
+
+		private void UpdateGlobalTimeAndRunEntities()
+		{
 			for (int i = 0; i < (int)(MockGlobalTime.UpdatePerSecond * UpdateTimeStep); i++)
 				GlobalTime.Current.Update();
 			UpdateAndDrawAllEntities(() => { });
+		}
+
+		public void RunEntitiesPaused()
+		{
+			isPaused = true;
+			UpdateGlobalTimeAndRunEntities();
+		}
+
+		protected override bool GetWhetherAppIsPaused()
+		{
+			return isPaused;
 		}
 
 		private class MockBehaviorResolver : BehaviorResolver

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using DeltaEngine.Content;
-using DeltaEngine.Content.Mocks;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
@@ -54,7 +51,7 @@ namespace DeltaEngine.Tests.Core
 			SaveAndLoadDictionary(new Dictionary<string, string> { { "Key", "Value" } });
 			SaveAndLoadDictionary(new Dictionary<string, int> { { "One", 1 }, { "Two", 2 } });
 			SaveAndLoadDictionary(new Dictionary<int, float> { { 1, 1.1f }, { 2, 2.2f }, { 3, 3.3f } });
-			SaveAndLoadDictionary(new Dictionary<int, object> { { 1, Point.One }, { 2, Color.Red } });
+			SaveAndLoadDictionary(new Dictionary<int, object> { { 1, Vector2D.One }, { 2, Color.Red } });
 		}
 
 		[Test]
@@ -195,19 +192,19 @@ namespace DeltaEngine.Tests.Core
 		{
 			using (var logger = new MockLogger())
 			{
-				var data = BinaryDataExtensions.SaveDataIntoMemoryStream(Point.One);
-				var loaded = BinaryDataExtensions.LoadDataWithKnownTypeFromMemoryStream<Point>(data);
-				Assert.AreEqual(Point.One, loaded);
+				var data = BinaryDataExtensions.SaveDataIntoMemoryStream(Vector2D.One);
+				var loaded = BinaryDataExtensions.LoadDataWithKnownTypeFromMemoryStream<Vector2D>(data);
+				Assert.AreEqual(Vector2D.One, loaded);
 				Assert.AreEqual(0, logger.NumberOfMessages);
 			}
 		}
 
 		[Test]
-		public void LoadUnknowTypeShouldThrowException()
+		public void LoadUnknownTypeShouldThrowException()
 		{
 			Assert.Throws<Exception>(
 				() =>
-					BinaryDataLoader.TryCreateAndLoad(typeof(Point), new BinaryReader(new MemoryStream()),
+					BinaryDataLoader.TryCreateAndLoad(typeof(Vector2D), new BinaryReader(new MemoryStream()),
 						new Version(0, 0)));
 		}
 
@@ -218,41 +215,6 @@ namespace DeltaEngine.Tests.Core
 				() =>
 					BinaryDataLoader.TryCreateAndLoad(typeof(ClassThatRequiresConstructorParameter),
 						new BinaryReader(new MemoryStream()), new Version(0, 0)));
-		}
-
-		[Test]
-		public void TestLoadContentType()
-		{
-			var stream = new MemoryStream();
-			var writer = new BinaryWriter(stream);
-			const string ContentName = "SomeXml";
-			writer.Write(ContentName);
-			ContentLoader.Use<MockContentLoader>();
-			stream.Position = 0;
-			var reader = new BinaryReader(stream);
-			object returnedContentType = BinaryDataLoader.TryCreateAndLoad(typeof(MockXmlContentType),
-				reader, Assembly.GetExecutingAssembly().GetName().Version);
-			var content = returnedContentType as MockXmlContentType;
-			Assert.IsNotNull(content);
-			Assert.AreEqual(ContentName, content.Name);
-			ContentLoader.DisposeIfInitialized();
-		}
-
-		[Test]
-		public void LoadContentWithoutNameShouldTrowUnableToLoadContentDataWithoutName()
-		{
-			var stream = new MemoryStream();
-			var writer = new BinaryWriter(stream);
-			writer.Write(string.Empty);
-			ContentLoader.Use<MockContentLoader>();
-			stream.Position = 0;
-			var reader = new BinaryReader(stream);
-			Assert.That(
-				() => BinaryDataLoader.TryCreateAndLoad(typeof(MockXmlContentType), reader,
-					Assembly.GetExecutingAssembly().GetName().Version),
-				Throws.Exception.With.InnerException.TypeOf
-					<BinaryDataLoader.UnableToLoadContentDataWithoutName>());
-			ContentLoader.DisposeIfInitialized();
 		}
 
 		[Test]
@@ -284,16 +246,6 @@ namespace DeltaEngine.Tests.Core
 		{
 			Assert.Throws<NullReferenceException>(
 				() => BinaryDataSaver.TrySaveData(null, typeof(object), null));
-		}
-
-		[Test]
-		public void SaveContentData()
-		{
-			ContentLoader.Use<MockContentLoader>();
-			var xmlContent = ContentLoader.Load<MockXmlContent>("XmlData");
-			using (var dataWriter = new BinaryWriter(new MemoryStream()))
-				BinaryDataSaver.TrySaveData(xmlContent, typeof(MockXmlContent), dataWriter);
-			ContentLoader.DisposeIfInitialized();
 		}
 
 		[Test]

@@ -9,7 +9,7 @@ namespace GhostWars.Tests
 		[Test]
 		public void CreateTree()
 		{
-			new Tree(Point.Half, Team.HumanYellow);
+			new Tree(Vector2D.Half, Team.HumanYellow);
 		}
 	}
 }

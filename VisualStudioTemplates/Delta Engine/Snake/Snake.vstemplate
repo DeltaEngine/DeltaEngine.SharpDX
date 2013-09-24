@@ -14,7 +14,7 @@
 	<TemplateContent>
 		<Project File="Snake.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="true" TargetFileName="SnakeIcon.ico">SnakeIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="SnakeIcon.ico">SnakeIcon.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Body.cs">Body.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Chunk.cs">Chunk.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Menu.cs">Menu.cs</ProjectItem>

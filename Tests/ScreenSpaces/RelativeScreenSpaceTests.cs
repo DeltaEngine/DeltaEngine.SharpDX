@@ -19,11 +19,11 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		private void SquareWindowShouldAlwaysReturnRelativeValues(ScreenSpace screen)
 		{
 			window.ViewportPixelSize = new Size(100, 100);
-			Assert.AreEqual(Point.Zero, screen.TopLeft);
-			Assert.AreEqual(Point.One, screen.BottomRight);
+			Assert.AreEqual(Vector2D.Zero, screen.TopLeft);
+			Assert.AreEqual(Vector2D.One, screen.BottomRight);
 			Assert.AreEqual(Rectangle.One, screen.Viewport);
-			Assert.AreEqual(Point.One, screen.FromPixelSpace(new Point(100, 100)));
-			Assert.AreEqual(Point.Half, screen.FromPixelSpace(new Point(50, 50)));
+			Assert.AreEqual(Vector2D.One, screen.FromPixelSpace(new Vector2D(100, 100)));
+			Assert.AreEqual(Vector2D.Half, screen.FromPixelSpace(new Vector2D(50, 50)));
 			Assert.AreEqual(new Rectangle(0.1f, 0.1f, 0.8f, 0.8f),
 				screen.FromPixelSpace(new Rectangle(10, 10, 80, 80)));
 		}
@@ -33,8 +33,8 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(800, 600);
 			ScreenSpace screen = new RelativeScreenSpace(window);
-			Assert.AreEqual(screen.TopLeft, screen.GetInnerPoint(Point.Zero));
-			Assert.AreEqual(screen.BottomRight, screen.GetInnerPoint(Point.One));
+			Assert.AreEqual(screen.TopLeft, screen.GetInnerPosition(Vector2D.Zero));
+			Assert.AreEqual(screen.BottomRight, screen.GetInnerPosition(Vector2D.One));
 		}
 
 		[Test]
@@ -42,9 +42,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(99, 199);
 			var screen = new RelativeScreenSpace(window);
-			Assert.AreEqual(Point.Zero, screen.TopLeft);
-			Assert.AreEqual(Point.One, screen.BottomRight);
-			Assert.AreEqual(screen.BottomRight, screen.FromPixelSpace(new Point(99, 199)));
+			Assert.AreEqual(Vector2D.Zero, screen.TopLeft);
+			Assert.AreEqual(Vector2D.One, screen.BottomRight);
+			Assert.AreEqual(screen.BottomRight, screen.FromPixelSpace(new Vector2D(99, 199)));
 		}
 
 		[Test]
@@ -52,9 +52,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(30, 50);
 			var screen = new RelativeScreenSpace(window);
-			Assert.AreEqual(new Point(30, 50), screen.ToPixelSpace(Point.One));
+			Assert.AreEqual(new Vector2D(30, 50), screen.ToPixelSpace(Vector2D.One));
 			Assert.AreEqual(Size.Zero, screen.ToPixelSpace(Size.Zero));
-			Assert.AreEqual(new Point(10, 20), screen.ToPixelSpace(new Point(10 / 30.0f, 20 / 50.0f)));
+			Assert.AreEqual(new Vector2D(10, 20), screen.ToPixelSpace(new Vector2D(10 / 30.0f, 20 / 50.0f)));
 			Assert.AreEqual(new Size(7.5f, 12.5f), screen.ToPixelSpace(new Size(0.25f)));
 		}
 

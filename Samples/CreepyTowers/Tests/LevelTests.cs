@@ -1,38 +1,39 @@
-﻿using DeltaEngine.Core;
+﻿using CreepyTowers.Levels;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
+using DeltaEngine.Rendering3D.Cameras;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests
 {
 	internal class LevelTests : TestWithMocksOrVisually
 	{
-		/*fix
 		[SetUp]
 		public void Initialize()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>()).GameMainMenu.Dispose();
-			new Manager(6.0f);
+			new Game(Resolve<Window>(), Resolve<Device>());
+			new Manager(7.0f);
 		}
 
 		[Test]
-		public void SetupCamera()
+		public void CameraTest()
 		{
-			new Level(Names.LevelsChildsRoom);
-			Assert.AreEqual(Vector.Zero, Game.CameraAndGrid.Camera.Target);
+			Assert.AreEqual(1, EntitiesRunner.Current.GetEntitiesOfType<OrthoCamera>().Count);
 		}
 
 		[Test]
 		public void ShowChildrensRoomLevelWithGrid()
 		{
-			new Level(Names.LevelsChildsRoom);
+			new Level(Names.LevelsChildrensRoom);
 		}
 
 		[Test]
 		public void ShowBathroomLevelWithGrid()
 		{
-			new Level(Names.LevelsBathRoom);
+			new Level(Names.LevelsBathroom);
 		}
 
 		[Test]
@@ -58,7 +59,7 @@ namespace CreepyTowers.Tests
 			new LevelGrid(GridSize, 0.5f);
 			var gridProp = new GridProperties[GridSize,GridSize];
 			Assert.AreEqual(100, gridProp.Length);
-			Assert.AreEqual("DeltaEngine.Datatypes.Vector", gridProp[0, 0].MidPoint.GetType().ToString());
+			Assert.AreEqual("DeltaEngine.Datatypes.Vector3D", gridProp[0, 0].MidPoint.GetType().ToString());
 			Assert.AreEqual("System.Boolean", gridProp[0, 0].IsOccupied.GetType().ToString());
 			Assert.AreEqual("System.Boolean", gridProp[0, 0].IsActive.GetType().ToString());
 		}
@@ -73,7 +74,7 @@ namespace CreepyTowers.Tests
 			for (int i = 0; i < GridSize; i++)
 				for (int j = 0; j < GridSize; j++)
 				{
-					grid.PropertyMatrix[i, j].MidPoint = new Vector(i, j, 0.0f);
+					grid.PropertyMatrix[i, j].MidPoint = new Vector3D(i, j, 0.0f);
 					grid.PropertyMatrix[i, j].IsActive = true;
 					grid.PropertyMatrix[i, j].IsOccupied = false;
 				}
@@ -84,36 +85,36 @@ namespace CreepyTowers.Tests
 			Assert.IsTrue(sampleMatrixLoc.IsActive);
 			Assert.IsFalse(sampleMatrixLoc.IsOccupied);
 
-			sampleMatrixLoc.MidPoint = new Vector(3.0f, 1.0f, 5.5f);
+			sampleMatrixLoc.MidPoint = new Vector3D(3.0f, 1.0f, 5.5f);
 			sampleMatrixLoc.IsOccupied = true;
 			Assert.AreEqual(5.5f, sampleMatrixLoc.MidPoint.Z);
 			Assert.IsTrue(sampleMatrixLoc.IsOccupied);
 		}
 
-		[Test]
-		public void GridMatrixPositionTests()
-		{
-			new Level(Names.LevelsLivingRoom);
-			const int GridSize = 25;
-			var grid = new LevelGrid(GridSize, 0.02f);
+		//[Test]
+		//public void GridMatrixPositionTests()
+		//{
+		//	new Level(Names.LevelsLivingRoom);
+		//	const int GridSize = 25;
+		//	var grid = new LevelGrid(GridSize, 0.02f);
 
-			var sampleMatrixLoc = grid.PropertyMatrix[0, 0];
-			Assert.LessOrEqual(0.15f, sampleMatrixLoc.TopLeft.X);
-			Assert.LessOrEqual(0.25f, sampleMatrixLoc.TopLeft.Z);
+		//	var sampleMatrixLoc = grid.PropertyMatrix[0, 0];
+		//	Assert.LessOrEqual(0.15f, sampleMatrixLoc.TopLeft.X);
+		//	Assert.LessOrEqual(0.25f, sampleMatrixLoc.TopLeft.Z);
 
-			sampleMatrixLoc = grid.PropertyMatrix[1, 1];
-			Assert.LessOrEqual(0.13f, sampleMatrixLoc.TopLeft.X);
-			Assert.LessOrEqual(0.23f, sampleMatrixLoc.TopLeft.Z);
+		//	sampleMatrixLoc = grid.PropertyMatrix[1, 1];
+		//	Assert.LessOrEqual(0.13f, sampleMatrixLoc.TopLeft.X);
+		//	Assert.LessOrEqual(0.23f, sampleMatrixLoc.TopLeft.Z);
 
-			sampleMatrixLoc = grid.PropertyMatrix[3, 5];
-			Assert.LessOrEqual(0.09f, sampleMatrixLoc.TopLeft.X);
-			Assert.LessOrEqual(0.15f, sampleMatrixLoc.TopLeft.Z);
-		}
+		//	sampleMatrixLoc = grid.PropertyMatrix[3, 5];
+		//	Assert.LessOrEqual(0.09f, sampleMatrixLoc.TopLeft.X);
+		//	Assert.LessOrEqual(0.15f, sampleMatrixLoc.TopLeft.Z);
+		//}
 
 		//[Test, Ignore]
 		//public void ChildsRoomXmlWaypointsTest()
 		//{
-		//	var gameLevel = new Level(Names.LevelsChildsRoom);
+		//	var gameLevel = new Level(Names.LevelsChildrensRoom);
 		//	Assert.AreEqual(4, gameLevel.Get<Level.GridData>().CreepPathsList.Count);
 		//	var waypointObjectList = gameLevel.Get<Level.GridData>().CreepPathsList;
 		//	var wayPoint = new Tuple<int, int>(11, 7);
@@ -124,7 +125,7 @@ namespace CreepyTowers.Tests
 		//[Test, Ignore]
 		//public void ChildsRoomXmlInteractablePointsTest()
 		//{
-		//	var gameLevel = new Level(Names.LevelsChildsRoom);
+		//	var gameLevel = new Level(Names.LevelsChildrensRoom);
 		//	Assert.AreEqual(53, gameLevel.Get<Level.GridData>().InteractablePoints.Count);
 		//	var interactablePointsList = gameLevel.Get<Level.GridData>().InteractablePoints;
 		//	var interactablePoint = new Tuple<int, int>(7, 9);
@@ -179,6 +180,5 @@ namespace CreepyTowers.Tests
 		//	Assert.AreEqual(interactablePoint, interactablePointsList[0]);
 		//	Console.WriteLine((string)interactablePointsList[0]);
 		//}
-		 */
 	}
 }

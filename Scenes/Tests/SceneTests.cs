@@ -6,8 +6,8 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -137,7 +137,7 @@ namespace DeltaEngine.Scenes.Tests
 			var button = CreateButton();
 			scene.Add(button);
 			scene.Hide();
-			SetMouseState(State.Pressing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.AreEqual(NormalColor, button.Color);
 		}
 
@@ -157,7 +157,7 @@ namespace DeltaEngine.Scenes.Tests
 		private static readonly Color MouseoverColor = Color.White;
 		private static readonly Color PressedColor = Color.Red;
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			Resolve<MockMouse>().SetPosition(position);
 			Resolve<MockMouse>().SetButtonState(MouseButton.Left, state);
@@ -170,7 +170,7 @@ namespace DeltaEngine.Scenes.Tests
 			var button = CreateButton();
 			scene.Add(button);
 			scene.ToBackground();
-			SetMouseState(State.Pressing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.AreEqual(NormalColor, button.Color);
 		}
 
@@ -181,12 +181,12 @@ namespace DeltaEngine.Scenes.Tests
 			scene.Add(button);
 			scene.ToBackground();
 			scene.ToForeground();
-			SetMouseState(State.Pressing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.AreEqual(PressedColor, button.Color);
 		}
 
 		[Test]
-		public void DrawButtonWhichChangesColorAndSizeAndSpinsOnHover()
+		public void DrawButtonWhichChangesColorAndSize()
 		{
 			var button = CreateButton();
 			button.Start<ChangeSizeDynamically>();

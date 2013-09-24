@@ -59,8 +59,8 @@ namespace DeltaEngine.Input.SharpDX
 			});
 		}
 
-		private Point leftThumbStick;
-		private Point rightThumbStick;
+		private Vector2D leftThumbStick;
+		private Vector2D rightThumbStick;
 		private float leftTrigger;
 		private float rightTrigger;
 
@@ -170,12 +170,12 @@ namespace DeltaEngine.Input.SharpDX
 			return (bitfield & (int)button) != 0;
 		}
 
-		public override Point GetLeftThumbStick()
+		public override Vector2D GetLeftThumbStick()
 		{
 			return leftThumbStick;
 		}
 
-		public override Point GetRightThumbStick()
+		public override Vector2D GetRightThumbStick()
 		{
 			return rightThumbStick;
 		}

@@ -16,8 +16,8 @@ namespace GhostWars.Tests
 
 		private static void CreateWave(bool leftToRight)
 		{
-			var wave = new GhostWave(new Point(leftToRight ? 0.2f : 0.8f, 0.5f),
-				new Point(leftToRight ? 0.8f : 0.2f, 0.5f), 5, Team.HumanYellow.ToColor());
+			var wave = new GhostWave(new Vector2D(leftToRight ? 0.2f : 0.8f, 0.5f),
+				new Vector2D(leftToRight ? 0.8f : 0.2f, 0.5f), 5, Team.HumanYellow.ToColor());
 			wave.TargetReached = (attacker, waveSize) => CreateWave(!leftToRight);
 		}
 
@@ -25,15 +25,19 @@ namespace GhostWars.Tests
 		public void CreateWaveOnClick()
 		{
 			new Command(Command.Click,
-				position => new GhostWave(new Point(0.2f, 0.5f), position, 5, Team.HumanYellow.ToColor()));
+				position =>
+					new GhostWave(new Vector2D(0.2f, 0.5f), position, 5, Team.HumanYellow.ToColor()));
 		}
 
 		[Test]
 		public void MultipleWaves()
 		{
-			new GhostWave(new Point(0.2f, 0.5f), new Point(0.8f, 0.5f), 5, Team.HumanYellow.ToColor());
-			new GhostWave(new Point(0.3f, 0.6f), new Point(0.6f, 0.6f), 5, Team.ComputerTeal.ToColor());
-			new GhostWave(new Point(0.4f, 0.7f), new Point(0.6f, 0.7f), 5, Team.ComputerTeal.ToColor());
+			new GhostWave(new Vector2D(0.2f, 0.5f), new Vector2D(0.8f, 0.5f), 5,
+				Team.HumanYellow.ToColor());
+			new GhostWave(new Vector2D(0.3f, 0.6f), new Vector2D(0.6f, 0.6f), 5,
+				Team.ComputerTeal.ToColor());
+			new GhostWave(new Vector2D(0.4f, 0.7f), new Vector2D(0.6f, 0.7f), 5,
+				Team.ComputerTeal.ToColor());
 		}
 	}
 }

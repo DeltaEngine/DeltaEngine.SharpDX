@@ -14,7 +14,8 @@ namespace Blocks.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f ? Orientation.Landscape : Orientation.Portrait;
+			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f
+				? Orientation.Landscape : Orientation.Portrait;
 			content = new JewelBlocksContent();
 			controller = new Controller(displayMode, content);
 			sounds = controller.Get<Soundbank>();
@@ -39,8 +40,8 @@ namespace Blocks.Tests
 		public void DropSlowAffixesBlocksSlowly()
 		{
 			controller.IsFallingFast = false;
-			controller.FallingBlock = new Block(displayMode, content, Point.Zero);
-			controller.UpcomingBlock = new Block(displayMode, content, Point.Zero);
+			controller.FallingBlock = new Block(displayMode, content, Vector2D.Zero);
+			controller.UpcomingBlock = new Block(displayMode, content, Vector2D.Zero);
 
 			AdvanceTimeAndUpdateEntities(0.1f);
 			Assert.AreEqual(0, CountBricks(grid));
@@ -64,8 +65,8 @@ namespace Blocks.Tests
 		public void DropFastAffixesBlocksQuickly()
 		{
 			controller.IsFallingFast = true;
-			controller.FallingBlock = new Block(displayMode, content, Point.Zero);
-			controller.UpcomingBlock = new Block(displayMode, content, Point.Zero);
+			controller.FallingBlock = new Block(displayMode, content, Vector2D.Zero);
+			controller.UpcomingBlock = new Block(displayMode, content, Vector2D.Zero);
 
 			AdvanceTimeAndUpdateEntities(0.1f);
 			Assert.AreEqual(0, CountBricks(grid));
@@ -86,8 +87,8 @@ namespace Blocks.Tests
 		{
 			int score = 0;
 			controller.AddToScore += points => score += points;
-			controller.FallingBlock = new Block(displayMode, content, Point.Zero);
-			controller.UpcomingBlock = new Block(displayMode, content, Point.Zero);
+			controller.FallingBlock = new Block(displayMode, content, Vector2D.Zero);
+			controller.UpcomingBlock = new Block(displayMode, content, Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(1.0f);
 			Assert.AreEqual(1, score);
 			AdvanceTimeAndUpdateEntities(9.0f);
@@ -107,7 +108,7 @@ namespace Blocks.Tests
 		public void CantMoveLeftAtLeftWall()
 		{
 			Assert.IsFalse(sounds.BlockCouldntMove.IsAnyInstancePlaying);
-			controller.FallingBlock = new Block(displayMode, content, new Point(0, 1));
+			controller.FallingBlock = new Block(displayMode, content, new Vector2D(0, 1));
 			controller.MoveBlockLeftIfPossible();
 			Assert.IsTrue(sounds.BlockCouldntMove.IsAnyInstancePlaying);
 			Assert.AreEqual(0, controller.FallingBlock.Left);
@@ -117,7 +118,7 @@ namespace Blocks.Tests
 		public void CanMoveLeftElsewhere()
 		{
 			Assert.IsFalse(sounds.BlockMoved.IsAnyInstancePlaying);
-			controller.FallingBlock = new Block(displayMode, content, new Point(3, 1));
+			controller.FallingBlock = new Block(displayMode, content, new Vector2D(3, 1));
 			controller.MoveBlockLeftIfPossible();
 			Assert.IsTrue(sounds.BlockMoved.IsAnyInstancePlaying);
 			Assert.AreEqual(2, controller.FallingBlock.Left);
@@ -127,7 +128,7 @@ namespace Blocks.Tests
 		public void CantMoveRightAtRightWall()
 		{
 			Assert.IsFalse(sounds.BlockCouldntMove.IsAnyInstancePlaying);
-			controller.FallingBlock = new Block(displayMode, content, new Point(11, 1));
+			controller.FallingBlock = new Block(displayMode, content, new Vector2D(11, 1));
 			controller.MoveBlockRightIfPossible();
 			Assert.AreEqual(11, controller.FallingBlock.Left);
 			Assert.IsTrue(sounds.BlockCouldntMove.IsAnyInstancePlaying);
@@ -137,7 +138,7 @@ namespace Blocks.Tests
 		public void CanMoveRightElsewhere()
 		{
 			Assert.IsFalse(sounds.BlockMoved.IsAnyInstancePlaying);
-			controller.FallingBlock = new Block(displayMode, content, new Point(3, 1));
+			controller.FallingBlock = new Block(displayMode, content, new Vector2D(3, 1));
 			controller.MoveBlockRightIfPossible();
 			Assert.IsTrue(sounds.BlockMoved.IsAnyInstancePlaying);
 			Assert.AreEqual(4, controller.FallingBlock.Left);
@@ -147,7 +148,7 @@ namespace Blocks.Tests
 		public void RotateClockwise()
 		{
 			Assert.IsFalse(sounds.BlockMoved.IsAnyInstancePlaying);
-			controller.FallingBlock = new Block(displayMode, content, new Point(8, 1));
+			controller.FallingBlock = new Block(displayMode, content, new Vector2D(8, 1));
 			controller.RotateBlockAntiClockwiseIfPossible();
 			Assert.IsTrue(sounds.BlockMoved.IsAnyInstancePlaying);
 			controller.FallingBlock.Left = 11;
@@ -158,7 +159,7 @@ namespace Blocks.Tests
 		public void LoseIfIsBrickOnTopRow()
 		{
 			Assert.IsFalse(sounds.GameLost.IsAnyInstancePlaying);
-			grid.AffixBlock(new Block(displayMode, content, new Point(1, 0)));
+			grid.AffixBlock(new Block(displayMode, content, new Vector2D(1, 0)));
 			bool lost = false;
 			controller.Lose += () => lost = true;
 			AdvanceTimeAndUpdateEntities(0.1f);

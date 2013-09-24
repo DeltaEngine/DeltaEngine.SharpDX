@@ -39,7 +39,7 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void TestLeftMouseButtonClickPassingPositionAction()
 		{
-			new Command(delegate(Point point) { isClicked = true; }).Add(
+			new Command(delegate(Vector2D point) { isClicked = true; }).Add(
 				new MouseButtonTrigger(MouseButton.Left, State.Pressed));
 			TestCommand();
 		}
@@ -71,6 +71,19 @@ namespace DeltaEngine.Input.Tests
 			Assert.AreEqual(State.Pressed, mockMouse.GetButtonState(MouseButton.X1));
 			mockMouse.SetButtonState(MouseButton.X2, State.Pressed);
 			Assert.AreEqual(State.Pressed, mockMouse.GetButtonState(MouseButton.X2));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void ScrollWheelUpAndDown()
+		{
+			var mockMouse = Resolve<Mouse>() as MockMouse;
+			if (mockMouse == null)
+				return; //ncrunch: no coverage
+			Assert.AreEqual(0, mockMouse.ScrollWheelValue);
+			mockMouse.ScrollUp();
+			Assert.AreEqual(1, mockMouse.ScrollWheelValue);
+			mockMouse.ScrollDown();
+			Assert.AreEqual(0, mockMouse.ScrollWheelValue);
 		}
 	}
 }

@@ -43,8 +43,7 @@ namespace DeltaEngine.Core
 			}
 			if (data is Entity)
 			{
-				SaveArray((data as Entity).GetComponentsForSaving(), writer);
-				SaveArray((data as Entity).GetTags(), writer);
+				SaveEntity(data as Entity, writer);
 				return;
 			}
 			if (type.Name.StartsWith("Xml"))
@@ -65,6 +64,33 @@ namespace DeltaEngine.Core
 				SaveDictionary(data as IDictionary, writer);
 			else if (type.IsClass || type.IsValueType)
 				SaveClassData(data, type, writer);
+		}
+
+		private static void SaveEntity(Entity entity, BinaryWriter writer)
+		{
+			SaveArray(entity.GetComponentsForSaving(), writer);
+			SaveArray(entity.GetTags(), writer);
+			SaveEntityBehaviors(entity, writer);
+			if (entity is DrawableEntity)
+				SaveDrawableEntityDrawBehaviors(entity as DrawableEntity, writer);
+		}
+
+		private static void SaveEntityBehaviors(Entity entity, BinaryWriter writer)
+		{
+			List<UpdateBehavior> behaviorTypes = entity.GetActiveBehaviors();
+			var behaviorNames = new List<string>();
+			foreach (UpdateBehavior behaviorType in behaviorTypes)
+				behaviorNames.Add(behaviorType.GetShortNameOrFullNameIfNotFound());
+			SaveArray(behaviorNames, writer);
+		}
+
+		private static void SaveDrawableEntityDrawBehaviors(DrawableEntity drawable, BinaryWriter writer)
+		{
+			List<DrawBehavior> drawBehaviorTypes = drawable.GetDrawBehaviors();
+			var drawBehaviorNames = new List<string>();
+			foreach (DrawBehavior behaviorType in drawBehaviorTypes)
+				drawBehaviorNames.Add(behaviorType.GetShortNameOrFullNameIfNotFound());
+			SaveArray(drawBehaviorNames, writer);
 		}
 
 		private class DoNotSaveXmlDataAsBinaryData : Exception

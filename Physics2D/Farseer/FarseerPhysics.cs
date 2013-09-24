@@ -35,7 +35,7 @@ namespace DeltaEngine.Physics2D.Farseer
 			return body;
 		}
 
-		public override PhysicsBody CreateEdge(Point startPoint, Point endPoint)
+		public override PhysicsBody CreateEdge(Vector2D startPoint, Vector2D endPoint)
 		{
 			Body edge = BodyFactory.CreateEdge(world,
 				unitConverter.ToSimUnits(unitConverter.Convert(startPoint)),
@@ -46,10 +46,10 @@ namespace DeltaEngine.Physics2D.Farseer
 			return body;
 		}
 
-		public override PhysicsBody CreateEdge(params Point[] points)
+		public override PhysicsBody CreateEdge(params Vector2D[] positions)
 		{
 			var edge = new Body(world);
-			Vertices farseerVertices = unitConverter.Convert(points);
+			Vertices farseerVertices = unitConverter.Convert(positions);
 			for (int i = 0; i < farseerVertices.Count - 1; ++i)
 				FixtureFactory.AttachEdge(farseerVertices[i], farseerVertices[i + 1], edge);
 
@@ -58,9 +58,9 @@ namespace DeltaEngine.Physics2D.Farseer
 			return body;
 		}
 
-		public override PhysicsBody CreatePolygon(params Point[] points)
+		public override PhysicsBody CreatePolygon(params Vector2D[] positions)
 		{
-			Vertices polygon = unitConverter.Convert(points);
+			Vertices polygon = unitConverter.Convert(positions);
 			Vector2 centroid = -polygon.GetCentroid();
 			polygon.Translate(ref centroid);
 			Body body = BodyFactory.CreatePolygon(world, polygon, 1.0f);
@@ -87,14 +87,15 @@ namespace DeltaEngine.Physics2D.Farseer
 		}
 
 		public override PhysicsJoint CreateRevoluteJoint(PhysicsBody bodyA, PhysicsBody bodyB,
-			Point anchor)
+			Vector2D anchor)
 		{
 			RevoluteJoint farseerJoint = JointFactory.CreateRevoluteJoint(world,
 				((FarseerBody)bodyA).Body, ((FarseerBody)bodyB).Body, unitConverter.Convert(anchor));
 			return new FarseerJoint(farseerJoint, bodyA, bodyB);
 		}
 
-		public override PhysicsJoint CreateLineJoint(PhysicsBody bodyA, PhysicsBody bodyB, Point axis)
+		public override PhysicsJoint CreateLineJoint(PhysicsBody bodyA, PhysicsBody bodyB,
+			Vector2D axis)
 		{
 			PrismaticJoint farseerJoint = JointFactory.CreatePrismaticJoint(((FarseerBody)bodyA).Body,
 				((FarseerBody)bodyB).Body, ((FarseerBody)bodyB).Body.Position, unitConverter.Convert(axis));
@@ -107,7 +108,7 @@ namespace DeltaEngine.Physics2D.Farseer
 			world.Step(delta);
 		}
 
-		public override Point Gravity
+		public override Vector2D Gravity
 		{
 			get { return unitConverter.Convert(world.Gravity); }
 			set { world.Gravity = unitConverter.Convert(value); }

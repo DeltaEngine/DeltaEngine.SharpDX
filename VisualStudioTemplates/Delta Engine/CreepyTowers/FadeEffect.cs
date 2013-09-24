@@ -2,15 +2,19 @@ using System;
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
 	public class FadeEffect : UpdateBehavior
 	{
+		public FadeEffect() : base(Priority.Low)
+		{
+		}
+
 		public override void Update(IEnumerable<Entity> entities)
 		{
-			foreach (Sprite sprite in entities)
+			foreach (Entity2D sprite in entities)
 			{
 				sprite.ToggleVisibility(Visibility.Show);
 				var transitionData = sprite.Get<TransitionData>();

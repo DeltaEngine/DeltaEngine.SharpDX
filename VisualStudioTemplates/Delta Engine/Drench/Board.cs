@@ -88,7 +88,7 @@ namespace $safeprojectname$
 				private set;
 			}
 		}
-		public Color GetColor(Point square)
+		public Color GetColor(Vector2D square)
 		{
 			return GetColor((int)square.X, (int)square.Y);
 		}
@@ -98,7 +98,7 @@ namespace $safeprojectname$
 			return colors [x, y];
 		}
 
-		public void SetColor(Point square, Color color)
+		public void SetColor(Vector2D square, Color color)
 		{
 			SetColor((int)square.X, (int)square.Y, color);
 		}
@@ -108,7 +108,7 @@ namespace $safeprojectname$
 			floodFiller.SetColor(x, y, color);
 		}
 
-		public int GetConnectedColorsCount(Point square)
+		public int GetConnectedColorsCount(Vector2D square)
 		{
 			var testFloodFiller = new FloodFiller((Color[,])colors.Clone());
 			testFloodFiller.SetColor((int)square.X, (int)square.Y, Color.TransparentWhite);

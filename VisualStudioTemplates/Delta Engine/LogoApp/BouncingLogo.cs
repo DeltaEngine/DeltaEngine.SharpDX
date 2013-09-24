@@ -4,19 +4,19 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Multimedia;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
 	public class BouncingLogo : Sprite
 	{
 		public BouncingLogo() : base(new Material(Shader.Position2DColorUv, "DeltaEngineLogo"), 
-			Point.Half)
+			Vector2D.Half)
 		{
 			Color = Color.GetRandomColor();
 			Add(new SimplePhysics.Data {
 				RotationSpeed = random.Get(-50, 50),
-				Velocity = new Point(random.Get(-0.4f, 0.4f), random.Get(-0.4f, 0.4f)),
+				Velocity = new Vector2D(random.Get(-0.4f, 0.4f), random.Get(-0.4f, 0.4f)),
 				Bounced = () => sound.Play(0.1f)
 			});
 			Start<SimplePhysics.BounceIfAtScreenEdge>();

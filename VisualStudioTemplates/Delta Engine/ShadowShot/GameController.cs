@@ -4,7 +4,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -65,7 +65,7 @@ namespace $safeprojectname$
 			private Rectangle GetRandomDrawArea(GameController gameController)
 			{
 				var posX = random.Get(0.05f, 0.95f);
-				return Rectangle.FromCenter(new Point(posX, 0.1f), gameController.asteroidSize);
+				return Rectangle.FromCenter(new Vector2D(posX, 0.1f), gameController.asteroidSize);
 			}
 
 			private static void CheckForShipAsteroidCollision(GameController gameController)

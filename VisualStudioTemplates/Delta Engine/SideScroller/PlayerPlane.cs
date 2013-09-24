@@ -10,7 +10,7 @@ namespace $safeprojectname$
 {
 	public class PlayerPlane : Plane
 	{
-		public PlayerPlane(Material playerTexture, Point initialPosition) : base(playerTexture, 
+		public PlayerPlane(Material playerTexture, Vector2D initialPosition) : base(playerTexture, 
 			initialPosition)
 		{
 			Hitpoints = 3;
@@ -20,7 +20,7 @@ namespace $safeprojectname$
 			PlayerFiredShot += point => 
 			{
 			};
-			Add(new Velocity2D(Point.Zero, MaximumSpeed));
+			Add(new Velocity2D(Vector2D.Zero, MaximumSpeed));
 			Start<PlayerMovement>();
 			Start<MachineGunFire>();
 		}
@@ -43,7 +43,7 @@ namespace $safeprojectname$
 
 			private static Rectangle CalculateRectAfterMove(PlayerPlane entity)
 			{
-				var pointAfterVerticalMovement = new Point(entity.Get<Rectangle>().TopLeft.X, 
+				var pointAfterVerticalMovement = new Vector2D(entity.Get<Rectangle>().TopLeft.X, 
 					entity.Get<Rectangle>().TopLeft.Y + entity.Get<Velocity2D>().velocity.Y * Time.Delta);
 				return new Rectangle(pointAfterVerticalMovement, entity.Get<Rectangle>().Size);
 			}
@@ -82,7 +82,7 @@ namespace $safeprojectname$
 				}
 			}
 
-			private static float RotationAccordingToVerticalSpeed(Point vel)
+			private static float RotationAccordingToVerticalSpeed(Vector2D vel)
 			{
 				return 50 * vel.Y / MaximumSpeed;
 			}
@@ -113,6 +113,6 @@ namespace $safeprojectname$
 		public bool IsFireing;
 		public const float Cadence = 0.01f;
 
-		public event Action<Point> PlayerFiredShot;
+		public event Action<Vector2D> PlayerFiredShot;
 	}
 }

@@ -47,13 +47,17 @@
       <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
       <Name>DeltaEngine.Graphics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\DeltaEngine.Rendering.csproj">
-      <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
+      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
+      <Name>DeltaEngine.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
+      <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
+      <Name>DeltaEngine.Rendering2D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering2D\Sprites\DeltaEngine.Rendering2D.Sprites.csproj">
       <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
-      <Name>DeltaEngine.Rendering.Sprites</Name>
+      <Name>DeltaEngine.Rendering2D.Sprites</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogoApp.csproj">
       <Project>{B94B117E-1A32-40C6-A93D-FD7012ED8D12}</Project>

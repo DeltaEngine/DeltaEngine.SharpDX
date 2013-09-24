@@ -73,6 +73,7 @@
     <Compile Include="LocalhostLogServer.cs" />
     <Compile Include="LocalhostLogServerTests.cs" />
     <Compile Include="NetworkLoggerTests.cs" />
+    <Compile Include="NetworkLoggerWithLogServiceTests.cs" />
     <Compile Include="PlatformsLoggingTests.cs" />
     <Compile Include="TextFileLoggerTests.cs" />
     <Compile Include="TextLoggerTests.cs" />

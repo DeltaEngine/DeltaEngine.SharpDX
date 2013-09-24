@@ -10,7 +10,7 @@ namespace GhostWars.Tests
 		[Test]
 		public void ShowArrow()
 		{
-			new Command(Command.Click, position => Effects.CreateArrow(Point.Half, position));
+			new Command(Command.Click, position => Effects.CreateArrow(Vector2D.Half, position));
 		}
 
 		[Test]
@@ -28,7 +28,7 @@ namespace GhostWars.Tests
 		[Test]
 		public void ShowSparkleEffect()
 		{
-			Effects.CreateSparkleEffect(Team.HumanYellow, Point.Half, 20);
+			Effects.CreateSparkleEffect(Team.HumanYellow, Vector2D.Half, 20);
 		}
 	}
 }

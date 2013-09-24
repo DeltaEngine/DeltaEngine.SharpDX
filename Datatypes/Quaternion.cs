@@ -27,7 +27,7 @@ namespace DeltaEngine.Datatypes
 		public float Z { get; set; }
 		public float W { get; set; }
 
-		public static Quaternion FromAxisAngle(Vector axis, float angle)
+		public static Quaternion FromAxisAngle(Vector3D axis, float angle)
 		{
 			var vectorPart = MathExtensions.Sin(angle * 0.5f) * axis;
 			return new Quaternion(vectorPart.X, vectorPart.Y, vectorPart.Z,
@@ -51,19 +51,25 @@ namespace DeltaEngine.Datatypes
 			return new Quaternion(q.X * f, q.Y * f, q.Z * f, q.W * f);
 		}
 
+		[Pure]
+		public static Quaternion operator +(Quaternion q1, Quaternion q2)
+		{
+			return new Quaternion(q1.X + q2.X, q1.Y + q2.Y, q1.Z + q2.Z, q1.W + q2.W);
+		}
+
 		// From 
 		// http://molecularmusings.wordpress.com/2013/05/24/a-faster-quaternion-vector-multiplication/
-		public static Vector operator *(Quaternion q, Vector v)
+		public static Vector3D operator *(Quaternion q, Vector3D v)
 		{
-			var qv = q.Vector;
-			Vector t = 2.0f * Vector.Cross(qv, v);
-			return v + q.W * t + Vector.Cross(qv, t);
+			var qv = q.Vector3D;
+			Vector3D t = 2.0f * Vector3D.Cross(qv, v);
+			return v + q.W * t + Vector3D.Cross(qv, t);
 		}
 
 		[Pure]
-		public Vector Vector
+		public Vector3D Vector3D
 		{
-			get { return new Vector(X, Y, Z); }
+			get { return new Vector3D(X, Y, Z); }
 		}
 
 		// Adapted from 
@@ -74,6 +80,18 @@ namespace DeltaEngine.Datatypes
 				-q2.X * q1.Z + q2.Y * q1.W + q2.Z * q1.X + q2.W * q1.Y,
 				q2.X * q1.Y - q2.Y * q1.X + q2.Z * q1.W + q2.W * q1.Z,
 				-q2.X * q1.X - q2.Y * q1.Y - q2.Z * q1.Z + q2.W * q1.W);
+		}
+
+		public Quaternion Conjugate()
+		{
+			return new Quaternion(-X, -Y, -Z, W);
+		}
+
+		public static Quaternion CreateLookAt(Vector3D eyePosition, Vector3D targetPosition,
+			Vector3D cameraUp)
+		{
+			Matrix matLookAt = Matrix.CreateLookAt(eyePosition, targetPosition, cameraUp);
+			return FromRotationMatrix(matLookAt);
 		}
 
 		public static Quaternion FromRotationMatrix(Matrix m)
@@ -108,6 +126,22 @@ namespace DeltaEngine.Datatypes
 		{
 			return new Quaternion(X.Lerp(other.X, interpolation), Y.Lerp(other.Y, interpolation),
 				Z.Lerp(other.Z, interpolation), W.Lerp(other.W, interpolation));
+		}
+
+		public Quaternion Slerp(Quaternion other, float interpolation)
+		{
+			var cos = Dot(other);
+			var sin = MathExtensions.Sqrt((1.0f - cos * cos).Abs());
+			var angle = MathExtensions.Atan2(sin, cos);
+			var reciprocalSin = 1.0f / sin;
+			var coefficent0 = MathExtensions.Sin((1 - interpolation) * angle) * reciprocalSin;
+			var coefficent1 = MathExtensions.Sin(interpolation * angle) * reciprocalSin;
+			return (this * coefficent0) + (other * coefficent1);
+		}
+
+		public float Dot(Quaternion other)
+		{
+			return (X * other.X) + (Y * other.Y) + (Z * other.Z) + (W * other.W);
 		}
 
 		public bool Equals(Quaternion other)

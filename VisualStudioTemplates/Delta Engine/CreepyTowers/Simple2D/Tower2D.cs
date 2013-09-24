@@ -1,12 +1,13 @@
+using $safeprojectname$.Towers;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 
 namespace $safeprojectname$.Simple2D
 {
 	public class Tower2D : FilledRect, Updateable
 	{
-		public Tower2D(Basic2DDisplaySystem display, Point position, Tower.TowerType towerType) : 
+		public Tower2D(Basic2DDisplaySystem display, Vector2D position, Tower.TowerType towerType) : 
 			base(display.CalculateGridScreenDrawArea(position), GetColor(towerType))
 		{
 			this.display = display;
@@ -19,6 +20,19 @@ namespace $safeprojectname$.Simple2D
 		}
 
 		internal readonly Basic2DDisplaySystem display;
+		private readonly TowerProperties data;
+
+		public Tower.TowerType Type
+		{
+			get;
+			private set;
+		}
+
+		public Vector2D Position
+		{
+			get;
+			private set;
+		}
 
 		private void PaintAttackType()
 		{
@@ -39,16 +53,24 @@ namespace $safeprojectname$.Simple2D
 
 		private void PaintCircleSector()
 		{
-			var realPosition = display.GetPositionOfNode((int)Position.X, (int)Position.Y);
-			var offsetPosition = realPosition + new Point(0.0f, 0.1f);
-			var rightLine = offsetPosition.RotateAround(realPosition, 15);
-			var leftLine = offsetPosition.RotateAround(realPosition, -15);
 			circleSectorLines = new Line2D[2];
-			circleSectorLines [0] = new Line2D(realPosition, rightLine, Color.White);
-			circleSectorLines [1] = new Line2D(realPosition, leftLine, Color.White);
+			var realPosition = display.GetPositionOfNode((int)Position.X, (int)Position.Y);
+			var offsetPosition = realPosition + new Vector2D(0.0f, 0.1f);
+			PaintLines(offsetPosition, realPosition);
 		}
 
 		private Line2D[] circleSectorLines;
+
+		private void PaintLines(Vector2D offsetPosition, Vector2D realPosition)
+		{
+			var rightLine = offsetPosition.RotateAround(realPosition, 15) - realPosition;
+			var leftLine = offsetPosition.RotateAround(realPosition, -15) - realPosition;
+			rightLine = Vector2D.Normalize(rightLine);
+			leftLine = Vector2D.Normalize(leftLine);
+			circleSectorLines [0] = new Line2D(realPosition, realPosition + rightLine * 0.2f, 
+				Color.White);
+			circleSectorLines [1] = new Line2D(realPosition, realPosition + leftLine * 0.2f, Color.White);
+		}
 
 		public static Color GetColor(Tower.TowerType type)
 		{
@@ -69,18 +91,6 @@ namespace $safeprojectname$.Simple2D
 			}
 		}
 
-		public Tower.TowerType Type
-		{
-			get;
-			private set;
-		}
-
-		public Point Position
-		{
-			get;
-			private set;
-		}
-
 		public float Range
 		{
 			get
@@ -96,8 +106,6 @@ namespace $safeprojectname$.Simple2D
 				return data.AttackDamage;
 			}
 		}
-
-		private readonly TowerProperties data;
 
 		public void Update()
 		{
@@ -139,6 +147,21 @@ namespace $safeprojectname$.Simple2D
 		public Tower.AttackType GetAttackType()
 		{
 			return data.AttackType;
+		}
+
+		public void UpdateTowerOrientation(Vector2D position)
+		{
+			var realPosition = display.GetPositionOfNode((int)Position.X, (int)Position.Y);
+			var offsetPosition = display.GetPositionOfNode((int)position.X, (int)position.Y);
+			var rightLine = offsetPosition.RotateAround(realPosition, 15) - realPosition;
+			var leftLine = offsetPosition.RotateAround(realPosition, -15) - realPosition;
+			rightLine = Vector2D.Normalize(rightLine);
+			leftLine = Vector2D.Normalize(leftLine);
+			circleSectorLines [0].IsActive = false;
+			circleSectorLines [1].IsActive = false;
+			circleSectorLines [0] = new Line2D(realPosition, realPosition + rightLine * 0.2f, 
+				Color.White);
+			circleSectorLines [1] = new Line2D(realPosition, realPosition + leftLine * 0.2f, Color.White);
 		}
 	}
 }

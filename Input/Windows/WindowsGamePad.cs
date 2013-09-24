@@ -118,14 +118,14 @@ namespace DeltaEngine.Input.Windows
 			return GetPresence(3) ? 3u : 0;
 		}
 
-		public override Point GetLeftThumbStick()
+		public override Vector2D GetLeftThumbStick()
 		{
-			return new Point(xAxisLeft, yAxisLeft);
+			return new Vector2D(xAxisLeft, yAxisLeft);
 		}
 
-		public override Point GetRightThumbStick()
+		public override Vector2D GetRightThumbStick()
 		{
-			return new Point(xAxisRight, yAxisRight);
+			return new Vector2D(xAxisRight, yAxisRight);
 		}
 
 		public override float GetLeftTrigger()

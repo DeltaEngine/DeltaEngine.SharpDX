@@ -17,14 +17,16 @@ namespace DeltaEngine.Tests.Datatypes
 			var rangesGraph = new RangeGraph<Range<Color>>(ranges[0], ranges[2]);
 			rangesGraph.AddValueAfter(0, ranges[1]);
 			Assert.AreEqual(ranges, rangesGraph.Values);
-			Assert.IsTrue(rangesGraph.ToString().StartsWith(rangesGraph.GetType().Name));
+			Assert.IsTrue(rangesGraph.ToString().StartsWith("{"));
 		}
 
 		[Test]
 		public void GetInterpolation()
 		{
-			var points = new List<Point>(new []{ Point.Zero, Point.UnitX, Point.UnitY, Point.UnitY, Point.One });
-			var graph = new RangeGraph<Point>(points);
+			var points =
+				new List<Vector2D>(new[]
+				{ Vector2D.Zero, Vector2D.UnitX, Vector2D.UnitY, Vector2D.UnitY, Vector2D.One });
+			var graph = new RangeGraph<Vector2D>(points);
 			var interpolatedPointMiddle = graph.GetInterpolatedValue(0.3f);
 			var expectedPointMiddle = points[1].Lerp(points[2], 4 * 0.3f - 1);
 			var interpolatedPointEnd = graph.GetInterpolatedValue(1.0f);
@@ -57,7 +59,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void ValuesArrayWillNeverBeNull()
 		{
-			var graph = new RangeGraph<Point>();
+			var graph = new RangeGraph<Vector2D>();
 			Assert.DoesNotThrow(() => { var start = graph.Start; });
 			Assert.DoesNotThrow(() => { var end = graph.End; });
 		}
@@ -65,11 +67,11 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void SetValuesToSeveralGraphTypes()
 		{
-			var vectorGraph = new RangeGraph<Vector>(Vector.Zero, Vector.UnitZ);
+			var vectorGraph = new RangeGraph<Vector3D>(Vector3D.Zero, Vector3D.UnitZ);
 			var colorGraph = new RangeGraph<Color>(Color.Red, Color.Orange);
 			colorGraph.SetValue(1, Color.Gold);
-			Assert.AreEqual(Vector.Zero, vectorGraph.Start);
-			Assert.AreEqual(Vector.UnitZ, vectorGraph.Values[1]);
+			Assert.AreEqual(Vector3D.Zero, vectorGraph.Start);
+			Assert.AreEqual(Vector3D.UnitZ, vectorGraph.Values[1]);
 			Assert.AreEqual(Color.Gold, colorGraph.End);
 		}
 
@@ -94,8 +96,9 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void InsertValuesInTheMiddle()
 		{
-			var points = new[] { Point.Zero, Point.UnitX, Point.UnitY, Point.UnitY, Point.One };
-			var pointGraph = new RangeGraph<Point>(points[0], points[4]);
+			var points = new[]
+			{ Vector2D.Zero, Vector2D.UnitX, Vector2D.UnitY, Vector2D.UnitY, Vector2D.One };
+			var pointGraph = new RangeGraph<Vector2D>(points[0], points[4]);
 			pointGraph.AddValueAfter(0, points[2]);
 			pointGraph.AddValueAfter(1, points[3]);
 			pointGraph.AddValueBefore(1, points[1]);

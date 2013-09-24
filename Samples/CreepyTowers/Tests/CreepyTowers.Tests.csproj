@@ -80,29 +80,57 @@
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Cameras\DeltaEngine.Rendering.Cameras.csproj">
-      <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
-      <Name>DeltaEngine.Rendering.Cameras</Name>
+    <ProjectReference Include="..\..\..\Platforms\DeltaEngine.Platforms.csproj">
+      <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
+      <Name>DeltaEngine.Platforms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\DeltaEngine.Rendering.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+      <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Models\DeltaEngine.Rendering.Models.csproj">
-      <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
-      <Name>DeltaEngine.Rendering.Models</Name>
+    <ProjectReference Include="..\..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
+      <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
+      <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Particles\DeltaEngine.Rendering.Particles.csproj">
-      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
-      <Name>DeltaEngine.Rendering.Particles</Name>
+    <ProjectReference Include="..\..\..\Rendering2D\Graphs\DeltaEngine.Rendering2D.Graphs.csproj">
+      <Project>{BFD23A13-90D3-46FC-8EAB-78664F4FB37D}</Project>
+      <Name>DeltaEngine.Rendering2D.Graphs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
-      <Name>DeltaEngine.Rendering.Shapes</Name>
+      <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\Sprites\DeltaEngine.Rendering2D.Sprites.csproj">
       <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
-      <Name>DeltaEngine.Rendering.Sprites</Name>
+      <Name>DeltaEngine.Rendering2D.Sprites</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering2D\Triggers\DeltaEngine.Rendering2D.Triggers.csproj">
+      <Project>{5423079E-7FB8-4190-AEE1-100EF328E74E}</Project>
+      <Name>DeltaEngine.Rendering2D.Triggers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering3D\Cameras\DeltaEngine.Rendering3D.Cameras.csproj">
+      <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
+      <Name>DeltaEngine.Rendering3D.Cameras</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering3D\DeltaEngine.Rendering3D.csproj">
+      <Project>{3266F559-74EE-4A1C-B37B-2C591F73611B}</Project>
+      <Name>DeltaEngine.Rendering3D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering3D\Mocks\DeltaEngine.Rendering3D.Mocks.csproj">
+      <Project>{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}</Project>
+      <Name>DeltaEngine.Rendering3D.Mocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering3D\Models\DeltaEngine.Rendering3D.Models.csproj">
+      <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
+      <Name>DeltaEngine.Rendering3D.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering3D\Particles\DeltaEngine.Rendering3D.Particles.csproj">
+      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Name>DeltaEngine.Rendering3D.Particles</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering3D\Shapes3D\DeltaEngine.Rendering3D.Shapes3D.csproj">
+      <Project>{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}</Project>
+      <Name>DeltaEngine.Rendering3D.Shapes3D</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Scenes\DeltaEngine.Scenes.csproj">
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
@@ -126,12 +154,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CalculateDamageTests.cs" />
+    <Compile Include="ClothCreepStateChangerTests.cs" />
     <Compile Include="CreepPropertiesTests.cs" />
     <Compile Include="CreepStateDamageOutputTests.cs" />
     <Compile Include="GenerateWavesTests.cs" />
+    <Compile Include="GlassCreepStateChangerTests.cs" />
     <Compile Include="GroupTests.cs" />
     <Compile Include="IntroSceneTests.cs" />
+    <Compile Include="LevelChildsRoomTests.cs" />
+    <Compile Include="MessagesTests.cs" />
+    <Compile Include="NamesTests.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RemapCoordinatesTests.cs" />
+    <Compile Include="SandCreepStateChangerTests.cs" />
     <Compile Include="Simple2D\CombatSystemTests.cs" />
     <Compile Include="Simple2D\Creep2DTests.cs" />
     <Compile Include="Simple2D\TestWithBasic2DDisplaySystem.cs" />

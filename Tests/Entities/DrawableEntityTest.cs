@@ -11,12 +11,12 @@ namespace DeltaEngine.Tests.Entities
 		[SetUp]
 		public void InitializeEntitiesRunner()
 		{
-			new MockEntitiesRunner(typeof(Draw), typeof(DrawToCopyArrayListLenght));
+			new MockEntitiesRunner(typeof(Draw), typeof(DrawToCopyArrayListLength));
 			new MockEntity();
 		}
 
 		[Test]
-		public void TryToGetListWillThrowExeptionIfNoListsAvailable()
+		public void TryToGetListWillThrowExceptionIfNoListsAvailable()
 		{
 			var draw = new MockDrawableEntity();
 			draw.OnDraw<Draw>();
@@ -28,10 +28,10 @@ namespace DeltaEngine.Tests.Entities
 			void DrawBehavior.Draw(IEnumerable<DrawableEntity> entities)
 			{
 				foreach (var drawableEntity in entities)
-					ThrowExeptionsWhenInterpolationElementsAreNotFound(drawableEntity);
+					ThrowExceptionsWhenInterpolationElementsAreNotFound(drawableEntity);
 			}
 
-			private static void ThrowExeptionsWhenInterpolationElementsAreNotFound(
+			private static void ThrowExceptionsWhenInterpolationElementsAreNotFound(
 				DrawableEntity drawableEntity)
 			{
 				Assert.Throws<DrawableEntity.ListWithLerpElementsForInterpolationWasNotFound>(
@@ -50,10 +50,10 @@ namespace DeltaEngine.Tests.Entities
 		}
 
 		[Test]
-		public void CHangeLenghtToCopyLimit()
+		public void ChangeLengthToCopyLimit()
 		{
 			var draw = new MockDrawableEntity();
-			draw.OnDraw<DrawToCopyArrayListLenght>();
+			draw.OnDraw<DrawToCopyArrayListLength>();
 			var mockLerp = new MockLerp().Lerp(new MockLerp(), 1);
 			var lerp = new MockLerp[3];
 			lerp[0] = mockLerp;
@@ -63,7 +63,7 @@ namespace DeltaEngine.Tests.Entities
 			EntitiesRunner.Current.UpdateAndDrawAllEntities(() => { });
 		}
 
-		private class DrawToCopyArrayListLenght : DrawBehavior
+		private class DrawToCopyArrayListLength : DrawBehavior
 		{
 			void DrawBehavior.Draw(IEnumerable<DrawableEntity> entities)
 			{

@@ -16,8 +16,8 @@ using DeltaEngine.Multimedia.Mocks;
 using DeltaEngine.Networking;
 using DeltaEngine.Networking.Mocks;
 using DeltaEngine.Physics2D.Farseer;
-using DeltaEngine.Rendering.Cameras;
-using DeltaEngine.Rendering.Mocks;
+using DeltaEngine.Rendering3D.Cameras;
+using DeltaEngine.Rendering3D.Mocks;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Platforms.Mocks

@@ -24,12 +24,12 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			pixelToRelativeScale = 1.0f / viewportPixelSize;
 		}
 
-		public override Point ToPixelSpace(Point currentScreenSpacePos)
+		public override Vector2D ToPixelSpace(Vector2D currentScreenSpacePosition)
 		{
-			Point point = Point.Zero;
-			point.X = currentScreenSpacePos.X * viewportPixelSize.Width;
-			point.Y = (1 - currentScreenSpacePos.Y) * viewportPixelSize.Height;
-			return point;
+			Vector2D position = Vector2D.Zero;
+			position.X = currentScreenSpacePosition.X * viewportPixelSize.Width;
+			position.Y = (1 - currentScreenSpacePosition.Y) * viewportPixelSize.Height;
+			return position;
 		}
 
 		public override Size ToPixelSpace(Size currentScreenSpaceSize)
@@ -37,12 +37,12 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			return currentScreenSpaceSize * viewportPixelSize;
 		}
 
-		public override Point FromPixelSpace(Point pixelPosition)
+		public override Vector2D FromPixelSpace(Vector2D pixelPosition)
 		{
-			Point point = Point.Zero;
-			point.X = pixelPosition.X * pixelToRelativeScale.Width;
-			point.Y = 1 - pixelPosition.Y * pixelToRelativeScale.Height;
-			return point;
+			Vector2D position = Vector2D.Zero;
+			position.X = pixelPosition.X * pixelToRelativeScale.Width;
+			position.Y = 1 - pixelPosition.Y * pixelToRelativeScale.Height;
+			return position;
 		}
 
 		public override Size FromPixelSpace(Size pixelSize)
@@ -50,13 +50,13 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			return pixelSize * pixelToRelativeScale;
 		}
 
-		public override Point TopLeft
+		public override Vector2D TopLeft
 		{
-			get { return Point.UnitY; }
+			get { return Vector2D.UnitY; }
 		}
-		public override Point BottomRight
+		public override Vector2D BottomRight
 		{
-			get { return Point.UnitX; }
+			get { return Vector2D.UnitX; }
 		}
 		public override float Left
 		{
@@ -75,12 +75,12 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			get { return 0.0f; }
 		}
 
-		public override Point GetInnerPoint(Point relativePoint)
+		public override Vector2D GetInnerPosition(Vector2D relativePosition)
 		{
-			Point point = Point.Zero;
-			point.X = relativePoint.X;
-			point.Y = 1 - relativePoint.Y;
-			return point;
+			Vector2D position = Vector2D.Zero;
+			position.X = relativePosition.X;
+			position.Y = 1 - relativePosition.Y;
+			return position;
 		}
 	}
 }

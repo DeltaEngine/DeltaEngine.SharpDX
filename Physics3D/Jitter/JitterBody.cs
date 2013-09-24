@@ -22,7 +22,7 @@ namespace DeltaEngine.Physics3D.Jitter
 		private readonly RigidBody jitterBody;
 		private Shape jitterShape;
 
-		public JitterBody(JitterPhysics physicsManager, PhysicsShape shape, Vector initialPosition)
+		public JitterBody(JitterPhysics physicsManager, PhysicsShape shape, Vector3D initialPosition)
 			: base(shape)
 		{
 			CreateShape();
@@ -81,8 +81,9 @@ namespace DeltaEngine.Physics3D.Jitter
 
 		private void CreateBoxShape()
 		{
-			Vector size = ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, Vector>(Shape.Properties,
-				PhysicsShape.PropertyType.Size);
+			Vector3D size =
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, Vector3D>(Shape.Properties,
+					PhysicsShape.PropertyType.Size);
 			jitterShape = new BoxShape(size.Y, size.Z, size.X);
 		}
 
@@ -173,7 +174,7 @@ namespace DeltaEngine.Physics3D.Jitter
 			get { return jitterBody; }
 		}
 
-		public override Vector Position
+		public override Vector3D Position
 		{
 			get
 			{
@@ -183,9 +184,9 @@ namespace DeltaEngine.Physics3D.Jitter
 			set { jitterBody.Position = JitterDatatypesMapping.Convert(ref value); }
 		}
 
-		private Vector position;
+		private Vector3D position;
 
-		public override Point Position2D
+		public override Vector2D Position2D
 		{
 			get
 			{
@@ -195,9 +196,9 @@ namespace DeltaEngine.Physics3D.Jitter
 			}
 		}
 
-		private Point position2D;
+		private Vector2D position2D;
 
-		public override Vector LinearVelocity
+		public override Vector3D LinearVelocity
 		{
 			get
 			{
@@ -207,9 +208,9 @@ namespace DeltaEngine.Physics3D.Jitter
 			set { jitterBody.LinearVelocity = JitterDatatypesMapping.Convert(ref value); }
 		}
 
-		private Vector linearVelocity;
+		private Vector3D linearVelocity;
 
-		public override Vector AngularVelocity
+		public override Vector3D AngularVelocity
 		{
 			get
 			{
@@ -219,7 +220,7 @@ namespace DeltaEngine.Physics3D.Jitter
 			set { jitterBody.AngularVelocity = JitterDatatypesMapping.Convert(ref value); }
 		}
 
-		private Vector angularVelocity;
+		private Vector3D angularVelocity;
 
 		public override float AngularVelocity2D
 		{
@@ -257,12 +258,12 @@ namespace DeltaEngine.Physics3D.Jitter
 			}
 		}
 
-		private readonly BoundingBox bounds = new BoundingBox(Vector.Zero, Vector.Zero);
+		private readonly BoundingBox bounds = new BoundingBox(Vector3D.Zero, Vector3D.Zero);
 
 		/// <summary>
 		/// Applies a force at the center of mass.
 		/// </summary>
-		public override void ApplyForce(Vector force)
+		public override void ApplyForce(Vector3D force)
 		{
 			jitterBody.AddForce(JitterDatatypesMapping.Convert(ref force));
 		}
@@ -272,7 +273,7 @@ namespace DeltaEngine.Physics3D.Jitter
 		/// applied at the center of mass, it will generate a torque and
 		/// affect the angular velocity. This wakes up the body.
 		/// </summary>
-		public override void ApplyForce(Vector force, Vector forcePosition)
+		public override void ApplyForce(Vector3D force, Vector3D forcePosition)
 		{
 			jitterBody.AddForce(JitterDatatypesMapping.Convert(ref force),
 				JitterDatatypesMapping.Convert(ref forcePosition));
@@ -285,7 +286,7 @@ namespace DeltaEngine.Physics3D.Jitter
 		/// This wakes up the body.
 		/// </remarks>
 		/// </summary>
-		public override void ApplyTorque(Vector torque)
+		public override void ApplyTorque(Vector3D torque)
 		{
 			jitterBody.AddTorque(JitterDatatypesMapping.Convert(ref torque));
 		}
@@ -296,7 +297,7 @@ namespace DeltaEngine.Physics3D.Jitter
 		/// This wakes up the body.
 		/// </remarks>
 		/// </summary>
-		public override void ApplyLinearImpulse(Vector impulse)
+		public override void ApplyLinearImpulse(Vector3D impulse)
 		{
 			jitterBody.ApplyImpulse(JitterDatatypesMapping.Convert(ref impulse));
 		}
@@ -309,13 +310,13 @@ namespace DeltaEngine.Physics3D.Jitter
 		/// This wakes up the body.
 		/// </remarks>
 		/// </summary>
-		public override void ApplyLinearImpulse(Vector impulse, Vector impulsePosition)
+		public override void ApplyLinearImpulse(Vector3D impulse, Vector3D impulsePosition)
 		{
 			jitterBody.ApplyImpulse(JitterDatatypesMapping.Convert(ref impulse),
 				JitterDatatypesMapping.Convert(ref impulsePosition));
 		}
 
-		public override void ApplyAngularImpulse(Vector impulse)
+		public override void ApplyAngularImpulse(Vector3D impulse)
 		{
 			jitterBody.ApplyImpulse(JitterDatatypesMapping.Convert(ref impulse));
 		}

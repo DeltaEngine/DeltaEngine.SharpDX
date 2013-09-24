@@ -4,19 +4,19 @@ namespace DeltaEngine.Extensions
 {
 	class LinearMapExtensions
 	{
-		static public Vector TransformVector(Vector vector, Matrix matrix)
+		static public Vector3D TransformVector(Vector3D vector, Matrix matrix)
 		{
 			float[] mvalues = matrix.GetValues;
-			return new Vector(
+			return new Vector3D(
 				vector.X * mvalues[0] + vector.Y * mvalues[4] + vector.Z * mvalues[8],
 				vector.X * mvalues[1] + vector.Y * mvalues[5] + vector.Z * mvalues[9],
 				vector.X * mvalues[2] + vector.Y * mvalues[6] + vector.Z * mvalues[10]);
 		}
 
-		public static Vector TransformVectorWithHomogeneousCoordinate(Vector vector, Matrix matrix)
+		public static Vector3D TransformVectorWithHomogeneousCoordinate(Vector3D vector, Matrix matrix)
 		{
 			float[] mvalues = matrix.GetValues;
-			var retVector = new Vector(
+			var retVector = new Vector3D(
 				vector.X * mvalues[0] + vector.Y * mvalues[4] + vector.Z * mvalues[8] + mvalues[12],
 				vector.X * mvalues[1] + vector.Y * mvalues[5] + vector.Z * mvalues[9] + mvalues[13],
 				vector.X * mvalues[2] + vector.Y * mvalues[6] + vector.Z * mvalues[10] + mvalues[14]);
@@ -78,7 +78,8 @@ namespace DeltaEngine.Extensions
 				-1.0f, 1.0f, 0.0f, 1.0f);
 		}
 
-		public static Matrix CreateOrthoProjectionMatrix(Size viewportSize, float nearPlane, float farPlane)
+		public static Matrix CreateOrthoProjectionMatrix
+			(Size viewportSize, float nearPlane, float farPlane)
 		{
 			var invDepth = 1.0f / (farPlane - nearPlane);
 			return new Matrix(
@@ -89,19 +90,20 @@ namespace DeltaEngine.Extensions
 		}
 
 		// Appears to create a RH LookAt
-		public static Matrix CreateLookAtMatrix(Vector cameraPosition, Vector cameraTarget, Vector cameraUp)
+		public static Matrix CreateLookAtMatrix
+			(Vector3D cameraPosition, Vector3D cameraTarget, Vector3D cameraUp)
 		{
-			var forward = Vector.Normalize(cameraPosition - cameraTarget);
-			var up = Vector.Normalize(cameraUp);
-			var side = Vector.Normalize(Vector.Cross(up, forward));
-			up = Vector.Cross(forward, side);
+			var forward = Vector3D.Normalize(cameraPosition - cameraTarget);
+			var up = Vector3D.Normalize(cameraUp);
+			var side = Vector3D.Normalize(Vector3D.Cross(up, forward));
+			up = Vector3D.Cross(forward, side);
 			return new Matrix(
 				side.X, up.X, forward.X, 0.0f,
 				side.Y, up.Y, forward.Y, 0.0f,
 				side.Z, up.Z, forward.Z, 0.0f,
-				-Vector.Dot(side, cameraPosition),
-				-Vector.Dot(up, cameraPosition),
-				-Vector.Dot(forward, cameraPosition), 1.0f);
+				-Vector3D.Dot(side, cameraPosition),
+				-Vector3D.Dot(up, cameraPosition),
+				-Vector3D.Dot(forward, cameraPosition), 1.0f);
 		}
 
 		public static Matrix CreateRotationAboutZThenYThenX(float x, float y, float z)

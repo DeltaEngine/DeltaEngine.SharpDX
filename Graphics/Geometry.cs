@@ -84,7 +84,6 @@ namespace DeltaEngine.Graphics
 		}
 
 		public Matrix[] JointTranforms { get; set; }
-		public Matrix[] InverseBindPoses { get; set; }
 		public bool HasAnimationData { get { return JointTranforms != null; } }
 
 		protected abstract void SetNativeData(byte[] vertexData, short[] indices);

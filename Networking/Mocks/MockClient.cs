@@ -16,7 +16,7 @@ namespace DeltaEngine.Networking.Mocks
 
 		protected MockServer server;
 
-		public void Connect(string serverAddress, int serverPort)
+		public void Connect(string serverAddress, int serverPort, Action optionalTimedOut = null)
 		{
 			IsConnected = true;
 			TargetAddress = serverAddress + ":" + serverPort;
@@ -29,7 +29,7 @@ namespace DeltaEngine.Networking.Mocks
 		public string TargetAddress { get; private set; }
 		public event Action Connected;
 
-		public void Send(object message)
+		public void Send(object message, bool allowToCompressMessage = true)
 		{
 			LastSentMessage = message;
 			if (DataSent != null)

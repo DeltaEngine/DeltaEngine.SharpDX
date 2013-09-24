@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
@@ -80,7 +80,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			float width = DrawArea.Width * ScrollbarPercentageWidth;
 			scrollbar.DrawArea = new Rectangle(DrawArea.Right - width, DrawArea.Top, DrawArea.Height,
 				width);
-			scrollbar.RotationCenter = new Point(scrollbar.DrawArea.Left + width / 2,
+			scrollbar.RotationCenter = new Vector2D(scrollbar.DrawArea.Left + width / 2,
 				scrollbar.DrawArea.Top + width / 2);
 			scrollbar.RenderLayer = RenderLayer + 1;
 			scrollbar.MaxValue = values.Count - 1;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Entities;
 
 namespace DeltaEngine.Mocks
@@ -8,6 +9,10 @@ namespace DeltaEngine.Mocks
 	/// </summary>
 	public class MockUpdateBehavior : UpdateBehavior
 	{
-		public override void Update(IEnumerable<Entity> entities) {}
+		public override void Update(IEnumerable<Entity> entities)
+		{
+			foreach (var verifable in entities.OfType<VerifiableUpdate>())
+				verifable.WasUpdated = true;
+		}
 	}
 }

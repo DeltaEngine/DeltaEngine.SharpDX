@@ -12,7 +12,7 @@ namespace DeltaEngine.Input
 	/// </summary>
 	public abstract class Touch : InputDevice
 	{
-		public abstract Point GetPosition(int touchIndex);
+		public abstract Vector2D GetPosition(int touchIndex);
 		public abstract State GetState(int touchIndex);
 
 		public override void Update(IEnumerable<Entity> entities)
@@ -47,7 +47,7 @@ namespace DeltaEngine.Input
 		private bool IsTouchMovementTriggered(TouchMovementTrigger trigger)
 		{
 			bool changedPosition = trigger.Position != GetPosition(0) &&
-				trigger.Position != Point.Unused;
+				trigger.Position != Vector2D.Unused;
 			trigger.Position = GetPosition(0);
 			return changedPosition;
 		}
@@ -56,7 +56,8 @@ namespace DeltaEngine.Input
 		{
 			var isButton = GetState(0) == trigger.State;
 			bool hasPositionChanged = trigger.Position != GetPosition(0) &&
-				trigger.Position != Point.Unused && ScreenSpace.Current.Viewport.Contains(trigger.Position);
+				trigger.Position != Vector2D.Unused &&
+				ScreenSpace.Current.Viewport.Contains(trigger.Position);
 			trigger.Position = GetPosition(0);
 			return isButton && hasPositionChanged;
 		}
@@ -74,7 +75,7 @@ namespace DeltaEngine.Input
 		{
 			if (GetState(0) == State.Pressing)
 				trigger.StartPosition = GetPosition(0);
-			else if (trigger.StartPosition != Point.Unused &&
+			else if (trigger.StartPosition != Vector2D.Unused &&
 				GetState(0) != State.Released)
 			{
 				if (trigger.StartPosition.DistanceTo(GetPosition(0)) > PositionEpsilon)
@@ -86,7 +87,7 @@ namespace DeltaEngine.Input
 			}
 			else
 			{
-				trigger.StartPosition = Point.Unused;
+				trigger.StartPosition = Vector2D.Unused;
 				trigger.DoneDragging = false;
 			}
 			return false;
@@ -99,13 +100,13 @@ namespace DeltaEngine.Input
 			var position = GetPosition(0);
 			if (trigger.StartArea.Contains(position) && GetState(0) == State.Pressing)
 				trigger.StartDragPosition = position;
-			else if (trigger.StartDragPosition != Point.Unused && GetState(0) != State.Released)
+			else if (trigger.StartDragPosition != Vector2D.Unused && GetState(0) != State.Released)
 			{
 				if (trigger.StartDragPosition.DistanceTo(position) > PositionEpsilon)
 					return true;
 			}
 			else
-				trigger.StartDragPosition = Point.Unused;
+				trigger.StartDragPosition = Vector2D.Unused;
 			return false;
 		}
 

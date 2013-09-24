@@ -8,9 +8,9 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
@@ -22,8 +22,8 @@ namespace $safeprojectname$
 			if (MainMenu.State != GameState.CountDown)
 				MainMenu.State = GameState.Game;
 
-			statusText = new FontText(MainMenu.Font, "", Rectangle.FromCenter(new Point(0.5f, 0.25f), 
-				new Size(0.2f))) {
+			statusText = new FontText(MainMenu.Font, "", Rectangle.FromCenter(new Vector2D(0.5f, 
+				0.25f), new Size(0.2f))) {
 				RenderLayer = 5
 			};
 			new Sprite(new Material(Shader.Position2DUv, "Logo"), new Rectangle(0.02f, 0.205f, 0.15f, 
@@ -59,7 +59,7 @@ namespace $safeprojectname$
 
 		private void CreateArrowSelectionAndBars()
 		{
-			arrow = Effects.CreateArrow(Point.Unused, Point.Unused);
+			arrow = Effects.CreateArrow(Vector2D.Unused, Vector2D.Unused);
 			selection = new Sprite(new Material(Shader.Position2DColorUv, "SelectionCircle"), 
 				Rectangle.Zero);
 			bars = new[] {
@@ -112,7 +112,7 @@ namespace $safeprojectname$
 			0
 		};
 
-		public void AddTree(Point position, Team team)
+		public void AddTree(Vector2D position, Team team)
 		{
 			var newTree = new Tree(position, team);
 			trees.Add(newTree);
@@ -123,7 +123,8 @@ namespace $safeprojectname$
 				newTree)).Add(new MouseDragTrigger()).Add(new TouchDragTrigger());
 		}
 
-		private void MoveGhostsFromTreeToTree(Point start, Point end, bool dragDone, Tree startTree)
+		private void MoveGhostsFromTreeToTree(Vector2D start, Vector2D end, bool dragDone, Tree 
+			startTree)
 		{
 			if (start.DistanceTo(startTree.DrawArea.Center) > 0.04f)
 				return;
@@ -169,7 +170,7 @@ namespace $safeprojectname$
 
 		private float lastWaveSend;
 
-		private Tree FindNearestTree(Tree previousTree, Point target)
+		private Tree FindNearestTree(Tree previousTree, Vector2D target)
 		{
 			float nearestDistance = float.MaxValue;
 			Tree nearestTree = null;
@@ -238,7 +239,7 @@ namespace $safeprojectname$
 		{
 			statusText.Text = "";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUv, "YouWin"), Point.Half) {
+			new Sprite(new Material(Shader.Position2DUv, "YouWin"), Vector2D.Half) {
 				RenderLayer = 4000
 			};
 		}
@@ -247,7 +248,7 @@ namespace $safeprojectname$
 		{
 			statusText.Text = "You Lost!";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUv, "GameOver"), Point.Half) {
+			new Sprite(new Material(Shader.Position2DUv, "GameOver"), Vector2D.Half) {
 				RenderLayer = 4000
 			};
 		}

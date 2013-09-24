@@ -156,6 +156,7 @@ namespace DeltaEngine.Entities
 
 		public void UpdateAndDrawAllEntities(Action drawEverythingInCurrentLayer)
 		{
+			isPaused = GetWhetherAppIsPaused();
 			UpdateTimePassed();
 			State = UpdateDrawState.RapidUpdate;
 			while (rapidUpdateTimeAccumulator >= RapidUpdateTimeStep)
@@ -166,6 +167,13 @@ namespace DeltaEngine.Entities
 			State = UpdateDrawState.Draw;
 			RunDrawTick(drawEverythingInCurrentLayer);
 			State = UpdateDrawState.Initialization;
+		}
+
+		private bool isPaused;
+
+		protected virtual bool GetWhetherAppIsPaused()
+		{
+			return Time.IsPaused;
 		}
 
 		private void UpdateTimePassed()
@@ -189,6 +197,8 @@ namespace DeltaEngine.Entities
 		private float rapidUpdateTimeAccumulator;
 		private float updateTimeAccumulator;
 
+		public UpdateDrawState State { get; internal set; }
+
 		private void RunRapidUpdateTick()
 		{
 			rapidUpdateTimeAccumulator -= RapidUpdateTimeStep;
@@ -197,7 +207,14 @@ namespace DeltaEngine.Entities
 				return;
 			foreach (var priority in prioritizedEntities)
 				foreach (var entity in priority.entities.OfType<RapidUpdateable>())
-					entity.RapidUpdate();
+					RunEntityRapidUpdateIfNotPaused(entity);
+		}
+
+		private void RunEntityRapidUpdateIfNotPaused(RapidUpdateable entity)
+		{
+			var pauseable = entity as Pauseable;
+			if (!isPaused || (pauseable != null && !pauseable.IsPauseable))
+				entity.RapidUpdate();
 		}
 
 		private void RunUpdateTick()
@@ -208,13 +225,13 @@ namespace DeltaEngine.Entities
 				return;
 			Time.Total += Time.Delta;
 			foreach (var entity in flatDrawableEntities)
-				entity.InternalNextUpdateStarted();
+				entity.InvokeNextUpdateStarted();
 			foreach (var priority in prioritizedEntities)
 			{
 				foreach (var pair in priority.behaviors.Where(pair => pair.Value.Count > 0))
-					UpdateEntities(pair.Key, pair.Value);
+					RunUpdateBehaviorIfNotPaused(pair.Key, pair.Value);
 				foreach (var entity in priority.entities.OfType<Updateable>())
-					entity.Update();
+					RunEntityUpdateIfNotPaused(entity);
 				if (priority.delayedNewBehaviorsWhileUpdating.Count <= 0)
 					continue;
 				foreach (var pair in priority.delayedNewBehaviorsWhileUpdating)
@@ -226,13 +243,21 @@ namespace DeltaEngine.Entities
 			}
 		}
 
-		public UpdateDrawState State { get; internal set; }
-
-		private static void UpdateEntities(UpdateBehavior updateBehavior,
+		private void RunUpdateBehaviorIfNotPaused(UpdateBehavior updateBehavior,
 			IEnumerable<Entity> entities)
 		{
+			var pauseable = updateBehavior as Pauseable;
+			if (isPaused && (pauseable == null || pauseable.IsPauseable))
+				return;
 			var filtered = updateBehavior as Filtered;
 			updateBehavior.Update(filtered != null ? entities.Where(filtered.Filter).ToList() : entities);
+		}
+
+		private void RunEntityUpdateIfNotPaused(Updateable entity)
+		{
+			var pauseable = entity as Pauseable;
+			if (!isPaused || (pauseable != null && !pauseable.IsPauseable))
+				entity.Update();
 		}
 
 		private void RunDrawTick(Action drawEverythingInCurrentLayer)
@@ -272,15 +297,21 @@ namespace DeltaEngine.Entities
 
 		public T GetUpdateBehavior<T>() where T : UpdateBehavior
 		{
+			return (T)GetUpdateBehavior(typeof(T));
+		}
+
+		internal UpdateBehavior GetUpdateBehavior(Type behaviorType)
+		{
 			foreach (var priority in prioritizedEntities)
-				foreach (var behavior in priority.delayedNewBehaviorsWhileUpdating.Keys.OfType<T>())
+				foreach (var behavior in
+					priority.delayedNewBehaviorsWhileUpdating.Keys.Where(b => b.GetType() == behaviorType))
 					return behavior;
 			foreach (var priority in prioritizedEntities)
-				foreach (var behavior in priority.behaviors.Keys.OfType<T>())
+				foreach (var behavior in priority.behaviors.Keys.Where(b => b.GetType() == behaviorType))
 					return behavior;
-			var newBehavior = behaviorResolver.ResolveUpdateBehavior(typeof(T)) as T;
+			var newBehavior = behaviorResolver.ResolveUpdateBehavior(behaviorType);
 			if (newBehavior == null)
-				throw new UnableToResolveBehavior(typeof(T));
+				throw new UnableToResolveBehavior(behaviorType);
 			prioritizedEntities[(int)newBehavior.priority].AddEntityToBehavior(newBehavior, null);
 			return newBehavior;
 		}
@@ -298,11 +329,17 @@ namespace DeltaEngine.Entities
 
 		public T GetDrawBehavior<T>() where T : class, DrawBehavior
 		{
-			foreach (var behavior in unsortedDrawEntities.Keys.OfType<T>())
+			return (T)GetDrawBehavior(typeof(T));
+		}
+
+		internal object GetDrawBehavior(Type drawBehaviorType)
+		{
+			foreach (
+				var behavior in unsortedDrawEntities.Keys.Where(b => b.GetType() == drawBehaviorType))
 				return behavior;
-			var newBehavior = behaviorResolver.ResolveDrawBehavior(typeof(T)) as T;
+			var newBehavior = behaviorResolver.ResolveDrawBehavior(drawBehaviorType);
 			if (newBehavior == null)
-				throw new UnableToResolveBehavior(typeof(T));
+				throw new UnableToResolveBehavior(drawBehaviorType);
 			unsortedDrawEntities.Add(newBehavior, new List<DrawableEntity>());
 			return newBehavior;
 		}
@@ -358,7 +395,7 @@ namespace DeltaEngine.Entities
 		{
 			if (!prioritizedEntities[(int)entity.UpdatePriority].entities.Remove(entity))
 				Logger.Warning("Unable to remove entity=" + entity + " from entity.UpdatePriority=" + //ncrunch: no coverage
-					entity.UpdatePriority + " because it does not exist there. New priority=" + priority); 
+					entity.UpdatePriority + " because it does not exist there. New priority=" + priority);
 			prioritizedEntities[(int)priority].entities.Add(entity);
 		}
 

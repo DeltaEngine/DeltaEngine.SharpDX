@@ -59,37 +59,53 @@
       <Project>{DC3AA434-09B9-43AD-8F43-431811FA054D}</Project>
       <Name>DeltaEngine.Physics2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Cameras\DeltaEngine.Rendering.Cameras.csproj">
-      <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
-      <Name>DeltaEngine.Rendering.Cameras</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\DeltaEngine.Rendering.csproj">
+    <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+      <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Fonts\DeltaEngine.Rendering.Fonts.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
-      <Name>DeltaEngine.Rendering.Fonts</Name>
+      <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Models\DeltaEngine.Rendering.Models.csproj">
-      <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
-      <Name>DeltaEngine.Rendering.Models</Name>
+    <ProjectReference Include="..\..\Rendering2D\Graphs\DeltaEngine.Rendering2D.Graphs.csproj">
+      <Project>{BFD23A13-90D3-46FC-8EAB-78664F4FB37D}</Project>
+      <Name>DeltaEngine.Rendering2D.Graphs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Particles\DeltaEngine.Rendering.Particles.csproj">
-      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
-      <Name>DeltaEngine.Rendering.Particles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Shapes3D\DeltaEngine.Rendering.Shapes3D.csproj">
-      <Project>{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}</Project>
-      <Name>DeltaEngine.Rendering.Shapes3D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
-      <Name>DeltaEngine.Rendering.Shapes</Name>
+      <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Sprites\DeltaEngine.Rendering2D.Sprites.csproj">
       <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
-      <Name>DeltaEngine.Rendering.Sprites</Name>
+      <Name>DeltaEngine.Rendering2D.Sprites</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering2D\Triggers\DeltaEngine.Rendering2D.Triggers.csproj">
+      <Project>{5423079E-7FB8-4190-AEE1-100EF328E74E}</Project>
+      <Name>DeltaEngine.Rendering2D.Triggers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering3D\Cameras\DeltaEngine.Rendering3D.Cameras.csproj">
+      <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
+      <Name>DeltaEngine.Rendering3D.Cameras</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering3D\DeltaEngine.Rendering3D.csproj">
+      <Project>{3266F559-74EE-4A1C-B37B-2C591F73611B}</Project>
+      <Name>DeltaEngine.Rendering3D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering3D\Mocks\DeltaEngine.Rendering3D.Mocks.csproj">
+      <Project>{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}</Project>
+      <Name>DeltaEngine.Rendering3D.Mocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering3D\Models\DeltaEngine.Rendering3D.Models.csproj">
+      <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
+      <Name>DeltaEngine.Rendering3D.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering3D\Particles\DeltaEngine.Rendering3D.Particles.csproj">
+      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Name>DeltaEngine.Rendering3D.Particles</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering3D\Shapes3D\DeltaEngine.Rendering3D.Shapes3D.csproj">
+      <Project>{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}</Project>
+      <Name>DeltaEngine.Rendering3D.Shapes3D</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
@@ -102,38 +118,40 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CreepProperties.cs" />
-    <Compile Include="ClothCreepStateChanger.cs" />
+    <Compile Include="GUI\Credits.cs" />
+    <Compile Include="Creeps\CreepProperties.cs" />
+    <Compile Include="Creeps\ClothCreepStateChanger.cs" />
     <Compile Include="FadeEffect.cs" />
-    <Compile Include="GlassCreepStateChanger.cs" />
-    <Compile Include="Group.cs" />
-    <Compile Include="GroupXmlParser.cs" />
-    <Compile Include="IntroScene.cs" />
+    <Compile Include="Creeps\GlassCreepStateChanger.cs" />
+    <Compile Include="Creeps\Group.cs" />
+    <Compile Include="Creeps\GroupXmlParser.cs" />
+    <Compile Include="GUI\IntroScene.cs" />
     <Compile Include="PathFinding\AStar.cs" />
     <Compile Include="PathFinding\Graph.cs" />
     <Compile Include="PathFinding\GraphSearch.cs" />
     <Compile Include="PathFinding\PathFindingGraph.cs" />
-    <Compile Include="SandCreepStateChanger.cs" />
+    <Compile Include="Creeps\SandCreepStateChanger.cs" />
     <Compile Include="Simple2D\Basic2DDisplaySystem.cs" />
-    <Compile Include="CalculateDamage.cs" />
-    <Compile Include="CreateSceneFromXml.cs" />
-    <Compile Include="CreepState.cs" />
-    <Compile Include="CreepStateChanger.cs" />
-    <Compile Include="LevelGridXmlParser.cs" />
-    <Compile Include="LevelBathroom.cs" />
+    <Compile Include="Creeps\CalculateDamage.cs" />
+    <Compile Include="GUI\CreateSceneFromXml.cs" />
+    <Compile Include="Creeps\CreepState.cs" />
+    <Compile Include="Creeps\CreepStateChanger.cs" />
+    <Compile Include="Levels\LevelGridXmlParser.cs" />
+    <Compile Include="Levels\LevelBathroom.cs" />
     <Compile Include="CreateCameraAndGrid.cs" />
-    <Compile Include="Creep.cs" />
-    <Compile Include="CreepPropertiesXmlParser.cs" />
-    <Compile Include="FindPossibleTargets.cs" />
+    <Compile Include="Creeps\Creep.cs" />
+    <Compile Include="Creeps\CreepPropertiesXmlParser.cs" />
+    <Compile Include="Towers\FindPossibleTargets.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="InputCommands.cs" />
-    <Compile Include="LevelGrid.cs" />
-    <Compile Include="Level.cs" />
+    <Compile Include="Levels\LevelGrid.cs" />
+    <Compile Include="Levels\Level.cs" />
     <Compile Include="Manager.cs" />
-    <Compile Include="LevelLivingRoom.cs" />
+    <Compile Include="Levels\LevelLivingRoom.cs" />
     <Compile Include="Simple2D\CalculateDamage2D.cs" />
     <Compile Include="Simple2D\Creep2D.cs" />
     <Compile Include="Simple2D\ClothCreepStateChanger2D.cs" />
+    <Compile Include="Simple2D\ShootingManager.cs" />
     <Compile Include="Simple2D\StateChanger.cs" />
     <Compile Include="Simple2D\GlassCreepStateChanger2D.cs" />
     <Compile Include="Simple2D\IronCreepStateChanger2D.cs" />
@@ -142,26 +160,26 @@
     <Compile Include="Simple2D\SandCreepStateChanger2D.cs" />
     <Compile Include="Simple2D\Tower2D.cs" />
     <Compile Include="Simple2D\WoodCreepStateChanger2D.cs" />
-    <Compile Include="TowerProperties.cs" />
-    <Compile Include="UIXmlParser.cs" />
-    <Compile Include="UIObject.cs" />
-    <Compile Include="GridProperties.cs" />
-    <Compile Include="Hud.cs" />
-    <Compile Include="MainMenu.cs" />
-    <Compile Include="MovememtInGrid.cs" />
+    <Compile Include="Towers\TowerProperties.cs" />
+    <Compile Include="GUI\UIXmlParser.cs" />
+    <Compile Include="GUI\UIObject.cs" />
+    <Compile Include="Levels\GridProperties.cs" />
+    <Compile Include="GUI\Hud.cs" />
+    <Compile Include="GUI\MainMenu.cs" />
+    <Compile Include="Levels\MovememtInGrid.cs" />
     <Compile Include="Names.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RemapCoordinates.cs" />
     <Compile Include="CreepyTowersRenderLayer.cs" />
     <Compile Include="TimeCounter.cs" />
-    <Compile Include="Tower.cs" />
-    <Compile Include="TowerPropertiesXmlParser.cs" />
-    <Compile Include="TowerSelectionPanel.cs" />
-    <Compile Include="LevelChildsRoom.cs" />
+    <Compile Include="Towers\Tower.cs" />
+    <Compile Include="Towers\TowerPropertiesXmlParser.cs" />
+    <Compile Include="GUI\TowerSelectionPanel.cs" />
+    <Compile Include="Levels\LevelChildsRoom.cs" />
     <Compile Include="Messages.cs" />
-    <Compile Include="Wave.cs" />
-    <Compile Include="WaveManager.cs" />
-    <Compile Include="WaveXmlParser.cs" />
+    <Compile Include="Creeps\Wave.cs" />
+    <Compile Include="Creeps\WaveManager.cs" />
+    <Compile Include="Creeps\WaveXmlParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

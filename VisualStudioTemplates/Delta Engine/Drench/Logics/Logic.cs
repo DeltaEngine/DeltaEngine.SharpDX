@@ -7,7 +7,7 @@ namespace $safeprojectname$.Logics
 {
 	public abstract class Logic
 	{
-		protected Logic(int width, int height, Point[] homeSquares)
+		protected Logic(int width, int height, Vector2D[] homeSquares)
 		{
 			Board = new Board(width, height);
 			this.homeSquares = homeSquares;
@@ -22,10 +22,10 @@ namespace $safeprojectname$.Logics
 		}
 
 		internal readonly AvailableColorFinder availableColorFinder;
-		protected readonly Point[] homeSquares;
+		protected readonly Vector2D[] homeSquares;
 		protected readonly int[] turns;
 
-		protected Logic(Board.Data boardData, Point[] homeSquares)
+		protected Logic(Board.Data boardData, Vector2D[] homeSquares)
 		{
 			Board = new Board(boardData);
 			this.homeSquares = homeSquares;

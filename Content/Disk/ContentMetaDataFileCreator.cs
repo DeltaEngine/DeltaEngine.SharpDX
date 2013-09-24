@@ -78,71 +78,12 @@ namespace DeltaEngine.Content.Disk
 		private void CreateContentMetaDataEntry(XmlWriter writer, string contentFile)
 		{
 			writer.WriteStartElement("ContentMetaData");
-			var contentType = ExtensionToType(contentFile);
+			var contentType = ContentTypeIdentifier.ExtensionToType(contentFile);
 			var contentName = Path.GetFileNameWithoutExtension(contentFile);
 			WriteAttribute(writer, "Name", contentName);
 			WriteAttribute(writer, "Type", contentType.ToString());
 			WriteMetaData(writer, contentFile, contentType);
 			writer.WriteEndElement();
-		}
-
-		private static ContentType ExtensionToType(string filePath)
-		{
-			var extension = Path.GetExtension(filePath);
-			switch (extension.ToLower())
-			{
-			case ".png":
-			case ".jpg":
-			case ".bmp":
-			case ".tif":
-				return ContentType.Image;
-			case ".wav":
-				return ContentType.Sound;
-			case ".mp3":
-			case ".ogg":
-			case ".wma":
-				return ContentType.Music;
-			case ".mp4":
-			case ".avi":
-			case ".wmv":
-				return ContentType.Video;
-			case ".xml":
-				return DetermineTypeForXmlFile(filePath);
-			case ".json":
-				return ContentType.Json;
-			case ".deltamesh":
-				return ContentType.Mesh;
-			case ".deltaparticleemitter":
-				return ContentType.Particle2DEmitter;
-			case ".deltashader":
-				return ContentType.Shader;
-			case ".deltamaterial":
-				return ContentType.Material;
-			case ".imageanimation":
-				return ContentType.ImageAnimation;
-			case ".spritesheetanimation":
-				return ContentType.SpriteSheetAnimation;
-			}
-			throw new UnsupportedContentFileFoundCannotParseType(extension);
-		}
-
-		private static ContentType DetermineTypeForXmlFile(string filePath)
-		{
-			var xmlFile = XDocument.Load(filePath);
-			var rootName = xmlFile.Root.Name.ToString();
-			if (rootName == "Font")
-				return ContentType.Font;
-			if (rootName == "InputCommand")
-				return ContentType.InputCommand;
-			if (rootName == "Level")
-				return ContentType.Level;
-			return ContentType.Xml;
-		}
-
-		private class UnsupportedContentFileFoundCannotParseType : Exception
-		{
-			public UnsupportedContentFileFoundCannotParseType(string extension)
-				: base(extension) {}
 		}
 
 		private void WriteMetaData(XmlWriter writer, string contentFile, ContentType type)

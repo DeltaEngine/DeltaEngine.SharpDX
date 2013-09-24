@@ -14,7 +14,7 @@ namespace DeltaEngine.Graphics
 		protected Device(Window window)
 		{
 			this.window = window;
-			CameraViewMatrix = Matrix.CreateLookAt(Vector.One * 3, Vector.Zero, Vector.UnitZ);
+			CameraViewMatrix = Matrix.CreateLookAt(Vector3D.One * 3, Vector3D.Zero, Vector3D.UnitZ);
 			CameraProjectionMatrix = Matrix.CreatePerspective(90, window.ViewportPixelSize.AspectRatio,
 				1, 100);
 			window.ViewportSizeChanged += SetViewport;

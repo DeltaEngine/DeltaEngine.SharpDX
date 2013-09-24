@@ -96,7 +96,7 @@ namespace DeltaEngine.Networking.Tests.Tcp
 		public void SendInvalidMessageShouldBeRejectedByServer()
 		{
 			Login();
-			SendMessageAndWaitForServerResponse(new Point(0, 1));
+			SendMessageAndWaitForServerResponse(new Vector2D(0, 1));
 			Thread.Sleep(50);
 			Assert.IsInstanceOf<SetProject>(serverResponse);
 		}

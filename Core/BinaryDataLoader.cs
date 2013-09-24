@@ -96,13 +96,7 @@ namespace DeltaEngine.Core
 			}
 			if (typeof(Entity).IsAssignableFrom(type))
 			{
-				var createFromComponents = LoadArray(null, typeof(List<object>), reader);
-				var tags = LoadArray(null, typeof(List<string>), reader);
-				subTypeToCreate = type;
-				data = Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder,
-					new[] { createFromComponents }, CultureInfo.CurrentCulture);
-				foreach (var tag in (tags as List<string>))
-					(data as Entity).AddTag(tag);
+				data = LoadEntity(type, reader);
 				return;
 			}
 			if (type.IsEnum)
@@ -125,6 +119,41 @@ namespace DeltaEngine.Core
 				data = LoadDictionary(data as IDictionary, reader);
 			else if (type.IsClass || type.IsValueType)
 				LoadClassData(data, type, reader);
+		}
+
+		private static Object LoadEntity(Type type, BinaryReader reader)
+		{
+			subTypeToCreate = type;
+			var entity = Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
+				CultureInfo.CurrentCulture) as Entity;
+			var createFromComponents = LoadArray(null, typeof(List<object>), reader) as List<object>;
+			entity.FillComponents(createFromComponents);
+			LoadEntityTags(reader, entity);
+			LoadEntityBehaviors(reader, entity);
+			if (typeof(DrawableEntity).IsAssignableFrom(type))
+				LoadDrawableEntityDrawBehaviors(reader, entity as DrawableEntity);
+			return entity;
+		}
+
+		private static void LoadEntityTags(BinaryReader reader, Entity entity)
+		{
+			var tags = LoadArray(null, typeof(List<string>), reader) as List<string>;
+			foreach (string tag in tags)
+				entity.AddTag(tag);
+		}
+
+		private static void LoadEntityBehaviors(BinaryReader reader, Entity entity)
+		{
+			var behaviors = LoadArray(null, typeof(List<string>), reader) as List<string>;
+			foreach (string behavior in behaviors)
+				entity.Start(behavior.GetTypeFromShortNameOrFullNameIfNotFound());
+		}
+
+		private static void LoadDrawableEntityDrawBehaviors(BinaryReader reader, DrawableEntity drawable)
+		{
+			var drawBehaviors = LoadArray(null, typeof(List<string>), reader) as List<string>;
+			foreach (string behavior in drawBehaviors)
+				drawable.OnDraw(behavior.GetTypeFromShortNameOrFullNameIfNotFound());
 		}
 
 		internal class UnableToLoadContentDataWithoutName : Exception { }

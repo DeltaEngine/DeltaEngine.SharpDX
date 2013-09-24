@@ -29,9 +29,9 @@ namespace Asteroids.Tests
 		public void ProjectileAndAsteroidDisposedOnCollision()
 		{
 			var projectile = new Projectile(new Material(Shader.Position2DColorUv, "DeltaEngineLogo"),
-				Point.Half, 0);
+				Vector2D.Half, 0);
 			EntitiesRunner.Current.GetEntitiesOfType<Projectile>().Add(projectile);
-			interactionLogics.CreateAsteroidsAtPosition(Point.Half, 1, 1);
+			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
 			AdvanceTimeAndUpdateEntities(1.0f);
 			Assert.IsFalse(projectile.IsActive);
 		}
@@ -44,8 +44,8 @@ namespace Asteroids.Tests
 			{
 				gameOver = true;
 			};
-			interactionLogics.Player.Set(new Rectangle(Point.Half, new Size(.05f)));
-			interactionLogics.CreateAsteroidsAtPosition(Point.Half, 1, 1);
+			interactionLogics.Player.Set(new Rectangle(Vector2D.Half, new Size(.05f)));
+			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
 			AdvanceTimeAndUpdateEntities(0.2f);
 			Assert.IsTrue(gameOver);
 		}

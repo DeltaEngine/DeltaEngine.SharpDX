@@ -17,7 +17,7 @@ namespace $safeprojectname$
 
 	public class Graph
 	{
-		public Vector[] Nodes
+		public Vector3D[] Nodes
 		{
 			get;
 			set;
@@ -38,7 +38,7 @@ namespace $safeprojectname$
 		public Graph(int numberOfNodes)
 		{
 			NumberOfNodes = numberOfNodes;
-			Nodes = new Vector[numberOfNodes];
+			Nodes = new Vector3D[numberOfNodes];
 			AdjacencyList = new List<GraphConnection>[numberOfNodes];
 			for (int i = 0; i < numberOfNodes; i++)
 				AdjacencyList [i] = new List<GraphConnection>();

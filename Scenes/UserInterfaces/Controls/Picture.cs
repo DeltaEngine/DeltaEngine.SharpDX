@@ -1,16 +1,13 @@
-﻿using System.Collections.Generic;
-using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
 	/// <summary>
-	/// The most basic visible control which is just a Sprite which can change appearance 
-	/// on request
+	/// Most basic visible control which is just a Sprite which can change appearance on request
 	/// </summary>
 	public class Picture : Control
 	{
-		protected Picture(List<object> createFromComponents)
-			: base(createFromComponents)
+		protected Picture()
 		{
 			Add(theme = Theme.Default);
 			// theme needs to be extracted

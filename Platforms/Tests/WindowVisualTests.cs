@@ -3,7 +3,7 @@ using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Platforms.Tests
@@ -67,7 +67,7 @@ namespace DeltaEngine.Platforms.Tests
 		[Test]
 		public void ShowColoredEllipse()
 		{
-			new Ellipse(new Rectangle(Point.Half, Size.Half), Color.Red);
+			new Ellipse(new Rectangle(Vector2D.Half, Size.Half), Color.Red);
 		}
 
 		[Test]

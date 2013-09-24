@@ -9,6 +9,7 @@ namespace DeltaEngine.Core
 	/// </summary>
 	public abstract class Settings : IDisposable
 	{
+		public static Settings Current { get; internal set; }
 		public abstract void Save();
 		protected const string SettingsFilename = "Settings.xml";
 

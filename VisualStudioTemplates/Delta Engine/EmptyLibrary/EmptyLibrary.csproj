@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="DeltaEngine">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

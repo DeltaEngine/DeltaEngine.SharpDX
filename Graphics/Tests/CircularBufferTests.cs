@@ -1,7 +1,9 @@
-﻿using DeltaEngine.Content;
+﻿using System.Collections.Generic;
+using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Graphics.Mocks;
 using DeltaEngine.Graphics.Vertices;
+using DeltaEngine.Mocks;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -12,28 +14,41 @@ namespace DeltaEngine.Graphics.Tests
 		[SetUp]
 		public void CreateBuffer()
 		{
-			buffer = new MockCircularBuffer(Resolve<Device>(),
+			buffer2D = new MockCircularBuffer(Resolve<Device>(),
 				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUv), BlendMode.Normal,
 				VerticesMode.Triangles);
-			Assert.IsTrue(buffer.IsCreated);
+			buffer3D = new MockCircularBuffer(Resolve<Device>(),
+				ContentLoader.Load<ShaderWithFormat>(Shader.Position3DUv), BlendMode.Normal,
+				VerticesMode.Triangles);
+			image = ContentLoader.Load<MockImage>("DeltaEngineLogo");
+			Assert.IsTrue(buffer2D.IsCreated);
 		}
 
-		private MockCircularBuffer buffer;
+		private MockCircularBuffer buffer2D;
+		private MockCircularBuffer buffer3D;
+		private MockImage image;
 
 		private readonly int vertexSize = VertexPosition3DColor.SizeInBytes;
 
 		[Test]
 		public void CreateAndDisposeBuffer()
 		{
-			buffer.Dispose();
-			Assert.IsFalse(buffer.IsCreated);
+			buffer2D.Dispose();
+			Assert.IsFalse(buffer2D.IsCreated);
+		}
+
+		[Test]
+		public void BufferCanBe2DOr3D()
+		{
+			Assert.IsFalse(buffer2D.Is3D);
+			Assert.IsTrue(buffer3D.Is3D);
 		}
 
 		[Test]
 		public void OffsetInitialization()
 		{
-			Assert.AreEqual(0, buffer.VertexOffset);
-			Assert.AreEqual(0, buffer.IndexOffset);
+			Assert.AreEqual(0, buffer2D.VertexOffset);
+			Assert.AreEqual(0, buffer2D.IndexOffset);
 		}
 
 		[Test]
@@ -43,9 +58,9 @@ namespace DeltaEngine.Graphics.Tests
 			const int IndicesCount = 48;
 			var vertices = new VertexPosition2DUV[VerticesCount];
 			var indices = new short[IndicesCount];
-			buffer.Add(null, vertices, indices);
-			Assert.AreEqual(VerticesCount * vertexSize, buffer.VertexOffset);
-			Assert.AreEqual(IndicesCount * sizeof(short), buffer.IndexOffset);
+			buffer2D.Add(null, vertices, indices);
+			Assert.AreEqual(VerticesCount * vertexSize, buffer2D.VertexOffset);
+			Assert.AreEqual(IndicesCount * sizeof(short), buffer2D.IndexOffset);
 		}
 
 		[Test]
@@ -57,9 +72,9 @@ namespace DeltaEngine.Graphics.Tests
 			var indices = new short[IndicesCount];
 			for (int i = 1; i <= IncrementCount; i++)
 			{
-				buffer.Add(null, vertices, indices);
-				Assert.AreEqual(i * VerticesCount * vertexSize, buffer.VertexOffset);
-				Assert.AreEqual(i * IndicesCount * sizeof(short), buffer.IndexOffset);
+				buffer2D.Add(null, vertices, indices);
+				Assert.AreEqual(i * VerticesCount * vertexSize, buffer2D.VertexOffset);
+				Assert.AreEqual(i * IndicesCount * sizeof(short), buffer2D.IndexOffset);
 			}
 		}
 
@@ -72,12 +87,12 @@ namespace DeltaEngine.Graphics.Tests
 			const int IndicesCount = 48;
 			var vertices = new VertexPosition2DUV[VerticesCount];
 			var indices = new short[IndicesCount];
-			buffer.Add(null, vertices, indices);
-			Assert.IsFalse(buffer.HasDrawn);
-			buffer.DrawAllTextureChunks();
-			Assert.IsTrue(buffer.HasDrawn);
-			Assert.AreEqual(512, buffer.VertexOffset);
-			Assert.AreEqual(96, buffer.IndexOffset);
+			buffer2D.Add(null, vertices, indices);
+			Assert.IsFalse(buffer2D.HasDrawn);
+			buffer2D.DrawAllTextureChunks();
+			Assert.IsTrue(buffer2D.HasDrawn);
+			Assert.AreEqual(512, buffer2D.VertexOffset);
+			Assert.AreEqual(96, buffer2D.IndexOffset);
 		}
 
 		[Test]
@@ -87,10 +102,10 @@ namespace DeltaEngine.Graphics.Tests
 			const int IndicesCount = 16384;
 			var vertices = new VertexPosition2DUV[VerticesCount];
 			var indices = new short[IndicesCount];
-			buffer.Add(null, vertices, indices);
-			Assert.AreEqual(VerticesCount * vertexSize, buffer.VertexOffset);
-			Assert.AreEqual(IndicesCount * sizeof(short), buffer.IndexOffset);
-			Assert.IsFalse(buffer.HasDrawn);
+			buffer2D.Add(null, vertices, indices);
+			Assert.AreEqual(VerticesCount * vertexSize, buffer2D.VertexOffset);
+			Assert.AreEqual(IndicesCount * sizeof(short), buffer2D.IndexOffset);
+			Assert.IsFalse(buffer2D.HasDrawn);
 		}
 
 		[Test]
@@ -100,10 +115,10 @@ namespace DeltaEngine.Graphics.Tests
 			const int IndicesCount = 16384;
 			var vertices = new VertexPosition2DUV[VerticesCount];
 			var indices = new short[IndicesCount];
-			buffer.Add(null, vertices, indices);
-			Assert.IsFalse(buffer.HasDrawn);
-			buffer.Add(null, vertices, indices);
-			Assert.IsTrue(buffer.HasDrawn);
+			buffer2D.Add(null, vertices, indices);
+			Assert.IsFalse(buffer2D.HasDrawn);
+			buffer2D.Add(null, vertices, indices);
+			Assert.IsTrue(buffer2D.HasDrawn);
 		}
 
 		[Test]
@@ -117,24 +132,94 @@ namespace DeltaEngine.Graphics.Tests
 			var indices1 = new short[Data1IndicesCount];
 			var vertices2 = new VertexPosition2DUV[Data2VerticesCount];
 			var indices2 = new short[Data2IndicesCount];
-			buffer.Add(null, vertices1, indices1);
-			Assert.AreEqual(Data1VerticesCount * vertexSize, buffer.VertexOffset);
-			Assert.AreEqual(Data1IndicesCount * sizeof(short), buffer.IndexOffset);
-			buffer.Add(null, vertices2, indices2);
-			Assert.AreEqual((Data1VerticesCount + Data2VerticesCount) * vertexSize, buffer.VertexOffset);
-			Assert.AreEqual((Data1IndicesCount + Data2IndicesCount) * sizeof(short), buffer.IndexOffset);
+			buffer2D.Add(null, vertices1, indices1);
+			Assert.AreEqual(Data1VerticesCount * vertexSize, buffer2D.VertexOffset);
+			Assert.AreEqual(Data1IndicesCount * sizeof(short), buffer2D.IndexOffset);
+			buffer2D.Add(null, vertices2, indices2);
+			Assert.AreEqual((Data1VerticesCount + Data2VerticesCount) * vertexSize, buffer2D.VertexOffset);
+			Assert.AreEqual((Data1IndicesCount + Data2IndicesCount) * sizeof(short), buffer2D.IndexOffset);
 		}
 
 		[Test]
 		public void DataBiggerThanBufferSize()
 		{
-			var verticesCount = buffer.MaxNumberOfVertices * 3;
-			var indicesCount = buffer.MaxNumberOfVertices * 4;
+			var verticesCount = buffer2D.MaxNumberOfVertices * 3;
+			var indicesCount = buffer2D.MaxNumberOfVertices * 4;
 			var vertices = new VertexPosition2DUV[verticesCount];
 			var indices = new short[indicesCount];
-			buffer.Add(null, vertices, indices);
-			Assert.AreEqual(verticesCount * vertexSize, buffer.VertexOffset);
-			Assert.AreEqual(indicesCount * sizeof(short), buffer.IndexOffset);
+			buffer2D.Add(null, vertices, indices);
+			Assert.AreEqual(verticesCount * vertexSize, buffer2D.VertexOffset);
+			Assert.AreEqual(indicesCount * sizeof(short), buffer2D.IndexOffset);
+		}
+
+		[Test]
+		public void TrianglesBufferShouldUseIndexBuffer()
+		{
+			Assert.IsTrue(buffer2D.UsesIndexBuffer);
+		}
+
+		[Test]
+		public void LinesBufferShouldNotUseIndexBuffer()
+		{
+			var linesBuffer = new MockCircularBuffer(Resolve<Device>(),
+				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUv), BlendMode.Normal,
+				VerticesMode.Lines);
+			Assert.IsFalse(linesBuffer.UsesIndexBuffer);
+		}
+
+		[Test]
+		public void UsingTexturing()
+		{
+			var vertices = new VertexPosition2DUV[4];
+			buffer2D.Add(image, vertices);
+			Assert.IsTrue(buffer2D.UsesTexturing);
+		}
+
+		[Test]
+		public void VertexFormatShouldMatchCircularBufferShaderVertexFormat()
+		{
+			var vertices = new VertexPosition2DColorUV[4];
+			Assert.Throws<CircularBuffer.ShaderVertexFormatDoesNotMatchVertex>(
+				() => buffer2D.Add(image, vertices));
+		}
+
+		[Test]
+		public void CircularBufferCannotHandleMoreThan65536Vertices()
+		{
+			Assert.AreEqual(1024, buffer3D.MaxNumberOfVertices);
+			var vertices = new VertexPosition3DUV[65536];
+			buffer3D.Add(image, vertices);
+			buffer3D.Add(image, vertices);
+			Assert.AreEqual(65536, buffer3D.MaxNumberOfVertices);
+		}
+
+		[Test]
+		public void IndicesAreNotChangedWhenPassedAsArgument()
+		{
+			var vertices = new VertexPosition2DUV[4];
+			buffer2D.Add(image, vertices, quadIndices);
+			Assert.AreEqual(quadIndices, buffer2D.CachedIndices);
+		}
+
+		private readonly short[] quadIndices = new short[] { 0, 1, 2, 0, 2, 3 };
+
+		[Test]
+		public void IndicesAreComputedWhenNotPassedAsArgument()
+		{
+			var vertices = new VertexPosition2DUV[4];
+			buffer2D.Add(image, vertices);
+			Assert.AreEqual(quadIndices, buffer2D.CachedIndices);
+		}
+
+		[Test]
+		public void IndicesAreRemappedWhenAddedVerticesAreNotAtTheBeginningOfTheBuffer()
+		{
+			var remappedIndices = new short[] { 4, 5, 6, 4, 6, 7 };
+			var vertices = new VertexPosition2DUV[4];
+			buffer2D.Add(image, vertices, quadIndices);
+			Assert.AreEqual(quadIndices, buffer2D.CachedIndices);
+			buffer2D.Add(image, vertices, quadIndices);
+			Assert.AreEqual(remappedIndices, buffer2D.CachedIndices);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace DeltaEngine.Physics2D
 {
@@ -23,14 +23,14 @@ namespace DeltaEngine.Physics2D
 				entity.Add(new SimplePhysics.Data());
 		}
 
-		public static void StartMoving(this Entity2D entity, Point velocity)
+		public static void StartMoving(this Entity2D entity, Vector2D velocity)
 		{
 			AddSimplePhysicsDataIfNeeded(entity);
 			entity.Get<SimplePhysics.Data>().Velocity = velocity;
 			entity.Start<SimplePhysics.Move>();
 		}
 
-		public static void StartFalling(this Entity2D entity, Point velocity, Point gravity)
+		public static void StartFalling(this Entity2D entity, Vector2D velocity, Vector2D gravity)
 		{
 			AddSimplePhysicsDataIfNeeded(entity);
 			entity.Get<SimplePhysics.Data>().Velocity = velocity;
@@ -38,14 +38,14 @@ namespace DeltaEngine.Physics2D
 			entity.Start<SimplePhysics.Move>();
 		}
 
-		public static void StartMovingUv(this Sprite sprite, Point velocity)
+		public static void StartMovingUv(this Sprite sprite, Vector2D velocity)
 		{
 			AddSimplePhysicsDataIfNeeded(sprite);
 			sprite.Get<SimplePhysics.Data>().UvVelocity = velocity;
 			sprite.Start<SimplePhysics.MoveUv>();
 		}
 
-		public static void StartBouncingOffScreenEdges(this Entity2D entity, Point velocity,
+		public static void StartBouncingOffScreenEdges(this Entity2D entity, Vector2D velocity,
 			Action bounced)
 		{
 			AddSimplePhysicsDataIfNeeded(entity);

@@ -6,7 +6,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
 
 namespace DeltaEngine.Multimedia.Tests

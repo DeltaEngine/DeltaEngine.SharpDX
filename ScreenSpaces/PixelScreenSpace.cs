@@ -11,9 +11,9 @@ namespace DeltaEngine.ScreenSpaces
 		public PixelScreenSpace(Window window)
 			: base(window) {}
 
-		public override Point ToPixelSpace(Point currentScreenSpacePos)
+		public override Vector2D ToPixelSpace(Vector2D currentScreenSpacePosition)
 		{
-			return currentScreenSpacePos;
+			return currentScreenSpacePosition;
 		}
 
 		public override Size ToPixelSpace(Size currentScreenSpaceSize)
@@ -21,7 +21,7 @@ namespace DeltaEngine.ScreenSpaces
 			return currentScreenSpaceSize;
 		}
 
-		public override Point FromPixelSpace(Point pixelPosition)
+		public override Vector2D FromPixelSpace(Vector2D pixelPosition)
 		{
 			return pixelPosition;
 		}
@@ -31,11 +31,11 @@ namespace DeltaEngine.ScreenSpaces
 			return pixelSize;
 		}
 
-		public override Point TopLeft
+		public override Vector2D TopLeft
 		{
-			get { return Point.Zero; }
+			get { return Vector2D.Zero; }
 		}
-		public override Point BottomRight
+		public override Vector2D BottomRight
 		{
 			get { return viewportPixelSize; }
 		}
@@ -56,9 +56,9 @@ namespace DeltaEngine.ScreenSpaces
 			get { return viewportPixelSize.Height; }
 		}
 
-		public override Point GetInnerPoint(Point relativePoint)
+		public override Vector2D GetInnerPosition(Vector2D relativePosition)
 		{
-			return (Size)relativePoint * viewportPixelSize;
+			return (Size)relativePosition * viewportPixelSize;
 		}
 	}
 }

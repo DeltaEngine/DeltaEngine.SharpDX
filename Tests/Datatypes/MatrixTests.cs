@@ -37,31 +37,31 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void CheckRightVector()
 		{
-			Assert.AreEqual(new Vector(0, 1, 2), matrix.Right);
+			Assert.AreEqual(new Vector3D(0, 1, 2), matrix.Right);
 		}
 
 		[Test]
 		public void CheckUpVector()
 		{
-			Assert.AreEqual(new Vector(4, 5, 6), matrix.Up);
+			Assert.AreEqual(new Vector3D(4, 5, 6), matrix.Up);
 		}
 
 		[Test]
 		public void CheckForwardVector()
 		{
-			Assert.AreEqual(new Vector(8, 9, 10), matrix.Forward);
+			Assert.AreEqual(new Vector3D(8, 9, 10), matrix.Forward);
 		}
 
 		[Test]
 		public void CheckTranslationVector()
 		{
-			Assert.AreEqual(new Vector(12, 13, 14), matrix.Translation);
+			Assert.AreEqual(new Vector3D(12, 13, 14), matrix.Translation);
 		}
 
 		[Test]
 		public void ChangeTranslationVector()
 		{
-			var vector = new Vector(-1, -2, -3);
+			var vector = new Vector3D(-1, -2, -3);
 			matrix.Translation = vector;
 			Assert.AreEqual(vector, matrix.Translation);
 		}
@@ -103,7 +103,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void FromQuaternion()
 		{
-			var quaternion = Quaternion.FromAxisAngle(Vector.UnitY, 60.0f);
+			var quaternion = Quaternion.FromAxisAngle(Vector3D.UnitY, 60.0f);
 			matrix = Matrix.CreateRotationY(60.0f);
 			Assert.AreEqual(matrix, Matrix.FromQuaternion(quaternion));
 		}
@@ -113,8 +113,8 @@ namespace DeltaEngine.Tests.Datatypes
 		{
 			var matrix1 = Matrix.CreateTranslation(1, 2, 3);
 			var matrix2 = Matrix.CreateTranslation(1, 0, 0);
-			Assert.AreEqual(new Vector(1, 2, 3), matrix1.Translation);
-			Assert.AreEqual(Vector.UnitX, matrix2.Translation);
+			Assert.AreEqual(new Vector3D(1, 2, 3), matrix1.Translation);
+			Assert.AreEqual(Vector3D.UnitX, matrix2.Translation);
 		}
 
 		[Test]
@@ -145,8 +145,8 @@ namespace DeltaEngine.Tests.Datatypes
 		public void InvertTranspose()
 		{
 			var source = new Matrix(-4, 0, 0, 0, -1, 2, 0, 0, -4, 4, 4, 0, -1, -9, -1, 1);
-			var expected1 = 
-				new Matrix(-0.25f, -0.125f, -0.125f, -1.5f, 0, 0.5f, -0.5f, 4, 0, 0, 0.25f, 0.25f, 0, 0, 0, 1);			
+			var expected1 = new Matrix(-0.25f, -0.125f, -0.125f, -1.5f, 0, 0.5f, -0.5f, 4, 0, 0, 0.25f,
+				0.25f, 0, 0, 0, 1);
 			Assert.IsTrue(Matrix.InverseTranspose(source).IsNearlyEqual(expected1));
 		}
 
@@ -161,9 +161,9 @@ namespace DeltaEngine.Tests.Datatypes
 		public void Unproject()
 		{
 			matrix = Matrix.CreatePerspective(60.0f, 1.0f, 0.5f, 10.0f);
-			var position = Matrix.TransformHomogeneousCoordinate(Vector.One, matrix);
+			var position = Matrix.TransformHomogeneousCoordinate(Vector3D.One, matrix);
 			var invMatrix = Matrix.Invert(matrix);
-			Assert.AreEqual(Vector.One, Matrix.TransformHomogeneousCoordinate(position, invMatrix));
+			Assert.AreEqual(Vector3D.One, Matrix.TransformHomogeneousCoordinate(position, invMatrix));
 		}
 
 		[Test]
@@ -179,7 +179,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void CreateLookAt()
 		{
-			var createdLookAt = Matrix.CreateLookAt(Vector.UnitZ, Vector.UnitX, Vector.UnitY);
+			var createdLookAt = Matrix.CreateLookAt(Vector3D.UnitZ, Vector3D.UnitX, Vector3D.UnitY);
 			var expected = new Matrix(0.7071f, 0.0f, -0.7071f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.7071f,
 				0.0f, 0.7071f, 0.0f, -0.7071f, 0.0f, -0.7071f, 1.0f);
 			Assert.IsTrue(createdLookAt.IsNearlyEqual(expected));
@@ -214,15 +214,15 @@ namespace DeltaEngine.Tests.Datatypes
 			Assert.IsTrue(matrix.Equals(matrix2));
 			matrix2[5] = 20;
 			Assert.IsTrue(matrix != matrix2);
-			object pointAsObject = Point.One;
+			object pointAsObject = Vector2D.One;
 			Assert.IsFalse(matrix.Equals(pointAsObject));
 		}
 
 		[Test]
 		public void MultiplyVector()
 		{
-			var vector = new Vector(-1, -2, -3);
-			Assert.AreEqual(new Vector(-20, -25, -30), matrix * vector);
+			var vector = new Vector3D(-1, -2, -3);
+			Assert.AreEqual(new Vector3D(-20, -25, -30), matrix * vector);
 		}
 
 		[Test]
@@ -266,7 +266,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void TransformPosition()
 		{
-			var position = new Vector(3, 5, 2);
+			var position = new Vector3D(3, 5, 2);
 			var translation = Matrix.CreateTranslation(2, 0, 5);
 			var rotation = Matrix.CreateRotationZyx(0, 90, 0);
 			var scale = Matrix.CreateScale(3, 3, 3);

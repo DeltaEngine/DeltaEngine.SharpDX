@@ -8,7 +8,7 @@ using System.Xml.Linq;
 using DeltaEngine.Content.Mocks;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
-using DeltaEngine.Graphics.Mocks;
+using DeltaEngine.Mocks;
 using NUnit.Framework;
 using Size = DeltaEngine.Datatypes.Size;
 

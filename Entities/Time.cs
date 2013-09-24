@@ -18,5 +18,7 @@
 		{
 			return (int)(Total / interval) > (int)((Total - Delta) / interval);
 		}
+
+		public static bool IsPaused { get; set; }
 	}
 }

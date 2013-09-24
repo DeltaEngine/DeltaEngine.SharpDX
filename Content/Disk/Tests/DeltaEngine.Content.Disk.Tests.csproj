@@ -46,9 +46,9 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Graphics\Mocks\DeltaEngine.Graphics.Mocks.csproj">
-      <Project>{F4D2EF4F-24F2-4D4A-BC93-78B0C5AD19A4}</Project>
-      <Name>DeltaEngine.Graphics.Mocks</Name>
+    <ProjectReference Include="..\..\..\Mocks\DeltaEngine.Mocks.csproj">
+      <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
+      <Name>DeltaEngine.Mocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Mocks\DeltaEngine.Content.Mocks.csproj">
       <Project>{BA0A7803-4A15-416E-BC93-69F5B9DFC4A5}</Project>
@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FileExtensionToTypeTests.cs" />
     <Compile Include="HasAlphaPixelsTests.cs" />
     <Compile Include="DiskContentLoaderTests.cs" />
     <Compile Include="MetaDataCreatorTests.cs" />

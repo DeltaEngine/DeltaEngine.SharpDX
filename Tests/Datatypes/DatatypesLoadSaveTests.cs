@@ -53,14 +53,14 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
-		public void SaveAndLoadPoint()
+		public void SaveAndLoadVector2D()
 		{
-			var data = BinaryDataExtensions.SaveToMemoryStream(Point.Half);
+			var data = BinaryDataExtensions.SaveToMemoryStream(Vector2D.Half);
 			byte[] savedBytes = data.ToArray();
-			Assert.AreEqual(1 + 4 + "Point".Length + Point.SizeInBytes, savedBytes.Length);
-			Assert.AreEqual("Point".Length, savedBytes[0]);
+			Assert.AreEqual(1 + 4 + "Vector2D".Length + Vector2D.SizeInBytes, savedBytes.Length);
+			Assert.AreEqual("Vector2D".Length, savedBytes[0]);
 			var reconstructed = data.CreateFromMemoryStream();
-			Assert.AreEqual(Point.Half, reconstructed);
+			Assert.AreEqual(Vector2D.Half, reconstructed);
 		}
 
 		[Test]
@@ -92,12 +92,12 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void SaveAndLoadVector()
 		{
-			var data = BinaryDataExtensions.SaveToMemoryStream(Vector.UnitZ);
+			var data = BinaryDataExtensions.SaveToMemoryStream(Vector3D.UnitZ);
 			byte[] savedBytes = data.ToArray();
-			Assert.AreEqual(1 + 4 + "Vector".Length + Vector.SizeInBytes, savedBytes.Length);
-			Assert.AreEqual("Vector".Length, savedBytes[0]);
+			Assert.AreEqual(1 + 4 + "Vector3D".Length + Vector3D.SizeInBytes, savedBytes.Length);
+			Assert.AreEqual("Vector3D".Length, savedBytes[0]);
 			var reconstructed = data.CreateFromMemoryStream();
-			Assert.AreEqual(Vector.UnitZ, reconstructed);
+			Assert.AreEqual(Vector3D.UnitZ, reconstructed);
 		}
 
 		[Test]

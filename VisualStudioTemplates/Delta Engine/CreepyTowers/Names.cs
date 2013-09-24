@@ -9,13 +9,14 @@ namespace $safeprojectname$
 		public const string XmlIntroScene = "IntroMenu";
 		public const string XmlMenuScene = "SceneMainMenu";
 		public const string XmlCreditsScene = "SceneCredits";
+		public const string XmlGameHud = "GameHud";
 		public const string XmlSceneChildsRoom = "SceneChildsRoom";
 		public const string XmlSceneBathroom = "SceneBathroom";
 		public const string XmlSceneLivingRoom = "SceneLivingRoom";
 		public const string XmlLevelsChildsRoomGrid = "LevelsChildsRoomGrid";
 		public const string XmlLevelsBathroomGrid = "LevelsBathroomGrid";
 		public const string XmlLevelsLivingRoomGrid = "LevelsLivingRoomGrid";
-		public const string XmlChildrensRoom = "LevelsChildrensRoom";
+		public const string XmlChildrensRoom = "LevelsChildrensRoomInfo";
 		public const string XmlGroupCreeps = "GroupCreeps";
 		public const string XmlTowerProperties = "TowerProperties";
 		public const string XmlCreepProperties = "CreepProperties";
@@ -47,10 +48,8 @@ namespace $safeprojectname$
 		public const string ButtonImpactTower = "ButtonImpactTower";
 		public const string ButtonSliceTower = "ButtonSliceTower";
 		public const string ButtonWaterTower = "ButtonWaterTower";
-		public const string ButtonRefresh = "ButtonRefresh";
-		public const string ButtonCreep = "ButtonCreep";
-		public const string ButtonNext = "ButtonNext";
-		public const string ButtonBackLeft = "ButtonBackLeft";
+		public const string ButtonMessageNext = "ButtonMessageNext";
+		public const string ButtonMessageBack = "ButtonMessageBack";
 		public const string ButtonContinue = "ButtonContinue";
 		public const string UIOptions = "UIOptions";
 		public const string UICreepwave = "UICreepwave";
@@ -76,15 +75,21 @@ namespace $safeprojectname$
 		public const string IconMouseRight = "IconMouseRight";
 		public const string UnicornAttackMockup = "UnicornAttackMockup";
 		public const string DragonAttackMockup = "ComicStripsDragonAttackMockup512";
-		public const string TowerAcidConeJanitorHigh = "TowerAcidConeJanitorHigh";
-		public const string TowerFireCandlehulaHigh = "TowerFireCandlehulaHigh";
-		public const string ModelIceTower = "TowerFireCandlehulaHigh";
-		public const string TowersImpactRangedKnightscalesHigh = "TowersImpactRangedKnightscalesHigh";
-		public const string ModelSliceTower = "TowersImpactRangedKnightscalesHigh";
-		public const string TowerWaterRangedWatersprayHigh = "TowerWaterRangedWatersprayHigh";
-		public const string CreepCottonMummy = "walk01";
-		public const string LevelsChildsRoom = "LevelsChildsRoom";
-		public const string LevelsBathRoom = "LevelsBathroom";
+		public const string TowerAcidConeJanitor = "TowerAcidConeJanitorHigh";
+		public const string TowerFireCandlehula = "TowerFireCandlehulaHigh";
+		public const string TowerIceConeIcelady = "TowerIceConeIceladyHigh";
+		public const string TowerImpactRangedKnightscales = "TowerImpactRangedKnightscalesHigh";
+		public const string TowerSliceConeKnifeblock = "TowerSliceConeKnifeblockHigh";
+		public const string TowerWaterRangedWaterspray = "TowerWaterRangedWatersprayHigh";
+		public const string CreepCottonMummy = "CreepCottonMummyHigh";
+		public const string CreepIronTyrannosaurusAxe = "CreepMetalTAxeHigh";
+		public const string CreepGlass = "CreepGlassHigh";
+		public const string CreepPaperPaperplane = "CreepPaperPaperplaneHigh";
+		public const string CreepPlasticBottledog = "CreepPlasticBottledogHigh";
+		public const string CreepsSandSandy = "CreepSandSandyHigh";
+		public const string CreepsWoodScarecrow = "CreepWoodScarecrowHigh";
+		public const string LevelsChildrensRoom = "LevelsChildsRoom";
+		public const string LevelsBathroom = "LevelsBathroom";
 		public const string LevelsLivingRoom = "LevelsLivingRoom";
 		public static readonly List<string> ComicStripImages = new List<string> {
 			ComicStripBubble,
@@ -101,8 +106,6 @@ namespace $safeprojectname$
 			UIPlayerHealth
 		};
 		public static readonly List<string> UiButtons = new List<string> {
-			ButtonCreep,
-			ButtonRefresh,
 			ButtonContinue,
 			UIUnicornSpecialAttackIntervention,
 			UIUnicornSpecialAttackSwap,

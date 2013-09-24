@@ -68,13 +68,13 @@
       <Project>{BF968F20-246B-4F86-BB7B-377FD4B47A9F}</Project>
       <Name>DeltaEngine.Platforms.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\DeltaEngine.Rendering.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+      <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\Sprites\DeltaEngine.Rendering2D.Sprites.csproj">
       <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
-      <Name>DeltaEngine.Rendering.Sprites</Name>
+      <Name>DeltaEngine.Rendering2D.Sprites</Name>
     </ProjectReference>
     <ProjectReference Include="..\ShadowShot.csproj">
       <Project>{B7F9F669-F844-499B-9691-6A6894C05745}</Project>

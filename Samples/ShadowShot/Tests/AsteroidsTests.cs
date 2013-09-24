@@ -14,7 +14,7 @@ namespace ShadowShot.Tests
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(800, 800);
 			var image = new Material(Shader.Position2DColorUv, "asteroid");
-			var drawArea = Rectangle.FromCenter(new Point(0.5f, 0.1f), new Size(0.1f));
+			var drawArea = Rectangle.FromCenter(new Vector2D(0.5f, 0.1f), new Size(0.1f));
 			asteroid = new Asteroid(image, drawArea, Resolve<ScreenSpace>().Viewport.Bottom);
 		}
 		private Asteroid asteroid;
@@ -22,7 +22,7 @@ namespace ShadowShot.Tests
 		[Test]
 		public void CreateAsteroid()
 		{
-			Assert.AreEqual(new Point(0.5f, 0.1f), asteroid.DrawArea.Center);
+			Assert.AreEqual(new Vector2D(0.5f, 0.1f), asteroid.DrawArea.Center);
 		}
 
 		[Test]

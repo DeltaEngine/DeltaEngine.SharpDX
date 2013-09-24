@@ -38,37 +38,37 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="DeltaEngine.Content.Xml">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Content.Xml.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Content.Xml.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Graphics">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Graphics.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Graphics.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Input">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Input.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Input.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Platforms">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Platforms.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Platforms.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering2D">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering.Fonts">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Fonts.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering2D.Fonts">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Fonts.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering.Particles">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Particles.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering3D.Particles">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Particles.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering.Sprites">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Sprites.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering2D.Sprites">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Sprites.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Scenes">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Scenes.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Scenes.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.WindowsSharpDX">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.WindowsSharpDX.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.WindowsSharpDX.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

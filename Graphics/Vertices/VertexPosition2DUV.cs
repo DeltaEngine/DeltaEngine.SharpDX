@@ -9,14 +9,14 @@ namespace DeltaEngine.Graphics.Vertices
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexPosition2DUV : Lerp<VertexPosition2DUV>, Vertex
 	{
-		public VertexPosition2DUV(Point position, Point uv)
+		public VertexPosition2DUV(Vector2D position, Vector2D uv)
 		{
 			Position = position;
 			UV = uv;
 		}
 
-		public Point Position;
-		public Point UV;
+		public Vector2D Position;
+		public Vector2D UV;
 
 		public static readonly int SizeInBytes = VertexFormat.Position2DUv.Stride;
 

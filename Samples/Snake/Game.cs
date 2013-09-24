@@ -3,8 +3,8 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.ScreenSpaces;
 
 namespace Snake
@@ -67,17 +67,17 @@ namespace Snake
 		{
 			if (GetDirection().X > 0)
 				return;
-			snakeBody.Direction = new Point(-blockSize, 0);
+			snakeBody.Direction = new Vector2D(-blockSize, 0);
 		}
 
-		private Point GetDirection()
+		private Vector2D GetDirection()
 		{
 			if (snakeBody.BodyParts.Count == 0)
-				return Point.Zero;
+				return Vector2D.Zero;
 
 			var snakeHead = snakeBody.BodyParts[0];
 			var partNextToSnakeHead = snakeBody.BodyParts[1];
-			var direction = new Point(snakeHead.DrawArea.Left - partNextToSnakeHead.DrawArea.Left,
+			var direction = new Vector2D(snakeHead.DrawArea.Left - partNextToSnakeHead.DrawArea.Left,
 				snakeHead.DrawArea.Top - partNextToSnakeHead.DrawArea.Top);
 			return direction;
 		}
@@ -86,31 +86,31 @@ namespace Snake
 		{
 			if (GetDirection().X < 0)
 				return;
-			snakeBody.Direction = new Point(blockSize, 0);
+			snakeBody.Direction = new Vector2D(blockSize, 0);
 		}
 
 		public void MoveUp()
 		{
 			if (GetDirection().Y > 0)
 				return;
-			snakeBody.Direction = new Point(0, -blockSize);
+			snakeBody.Direction = new Vector2D(0, -blockSize);
 		}
 
 		public void MoveDown()
 		{
 			if (GetDirection().Y < 0)
 				return;
-			snakeBody.Direction = new Point(0, blockSize);
+			snakeBody.Direction = new Vector2D(0, blockSize);
 		}
 
-		private void MoveAccordingToTouchPosition(Point position)
+		private void MoveAccordingToTouchPosition(Vector2D position)
 		{
 			var comparison = snakeBody.HeadPosition;
 			CheckTouchHorizontal(position,comparison);
 			CheckTouchVertical(position,comparison);
 		}
 
-		private void CheckTouchVertical(Point position, Point comparison)
+		private void CheckTouchVertical(Vector2D position, Vector2D comparison)
 		{
 			if (GetDirection().X != 0)
 			{
@@ -122,7 +122,7 @@ namespace Snake
 			}
 		}
 
-		private void CheckTouchHorizontal(Point position, Point comparison)
+		private void CheckTouchHorizontal(Vector2D position, Vector2D comparison)
 		{
 			if (GetDirection().Y != 0)
 			{
@@ -150,7 +150,7 @@ namespace Snake
 			snakeBody.SnakeCollidesWithBorderOrItself += Reset;
 		}
 
-		private void SnakeCollisionWithChunk(Point trailingVector)
+		private void SnakeCollisionWithChunk(Vector2D trailingVector)
 		{
 			if (Chunk.TopLeft == snakeBody.BodyParts[0].TopLeft)
 			{
@@ -159,18 +159,19 @@ namespace Snake
 			}
 		}
 
-		private void GrowSnakeInSize(Point trailingVector)
+		private void GrowSnakeInSize(Vector2D trailingVector)
 		{
 			var snakeBodyParts = snakeBody.BodyParts;
 			var tail = snakeBodyParts[snakeBodyParts.Count - 1].DrawArea.TopLeft;
-			var newBodyPart = new FilledRect(CalculateTrailDrawArea(trailingVector, tail), menu.gameColors[2]);
+			var newBodyPart = new FilledRect(CalculateTrailDrawArea(trailingVector, tail),
+				menu.gameColors[2]);
 			snakeBodyParts.Add(newBodyPart);
 			window.Title = "Snake - Length: " + snakeBodyParts.Count;
 		}
 
-		private Rectangle CalculateTrailDrawArea(Point trailingVector, Point tail)
+		private Rectangle CalculateTrailDrawArea(Vector2D trailingVector, Vector2D tail)
 		{
-			return new Rectangle(new Point(tail.X + trailingVector.X, tail.Y + trailingVector.Y),
+			return new Rectangle(new Vector2D(tail.X + trailingVector.X, tail.Y + trailingVector.Y),
 				new Size(blockSize));
 		}
 
@@ -187,9 +188,17 @@ namespace Snake
 			var fontGameOverText = ContentLoader.Load<Font>("Tahoma30");
 			var fontReplayText = ContentLoader.Load<Font>("Verdana12");
 			gameOverMsg = new FontText(fontGameOverText, "Game Over",
-				Rectangle.FromCenter(Point.Half, new Size(0.6f, 0.3f))) { Color = menu.gameColors[1], RenderLayer = 3};
+				Rectangle.FromCenter(Vector2D.Half, new Size(0.6f, 0.3f)))
+			{
+				Color = menu.gameColors[1],
+				RenderLayer = 3
+			};
 			restartMsg = new FontText(fontReplayText, "Do you want to continue (Y/N)",
-				Rectangle.FromCenter(new Point(0.5f, 0.7f), new Size(0.6f, 0.3f))) { Color = menu.gameColors[2], RenderLayer = 3};
+				Rectangle.FromCenter(new Vector2D(0.5f, 0.7f), new Size(0.6f, 0.3f)))
+			{
+				Color = menu.gameColors[2],
+				RenderLayer = 3
+			};
 			yesCommand = new Command(RestartGame);
 			yesCommand.Add(new KeyTrigger(Key.Y));
 			noCommand = new Command(CloseGame);

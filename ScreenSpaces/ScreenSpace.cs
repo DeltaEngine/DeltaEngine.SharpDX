@@ -65,11 +65,11 @@ namespace DeltaEngine.ScreenSpaces
 		/// The rounded version of ToPixelSpace is used for lines, boxes and fonts where it matters to
 		/// actually render at exact pixel positions to get sharp lines, boxes or font rendering.
 		/// </summary>
-		public Point ToPixelSpaceRounded(Point quadraticPos)
+		public Vector2D ToPixelSpaceRounded(Vector2D quadraticPosition)
 		{
-			Point pixelPos = ToPixelSpace(quadraticPos);
-			return new Point((float)Math.Round(pixelPos.X + Epsilon),
-				(float)Math.Round(pixelPos.Y + Epsilon));
+			Vector2D pixelPosition = ToPixelSpace(quadraticPosition);
+			return new Vector2D((float)Math.Round(pixelPosition.X + Epsilon),
+				(float)Math.Round(pixelPosition.Y + Epsilon));
 		}
 
 		/// <summary>
@@ -77,7 +77,7 @@ namespace DeltaEngine.ScreenSpaces
 		/// </summary>
 		private const float Epsilon = 0.001f;
 
-		public abstract Point ToPixelSpace(Point currentScreenSpacePos);
+		public abstract Vector2D ToPixelSpace(Vector2D currentScreenSpacePosition);
 
 		public abstract Size ToPixelSpace(Size currentScreenSpaceSize);
 
@@ -86,7 +86,7 @@ namespace DeltaEngine.ScreenSpaces
 			return new Rectangle(ToPixelSpace(quadraticRect.TopLeft), ToPixelSpace(quadraticRect.Size));
 		}
 
-		public abstract Point FromPixelSpace(Point pixelPosition);
+		public abstract Vector2D FromPixelSpace(Vector2D pixelPosition);
 
 		public abstract Size FromPixelSpace(Size pixelSize);
 
@@ -96,9 +96,9 @@ namespace DeltaEngine.ScreenSpaces
 				FromPixelSpace(quadraticRect.Size));
 		}
 
-		public abstract Point TopLeft { get; }
+		public abstract Vector2D TopLeft { get; }
 
-		public abstract Point BottomRight { get; }
+		public abstract Vector2D BottomRight { get; }
 
 		public abstract float Left { get; }
 
@@ -118,6 +118,6 @@ namespace DeltaEngine.ScreenSpaces
 			get { return (Bottom - Top) / (Right - Left); }
 		}
 
-		public abstract Point GetInnerPoint(Point relativePoint);
+		public abstract Vector2D GetInnerPosition(Vector2D relativePosition);
 	}
 }

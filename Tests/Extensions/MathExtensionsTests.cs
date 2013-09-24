@@ -153,5 +153,15 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.AreEqual(0.1f, 100.0f.InvSqrt());
 			Assert.AreEqual(10.0f, 0.01f.InvSqrt());
 		}
+
+		[Test]
+		public void WrapRotationToMinus180ToPlus180()
+		{
+			Assert.AreEqual(0, MathExtensions.WrapRotationToMinus180ToPlus180(0));
+			Assert.AreEqual(90, MathExtensions.WrapRotationToMinus180ToPlus180(90));
+			Assert.AreEqual(180, MathExtensions.WrapRotationToMinus180ToPlus180(180));
+			Assert.AreEqual(-90, MathExtensions.WrapRotationToMinus180ToPlus180(270));
+			Assert.AreEqual(0, MathExtensions.WrapRotationToMinus180ToPlus180(720));
+		}
 	}
 }

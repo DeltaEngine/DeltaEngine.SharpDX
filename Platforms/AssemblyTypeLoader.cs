@@ -17,7 +17,7 @@ namespace DeltaEngine.Platforms
 
 		private readonly Resolver resolver;
 
-		public void RegisterAllTypesFromAllAssemblies<InstanceType, UpdateType, DrawType>()
+		public void RegisterAllTypesFromAllAssemblies<ContentDataType, UpdateType, DrawType>()
 		{
 			var assemblies = TryLoadAllUnloadedAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 			foreach (Assembly assembly in assemblies)
@@ -26,7 +26,7 @@ namespace DeltaEngine.Platforms
 					Type[] assemblyTypes = TryToGetAssemblyTypes(assembly);
 					if (assemblyTypes == null)
 						continue; //ncrunch: no coverage
-					RegisterAllTypesInAssembly<InstanceType>(assemblyTypes, false);
+					RegisterAllTypesInAssembly<ContentDataType>(assemblyTypes, false);
 					RegisterAllTypesInAssembly<UpdateType>(assemblyTypes, true);
 					RegisterAllTypesInAssembly<DrawType>(assemblyTypes, true);
 					resolver.RegisterAllTypesInAssembly(assemblyTypes);
@@ -41,8 +41,9 @@ namespace DeltaEngine.Platforms
 				try
 				{
 					string name = Path.GetFileNameWithoutExtension(filePath);
-					if (new AssemblyName(name).IsAllowed() && !AssemblyExtensions.IsPlatformAssembly(name) &&
-						!name.EndsWith(".Mocks") && assemblies.All(a => a.GetName().Name != name))
+					if (AssemblyExtensions.IsManagedAssembly(filePath) && new AssemblyName(name).IsAllowed() &&
+						!AssemblyExtensions.IsPlatformAssembly(name) && !name.EndsWith(".Mocks") &&
+						!name.EndsWith(".Tests") && assemblies.All(a => a.GetName().Name != name))
 						assemblies.Add(Assembly.LoadFrom(filePath));
 				}
 				catch (Exception ex)
@@ -58,9 +59,16 @@ namespace DeltaEngine.Platforms
 		private static void LoadDependentAssemblies(Assembly assembly, List<Assembly> assemblies)
 		{
 			foreach (var dependency in assembly.GetReferencedAssemblies())
-				if (dependency.IsAllowed() && !dependency.Name.EndsWith(".Mocks") &&
+				if (!IsConflictiveDependency(dependency) && dependency.IsAllowed() && !dependency.Name.EndsWith(".Mocks") &&
 					assemblies.All(loaded => dependency.Name != loaded.GetName().Name))
 					assemblies.Add(Assembly.Load(dependency));
+		}
+
+		//Needed in Windows 8.1 Pro Preview since Windows.Storage (referenced by Windows.Foundation) cannot be loaded
+		private static bool IsConflictiveDependency(AssemblyName dependency)
+		{
+			var conflictiveDependencies = new[] { "Windows.Storage" };
+			return conflictiveDependencies.Any(conflictiveDependency => conflictiveDependency == dependency.Name);
 		}
 
 		private static Type[] TryToGetAssemblyTypes(Assembly assembly)

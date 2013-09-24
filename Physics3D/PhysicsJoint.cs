@@ -24,8 +24,8 @@ namespace DeltaEngine.Physics3D
 		public Dictionary<PropertyType, object> Properties { get; private set; }
 
 		public virtual float Softness { get; set; }
-		public virtual Vector Anchor1 { get; set; }
-		public virtual Vector Anchor2 { get; set; }
+		public virtual Vector3D Anchor1 { get; set; }
+		public virtual Vector3D Anchor2 { get; set; }
 
 		public enum PropertyType : byte
 		{

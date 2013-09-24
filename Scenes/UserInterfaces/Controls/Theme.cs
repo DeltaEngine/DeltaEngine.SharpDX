@@ -1,6 +1,6 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {

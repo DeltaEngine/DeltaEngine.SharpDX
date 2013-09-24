@@ -57,7 +57,7 @@ namespace DeltaEngine.Tests.Datatypes
 			var s2 = new Size(3, 4);
 			Assert.AreNotEqual(s1, s2);
 			Assert.AreEqual(s1, new Size(1, 2));
-			Assert.AreNotEqual(s1, new Point(1, 2));
+			Assert.AreNotEqual(s1, new Vector2D(1, 2));
 			Assert.IsTrue(s1 == new Size(1, 2));
 			Assert.IsTrue(s1 != s2);
 		}
@@ -118,9 +118,9 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 		
 		[Test]
-		public void ExplicitCastFromPoint()
+		public void ExplicitCastFromVector2D()
 		{
-			var p = new Point(1, 2);
+			var p = new Vector2D(1, 2);
 			var s = new Size(1, 2);
 			Size addition = (Size)p + s;
 			Assert.AreEqual(new Size(2, 4), addition);
@@ -140,7 +140,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void SizeToString()
 		{
-			Assert.AreEqual("2.23, 3.45", new Size(2.23f, 3.45f).ToString());
+			Assert.AreEqual("{2.23, 3.45}", new Size(2.23f, 3.45f).ToString());
 		}
 
 		[Test]

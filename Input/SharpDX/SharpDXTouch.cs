@@ -17,9 +17,9 @@ namespace DeltaEngine.Input.SharpDX
 		public override void Dispose() {}
 		public override bool IsAvailable { get; protected set; }
 
-		public override Point GetPosition(int touchIndex)
+		public override Vector2D GetPosition(int touchIndex)
 		{
-			return new Point();
+			return new Vector2D();
 		}
 
 		public override State GetState(int touchIndex)

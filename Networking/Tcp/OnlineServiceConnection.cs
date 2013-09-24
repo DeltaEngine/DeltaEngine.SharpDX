@@ -2,6 +2,7 @@
 using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 using DeltaEngine.Networking.Messages;
+using Microsoft.Win32;
 
 namespace DeltaEngine.Networking.Tcp
 {
@@ -12,44 +13,18 @@ namespace DeltaEngine.Networking.Tcp
 	public class OnlineServiceConnection : TcpSocket
 	{
 		//ncrunch: no coverage start
-		internal static void RememberCreationDataForAppRunner(string apiKey, Settings settings,
-			Action timeout, Action<string> errorHappened, Action ready, Action dataReceived)
+		internal OnlineServiceConnection(Settings settings, Action timedOut)
 		{
-			rememberApiKey = apiKey;
 			rememberIp = settings.OnlineServiceIp;
 			rememberPort = settings.OnlineServicePort;
-			serverTimeout = timeout;
-			serverErrorHappened = errorHappened;
-			contentReady = ready;
-			contentReceived = dataReceived;
 			projectName = AssemblyExtensions.GetEntryAssemblyForProjectName();
-		}
-
-		private static string rememberApiKey;
-		private static string rememberIp;
-		private static int rememberPort;
-		private static Action serverTimeout;
-		private static Action<string> serverErrorHappened;
-		public static Action contentReady;
-		private static Action contentReceived;
-		private static string projectName;
-
-		internal static OnlineServiceConnection CreateForEditor()
-		{
-			var connection = new OnlineServiceConnection();
-			connection.DataReceived += connection.OnDataReceived;
-			return connection;
-		}
-
-		internal OnlineServiceConnection()
-		{
-			if (rememberApiKey == null)
-				return;
-			Connected += () => Send(new LoginRequest(rememberApiKey, projectName));
-			TimedOut += serverTimeout;
+			TimedOut += timedOut;
 			DataReceived += OnDataReceived;
-			Connect(rememberIp, rememberPort);
 		}
+
+		private readonly string rememberIp;
+		private readonly int rememberPort;
+		private readonly string projectName;
 
 		private void OnDataReceived(object message)
 		{
@@ -57,10 +32,10 @@ namespace DeltaEngine.Networking.Tcp
 			var unknownMessage = message as UnknownMessage;
 			var ready = message as ContentReady;
 			var content = message as UpdateContent;
-			if (serverError != null && serverErrorHappened != null)
-				serverErrorHappened(serverError.Error);
-			else if (unknownMessage != null && serverErrorHappened != null)
-				serverErrorHappened(unknownMessage.Text);
+			if (serverError != null && ServerErrorHappened != null)
+				ServerErrorHappened(serverError.Error);
+			else if (unknownMessage != null && ServerErrorHappened != null)
+				ServerErrorHappened(unknownMessage.Text);
 			else if (message is LoginSuccessful)
 			{
 				IsLoggedIn = true;
@@ -70,21 +45,50 @@ namespace DeltaEngine.Networking.Tcp
 			else if (ready != null)
 			{
 				loadContentMetaData();
-				if (contentReady != null)
-					contentReady();
+				if (ContentReady != null)
+					ContentReady();
 			}
-			else if (content != null && contentReceived != null)
-				contentReceived();
+			else if (content != null && ContentReceived != null)
+				ContentReceived();
 		}
 
+		public Action<string> ServerErrorHappened;
 		public bool IsLoggedIn { get; private set; }
+		public Action LoggedIn;
 		public Action loadContentMetaData;
+		public Action ContentReady;
+		public Action ContentReceived;
 
-		public bool IsDemoUser
+		/// <summary>
+		/// Only used for the Editor, we are already connected and won't use much of this class
+		/// </summary>
+		internal OnlineServiceConnection()
 		{
-			get { return string.IsNullOrEmpty(rememberApiKey) || rememberApiKey == Guid.Empty.ToString(); }
+			DataReceived += OnDataReceived;
 		}
 
-		public Action LoggedIn;
+		/// <summary>
+		/// Allows delayed connecting to the service only when needed (logging or content request)
+		/// </summary>
+		public void ConnectToService()
+		{
+			if (connecting)
+				return;
+			connecting = true;
+			var apiKey = GetApiKey();
+			Connected += () => Send(new LoginRequest(apiKey, projectName));
+			Connect(rememberIp, rememberPort);
+		}
+
+		private bool connecting;
+
+		private static string GetApiKey()
+		{
+			string apiKey = "";
+			using (var key = Registry.CurrentUser.OpenSubKey(@"Software\DeltaEngine\Editor", false))
+				if (key != null)
+					apiKey = (string)key.GetValue("ApiKey");
+			return string.IsNullOrEmpty(apiKey) ? Guid.Empty.ToString() : apiKey;
+		}
 	}
 }

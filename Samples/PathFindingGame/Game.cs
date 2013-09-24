@@ -3,8 +3,8 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Cameras;
-using DeltaEngine.Rendering.Shapes3D;
+using DeltaEngine.Rendering3D.Cameras;
+using DeltaEngine.Rendering3D.Shapes3D;
 
 namespace PathfindingGame
 {
@@ -12,20 +12,20 @@ namespace PathfindingGame
 	{
 		public Game(Window window)
 		{
-			var camera = CreateLookAtCamera(Vector.One * 4.0f, Vector.Zero);
+			var camera = CreateLookAtCamera(Vector3D.One * 4.0f, Vector3D.Zero);
 			grid = new PathFindingGrid(10, 20);
-			new Line3D(new Vector(2.5f, 0.0f, 2.5f), new Vector(0.0f, 0.0f, 2.5f), Color.Red);
-			new Line3D(new Vector(0.0f, 2.5f, 2.5f), new Vector(0.0f, 0.0f, 2.5f), Color.Green);
-			new Line3D(new Vector(0.0f, 0.0f, 0.0f), new Vector(0.0f, 0.0f, 2.5f), Color.Blue);
+			new Line3D(new Vector3D(2.5f, 0.0f, 2.5f), new Vector3D(0.0f, 0.0f, 2.5f), Color.Red);
+			new Line3D(new Vector3D(0.0f, 2.5f, 2.5f), new Vector3D(0.0f, 0.0f, 2.5f), Color.Green);
+			new Line3D(new Vector3D(0.0f, 0.0f, 0.0f), new Vector3D(0.0f, 0.0f, 2.5f), Color.Blue);
 			AddCommands(camera);
 			new Command(Command.Exit, window.CloseAfterFrame);
 			SetUnreachableNodes();
-			grid.GetPathAndPaint(new Vector(3.0f, 2.0f, 0.0f), new Vector(-5.0f, -1.0f, 0.0f));
+			grid.GetPathAndPaint(new Vector3D(3.0f, 2.0f, 0.0f), new Vector3D(-5.0f, -1.0f, 0.0f));
 		}
 
 		private readonly PathFindingGrid grid;
 
-		private static LookAtCamera CreateLookAtCamera(Vector position, Vector target)
+		private static LookAtCamera CreateLookAtCamera(Vector3D position, Vector3D target)
 		{
 			var camera = Camera.Use<LookAtCamera>();
 			camera.Position = position;
@@ -47,7 +47,7 @@ namespace PathfindingGame
 			{
 				var ray = camera.ScreenPointToRay(point);
 				grid.AddCubeInTheGrid(ray);
-				grid.GetPathAndPaint(new Vector(3.0f, 2.0f, 0.0f), new Vector(-5.0f, -1.0f, 0.0f));
+				grid.GetPathAndPaint(new Vector3D(3.0f, 2.0f, 0.0f), new Vector3D(-5.0f, -1.0f, 0.0f));
 			}).Add(new MouseButtonTrigger());
 		}
 
@@ -55,7 +55,7 @@ namespace PathfindingGame
 		{
 			var front = camera.Target - camera.Position;
 			front.Normalize();
-			var right = Vector.Cross(front, Vector.UnitZ);
+			var right = Vector3D.Cross(front, Vector3D.UnitZ);
 			camera.Position -= right * Time.Delta * 2;
 		}
 
@@ -63,7 +63,7 @@ namespace PathfindingGame
 		{
 			var front = camera.Target - camera.Position;
 			front.Normalize();
-			var right = Vector.Cross(front, Vector.UnitZ);
+			var right = Vector3D.Cross(front, Vector3D.UnitZ);
 			camera.Position += right * Time.Delta * 2;
 		}
 
@@ -71,8 +71,8 @@ namespace PathfindingGame
 		{
 			var front = camera.Target - camera.Position;
 			front.Normalize();
-			var right = Vector.Cross(front, Vector.UnitZ);
-			var up = Vector.Cross(right, front);
+			var right = Vector3D.Cross(front, Vector3D.UnitZ);
+			var up = Vector3D.Cross(right, front);
 			camera.Position += up * Time.Delta * 2;
 		}
 
@@ -80,22 +80,22 @@ namespace PathfindingGame
 		{
 			var front = camera.Target - camera.Position;
 			front.Normalize();
-			var right = Vector.Cross(front, Vector.UnitZ);
-			var up = Vector.Cross(right, front);
+			var right = Vector3D.Cross(front, Vector3D.UnitZ);
+			var up = Vector3D.Cross(right, front);
 			camera.Position -= up * Time.Delta * 2;
 		}
 
 		private void SetUnreachableNodes()
 		{
-			grid.SetUnreachableNode(new Vector(0.25f, 2.25f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, 1.75f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, 1.25f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, 0.75f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, 0.25f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, -0.25f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, -0.75f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, -1.25f, 0.0f));
-			grid.SetUnreachableNode(new Vector(0.25f, -1.75f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, 2.25f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, 1.75f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, 1.25f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, 0.75f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, 0.25f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, -0.25f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, -0.75f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, -1.25f, 0.0f));
+			grid.SetUnreachableNode(new Vector3D(0.25f, -1.75f, 0.0f));
 		}
 	}
 }

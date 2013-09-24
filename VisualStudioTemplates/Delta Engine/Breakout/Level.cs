@@ -3,8 +3,8 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering.Particles;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace $safeprojectname$
 {
@@ -130,7 +130,7 @@ namespace $safeprojectname$
 		{
 			for (int x = 0; x < rows; x++)
 				for (int y = 0; y < columns; y++)
-					bricks [x, y].Visibility = Visibility.Hide;
+					bricks [x, y].IsActive = false;
 		}
 
 		public int BricksLeft
@@ -158,7 +158,7 @@ namespace $safeprojectname$
 			return bricks [brickIndexX, brickIndexY];
 		}
 
-		public void Explode(Sprite brick, Point collision)
+		public void Explode(Sprite brick, Vector2D collision)
 		{
 			score.IncreasePoints();
 			brick.Visibility = Visibility.Hide;
@@ -166,7 +166,7 @@ namespace $safeprojectname$
 			explosionSound.Play();
 		}
 
-		private void CreateExplosion(Point collision)
+		private void CreateExplosion(Vector2D collision)
 		{
 			var explosion = new Particle2DEmitter(explosionData, collision);
 			explosion.RenderLayer = 16;

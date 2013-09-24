@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using DeltaEngine.Core;
-using DeltaEngine.Mocks;
+using DeltaEngine.Networking.Messages;
 using DeltaEngine.Networking.Tcp;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -18,9 +18,10 @@ namespace DeltaEngine.Logging.Tests
 			server = new LocalhostLogServer(new TcpServer());
 			server.Start();
 			var ready = false;
-			var connection = OnlineServiceConnection.CreateForEditor();
+			var connection = new OnlineServiceConnection();
 			connection.DataReceived += o => ready = true;
 			connection.Connect("localhost", LocalhostLogServer.Port);
+			connection.Send(new LoginRequest("", "DeltaEngine.Logging.Tests"));
 			logger = new NetworkLogger(connection);
 			for (int timeoutMs = 1000; timeoutMs > 0 && !ready; timeoutMs -= 10)
 				Thread.Sleep(10);
@@ -28,11 +29,6 @@ namespace DeltaEngine.Logging.Tests
 		}
 
 		private LocalhostLogServer server;
-
-		public class ServerErrorReceived : Exception
-		{
-			public ServerErrorReceived(string error) : base(error) { }
-		}
 
 		private static string GetApiKeyFromRegistry()
 		{
@@ -89,21 +85,6 @@ namespace DeltaEngine.Logging.Tests
 			logger.Write(Logger.MessageType.Error, new ArgumentException().ToString());
 			Thread.Sleep(100);
 			ExpectThatServerLastMessageContains("ArgumentException");
-		}
-
-		[Test, Ignore]
-		public static void LogToRealLogServer()
-		{
-			var ready = false;
-			OnlineServiceConnection.RememberCreationDataForAppRunner(GetApiKeyFromRegistry(),
-				new MockSettings(), () => { }, error => { throw new ServerErrorReceived(error); },
-				() => ready = true, () => { });
-			using (var logClient = new NetworkLogger(new OnlineServiceConnection()))
-			{
-				for (int timeoutMs = 1000; timeoutMs > 0 && !ready; timeoutMs -= 10)
-					Thread.Sleep(10);
-				logClient.Write(Logger.MessageType.Info, "Hello TestWorld from " + Environment.MachineName);
-			}
 		}
 	}
 }

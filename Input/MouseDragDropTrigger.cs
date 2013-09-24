@@ -15,13 +15,13 @@ namespace DeltaEngine.Input
 		{
 			StartArea = startArea;
 			Button = button;
-			StartDragPosition = Point.Unused;
+			StartDragPosition = Vector2D.Unused;
 			Start<Mouse>();
 		}
 
 		public Rectangle StartArea { get; private set; }
 		public MouseButton Button { get; private set; }
-		public Point StartDragPosition { get; set; }
+		public Vector2D StartDragPosition { get; set; }
 
 		public MouseDragDropTrigger(string startAreaAndButton)
 		{
@@ -30,7 +30,7 @@ namespace DeltaEngine.Input
 				throw new CannotCreateMouseDragDropTriggerWithoutStartArea();
 			StartArea = BuildParameterStringForRectangle(parameters).Convert<Rectangle>();
 			Button = parameters.Length > 4 ? parameters[4].Convert<MouseButton>() : MouseButton.Left;
-			StartDragPosition = Point.Unused;
+			StartDragPosition = Vector2D.Unused;
 			Start<Mouse>();
 		}
 

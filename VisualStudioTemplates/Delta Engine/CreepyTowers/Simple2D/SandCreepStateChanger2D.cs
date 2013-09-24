@@ -1,3 +1,6 @@
+using $safeprojectname$.Creeps;
+using $safeprojectname$.Towers;
+
 namespace $safeprojectname$.Simple2D
 {
 	public class SandCreepStateChanger2D
@@ -42,11 +45,18 @@ namespace $safeprojectname$.Simple2D
 			else if (creep.state.Frozen)
 				StateChanger.MakeCreepWet(creep);
 			else
-			{
-				basic.AddCreep(creep.listOfNodes [0], creep.Target, Creep.CreepType.Glass);
-				creep.hitpointBar.IsActive = false;
-				creep.IsActive = false;
-			}
+				TransformInGlassCreep(creep, basic);
+		}
+
+		private static void TransformInGlassCreep(Creep2D creep, Basic2DDisplaySystem basic)
+		{
+			var percentage = creep.Hitpoints / creep.data.MaxHp;
+			var newCreep = basic.AddCreep(creep.listOfNodes [0], creep.Target, Creep.CreepType.Glass);
+			newCreep.Hitpoints *= percentage;
+			newCreep.data.CurrentHp *= percentage;
+			basic.Creeps.Remove(creep);
+			creep.hitpointBar.IsActive = false;
+			creep.IsActive = false;
 		}
 
 		public static void ChangeStartStatesIfSandCreep(Creep2D creep)

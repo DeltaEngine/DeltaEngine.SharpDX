@@ -13,7 +13,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Point.Zero);
+				mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -24,13 +24,13 @@ namespace DeltaEngine.Input.Tests
 		{
 			bool wasTapped = false;
 			new Command(() => wasTapped = true).Add(new MouseTapTrigger(MouseButton.Left));
-			SetMouseState(State.Pressing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.IsFalse(wasTapped);
-			SetMouseState(State.Releasing, Point.Half);
+			SetMouseState(State.Releasing, Vector2D.Half);
 			Assert.IsTrue(wasTapped);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage

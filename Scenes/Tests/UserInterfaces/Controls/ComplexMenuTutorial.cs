@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 

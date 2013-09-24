@@ -5,7 +5,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -44,7 +44,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(Point.Zero);
+			mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -73,7 +73,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			{
 				foreach (RadioDialog dialog in entities)
 				{
-					var center = dialog.DrawArea.Center + new Point(0.01f, 0.01f) * Time.Delta;
+					var center = dialog.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
 					var size = dialog.DrawArea.Size * (1.0f + Time.Delta / 10);
 					dialog.DrawArea = Rectangle.FromCenter(center, size);
 					dialog.Get<FontText>().Text = "Button '" + dialog.SelectedButton.Text + "'";
@@ -90,19 +90,19 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; // ncrunch: no coverage
 			var buttons = dialog.Get<List<RadioButton>>();
 			Assert.IsFalse(buttons[1].State.IsSelected);
-			PressAndReleaseMouse(Point.One);
+			PressAndReleaseMouse(Vector2D.One);
 			Assert.IsFalse(buttons[1].State.IsSelected);
-			PressAndReleaseMouse(new Point(0.35f, 0.5f));
+			PressAndReleaseMouse(new Vector2D(0.35f, 0.5f));
 			Assert.IsTrue(buttons[1].State.IsSelected);
 		}
 
-		private void PressAndReleaseMouse(Point position)
+		private void PressAndReleaseMouse(Vector2D position)
 		{
 			SetMouseState(State.Pressing, position);
 			SetMouseState(State.Releasing, position);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -117,9 +117,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; // ncrunch: no coverage
 			var buttons = dialog.Get<List<RadioButton>>();
-			PressAndReleaseMouse(new Point(0.35f, 0.5f));
+			PressAndReleaseMouse(new Vector2D(0.35f, 0.5f));
 			Assert.IsTrue(buttons[1].State.IsSelected);
-			PressAndReleaseMouse(new Point(0.35f, 0.6f));
+			PressAndReleaseMouse(new Vector2D(0.35f, 0.6f));
 			Assert.IsFalse(buttons[1].State.IsSelected);
 			Assert.IsTrue(buttons[2].State.IsSelected);
 		}
@@ -129,7 +129,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var buttons = dialog.Get<List<RadioButton>>();
 			buttons[1].IsEnabled = false;
-			PressAndReleaseMouse(new Point(0.35f, 0.5f));
+			PressAndReleaseMouse(new Vector2D(0.35f, 0.5f));
 			Assert.IsFalse(buttons[1].State.IsSelected);
 		}
 
@@ -140,8 +140,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; // ncrunch: no coverage
 			var buttons = dialog.Get<List<RadioButton>>();
 			buttons[2].IsEnabled = false;
-			PressAndReleaseMouse(new Point(0.35f, 0.5f));
-			PressAndReleaseMouse(new Point(0.35f, 0.6f));
+			PressAndReleaseMouse(new Vector2D(0.35f, 0.5f));
+			PressAndReleaseMouse(new Vector2D(0.35f, 0.6f));
 			Assert.IsTrue(buttons[1].State.IsSelected);
 			Assert.IsFalse(buttons[2].State.IsSelected);
 		}

@@ -56,6 +56,6 @@ namespace DeltaEngine.Input
 		}
 
 		public float Elapsed { get; set; }
-		public Point StartPosition { get; set; }
+		public Vector2D StartPosition { get; set; }
 	}
 }

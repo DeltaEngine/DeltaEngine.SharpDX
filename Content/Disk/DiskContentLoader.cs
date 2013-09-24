@@ -101,7 +101,7 @@ namespace DeltaEngine.Content.Disk
 		private readonly Dictionary<string, ContentMetaData> metaData =
 			new Dictionary<string, ContentMetaData>(StringComparer.OrdinalIgnoreCase);
 
-		protected override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
+		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
 			LazyInitialize();
 			return metaData.ContainsKey(contentName) ? metaData[contentName] : null;

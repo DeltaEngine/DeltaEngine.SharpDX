@@ -55,8 +55,8 @@ namespace Blocks.Tests
 
 		private void InitializeBlocks(Controller controller, JewelBlocksContent content)
 		{
-			controller.UpcomingBlock = new Block(displayMode, content, Point.Zero);
-			controller.FallingBlock = new Block(displayMode, content, new Point(6, 1));
+			controller.UpcomingBlock = new Block(displayMode, content, Vector2D.Zero);
+			controller.FallingBlock = new Block(displayMode, content, new Vector2D(6, 1));
 		}
 
 		[Test]
@@ -141,7 +141,7 @@ namespace Blocks.Tests
 		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetMousePosition(new Point(0.35f, 0.0f));
+		//					mockResolver.input.SetMousePosition(new Vector2D(0.35f, 0.0f));
 		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.AreEqual(5, game.Controller.FallingBlock.Left);
@@ -155,7 +155,7 @@ namespace Blocks.Tests
 		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetMousePosition(new Point(0.65f, 0.0f));
+		//					mockResolver.input.SetMousePosition(new Vector2D(0.65f, 0.0f));
 		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.AreEqual(7, game.Controller.FallingBlock.Left);
@@ -170,7 +170,7 @@ namespace Blocks.Tests
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
 		//					Assert.AreEqual("OOOO/..../..../....", game.Controller.FallingBlock.ToString());
-		//					mockResolver.input.SetMousePosition(new Point(0.5f, 0.4f));
+		//					mockResolver.input.SetMousePosition(new Vector2D(0.5f, 0.4f));
 		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.AreEqual("O.../O.../O.../O...", game.Controller.FallingBlock.ToString());
@@ -185,11 +185,11 @@ namespace Blocks.Tests
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
 		//					Assert.IsFalse(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetMousePosition(new Point(0.5f, 0.6f));
+		//					mockResolver.input.SetMousePosition(new Vector2D(0.5f, 0.6f));
 		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.IsTrue(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetMousePosition(new Point(0.5f, 0.6f));
+		//					mockResolver.input.SetMousePosition(new Vector2D(0.5f, 0.6f));
 		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Releasing);
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.IsFalse(game.Controller.IsFallingFast);
@@ -203,7 +203,7 @@ namespace Blocks.Tests
 		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Point(0.35f, 0.0f));
+		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.35f, 0.0f));
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.AreEqual(5, game.Controller.FallingBlock.Left);
 		//				});
@@ -216,7 +216,7 @@ namespace Blocks.Tests
 		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Point(0.65f, 0.0f));
+		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.65f, 0.0f));
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.AreEqual(7, game.Controller.FallingBlock.Left);
 		//				});
@@ -230,7 +230,7 @@ namespace Blocks.Tests
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
 		//					Assert.AreEqual("OOOO/..../..../....", game.Controller.FallingBlock.ToString());
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Point(0.5f, 0.4f));
+		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.4f));
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.AreEqual("O.../O.../O.../O...", game.Controller.FallingBlock.ToString());
 		//				});
@@ -244,10 +244,10 @@ namespace Blocks.Tests
 		//				{
 		//					InitializeBlocks(screenSpace, game.Controller, content);
 		//					Assert.IsFalse(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Point(0.5f, 0.6f));
+		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.6f));
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.IsTrue(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetTouchState(0, State.Releasing, new Point(0.5f, 0.6f));
+		//					mockResolver.input.SetTouchState(0, State.Releasing, new Vector2D(0.5f, 0.6f));
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.IsFalse(game.Controller.IsFallingFast);
 		//				});

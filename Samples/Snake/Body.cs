@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 
 namespace Snake
 {
@@ -22,19 +22,19 @@ namespace Snake
 		private void SpawnSnake()
 		{
 			BodyParts = new List<FilledRect>();
-			Direction = new Point(0, -blockSize);
+			Direction = new Vector2D(0, -blockSize);
 			PlaceSnakeHead();
 			AddSnakeBody();
 		}
 
 		public List<FilledRect> BodyParts { get; private set; }
-		public Point Direction { get; set; }
-		public Point HeadPosition
+		public Vector2D Direction { get; set; }
+		public Vector2D HeadPosition
 		{
 			get
 			{
 				if (BodyParts.Count == 0)
-					return Point.Half;
+					return Vector2D.Half;
 				return BodyParts[0].Center;
 			}
 		}
@@ -48,7 +48,7 @@ namespace Snake
 
 		private Rectangle CalculateHeadDrawArea(float startPosition)
 		{
-			return new Rectangle(new Point(startPosition, startPosition), new Size(1.0f / gridSize));
+			return new Rectangle(new Vector2D(startPosition, startPosition), new Size(1.0f / gridSize));
 		}
 
 		public void AddSnakeBody()
@@ -70,13 +70,13 @@ namespace Snake
 			MoveHeadInDesiredDirection();
 		}
 
-		private Point trailingVector;
+		private Vector2D trailingVector;
 
-		public Point GetTrailingVector()
+		public Vector2D GetTrailingVector()
 		{
 			var tail = BodyParts[BodyParts.Count - 1].DrawArea.TopLeft;
 			var partBeforeTail = BodyParts[BodyParts.Count - 2].DrawArea.TopLeft;
-			return new Point(tail.X - partBeforeTail.X, tail.Y - partBeforeTail.Y);
+			return new Vector2D(tail.X - partBeforeTail.X, tail.Y - partBeforeTail.Y);
 		}
 
 		private void MoveBodyTowardsHead()
@@ -87,7 +87,7 @@ namespace Snake
 
 		private void MoveHeadInDesiredDirection()
 		{
-			var newHeadPos = new Point(BodyParts[0].DrawArea.Left + Direction.X,
+			var newHeadPos = new Vector2D(BodyParts[0].DrawArea.Left + Direction.X,
 				BodyParts[0].DrawArea.Top + Direction.Y);
 			BodyParts[0].DrawArea = new Rectangle(newHeadPos, new Size(blockSize));
 		}
@@ -98,7 +98,7 @@ namespace Snake
 				DetectSnakeCollisionWithChunk(trailingVector);
 		}
 
-		public event Action<Point> DetectSnakeCollisionWithChunk;
+		public event Action<Vector2D> DetectSnakeCollisionWithChunk;
 
 		internal void CheckSnakeCollisionWithBorderOrItself()
 		{

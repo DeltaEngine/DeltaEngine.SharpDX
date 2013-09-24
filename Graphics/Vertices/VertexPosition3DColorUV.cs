@@ -9,20 +9,20 @@ namespace DeltaEngine.Graphics.Vertices
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexPosition3DColorUV : Lerp<VertexPosition3DColorUV>, Vertex
 	{
-		public VertexPosition3DColorUV(Vector position, Color color, Point uv)
+		public VertexPosition3DColorUV(Vector3D position, Color color, Vector2D uv)
 		{
 			Position = position;
 			Color = color;
 			UV = uv;
 		}
 
-		public Vector Position;
+		public Vector3D Position;
 		public Color Color;
-		public Point UV;
+		public Vector2D UV;
 
-		public VertexPosition3DColorUV(Point position, Color color, Point uv)
+		public VertexPosition3DColorUV(Vector2D position, Color color, Vector2D uv)
 		{
-			Position = new Vector(position.X, position.Y, 0.0f);
+			Position = new Vector3D(position.X, position.Y, 0.0f);
 			Color = color;
 			UV = uv;
 		}

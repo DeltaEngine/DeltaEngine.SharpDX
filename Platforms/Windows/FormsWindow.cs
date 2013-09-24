@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using SystemSize = System.Drawing.Size;
 using SystemPoint = System.Drawing.Point;
 using Color = DeltaEngine.Datatypes.Color;
 using Orientation = DeltaEngine.Core.Orientation;
-using Point = DeltaEngine.Datatypes.Point;
 using Size = DeltaEngine.Datatypes.Size;
 
 namespace DeltaEngine.Platforms.Windows
@@ -128,9 +128,9 @@ namespace DeltaEngine.Platforms.Windows
 			get { return new Datatypes.Size(panel.Width, panel.Height); }
 		}
 		
-		public Point PixelPosition
+		public Vector2D PixelPosition
 		{
-			get { return new Point(panel.Location.X, panel.Location.Y); }
+			get { return new Vector2D(panel.Location.X, panel.Location.Y); }
 			set { panel.Location = new SystemPoint((int)value.X, (int)value.Y); }
 		}
 

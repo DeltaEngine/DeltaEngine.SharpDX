@@ -9,14 +9,14 @@ namespace DeltaEngine.Input
 	{
 		protected MouseMessage() {}
 
-		public MouseMessage(Point position, int scrollWheel, MouseButton[] pressedButtons = null)
+		public MouseMessage(Vector2D position, int scrollWheel, MouseButton[] pressedButtons = null)
 		{
 			Position = position;
 			ScrollWheel = scrollWheel;
 			PressedButtons = pressedButtons ?? new MouseButton[0];
 		}
 
-		public Point Position { get; private set; }
+		public Vector2D Position { get; private set; }
 		public MouseButton[] PressedButtons { get; private set; }
 		public int ScrollWheel { get; private set; }
 	}

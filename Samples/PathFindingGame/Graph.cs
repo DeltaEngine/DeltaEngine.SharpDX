@@ -17,14 +17,14 @@ namespace PathfindingGame
 
 	public class Graph
 	{
-		public Vector[] Nodes { get; set; }
+		public Vector3D[] Nodes { get; set; }
 		public List<GraphConnection>[] AdjacencyList { get; protected set; }
 		public int NumberOfNodes { get; protected set; }
 
 		public Graph(int numberOfNodes)
 		{
 			NumberOfNodes = numberOfNodes;
-			Nodes = new Vector[numberOfNodes];
+			Nodes = new Vector3D[numberOfNodes];
 			AdjacencyList = new List<GraphConnection>[numberOfNodes];
 
 			for (int i = 0; i < numberOfNodes; i++)

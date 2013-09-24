@@ -3,7 +3,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
@@ -20,18 +20,18 @@ namespace DeltaEngine.Platforms.Tests
 				Resolve<Window>().ViewportPixelSize = new Size(480, 800);
 				var screen = ScreenSpace.Current;
 				Assert.AreEqual(typeof(QuadraticScreenSpace), screen.GetType());
-				var quadSize = screen.FromPixelSpace(new Point(0, 0));
-				ArePointsNearlyEqual(new Point(0.2f, 0f), quadSize);
-				quadSize = screen.FromPixelSpace(new Point(480, 800));
-				ArePointsNearlyEqual(new Point(0.8f, 1), quadSize);
-				var pixelSize = screen.ToPixelSpace(new Point(0.2f, 0));
-				ArePointsNearlyEqual(Point.Zero, pixelSize);
-				pixelSize = screen.ToPixelSpace(new Point(0.8f, 1));
-				ArePointsNearlyEqual(new Point(480, 800), pixelSize);
+				var quadSize = screen.FromPixelSpace(new Vector2D(0, 0));
+				ArePointsNearlyEqual(new Vector2D(0.2f, 0f), quadSize);
+				quadSize = screen.FromPixelSpace(new Vector2D(480, 800));
+				ArePointsNearlyEqual(new Vector2D(0.8f, 1), quadSize);
+				var pixelSize = screen.ToPixelSpace(new Vector2D(0.2f, 0));
+				ArePointsNearlyEqual(Vector2D.Zero, pixelSize);
+				pixelSize = screen.ToPixelSpace(new Vector2D(0.8f, 1));
+				ArePointsNearlyEqual(new Vector2D(480, 800), pixelSize);
 			});
 		}
 
-		private static void ArePointsNearlyEqual(Point expected, Point actual)
+		private static void ArePointsNearlyEqual(Vector2D expected, Vector2D actual)
 		{
 			Assert.IsTrue(actual.X.IsNearlyEqual(expected.X),
 				"Actual: " + actual + ", Expected: " + expected);
@@ -47,21 +47,21 @@ namespace DeltaEngine.Platforms.Tests
 			{
 				Resolve<Window>().ViewportPixelSize = new Size(800, 480);
 				var screen = ScreenSpace.Current;
-				var quadSize = screen.FromPixelSpace(new Point(0, 0));
-				ArePointsNearlyEqual(new Point(0f, 0.2f), quadSize);
-				quadSize = screen.FromPixelSpace(new Point(800, 480));
-				ArePointsNearlyEqual(new Point(1, 0.8f), quadSize);
-				var pixelSize = screen.ToPixelSpace(new Point(0f, 0.2f));
-				ArePointsNearlyEqual(Point.Zero, pixelSize);
-				pixelSize = screen.ToPixelSpace(new Point(1, 0.8f));
-				ArePointsNearlyEqual(new Point(800, 480), pixelSize);
+				var quadSize = screen.FromPixelSpace(new Vector2D(0, 0));
+				ArePointsNearlyEqual(new Vector2D(0f, 0.2f), quadSize);
+				quadSize = screen.FromPixelSpace(new Vector2D(800, 480));
+				ArePointsNearlyEqual(new Vector2D(1, 0.8f), quadSize);
+				var pixelSize = screen.ToPixelSpace(new Vector2D(0f, 0.2f));
+				ArePointsNearlyEqual(Vector2D.Zero, pixelSize);
+				pixelSize = screen.ToPixelSpace(new Vector2D(1, 0.8f));
+				ArePointsNearlyEqual(new Vector2D(800, 480), pixelSize);
 			});
 		}
 
 		[Test]
 		public void ChangeOrientaion()
 		{
-			var line = new Line2D(Point.Zero, Point.One, Color.Green);
+			var line = new Line2D(Vector2D.Zero, Vector2D.One, Color.Green);
 			var window = Resolve<Window>();
 			window.BackgroundColor = Color.Blue;
 			new Command(() => window.ViewportPixelSize = new Size(800, 480)).Add(new KeyTrigger(Key.A));

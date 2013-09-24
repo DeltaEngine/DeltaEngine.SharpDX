@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {

@@ -95,8 +95,8 @@ namespace DeltaEngine.Tests.Entities
 		{
 			entityWithTags.IsActive = false;
 			Assert.AreEqual("<Inactive> MockEntity Tags=Tag1, Tag2", entityWithTags.ToString());
-			var entityWithComponent = new MockEntity().Add(new object()).Add(new Point(1, 2));
-			Assert.AreEqual("MockEntity: Object, Point=1, 2", entityWithComponent.ToString());
+			var entityWithComponent = new MockEntity().Add(new object()).Add(new Vector2D(1, 2));
+			Assert.AreEqual("MockEntity: Object, Vector2D=1, 2", entityWithComponent.ToString());
 			var entityWithList = new MockEntity().Add(new List<Color>());
 			Assert.AreEqual("MockEntity: List<Color>", entityWithList.ToString());
 		}
@@ -104,8 +104,8 @@ namespace DeltaEngine.Tests.Entities
 		[Test]
 		public void ToStringWithArrayAndBehavior()
 		{
-			entityWithTags.Add(new Point[2]);
-			Assert.AreEqual("MockEntity Tags=Tag1, Tag2: Point[]", entityWithTags.ToString());
+			entityWithTags.Add(new Vector2D[2]);
+			Assert.AreEqual("MockEntity Tags=Tag1, Tag2: Vector2D[]", entityWithTags.ToString());
 			var entityWithRunner =
 				new MockEntity().Start<MockUpdateBehavior>().Start<ComponentTests.Rotate>();
 			Assert.AreEqual("MockEntity [MockUpdateBehavior, Rotate]", entityWithRunner.ToString());
@@ -136,7 +136,7 @@ namespace DeltaEngine.Tests.Entities
 		{
 			var data = BinaryDataExtensions.SaveToMemoryStream(new MockEntity());
 			byte[] savedBytes = data.ToArray();
-			Assert.AreEqual(GetShortNameLength("MockEntity") + 1 + 4 + 1, savedBytes.Length);
+			Assert.AreEqual(GetShortNameLength("MockEntity") + 1 + 4 + 1 + 1, savedBytes.Length);
 			var loadedEntity = data.CreateFromMemoryStream() as Entity;
 			Assert.AreEqual(0, loadedEntity.NumberOfComponents);
 			Assert.IsTrue(loadedEntity.IsActive);
@@ -153,14 +153,29 @@ namespace DeltaEngine.Tests.Entities
 		{
 			entityWithTags.Add(1).Add(0.1f);
 			var data = BinaryDataExtensions.SaveToMemoryStream(entityWithTags);
-			byte[] savedBytes = data.ToArray();
-			Assert.AreEqual(59, savedBytes.Length);
 			var loadedEntity = data.CreateFromMemoryStream() as Entity;
+			Assert.AreEqual(60, data.ToArray().Length);
 			Assert.AreEqual(2, loadedEntity.NumberOfComponents);
 			Assert.AreEqual(1, entityWithTags.Get<int>());
 			Assert.AreEqual(0.1f, entityWithTags.Get<float>());
 			Assert.IsTrue(loadedEntity.ContainsTag(Tag1));
 			Assert.IsTrue(loadedEntity.IsActive);
+			Assert.AreEqual(0, loadedEntity.GetActiveBehaviors().Count);
+		}
+
+		[Test]
+		public void SaveAndLoadEntityWithTwoBehaviorsFromMemoryStream()
+		{
+			entityWithTags.Start<MockUpdateBehavior>().Start<CreateEntityStartAndStopBehavior>();
+			var data = BinaryDataExtensions.SaveToMemoryStream(entityWithTags);
+			var loadedEntity = data.CreateFromMemoryStream() as Entity;
+			Assert.AreEqual(96, data.ToArray().Length);
+			Assert.AreEqual(0, loadedEntity.NumberOfComponents);
+			Assert.AreEqual(2, loadedEntity.GetActiveBehaviors().Count);
+			Assert.AreEqual("MockUpdateBehavior",
+				loadedEntity.GetActiveBehaviors()[0].GetShortNameOrFullNameIfNotFound());
+			Assert.AreEqual("CreateEntityStartAndStopBehavior",
+				loadedEntity.GetActiveBehaviors()[1].GetShortNameOrFullNameIfNotFound());
 		}
 
 		[Test]
@@ -189,7 +204,7 @@ namespace DeltaEngine.Tests.Entities
 		[Test]
 		public void GettingComponentThatDoesNotExistFails()
 		{
-			Assert.Throws<Entity.ComponentNotFound>(() => entityWithTags.Get<Point>());
+			Assert.Throws<Entity.ComponentNotFound>(() => entityWithTags.Get<Vector2D>());
 		}
 
 		[Test]
@@ -308,6 +323,41 @@ namespace DeltaEngine.Tests.Entities
 			var drawable = new DrawableEntity { Visibility = Visibility.Show };
 			drawable.ToggleVisibility();
 			Assert.AreEqual(Visibility.Hide, drawable.Visibility);
+		}
+
+		[Test]
+		public void ToggleVisibilityAsSetVisibility()
+		{
+			var drawable = new DrawableEntity();
+			drawable.ToggleVisibility(Visibility.Hide);
+			Assert.AreEqual(Visibility.Hide, drawable.Visibility);
+			drawable.ToggleVisibility(Visibility.Show);
+			Assert.AreEqual(Visibility.Show, drawable.Visibility);
+		}
+
+		[Test]
+		public void CreateFromComponents()
+		{
+			var drawable = new DrawableEntity();
+			drawable.FillComponents(new List<object> { 5, Visibility.Hide });
+			Assert.AreEqual(5, drawable.Get<int>());
+			Assert.AreEqual(Visibility.Hide, drawable.Visibility);
+		}
+
+		[Test]
+		public void CreatingFromComponentsThrowsExceptionIfComponentAlreadyAddedByConstructor()
+		{
+			var entityWithComponent = new MockEntityWithStringComponent();
+			Assert.Throws<Entity.ComponentOfTheSameTypeAddedMoreThanOnce>(
+				() => entityWithComponent.FillComponents(new List<object> { "Goodbye" }));
+		}
+
+		private sealed class MockEntityWithStringComponent : MockEntity
+		{
+			public MockEntityWithStringComponent()
+			{
+				Add("Hello");
+			}
 		}
 	}
 }

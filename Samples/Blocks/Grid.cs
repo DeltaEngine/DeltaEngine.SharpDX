@@ -4,9 +4,9 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Particles;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace Blocks
 {
@@ -24,8 +24,8 @@ namespace Blocks
 				Color = new RangeGraph<Color>(Color.White, Color.TransparentWhite),
 				MaximumNumberOfParticles = 10,
 				SpawnInterval = -1,
-				StartVelocity = new RangeGraph<Vector>(Point.Zero, Point.Zero),
-				StartPosition = new RangeGraph<Vector>(Point.Zero, Point.Zero),
+				StartVelocity = new RangeGraph<Vector3D>(Vector2D.Zero, Vector2D.Zero),
+				StartPosition = new RangeGraph<Vector3D>(Vector2D.Zero, Vector2D.Zero),
 			};
 		}
 
@@ -50,7 +50,7 @@ namespace Blocks
 
 		private void AffixBrick(Brick brick)
 		{
-			brick.TopLeftGridCoord = new Point((int)brick.TopLeftGridCoord.X,
+			brick.TopLeftGridCoord = new Vector2D((int)brick.TopLeftGridCoord.X,
 				(int)brick.TopLeftGridCoord.Y + 1);
 			bricks[(int)brick.Position.X, (int)brick.Position.Y - 1] = brick;
 			brick.UpdateDrawArea();
@@ -136,10 +136,10 @@ namespace Blocks
 			var random = Randomizer.Current;
 			fallingBrick.Add(new SimplePhysics.Data
 			{
-				Velocity = new Point(random.Get(-0.5f, 0.5f), random.Get(-1.0f, 0.0f)),
+				Velocity = new Vector2D(random.Get(-0.5f, 0.5f), random.Get(-1.0f, 0.0f)),
 				RotationSpeed = random.Get(-360, 360),
 				Duration = 5.0f,
-				Gravity = new Point(0.0f, 2.0f)
+				Gravity = new Vector2D(0.0f, 2.0f)
 			});
 			fallingBrick.Start<SimplePhysics.Move>();
 		}

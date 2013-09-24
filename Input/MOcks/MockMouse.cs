@@ -12,19 +12,19 @@ namespace DeltaEngine.Input.Mocks
 		public MockMouse()
 		{
 			IsAvailable = true;
-			Position = Point.Half;
+			Position = Vector2D.Half;
 		}
 
 		public override bool IsAvailable { get; protected set; }
 
 		public override void Dispose() {}
 
-		public override void SetPosition(Point newPosition)
+		public override void SetPosition(Vector2D position)
 		{
-			nextPosition = newPosition;
+			nextPosition = position;
 		}
 
-		private Point nextPosition;
+		private Vector2D nextPosition;
 
 		public void SetButtonState(MouseButton button, State state)
 		{
@@ -40,9 +40,14 @@ namespace DeltaEngine.Input.Mocks
 				LeftButton = state;
 		}
 
-		public void SetScrollWheelValue(int value)
+		public void ScrollUp()
 		{
-			ScrollWheelValue = value;
+			ScrollWheelValue += 1;
+		}
+
+		public void ScrollDown()
+		{
+			ScrollWheelValue -= 1;
 		}
 
 		public override void Update(IEnumerable<Entity> entities)

@@ -2,7 +2,7 @@
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -79,7 +79,7 @@ namespace DeltaEngine.Input.Tests
 		public void RotateRectangleWithMouse()
 		{
 			var rect = new FilledRect(new Rectangle(0.4f, 0.4f, 0.2f, 0.2f), Color.Green);
-			new Command(Command.RotateDirectly, delegate(Point point) { rect.Rotation += 1; });
+			new Command(Command.RotateDirectly, delegate(Vector2D point) { rect.Rotation += 1; });
 		}
 
 		[Test]
@@ -100,7 +100,7 @@ namespace DeltaEngine.Input.Tests
 		public void FlickToChangeTheColor()
 		{
 			new Command(Command.Flick,
-				delegate(Point point) { Resolve<Window>().BackgroundColor = Color.GetRandomColor(); });
+				delegate(Vector2D point) { Resolve<Window>().BackgroundColor = Color.GetRandomColor(); });
 		}
 
 		[Test]
@@ -108,7 +108,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			var rect = new FilledRect(new Rectangle(0.4f, 0.4f, 0.2f, 0.2f), Color.Green);
 			new Command(Command.Pinch,
-				delegate(Point point) {
+				delegate(Vector2D point) {
 					rect.DrawArea = new Rectangle(rect.DrawArea.Left, rect.DrawArea.Top,
 						rect.DrawArea.Width - 0.01f, rect.DrawArea.Height);
 				});
@@ -132,7 +132,7 @@ namespace DeltaEngine.Input.Tests
 		public void UsingRotationOnATouchPadWillRotateTheRectangle()
 		{
 			var rect = new FilledRect(new Rectangle(0.4f, 0.4f, 0.2f, 0.2f), Color.Green);
-			new Command(Command.Rotate, delegate(Point point) { rect.Rotation += 1; });
+			new Command(Command.Rotate, delegate(Vector2D point) { rect.Rotation += 1; });
 		}
 	}
 }

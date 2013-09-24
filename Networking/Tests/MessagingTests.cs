@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using DeltaEngine.Extensions;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -6,38 +8,54 @@ namespace DeltaEngine.Networking.Tests
 {
 	public class MessagingTests : TestWithMocksOrVisually
 	{
-		[SetUp, CloseAfterFirstFrame]
+		[SetUp]
 		public void SetUp()
 		{
 			serverSession = Messaging.StartSession(Port);
-			clientSession = Messaging.JoinSession("localhost", Port);
+			Pause();
+			clientSession = Messaging.JoinSession(Address, Port);
+			Pause();
 		}
 
 		private MessagingSession serverSession;
 		private MessagingSession clientSession;
-		private const int Port = 12345;
+		private const string Address = "127.0.0.1";
+		private const int Port = 6578;
 
-		[Test]
+		private static void Pause()
+		{
+			if (!StackTraceExtensions.StartedFromNCrunch)
+				Thread.Sleep(25); //ncrunch: no coverage
+		}
+
+		[TearDown]
+		public void DisposeConnectionsSockets()
+		{
+			clientSession.Dispose();
+			serverSession.Dispose();
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void UniqueIDsAssigned()
 		{
 			Assert.AreEqual(0, serverSession.UniqueID);
 			Assert.AreEqual(1, clientSession.UniqueID);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ServerReportsOneParticipant()
 		{
 			Assert.AreEqual(1, serverSession.NumberOfParticipants);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ClientReportsParticipantsNotCalculated()
 		{
 			Assert.AreEqual(ClientMessagingSession.NumberOfParticipantsNotCalculated,
 				clientSession.NumberOfParticipants);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void NoMessagesInitially()
 		{
 			List<MessagingSession.Message> messages = serverSession.GetMessages();
@@ -45,11 +63,12 @@ namespace DeltaEngine.Networking.Tests
 			Assert.AreEqual(0, clientSession.GetMessages().Count);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void SendMessagesServerToClient()
 		{
 			serverSession.SendMessage("hello");
 			serverSession.SendMessage(9);
+			Pause();
 			List<MessagingSession.Message> messages = clientSession.GetMessages();
 			Assert.AreEqual(2, messages.Count);
 			VerifyMessageContents(messages[0], 0, "hello");
@@ -63,32 +82,36 @@ namespace DeltaEngine.Networking.Tests
 			Assert.AreEqual(data, message.Data);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void MessagesAreOnlyReceivedOnce()
 		{
 			serverSession.SendMessage("hello");
 			clientSession.SendMessage("hello");
+			Pause();
 			Assert.AreEqual(1, serverSession.GetMessages().Count);
 			Assert.AreEqual(0, serverSession.GetMessages().Count);
 			Assert.AreEqual(1, clientSession.GetMessages().Count);
 			Assert.AreEqual(0, clientSession.GetMessages().Count);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void SendMessagesClientToServer()
 		{
 			clientSession.SendMessage("hi");
 			clientSession.SendMessage(1.2f);
+			Pause();
 			List<MessagingSession.Message> messages = serverSession.GetMessages();
 			Assert.AreEqual(2, messages.Count);
 			VerifyMessageContents(messages[0], 1, "hi");
 			VerifyMessageContents(messages[1], 1, 1.2f);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void WithTwoClientsWhenOneClientMessagesTheServerItIsEchoedToTheOtherClient()
 		{
-			var clientSession2 = Messaging.JoinSession("", Port);
+			if (!StackTraceExtensions.StartedFromNCrunch)
+				return; //ncrunch: no coverage
+			var clientSession2 = Messaging.JoinSession(Address, Port);
 			clientSession2.SendMessage("welcome");
 			List<MessagingSession.Message> messages = clientSession.GetMessages();
 			Assert.AreEqual(1, serverSession.GetMessages().Count);
@@ -97,27 +120,33 @@ namespace DeltaEngine.Networking.Tests
 			Assert.AreEqual(2, serverSession.NumberOfParticipants);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DisconnectedClientNoLongerReceivesMessagesFromServer()
 		{
 			clientSession.Disconnect();
+			Pause();
 			serverSession.SendMessage("hello?");
+			Pause();
 			Assert.AreEqual(0, clientSession.GetMessages().Count);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DisconnectedServerNoLongerReceivesMessagesFromClients()
 		{
 			serverSession.Disconnect();
+			Pause();
 			clientSession.SendMessage("are you there?");
+			Pause();
 			Assert.AreEqual(0, serverSession.GetMessages().Count);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void WhenTwoServersExistMessagesAreSentToTheCorrectOne()
 		{
+			if (!StackTraceExtensions.StartedFromNCrunch)
+				return; //ncrunch: no coverage
 			MessagingSession serverSession2 = Messaging.StartSession(Port + 1);
-			MessagingSession clientSession2 = Messaging.JoinSession("", Port + 1);
+			MessagingSession clientSession2 = Messaging.JoinSession(Address, Port + 1);
 			clientSession.SendMessage("first");
 			clientSession2.SendMessage("second");
 			Assert.AreEqual("first", serverSession.GetMessages()[0].Data);

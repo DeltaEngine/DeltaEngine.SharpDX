@@ -66,11 +66,11 @@ namespace DeltaEngine.Physics3D.Jitter
 		private void CreatePointOnLineJoint()
 		{
 			JVector lineStartPointBody1;
-			Vector tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			Vector3D tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.LineStartPointBody);
 			JitterDatatypesMapping.Convert(ref tempVector, out lineStartPointBody1);
 			JVector pointBody2;
-			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.PointBody);
 			JitterDatatypesMapping.Convert(ref tempVector, out pointBody2);
 			if (RigidBodyB != null)
@@ -83,23 +83,25 @@ namespace DeltaEngine.Physics3D.Jitter
 		private void CreatePointOnPointJoint()
 		{
 			JVector localAnchor;
-			Vector tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			Vector3D tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.Anchor1);
 			JitterDatatypesMapping.Convert(ref tempVector, out localAnchor);
 			if (RigidBodyB != null)
 				Constraint = new PointOnPoint(RigidBodyA, RigidBodyB, localAnchor);
 			else
-				Constraint = new global::Jitter.Dynamics.Constraints.SingleBody.PointOnPoint(RigidBodyA, localAnchor);
+				Constraint = new global::Jitter.Dynamics.Constraints.SingleBody.PointOnPoint(RigidBodyA,
+					localAnchor);
 		}
 
 		private void CreatePointPointDistanceJoint()
 		{
 			JVector anchor1;
-			Vector tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			Vector3D tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.Anchor1);
 			JitterDatatypesMapping.Convert(ref tempVector, out anchor1);
 			JVector anchor2;
-			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties, PropertyType.Anchor2);
+			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
+				PropertyType.Anchor2);
 			JitterDatatypesMapping.Convert(ref tempVector, out anchor2);
 			Constraint = new PointPointDistance(RigidBodyA, RigidBodyB, anchor1, anchor2);
 		}
@@ -107,11 +109,11 @@ namespace DeltaEngine.Physics3D.Jitter
 		private void CreateHingeJoint(JitterPhysics physicsManager)
 		{
 			JVector position;
-			Vector tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			Vector3D tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.Position);
 			JitterDatatypesMapping.Convert(ref tempVector, out position);
 			JVector hingeAxis;
-			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.HingeAxis);
 			JitterDatatypesMapping.Convert(ref tempVector, out hingeAxis);
 			Joint = new HingeJoint(physicsManager.jitterWorld, RigidBodyA, RigidBodyB, position,
@@ -121,8 +123,10 @@ namespace DeltaEngine.Physics3D.Jitter
 		private void CreatePrismaticJoint(JitterPhysics physicsManager)
 		{
 			Joint = new PrismaticJoint(physicsManager.jitterWorld, RigidBodyA, RigidBodyB,
-				ArrayExtensions.GetWithDefault<PropertyType, float>(Properties, PropertyType.MinimumDistance),
-				ArrayExtensions.GetWithDefault<PropertyType, float>(Properties, PropertyType.MaximumDistance));
+				ArrayExtensions.GetWithDefault<PropertyType, float>(Properties,
+					PropertyType.MinimumDistance),
+				ArrayExtensions.GetWithDefault<PropertyType, float>(Properties,
+					PropertyType.MaximumDistance));
 			float minimumSoftness = ArrayExtensions.GetWithDefault<PropertyType, float>(Properties,
 				PropertyType.MinimumSoftness);
 			float maximumSoftness = ArrayExtensions.GetWithDefault<PropertyType, float>(Properties,
@@ -134,14 +138,15 @@ namespace DeltaEngine.Physics3D.Jitter
 		private void CreateSingleBodyPointOnLineJoint()
 		{
 			JVector anchor;
-			Vector tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			Vector3D tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.Anchor1);
 			JitterDatatypesMapping.Convert(ref tempVector, out anchor);
 			JVector lineDirection;
-			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector>(Properties,
+			tempVector = ArrayExtensions.GetWithDefault<PropertyType, Vector3D>(Properties,
 				PropertyType.LineDirection);
 			JitterDatatypesMapping.Convert(ref tempVector, out lineDirection);
-			Constraint = new global::Jitter.Dynamics.Constraints.SingleBody.PointOnLine(RigidBodyA, anchor, lineDirection);
+			Constraint = new global::Jitter.Dynamics.Constraints.SingleBody.PointOnLine(RigidBodyA,
+				anchor, lineDirection);
 		}
 
 		/// <summary>
@@ -159,12 +164,13 @@ namespace DeltaEngine.Physics3D.Jitter
 				if (Constraint is PointOnPoint)
 					(Constraint as PointOnPoint).Softness = value;
 				if (Constraint is global::Jitter.Dynamics.Constraints.SingleBody.PointOnPoint)
-					(Constraint as global::Jitter.Dynamics.Constraints.SingleBody.PointOnPoint).Softness = value;
+					(Constraint as global::Jitter.Dynamics.Constraints.SingleBody.PointOnPoint).Softness =
+						value;
 				base.Softness = value;
 			}
 		}
 
-		public override Vector Anchor1
+		public override Vector3D Anchor1
 		{
 			get { return base.Anchor1; }
 			set
@@ -178,7 +184,7 @@ namespace DeltaEngine.Physics3D.Jitter
 			}
 		}
 
-		public override Vector Anchor2
+		public override Vector3D Anchor2
 		{
 			get { return base.Anchor2; }
 			set

@@ -156,16 +156,6 @@ namespace DeltaEngine.Tests.Core
 			{
 				Assert.NotNull(parameter);
 			}
-		}
-
-		private class MockXmlContentType : ContentData
-		{
-			protected MockXmlContentType(string contentName)
-				: base(contentName) {}
-
-			protected override void DisposeData() {}
-			protected override void LoadData(Stream fileData) {}
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 	}
 }

@@ -13,7 +13,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Point.Zero);
+				mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -25,7 +25,7 @@ namespace DeltaEngine.Input.Tests
 			var trigger = new MouseDragDropTrigger(Rectangle.One, MouseButton.Right);
 			Assert.AreEqual(Rectangle.One, trigger.StartArea);
 			Assert.AreEqual(MouseButton.Right, trigger.Button);
-			Assert.AreEqual(Point.Unused, trigger.StartDragPosition);
+			Assert.AreEqual(Vector2D.Unused, trigger.StartDragPosition);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -34,7 +34,7 @@ namespace DeltaEngine.Input.Tests
 			var trigger = new MouseDragDropTrigger("1.1 2.2 3.3 4.4 Right");
 			Assert.AreEqual(new Rectangle(1.1f, 2.2f, 3.3f, 4.4f), trigger.StartArea);
 			Assert.AreEqual(MouseButton.Right, trigger.Button);
-			Assert.AreEqual(Point.Unused, trigger.StartDragPosition);
+			Assert.AreEqual(Vector2D.Unused, trigger.StartDragPosition);
 			Assert.Throws<MouseDragDropTrigger.CannotCreateMouseDragDropTriggerWithoutStartArea>(
 				() => new MouseDragDropTrigger("1 2 3"));
 		}
@@ -42,19 +42,19 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragDropOutsideStartArea()
 		{
-			Point startPoint = -Point.One;
+			Vector2D startPoint = -Vector2D.One;
 			new Command(position =>
 			{
 				startPoint = position;
 			}).Add(new MouseDragDropTrigger(Rectangle.HalfCentered, MouseButton.Left));
-			SetMouseState(State.Pressing, Point.Zero);
-			SetMouseState(State.Pressed, Point.One);
-			SetMouseState(State.Releasing, Point.One);
-			SetMouseState(State.Released, Point.One);
-			Assert.AreEqual(-Point.One, startPoint);
+			SetMouseState(State.Pressing, Vector2D.Zero);
+			SetMouseState(State.Pressed, Vector2D.One);
+			SetMouseState(State.Releasing, Vector2D.One);
+			SetMouseState(State.Released, Vector2D.One);
+			Assert.AreEqual(-Vector2D.One, startPoint);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -66,15 +66,15 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragDropInsideStartArea()
 		{
-			Point startPoint = -Point.One;
+			Vector2D startPoint = -Vector2D.One;
 			new Command(position =>
 			{
 				startPoint = position;
 			}).Add(new MouseDragDropTrigger(Rectangle.HalfCentered, MouseButton.Left));
-			SetMouseState(State.Pressing, Point.Half);
-			SetMouseState(State.Pressed, Point.One);
-			SetMouseState(State.Releasing, Point.One);
-			Assert.AreEqual(Point.Half, startPoint);
+			SetMouseState(State.Pressing, Vector2D.Half);
+			SetMouseState(State.Pressed, Vector2D.One);
+			SetMouseState(State.Releasing, Vector2D.One);
+			Assert.AreEqual(Vector2D.Half, startPoint);
 		}
 	}
 }

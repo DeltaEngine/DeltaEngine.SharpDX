@@ -3,14 +3,14 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace GhostWars
 {
 	public class Tree : Sprite, Updateable
 	{
-		public Tree(Point position, Team team)
+		public Tree(Vector2D position, Team team)
 			: base(new Material(Shader.Position2DColorUv, TreeImageName[0]), position)
 		{
 			Level = 1;
@@ -44,9 +44,9 @@ namespace GhostWars
 
 		private int numberOfGhosts;
 		public readonly FontText NumberText;
-		private static readonly Point[] NumberTextPositionPerLevel =
+		private static readonly Vector2D[] NumberTextPositionPerLevel =
 		{
-			new Point(0.002f, -0.0495f), new Point(0.002f, -0.0775f), new Point(0.0015f, -0.0875f)
+			new Vector2D(0.002f, -0.0495f), new Vector2D(0.002f, -0.0775f), new Vector2D(0.0015f, -0.0875f)
 		};
 
 		public bool IsAi
@@ -61,7 +61,7 @@ namespace GhostWars
 				return;
 			NumberOfGhosts++;
 			Effects.CreateSparkleEffect(Team, Center +
-				new Point(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 1);
+				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 1);
 		}
 
 		private void UpdateImage()
@@ -98,7 +98,7 @@ namespace GhostWars
 			if (Team == Team.HumanYellow)
 				ContentLoader.Load<Sound>("GhostWaveStart").Play(0.7f);
 			Effects.CreateSparkleEffect(Team, Center +
-				new Point(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)),
+				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)),
 				numberOfAttackerGhosts);
 		}
 
@@ -124,7 +124,7 @@ namespace GhostWars
 		{
 			for (int num = 0; num < numberOfAttackerGhosts; num++)
 				Effects.CreateDeathEffect(Center +
-					new Point(Randomizer.Current.Get(-0.03f, 0.03f), Randomizer.Current.Get(-0.03f, 0.03f)));
+					new Vector2D(Randomizer.Current.Get(-0.03f, 0.03f), Randomizer.Current.Get(-0.03f, 0.03f)));
 			Effects.CreateHitEffect(Center);
 		}
 
@@ -151,7 +151,7 @@ namespace GhostWars
 			UpdateImage();
 			ContentLoader.Load<Sound>("Upgrading").Play();
 			Effects.CreateSparkleEffect(Team, Center +
-				new Point(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 8);
+				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 8);
 		}
 	}
 }

@@ -7,6 +7,6 @@ namespace DeltaEngine.Commands
 	/// </summary>
 	public abstract class PositionTrigger : InputTrigger
 	{
-		public Point Position { get; set; }
+		public Vector2D Position { get; set; }
 	}
 }

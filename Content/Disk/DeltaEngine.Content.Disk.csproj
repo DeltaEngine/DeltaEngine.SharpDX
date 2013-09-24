@@ -50,7 +50,6 @@
     <Compile Include="CompoundContentCreator.cs" />
     <Compile Include="ContentMetaDataFileCreator.cs" />
     <Compile Include="DiskContentLoader.cs" />
-    <Compile Include="FileExtensionToType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

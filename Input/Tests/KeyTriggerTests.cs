@@ -3,8 +3,8 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -32,14 +32,15 @@ namespace DeltaEngine.Input.Tests
 		{
 			var centers = new[]
 			{
-				new Point(0.5f, 0.4f), new Point(0.5f, 0.6f), new Point(0.3f, 0.6f), new Point(0.7f, 0.6f)
+				new Vector2D(0.5f, 0.4f), new Vector2D(0.5f, 0.6f), new Vector2D(0.3f, 0.6f),
+				new Vector2D(0.7f, 0.6f)
 			};
 			var size = new Size(0.1f, 0.1f);
 			CreateFontTexts(centers, size);
 			AddCirclesAndInputCommands(centers, size);
 		}
 
-		private static void CreateFontTexts(Point[] centers, Size size)
+		private static void CreateFontTexts(Vector2D[] centers, Size size)
 		{
 			new FontText(Font.Default, "Up", Rectangle.FromCenter(centers[0], size));
 			new FontText(Font.Default, "Down", Rectangle.FromCenter(centers[1], size));
@@ -47,7 +48,7 @@ namespace DeltaEngine.Input.Tests
 			new FontText(Font.Default, "Right", Rectangle.FromCenter(centers[3], size));
 		}
 
-		private static void AddCirclesAndInputCommands(Point[] centers, Size size)
+		private static void AddCirclesAndInputCommands(Vector2D[] centers, Size size)
 		{
 			var up = new Ellipse(centers[0], size.Width, size.Height, Color.Orange);
 			var down = new Ellipse(centers[1], size.Width, size.Height, Color.Orange);

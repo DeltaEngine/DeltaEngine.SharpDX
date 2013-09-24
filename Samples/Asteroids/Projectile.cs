@@ -4,7 +4,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
@@ -14,16 +14,16 @@ namespace Asteroids
 	/// </summary>
 	public class Projectile : Sprite
 	{
-		public Projectile(Material texture, Point startPosition, float angle)
+		public Projectile(Material texture, Vector2D startPosition, float angle)
 			: base(texture, Rectangle.FromCenter(startPosition, new Size(.02f)))
 		{
 			Rotation = angle;
 			RenderLayer = (int)AsteroidsRenderLayer.Rockets;
 			Add(new SimplePhysics.Data
 			{
-				Gravity = Point.Zero,
+				Gravity = Vector2D.Zero,
 				Velocity =
-					new Point(MathExtensions.Sin(angle) * ProjectileVelocity,
+					new Vector2D(MathExtensions.Sin(angle) * ProjectileVelocity,
 						-MathExtensions.Cos(angle) * ProjectileVelocity)
 			});
 			Start<MoveAndDisposeOnBorderCollision>();

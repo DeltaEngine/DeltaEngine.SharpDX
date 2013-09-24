@@ -3,7 +3,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -23,7 +23,7 @@ namespace $safeprojectname$
 			interact = new InteractionLogics();
 			playerTexture = new Material(Shader.Position2DColorUv, "PlayerPlane");
 			enemyTexture = new Material(Shader.Position2DColorUv, "EnemyPlane");
-			player = new PlayerPlane(playerTexture, new Point(0.15f, 0.5f));
+			player = new PlayerPlane(playerTexture, new Vector2D(0.15f, 0.5f));
 			controls = new GameControls();
 			background = new ParallaxBackground(4, layerImageNames, layerScrollFactors);
 			background.BaseSpeed = 1.2f;
@@ -40,7 +40,7 @@ namespace $safeprojectname$
 		private readonly Menu mainMenu;
 		private ParallaxBackground background;
 
-		public void CreateEnemyAtPosition(Point position)
+		public void CreateEnemyAtPosition(Vector2D position)
 		{
 			var enemy = new EnemyPlane(enemyTexture, position);
 			player.PlayerFiredShot += point => enemy.CheckIfHitAndReact(point);
@@ -98,7 +98,7 @@ namespace $safeprojectname$
 						continue;
 
 					var game = entity as Game;
-					game.CreateEnemyAtPosition(new Point(ScreenSpace.Current.Viewport.Right, 
+					game.CreateEnemyAtPosition(new Vector2D(ScreenSpace.Current.Viewport.Right, 
 						ScreenSpace.Current.Viewport.Center.Y + alternating * 0.1f));
 					timeLastOneSpawned = GlobalTime.Current.Milliseconds;
 					alternating *= -1;

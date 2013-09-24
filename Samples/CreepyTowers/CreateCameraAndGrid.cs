@@ -1,5 +1,6 @@
-﻿using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Cameras;
+﻿using CreepyTowers.Levels;
+using DeltaEngine.Datatypes;
+using DeltaEngine.Rendering3D.Cameras;
 using DeltaEngine.ScreenSpaces;
 
 namespace CreepyTowers
@@ -38,8 +39,8 @@ namespace CreepyTowers
 			var camera = Camera.Use<OrthoCamera>();
 			camera.Size = new Size(ScreenSpace.Current.Viewport.Width * FovSizeFactor,
 				ScreenSpace.Current.Viewport.Height * FovSizeFactor);
-			camera.Position = new Vector(6.0f, 5.9f, -6.3f);
-			//Camera.Target = new Vector(0.6f, 0.0f, 0.07f);
+			camera.Position = new Vector3D(6.0f, 5.9f, 6.3f);
+			//Camera.Target = new Vector3D(0.6f, 0.0f, 0.07f);
 		}
 
 		private void CreateGrid()

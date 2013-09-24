@@ -105,7 +105,7 @@ namespace DeltaEngine.Core
 		private static readonly Dictionary<string, Type> TypeMap = new Dictionary<string, Type>();
 		private static readonly Dictionary<Type, string> ShortNames = new Dictionary<Type, string>();
 
-		internal static string GetShortName(this object data)
+		internal static string GetShortName(object data)
 		{
 			if (ShortNames.ContainsKey(data.GetType()))
 				return ShortNames[data.GetType()];
@@ -129,7 +129,7 @@ namespace DeltaEngine.Core
 			return element == null ? typeof(object) : element.GetType();
 		}
 
-		internal static Type GetTypeFromShortNameOrFullNameIfNotFound(this string typeName)
+		public static Type GetTypeFromShortNameOrFullNameIfNotFound(this string typeName)
 		{
 			return TypeMap.ContainsKey(typeName) ? TypeMap[typeName] : Type.GetType(typeName, true);
 		}
@@ -141,7 +141,7 @@ namespace DeltaEngine.Core
 		{
 			if (data == null)
 				throw new ArgumentNullException("data");
-			writer.Write(data.GetShortName());
+			writer.Write(GetShortName(data));
 			WriteDataVersionNumber(data, writer);
 			BinaryDataSaver.TrySaveData(data, data.GetType(), writer);
 		}

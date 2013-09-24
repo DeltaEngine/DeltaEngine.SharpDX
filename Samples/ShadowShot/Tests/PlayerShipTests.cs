@@ -18,7 +18,7 @@ namespace ShadowShot.Tests
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(500, 500);
 			var shipImage = new Material(Shader.Position2DColorUv, "player");
-			var shipDrawArea = Rectangle.FromCenter(new Point(0.5f, 0.95f), playerShipSize);
+			var shipDrawArea = Rectangle.FromCenter(new Vector2D(0.5f, 0.95f), playerShipSize);
 			playerShip = new PlayerShip(shipImage, shipDrawArea, Resolve<ScreenSpace>().Viewport);
 		}
 
@@ -31,10 +31,10 @@ namespace ShadowShot.Tests
 		[Test]
 		public void Accelerate()
 		{
-			Point originalVelocity = playerShip.Get<Velocity2D.Data>().Velocity;
-			playerShip.Accelerate(Point.One);
+			Vector2D originalVelocity = playerShip.Get<Velocity2D.Data>().Velocity;
+			playerShip.Accelerate(Vector2D.One);
 			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D.Data>().Velocity);
-			playerShip.Accelerate(new Point(0, 1.0f));
+			playerShip.Accelerate(new Vector2D(0, 1.0f));
 			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D.Data>().Velocity);
 		}
 
@@ -50,7 +50,7 @@ namespace ShadowShot.Tests
 		[Test]
 		public void HittingBordersBottomLeft()
 		{
-			playerShip.Set(new Rectangle(new Point(0.0f, 1.0f), playerShipSize));
+			playerShip.Set(new Rectangle(new Vector2D(0.0f, 1.0f), playerShipSize));
 			Assert.LessOrEqual(0.0f, playerShip.DrawArea.BottomRight.X);
 			Assert.LessOrEqual(1.0, playerShip.DrawArea.BottomRight.Y);
 		}
@@ -80,7 +80,7 @@ namespace ShadowShot.Tests
 		[Test]
 		public void CollisonWithAsteroidEndsGame()
 		{
-			playerShip.DrawArea = new Rectangle(Point.Half, playerShip.Size);
+			playerShip.DrawArea = new Rectangle(Vector2D.Half, playerShip.Size);
 			new GameController(playerShip, new Material(Shader.Position2DColorUv, "asteroid"),
 				playerShip.Size, Resolve<ScreenSpace>());
 		}

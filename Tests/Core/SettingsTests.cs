@@ -1,7 +1,6 @@
 ﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Mocks;
-using DeltaEngine.Platforms;
 using NUnit.Framework;
 using ProfilingMode = DeltaEngine.Core.ProfilingMode;
 
@@ -12,14 +11,13 @@ namespace DeltaEngine.Tests.Core
 		[SetUp]
 		public void Init()
 		{
-			settings = new MockSettings();
+			Settings.Current = new MockSettings();
 		}
-
-		private Settings settings;
 
 		[Test]
 		public void CheckDefaultSettings()
 		{
+			Settings settings = Settings.Current;
 			Assert.AreEqual(Settings.DefaultResolution, settings.Resolution);
 			Assert.AreEqual(false, settings.StartInFullscreen);
 			Assert.AreEqual(1.0f, settings.SoundVolume);
@@ -35,6 +33,7 @@ namespace DeltaEngine.Tests.Core
 		[Test]
 		public void ChangeAndSaveSettings()
 		{
+			Settings settings = Settings.Current;
 			settings.PlayerName = ModifiedPlayerName;
 			settings.TwoLetterLanguageName = ModifiedTwoLetterLanguageName;
 			Assert.AreEqual(settings.TwoLetterLanguageName, ModifiedTwoLetterLanguageName);
@@ -43,11 +42,13 @@ namespace DeltaEngine.Tests.Core
 		}
 
 		private const string ModifiedPlayerName = "John Doe";
+
 		private const string ModifiedTwoLetterLanguageName = "de";
 
 		[Test]
 		public void SetValueTwice()
 		{
+			Settings settings = Settings.Current;
 			settings.PlayerName = "Blub";
 			settings.PlayerName = ModifiedPlayerName;
 			Assert.AreEqual(ModifiedPlayerName, settings.PlayerName);
@@ -56,11 +57,12 @@ namespace DeltaEngine.Tests.Core
 		[Test]
 		public void EditAndCheckSettings()
 		{
-			EditSettings();
-			CheckSettings();
+			Settings settings = Settings.Current;
+			EditSettings(settings);
+			CheckSettings(settings);
 		}
 
-		private void EditSettings()
+		private static void EditSettings(Settings settings)
 		{
 			settings.Resolution = new Size(1000, 500);
 			settings.SoundVolume = 2.0f;
@@ -76,7 +78,7 @@ namespace DeltaEngine.Tests.Core
 			settings.OnlineServicePort = 13;
 		}
 
-		private void CheckSettings()
+		private static void CheckSettings(Settings settings)
 		{
 			Assert.AreEqual(new Size(1000, 500), settings.Resolution);
 			Assert.AreEqual(2.0f, settings.SoundVolume);
@@ -90,15 +92,6 @@ namespace DeltaEngine.Tests.Core
 			Assert.AreEqual(ProfilingMode.Rendering, settings.ProfilingModes);
 			Assert.AreEqual("content.server.ip", settings.OnlineServiceIp);
 			Assert.AreEqual(13, settings.OnlineServicePort);
-		}
-
-		[Test]
-		public void ChangeFileSettings()
-		{
-			var fileSettings = new FileSettings();
-			fileSettings.StartInFullscreen = true;
-			Assert.AreEqual(true, fileSettings.StartInFullscreen);
-			fileSettings.Dispose();
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace DeltaEngine.Core
 		event Action<Orientation> OrientationChanged;
 		event Action<Size, bool> FullscreenChanged;
 		Size TotalPixelSize { get; }
-		Point PixelPosition { get; set; }
+		Vector2D PixelPosition { get; set; }
 		Color BackgroundColor { get; set; }
 		bool IsFullscreen { get; }
 		void SetFullscreen(Size displaySize);

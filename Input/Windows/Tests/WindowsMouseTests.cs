@@ -22,7 +22,7 @@ namespace DeltaEngine.Input.Windows.Tests
 		[Test, Ignore] // This moves the mouse every time NCrunch runs!
 		public void SetPositionAndUpdateTrigger()
 		{
-			var setPoint = new Point(0.8f, 0.4f);
+			var setPoint = new Vector2D(0.8f, 0.4f);
 			var moveTrigger = new MouseHoverTrigger();
 			mouse.SetPosition(setPoint);
 			mouse.Update(new List<Entity>(new[] { moveTrigger }));

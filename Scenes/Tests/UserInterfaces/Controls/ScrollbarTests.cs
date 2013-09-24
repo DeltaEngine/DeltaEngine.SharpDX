@@ -5,7 +5,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -40,7 +40,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; //ncrunch: no coverage
 
-			mouse.SetPosition(Point.Zero);
+			mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -111,7 +111,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			{
 				foreach (Scrollbar scrollbar in entities)
 				{
-					var center = scrollbar.DrawArea.Center + new Point(0.01f, 0.01f) * Time.Delta;
+					var center = scrollbar.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
 					var size = scrollbar.DrawArea.Size * (1.0f + Time.Delta / 10);
 					scrollbar.DrawArea = Rectangle.FromCenter(center, size);
 				}
@@ -157,18 +157,18 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			var position = new Point(0.3f, 0.52f);
+			var position = new Vector2D(0.3f, 0.52f);
 			DragMouse(position);
-			Assert.AreEqual(new Point(0.3f, 0.5f), scrollbar.Pointer.DrawArea.Center);
+			Assert.AreEqual(new Vector2D(0.3f, 0.5f), scrollbar.Pointer.DrawArea.Center);
 		}
 
-		private void DragMouse(Point position)
+		private void DragMouse(Vector2D position)
 		{
-			SetMouseState(State.Pressing, position + new Point(0.1f, 0.1f));
+			SetMouseState(State.Pressing, position + new Vector2D(0.1f, 0.1f));
 			SetMouseState(State.Pressing, position);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage

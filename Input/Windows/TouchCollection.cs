@@ -13,14 +13,14 @@ namespace DeltaEngine.Input.Windows
 		{
 			this.positionTranslater = positionTranslater;
 			states = new State[MaxNumberOfTouches];
-			locations = new Point[MaxNumberOfTouches];
+			locations = new Vector2D[MaxNumberOfTouches];
 			ids = new int[MaxNumberOfTouches];
 			for (int index = 0; index < MaxNumberOfTouches; index++)
 				ids[index] = -1;
 		}
 
 		internal readonly State[] states;
-		internal readonly Point[] locations;
+		internal readonly Vector2D[] locations;
 		internal readonly int[] ids;
 		private const int MaxNumberOfTouches = 10;
 		private readonly CursorPositionTranslater positionTranslater;
@@ -84,9 +84,9 @@ namespace DeltaEngine.Input.Windows
 			states[touchIndex] = states[touchIndex].UpdateOnNativePressing(IsTouchDown(flags));
 		}
 
-		internal Point CalculateQuadraticPosition(int x, int y)
+		internal Vector2D CalculateQuadraticPosition(int x, int y)
 		{
-			var newPosition = new Point(x / Precision, y / Precision);
+			var newPosition = new Vector2D(x / Precision, y / Precision);
 			return positionTranslater.FromScreenPositionToScreenSpace(newPosition);
 		}
 

@@ -2,7 +2,7 @@ using System;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
@@ -35,7 +35,7 @@ namespace $safeprojectname$
 			}
 		}
 
-		public void CreateAsteroidsAtPosition(Point position, int sizeMod = 1, int howMany = 2)
+		public void CreateAsteroidsAtPosition(Vector2D position, int sizeMod = 1, int howMany = 2)
 		{
 			for (int asteroidCount = 0; asteroidCount < howMany; asteroidCount++)
 			{

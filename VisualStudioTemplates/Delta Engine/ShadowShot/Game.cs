@@ -3,8 +3,8 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$

@@ -29,7 +29,7 @@ namespace $safeprojectname$.PathFinding
 
 	public class Graph
 	{
-		public Point[] Nodes
+		public Vector2D[] Nodes
 		{
 			get;
 			set;
@@ -50,7 +50,7 @@ namespace $safeprojectname$.PathFinding
 		public Graph(int numberOfNodes)
 		{
 			NumberOfNodes = numberOfNodes;
-			Nodes = new Point[numberOfNodes];
+			Nodes = new Vector2D[numberOfNodes];
 			AdjacencyList = new List<GraphConnection>[numberOfNodes];
 			for (int i = 0; i < numberOfNodes; i++)
 				AdjacencyList [i] = new List<GraphConnection>();

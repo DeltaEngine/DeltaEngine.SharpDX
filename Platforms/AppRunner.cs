@@ -12,9 +12,8 @@ using DeltaEngine.Graphics;
 using DeltaEngine.Logging;
 using DeltaEngine.Networking;
 using DeltaEngine.Networking.Tcp;
-using DeltaEngine.Rendering.Cameras;
+using DeltaEngine.Rendering3D.Cameras;
 using DeltaEngine.ScreenSpaces;
-using Microsoft.Win32;
 
 namespace DeltaEngine.Platforms
 {
@@ -26,9 +25,10 @@ namespace DeltaEngine.Platforms
 		//ncrunch: no coverage start
 		protected void RegisterCommonEngineSingletons()
 		{
+			LoadSettingsAndCommands();
+			CreateOnlineService();
 			CreateDefaultLoggers();
 			CreateConsoleCommandResolver();
-			LoadSettingsAndCommands();
 			CreateContentLoader();
 			RegisterInstance(new StopwatchTime());
 			RegisterSingleton<Drawing>();
@@ -38,9 +38,32 @@ namespace DeltaEngine.Platforms
 			CreateScreenSpacesAndCameraResolvers();
 		}
 
+		private void LoadSettingsAndCommands()
+		{
+			instancesToDispose.Add(settings = new FileSettings());
+			RegisterInstance(settings);
+			Settings.Current = settings;
+			ContentIsReady += () => ContentLoader.Load<InputCommands>("DefaultCommands");
+		}
+
+		protected Settings settings;
+		protected internal static event Action ContentIsReady;
+
+		private void CreateOnlineService()
+		{
+			onlineService = new OnlineServiceConnection(settings, OnTimeout);
+			onlineService.ServerErrorHappened = OnError;
+			onlineService.ContentReady = OnReady;
+			onlineService.ContentReceived = OnContentReceived;
+			RegisterInstance(onlineService);
+		}
+
+		private OnlineServiceConnection onlineService;
+
 		private void CreateDefaultLoggers()
 		{
 			instancesToDispose.Add(new TextFileLogger());
+			instancesToDispose.Add(new NetworkLogger(onlineService));
 			if (ExceptionExtensions.IsDebugMode)
 				instancesToDispose.Add(new ConsoleLogger());
 		}
@@ -57,20 +80,9 @@ namespace DeltaEngine.Platforms
 
 		private void CreateContentLoader()
 		{
-			OnlineServiceConnection.RememberCreationDataForAppRunner(GetApiKey(),
-				settings, OnTimeout, OnError, OnReady, OnContentReceived);
 			if (ContentLoader.Type == null)
 				ContentLoader.Use<DeveloperOnlineContentLoader>();
 			ContentLoader.resolver = new AutofacContentLoaderResolver(this);
-		}
-
-		private static string GetApiKey()
-		{
-			string apiKey = "";
-			using (var key = Registry.CurrentUser.OpenSubKey(@"Software\DeltaEngine\Editor", false))
-				if (key != null)
-					apiKey = (string)key.GetValue("ApiKey");
-			return string.IsNullOrEmpty(apiKey) ? Guid.Empty.ToString() : apiKey;
 		}
 
 		internal enum ExitCode
@@ -108,22 +120,12 @@ namespace DeltaEngine.Platforms
 
 		public void OnContentReceived()
 		{
-			if (timeout < TimeoutTillNextMessage)
-				timeout = TimeoutTillNextMessage;
+			if (timeout < NextMessageTimeoutMs)
+				timeout = NextMessageTimeoutMs;
 		}
 
 		private int timeout;
-		private const int TimeoutTillNextMessage = 3000;
-
-		private void LoadSettingsAndCommands()
-		{
-			instancesToDispose.Add(settings = new FileSettings());
-			RegisterInstance(settings);
-			ContentIsReady += () => ContentLoader.Load<InputCommands>("DefaultCommands");
-		}
-
-		protected Settings settings;
-		protected internal static event Action ContentIsReady;
+		private const int NextMessageTimeoutMs = 3000;
 
 		private void CreateEntitySystem()
 		{
@@ -172,7 +174,7 @@ namespace DeltaEngine.Platforms
 		{
 			if (!ContentLoader.HasValidContentForStartup())
 				Logger.Info("No content available. Waiting until OnlineService sends it to us ...");
-			timeout = TimeoutTillNextMessage;
+			timeout = InitialTimeoutMs;
 			while (String.IsNullOrEmpty(connectionError) && !onlineServiceReadyReceived &&
 				ContentLoader.Type == typeof(DeveloperOnlineContentLoader) && timeout > 0)
 			{
@@ -183,6 +185,8 @@ namespace DeltaEngine.Platforms
 				Logger.Warning(
 					"Content download timeout reached, continuing app (content might be incomplete)");
 		}
+
+		private const int InitialTimeoutMs = 5000;
 
 		private void CreateNetworking()
 		{

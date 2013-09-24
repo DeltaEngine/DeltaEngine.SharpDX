@@ -28,8 +28,8 @@ namespace DeltaEngine.Input
 		}
 
 		public float Elapsed { get; set; }
-		public Point StartPosition { get; set; }
-		public Point LastPosition { get; set; }
+		public Vector2D StartPosition { get; set; }
+		public Vector2D LastPosition { get; set; }
 
 		public TouchHoldTrigger(string parameter = "") {}
 

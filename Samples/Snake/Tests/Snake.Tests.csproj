@@ -54,13 +54,13 @@
       <Project>{BF968F20-246B-4F86-BB7B-377FD4B47A9F}</Project>
       <Name>DeltaEngine.Platforms.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\DeltaEngine.Rendering.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+      <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
-      <Name>DeltaEngine.Rendering.Shapes</Name>
+      <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
     <ProjectReference Include="..\Snake.csproj">
       <Project>{EBE1547D-25CE-4DBE-AF9E-D901C97681B3}</Project>

@@ -7,7 +7,7 @@ namespace DeltaEngine.Networking.Tcp
 {
 	internal static class NetworkExtensions
 	{
-		public static IPEndPoint ToEndPoint(this string serverAddress, int serverPort)
+		public static IPEndPoint ToEndPoint(string serverAddress, int serverPort)
 		{
 			IPAddress ipAddress;
 			return IPAddress.TryParse(serverAddress, out ipAddress)

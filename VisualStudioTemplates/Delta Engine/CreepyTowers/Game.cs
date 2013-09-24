@@ -1,3 +1,4 @@
+using $safeprojectname$.GUI;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Graphics;

@@ -12,23 +12,23 @@ namespace DeltaEngine.ScreenSpaces
 		public Camera2DScreenSpace(Window window)
 			: base(window) {}
 
-		public override Point ToPixelSpace(Point quadraticPos)
+		public override Vector2D ToPixelSpace(Vector2D quadraticPos)
 		{
 			return base.ToPixelSpace(Transform(quadraticPos));
 		}
 
-		public Point Transform(Point position)
+		public Vector2D Transform(Vector2D position)
 		{
-			var point = (position - LookAt) * Zoom + Point.Half;
+			var point = (position - LookAt) * Zoom + Vector2D.Half;
 			if (Rotation != 0.0f)
 				point = point.RotateAround(RotationCenter, Rotation);
 
 			return point;
 		}
 
-		public Point LookAt = Point.Half;
+		public Vector2D LookAt = Vector2D.Half;
 		public float Rotation = 0.0f;
-		public Point RotationCenter = Point.Zero;
+		public Vector2D RotationCenter = Vector2D.Zero;
 
 		public float Zoom
 		{
@@ -48,14 +48,14 @@ namespace DeltaEngine.ScreenSpaces
 			return base.ToPixelSpace(quadraticSize) * Zoom;
 		}
 
-		public override Point FromPixelSpace(Point pixelPosition)
+		public override Vector2D FromPixelSpace(Vector2D pixelPosition)
 		{
 			return InverseTransform(base.FromPixelSpace(pixelPosition));
 		}
 
-		public Point InverseTransform(Point position)
+		public Vector2D InverseTransform(Vector2D position)
 		{
-			return (position - Point.Half) * inverseZoom + LookAt;
+			return (position - Vector2D.Half) * inverseZoom + LookAt;
 		}
 
 		public override Size FromPixelSpace(Size pixelSize)
@@ -63,12 +63,12 @@ namespace DeltaEngine.ScreenSpaces
 			return base.FromPixelSpace(pixelSize) * inverseZoom;
 		}
 
-		public override Point TopLeft
+		public override Vector2D TopLeft
 		{
 			get { return InverseTransform(base.TopLeft); }
 		}
 
-		public override Point BottomRight
+		public override Vector2D BottomRight
 		{
 			get { return InverseTransform(base.BottomRight); }
 		}

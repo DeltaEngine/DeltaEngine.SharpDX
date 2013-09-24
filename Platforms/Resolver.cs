@@ -13,8 +13,8 @@ using DeltaEngine.Core;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
-using DeltaEngine.Rendering.Mocks;
-using DeltaEngine.Rendering.Models;
+using DeltaEngine.Rendering3D.Mocks;
+using DeltaEngine.Rendering3D.Models;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Platforms
@@ -240,11 +240,17 @@ namespace DeltaEngine.Platforms
 			if (parameter is ContentCreationData &&
 				(baseType == typeof(Image) || baseType == typeof(Shader) ||
 					baseType.Assembly.GetName().Name == "DeltaEngine.Graphics"))
-				return Activator.CreateInstance(FindConcreteType(baseType),
-					BindingFlags.NonPublic | BindingFlags.Instance, default(Binder),
-					new[] { parameter, Resolve<Device>() }, default(CultureInfo));
+				return CreateTypeManually(FindConcreteType(baseType), parameter);
 			return container.Resolve(baseType,
 				new Parameter[] { new TypedParameter(parameter.GetType(), parameter) });
+		}
+
+		private object CreateTypeManually(Type concreteTypeToCreate, object parameter)
+		{
+			return Activator.CreateInstance(concreteTypeToCreate,
+				BindingFlags.NonPublic | BindingFlags.Instance, default(Binder),
+				concreteTypeToCreate.Name.EndsWith("MockImage")
+					? new[] { parameter } : new[] { parameter, Resolve<Device>() }, default(CultureInfo));
 		}
 
 		/// <summary>
@@ -276,9 +282,7 @@ namespace DeltaEngine.Platforms
 			Dispose();
 			if (!StackTraceExtensions.StartedFromNCrunch)
 				Environment.Exit((int)AppRunner.ExitCode.InitializationError);
-		}
-
-		// ncrunch: no coverage end
+		} // ncrunch: no coverage end
 
 		public virtual void Dispose()
 		{

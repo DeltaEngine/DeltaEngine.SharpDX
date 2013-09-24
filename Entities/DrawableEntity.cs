@@ -13,15 +13,6 @@ namespace DeltaEngine.Entities
 	/// </summary>
 	public class DrawableEntity : Entity
 	{
-		protected DrawableEntity(List<object> createFromComponents)
-			: base(createFromComponents)
-		{
-			foreach (var component in components)
-				if (!(component is Rectangle) && component is Visibility)
-					// ReSharper disable DoNotCallOverridableMethodsInConstructor
-					Visibility = (Visibility)component;
-		}
-
 		/// <summary>
 		/// By default all drawable entities are visible, but you can easily turn off drawing with Hide
 		/// </summary>
@@ -32,6 +23,13 @@ namespace DeltaEngine.Entities
 		}
 
 		public virtual Visibility Visibility { get; set; }
+
+		protected internal override void FillComponents(List<object> createFromComponents)
+		{
+			base.FillComponents(createFromComponents);
+			foreach (Visibility component in createFromComponents.OfType<Visibility>())
+				Visibility = component;
+		}
 
 		public void ToggleVisibility()
 		{
@@ -60,7 +58,7 @@ namespace DeltaEngine.Entities
 
 		public const int DefaultRenderLayer = 0;
 
-		internal void InternalNextUpdateStarted()
+		internal void InvokeNextUpdateStarted()
 		{
 			NextUpdateStarted();
 		}
@@ -114,7 +112,7 @@ namespace DeltaEngine.Entities
 			return base.Get<T>();
 		}
 
-		public IEnumerable<T> GetInterpolatedList<T>() where T : Lerp
+		public List<T> GetInterpolatedList<T>() where T : Lerp
 		{
 			EntitiesRunner.Current.CheckIfInDrawState();
 			foreach (var list in lastTickLerpComponents.OfType<IEnumerable<T>>())
@@ -132,7 +130,7 @@ namespace DeltaEngine.Entities
 						}
 						return ret;
 					}
-				}//ncrunch: no coverage 
+				} //ncrunch: no coverage 
 			throw new ListWithLerpElementsForInterpolationWasNotFound(typeof(T));
 		}
 
@@ -159,7 +157,7 @@ namespace DeltaEngine.Entities
 								EntitiesRunner.CurrentDrawInterpolation);
 						return ret;
 					}
-				}//ncrunch: no coverage 
+				} //ncrunch: no coverage 
 			throw new ArrayWithLerpElementsForInterpolationWasNotFound(typeof(T));
 		}
 
@@ -179,9 +177,18 @@ namespace DeltaEngine.Entities
 
 		private static bool IsLerpableType<T>(T component)
 		{
+			if (component is Lerp || component is float)
+				return true;
 			var list = component as IList;
-			return component is Lerp || component is float ||
-				list != null && list.Count > 0 && IsLerpableType(list[0]);
+			if (list != null)
+			{
+				if (list.Count > 0 && IsLerpableType(list[0]))
+					return true;
+				var arguments = list.GetType().GetGenericArguments();
+				if (arguments.Length > 0 && typeof(Lerp).IsAssignableFrom(arguments[0]))
+					return true;
+			}
+			return false;
 		}
 
 		public override void Set<T>(T component)
@@ -195,7 +202,12 @@ namespace DeltaEngine.Entities
 
 		public void OnDraw<T>() where T : class, DrawBehavior
 		{
-			var behavior = EntitiesRunner.Current.GetDrawBehavior<T>();
+			OnDraw(typeof(T));
+		}
+
+		internal void OnDraw(Type drawBehaviorType)
+		{
+			var behavior = EntitiesRunner.Current.GetDrawBehavior(drawBehaviorType) as DrawBehavior;
 			if (drawBehaviors.Contains(behavior))
 				return;
 			drawBehaviors.Add(behavior);
@@ -216,6 +228,11 @@ namespace DeltaEngine.Entities
 					foreach (DrawBehavior behavior in drawBehaviors)
 						EntitiesRunner.Current.AddToDrawBehaviorList(this, behavior);
 			}
+		}
+
+		protected internal List<DrawBehavior> GetDrawBehaviors()
+		{
+			return drawBehaviors;
 		}
 	}
 }

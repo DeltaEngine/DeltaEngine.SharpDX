@@ -2,7 +2,7 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -26,7 +26,7 @@ namespace DeltaEngine.Input.Tests
 			if (mockMouse == null)
 				return; //ncrunch: no coverage
 			AdvanceTimeAndUpdateEntities();
-			mockMouse.SetPosition(new Point(1.5f, 1.5f));
+			mockMouse.SetPosition(new Vector2D(1.5f, 1.5f));
 			AdvanceTimeAndUpdateEntities();
 			Assert.AreEqual(1.5f, xPosition);
 		}
@@ -35,14 +35,14 @@ namespace DeltaEngine.Input.Tests
 		public void Create()
 		{
 			var trigger = new MouseMovementTrigger();
-			Assert.AreEqual(Point.Zero, trigger.Position);
+			Assert.AreEqual(Vector2D.Zero, trigger.Position);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void CreateFromString()
 		{
 			var trigger = new MouseMovementTrigger("");
-			Assert.AreEqual(Point.Zero, trigger.Position);
+			Assert.AreEqual(Vector2D.Zero, trigger.Position);
 			Assert.Throws<MouseMovementTrigger.MouseMovementTriggerHasNoParameters>(
 				() => new MouseMovementTrigger("a"));
 		}

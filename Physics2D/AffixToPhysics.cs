@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 
 namespace DeltaEngine.Physics2D
 {

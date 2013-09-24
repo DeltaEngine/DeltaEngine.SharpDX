@@ -104,10 +104,8 @@ namespace DeltaEngine.Multimedia.SharpDX
 		{
 			if (musicStream == null)
 				return;
-
 			base.DisposeData();
 			musicStream = null;
-
 			if (source != null)
 				DisposeSource();
 		}
@@ -116,7 +114,6 @@ namespace DeltaEngine.Multimedia.SharpDX
 		{
 			for (int i = 0; i < NumberOfBuffers; i++)
 				buffers[i].Dispose();
-
 			source.FlushSourceBuffers();
 			source.DestroyVoice();
 			source.Dispose();

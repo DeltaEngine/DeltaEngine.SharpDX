@@ -8,7 +8,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Vertices;
-using DeltaEngine.Rendering.Particles;
+using DeltaEngine.Rendering3D.Particles;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
@@ -195,9 +195,9 @@ namespace DeltaEngine.Content.Mocks
 
 		private static MemoryStream SaveShader(string contentName)
 		{
-			var shader = new ShaderCreationData(ShaderWithFormat.UvVertexCode,
-				ShaderWithFormat.UvFragmentCode, ShaderWithFormat.UvHlslCode,
-				ShaderWithFormat.Dx9Position2DTexture, GetVertexFormatFromDefaultNames(contentName));
+			var shader = new ShaderCreationData(ShaderCodeOpenGL.PositionUvOpenGLVertexCode,
+				ShaderCodeOpenGL.PositionUvOpenGLFragmentCode, ShaderCodeDX11.PositionUvDx11,
+				ShaderCodeDX9.Position2DUvDx9, GetVertexFormatFromDefaultNames(contentName));
 			var data = BinaryDataExtensions.SaveToMemoryStream(shader);
 			data.Seek(0, SeekOrigin.Begin);
 			return data;
@@ -244,8 +244,7 @@ namespace DeltaEngine.Content.Mocks
 			return data;
 		}
 
-		protected override ContentMetaData GetMetaData(string contentName,
-			Type contentClassType = null)
+		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
 			if (contentName.StartsWith("Unavailable"))
 				return null;
@@ -293,7 +292,7 @@ namespace DeltaEngine.Content.Mocks
 		{
 			var metaData = new ContentMetaData { Name = name, Type = ContentType.Material };
 			if (!name.Contains("NoShader"))
-				metaData.Values.Add("ShaderName", "Position2DUv");
+				AddShaderNameToMetaData(metaData);
 			if (!name.Contains("NoImage"))
 				if (name.Contains("ImageAnimation"))
 					metaData.Values.Add("ImageOrAnimationName", "ImageAnimation");
@@ -303,6 +302,12 @@ namespace DeltaEngine.Content.Mocks
 					metaData.Values.Add("ImageOrAnimationName", "DeltaEngineLogo");
 			metaData.Values.Add("LightMapName", "lightMap");
 			return metaData;
+		}
+
+		private static void AddShaderNameToMetaData(ContentMetaData metaData)
+		{
+			metaData.Values.Add("ShaderName",
+				metaData.Name.EndsWith("2D") ? "Position2DUv" : "Position3DUv");
 		}
 
 		private static ContentMetaData CreateSpriteSheetAnimationMetaData(string name)
@@ -334,6 +339,8 @@ namespace DeltaEngine.Content.Mocks
 		{
 			var metaData = new ContentMetaData { Name = contentName, Type = ContentType.Image };
 			metaData.Values.Add("PixelSize", "128,128");
+			if (contentName.Contains("ParticleFire"))
+				metaData.Values.Add("BlendMode", "Additive");
 			return metaData;
 		}
 

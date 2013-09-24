@@ -3,78 +3,37 @@ using System.Diagnostics.Contracts;
 
 namespace DeltaEngine.Datatypes
 {
-	public class RangeGraph<T> : Range<T>
+	public class RangeGraph<T> : BaseRangeGraph<T>
 		where T : Lerp<T>
 	{
-		public RangeGraph()
-		{
-			Values = new T[2];
-		}
+		public RangeGraph() {}
 
 		public RangeGraph(T minimum, T maximum)
 			: base(minimum, maximum) {}
 
-		public RangeGraph(List<T> values)
-		{
-			Values = values.ToArray();
-		}
+		public RangeGraph(List<T> values) : base(values)
+		{}
 
-		public T[] Values { get; private set; }
-
-		public T GetInterpolatedValue(float interpolation)
+		public override T GetInterpolatedValue(float interpolation)
 		{
-			if (interpolation == 1.0f)
+			if (interpolation >= 1.0f)
 				return Values[Values.Length - 1];
-			var intervalLeft = (int)(interpolation * (Values.Length-1));
-			var intervalInterpolation = (interpolation * (Values.Length-1)) - intervalLeft;
-			return Values[intervalLeft].Lerp(Values[intervalLeft+1], intervalInterpolation);
+			var intervalLeft = (int)(interpolation * (Values.Length - 1));
+			var intervalInterpolation = (interpolation * (Values.Length - 1)) - intervalLeft;
+			return Values[intervalLeft].Lerp(Values[intervalLeft + 1], intervalInterpolation);
 		}
 
-		public override T Start
+		public override void SetValue(int index, T value)
 		{
-			get
-			{
-				EnsureValuesInitialized();
-				return Values[0];
-			}
-			set
-			{
-				EnsureValuesInitialized();
-				Values[0] = value;
-			}
-		}
-
-		public override T End
-		{
-			get
-			{
-				EnsureValuesInitialized();
-				return Values[Values.Length - 1];
-			}
-			set
-			{
-				EnsureValuesInitialized();
-				Values[Values.Length - 1] = value;
-			}
-		}
-
-		private void EnsureValuesInitialized()
-		{
-			if (Values == null)
-				Values = new T[2];
-		}
-
-		public void SetValue(int index, T value)
-		{
-			if(index >= Values.Length)
+			if (index >= Values.Length)
 				AddValueAfter(Values.Length, value);
-			else if(index < 0)
+			else if (index < 0)
 				AddValueBefore(0, value);
 			else
 				Values[index] = value;
 		}
 
-		public void AddValueAfter(int leftIndex, T value)
+		public void AddValueAfter(int leftIndex, T value, float percentageInbetween = 0.5f)
 		{
 			if (leftIndex < 0)
 			{
@@ -85,7 +44,7 @@ namespace DeltaEngine.Datatypes
 			ExpandAndAddValue(insertIndex, value);
 		}
 
-		public void AddValueBefore(int rightIndex, T value)
+		public void AddValueBefore(int rightIndex, T value, float percentageInbetween = 0.5f)
 		{
 			if (rightIndex >= Values.Length)
 			{
@@ -96,30 +55,12 @@ namespace DeltaEngine.Datatypes
 			ExpandAndAddValue(insertIndex, value);
 		}
 
-		private void ExpandAndAddValue(int insertIndex, T value)
-		{
-			var valueBuffer = Values;
-			var newLength = Values.Length + 1;
-			Values = new T[newLength];
-			for (int i = 0; i < newLength; i++)
-			{
-				if (i == insertIndex)
-					Values[i] = value;
-				else if (i > insertIndex)
-					Values[i] = valueBuffer[i - 1];
-				else
-					Values[i] = valueBuffer[i];
-			}
-		}
-
 		[Pure]
 		public override string ToString()
 		{
-			string stringOfValues = GetType().Name + "<"+ typeof(T).Name + ">{" +Start;
-			for (int i = 0; i < Values.Length - 1; i++)
-			{
+			string stringOfValues = "{" + Start;
+			for (int i = 1; i < Values.Length; i++)
 				stringOfValues += ", " + Values[i];
-			}
 			stringOfValues += "}";
 			return stringOfValues;
 		}

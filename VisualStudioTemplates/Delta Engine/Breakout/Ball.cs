@@ -8,7 +8,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
@@ -33,7 +33,7 @@ namespace $safeprojectname$
 		private void UpdateOnPaddle()
 		{
 			isOnPaddle = true;
-			Position = new Point(paddle.Position.X, paddle.Position.Y - Radius);
+			Position = new Vector2D(paddle.Position.X, paddle.Position.Y - Radius);
 		}
 
 		protected bool isOnPaddle;
@@ -53,17 +53,17 @@ namespace $safeprojectname$
 
 			isOnPaddle = false;
 			float randomXSpeed = Randomizer.Current.Get(-0.15f, 0.15f);
-			velocity = new Point(randomXSpeed.Abs() < 0.01f ? 0.01f : randomXSpeed, StartBallSpeedY);
+			velocity = new Vector2D(randomXSpeed.Abs() < 0.01f ? 0.01f : randomXSpeed, StartBallSpeedY);
 			fireBallSound.Play();
 		}
 
-		protected static Point velocity;
+		protected static Vector2D velocity;
 		private const float StartBallSpeedY = -1f;
 
 		public virtual void ResetBall()
 		{
 			UpdateOnPaddle();
-			velocity = Point.Zero;
+			velocity = Vector2D.Zero;
 		}
 		public class RunBall : UpdateBehavior
 		{
@@ -81,7 +81,7 @@ namespace $safeprojectname$
 				}
 			}
 		}
-		public Point Position
+		public Vector2D Position
 		{
 			get;
 			protected set;

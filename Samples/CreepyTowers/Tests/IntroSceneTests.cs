@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Commands;
+﻿using CreepyTowers.GUI;
+using DeltaEngine.Commands;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -6,7 +7,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Graphics;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
@@ -76,8 +77,11 @@ namespace CreepyTowers.Tests
     [Test]
     public void FadeOutButton()
     {
-      button = new InteractiveButton(CreateTheme(Names.ButtonIntroFlipLeft), ScreenSpace.Current.Viewport);
-      button.Clicked += StartButtonFade;
+      button = new InteractiveButton(CreateTheme(Names.ButtonIntroFlipLeft),
+        ScreenSpace.Current.Viewport);
+      button.UpdatePriority = Priority.Last;
+      new Command(StartButtonFade).Add(new MouseButtonTrigger(MouseButton.Right,
+        State.Releasing));
     }
 
     private InteractiveButton button;

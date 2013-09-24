@@ -1,7 +1,7 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests

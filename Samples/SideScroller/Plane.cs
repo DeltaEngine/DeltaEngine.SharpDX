@@ -2,13 +2,13 @@
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace SideScroller
 {
 	public abstract class Plane : Sprite
 	{
-		protected Plane(Material texture, Point initialPosition)
+		protected Plane(Material texture, Vector2D initialPosition)
 			: base(texture, Rectangle.FromCenter(initialPosition, new Size(0.2f, 0.1f)))
 		{
 			Start<HitPointsHandler>();
@@ -34,7 +34,7 @@ namespace SideScroller
 
 		public void AccelerateVertically(float magnitude)
 		{
-			Get<Velocity2D>().Accelerate(new Point(0, verticalAccelerationFactor * magnitude));
+			Get<Velocity2D>().Accelerate(new Vector2D(0, verticalAccelerationFactor * magnitude));
 			verticalDecelerationFactor = 0.8f;
 		}
 

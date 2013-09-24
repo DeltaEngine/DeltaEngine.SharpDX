@@ -2,8 +2,8 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -15,7 +15,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Point.Zero);
+				mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -28,7 +28,7 @@ namespace DeltaEngine.Input.Tests
 			new FilledRect(drawArea, Color.Blue);
 			var trigger = new MouseHoldTrigger(drawArea);
 			var counter = 0;
-			var text = new FontText(Font.Default, "", drawArea.Move(new Point(0.0f, 0.25f)));
+			var text = new FontText(Font.Default, "", drawArea.Move(new Vector2D(0.0f, 0.25f)));
 			new Command(() => text.Text = "MouseHold Triggered " + ++counter + " times.").Add(trigger);
 		}
 
@@ -55,16 +55,16 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void HoldMouseOutsideHoldArea()
 		{
-			Point mousePosition = -Point.One;
+			Vector2D mousePosition = -Vector2D.One;
 			new Command(position => { mousePosition = position; }).Add(
 				new MouseHoldTrigger(Rectangle.HalfCentered));
-			SetMouseState(State.Pressing, Point.Zero);
-			SetMouseState(State.Pressed, Point.Zero);
+			SetMouseState(State.Pressing, Vector2D.Zero);
+			SetMouseState(State.Pressed, Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(1.05f);
-			Assert.AreEqual(-Point.One, mousePosition);
+			Assert.AreEqual(-Vector2D.One, mousePosition);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -76,27 +76,27 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void HoldMouseInsideHoldArea()
 		{
-			Point mousePosition = -Point.One;
+			Vector2D mousePosition = -Vector2D.One;
 			new Command(position => { mousePosition = position; }).Add(
 				new MouseHoldTrigger(Rectangle.HalfCentered));
-			SetMouseState(State.Pressing, Point.Half);
-			SetMouseState(State.Pressed, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
+			SetMouseState(State.Pressed, Vector2D.Half);
 			AdvanceTimeAndUpdateEntities(1.05f);
-			Assert.AreEqual(Point.Half, mousePosition);
+			Assert.AreEqual(Vector2D.Half, mousePosition);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void MoveMouseInsideHoldArea()
 		{
-			Point mousePosition = -Point.One;
+			Vector2D mousePosition = -Vector2D.One;
 			new Command(position => { mousePosition = position; }).Add(
 				new MouseHoldTrigger(Rectangle.HalfCentered));
-			SetMouseState(State.Pressing, Point.Half);
-			SetMouseState(State.Pressed, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
+			SetMouseState(State.Pressed, Vector2D.Half);
 			AdvanceTimeAndUpdateEntities(0.5f);
-			SetMouseState(State.Pressed, new Point(0.6f, 0.6f));
+			SetMouseState(State.Pressed, new Vector2D(0.6f, 0.6f));
 			AdvanceTimeAndUpdateEntities(0.5f);
-			Assert.AreEqual(Point.Half, mousePosition);
+			Assert.AreEqual(Vector2D.Half, mousePosition);
 		}
 	}
 }

@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.3.0.2\lib\net40\Autofac.dll</HintPath>
+      <HintPath>..\packages\Autofac.3.1.1\lib\net40\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -70,17 +70,17 @@
       <Project>{5231706E-2955-43BF-9C06-291E12AF5C5C}</Project>
       <Name>DeltaEngine.Networking</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rendering\Cameras\DeltaEngine.Rendering.Cameras.csproj">
+    <ProjectReference Include="..\Rendering3D\Cameras\DeltaEngine.Rendering3D.Cameras.csproj">
       <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
-      <Name>DeltaEngine.Rendering.Cameras</Name>
+      <Name>DeltaEngine.Rendering3D.Cameras</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rendering\Mocks\DeltaEngine.Rendering.Mocks.csproj">
+    <ProjectReference Include="..\Rendering3D\Mocks\DeltaEngine.Rendering3D.Mocks.csproj">
       <Project>{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}</Project>
-      <Name>DeltaEngine.Rendering.Mocks</Name>
+      <Name>DeltaEngine.Rendering3D.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rendering\Models\DeltaEngine.Rendering.Models.csproj">
+    <ProjectReference Include="..\Rendering3D\Models\DeltaEngine.Rendering3D.Models.csproj">
       <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
-      <Name>DeltaEngine.Rendering.Models</Name>
+      <Name>DeltaEngine.Rendering3D.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

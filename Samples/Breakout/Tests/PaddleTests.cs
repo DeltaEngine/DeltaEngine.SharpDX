@@ -67,11 +67,11 @@ namespace Breakout.Tests
 			Resolve<TestBall>();
 			var paddle = Resolve<Paddle>();
 			var mouse = Resolve<MockMouse>();
-			mouse.SetPosition(Point.Zero);
+			mouse.SetPosition(Vector2D.Zero);
 			mouse.SetButtonState(MouseButton.Left, State.Pressed);
 			AssertPaddleMovesLeftCorrectly(paddle);
 			mouse.SetButtonState(MouseButton.Left, State.Released);
-			mouse.SetPosition(Point.One);
+			mouse.SetPosition(Vector2D.One);
 			mouse.SetButtonState(MouseButton.Left, State.Pressed);
 			AssertPaddleMovesRightCorrectly(paddle);
 		}

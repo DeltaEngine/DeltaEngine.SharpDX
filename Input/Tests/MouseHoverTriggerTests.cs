@@ -3,7 +3,7 @@ using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -17,7 +17,7 @@ namespace DeltaEngine.Input.Tests
 			new Countdown(new FontText(Font.Default, "", Rectangle.One), trigger);
 			var drawArea = Rectangle.One;
 			var counter = 0;
-			var text = new FontText(Font.Default, "", drawArea.Move(new Point(0.0f, 0.1f)));
+			var text = new FontText(Font.Default, "", drawArea.Move(new Vector2D(0.0f, 0.1f)));
 			new Command(() => text.Text = "MouseHover triggered " + ++counter + " times.").Add(trigger);
 		}
 
@@ -50,7 +50,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			bool isTriggered = false;
 			new Command(() => isTriggered = true).Add(new MouseHoverTrigger());
-			Resolve<Mouse>().SetPosition(Point.Zero);
+			Resolve<Mouse>().SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(1.0f);
 			Assert.IsFalse(isTriggered);
 			AdvanceTimeAndUpdateEntities(1.0f);
@@ -62,9 +62,9 @@ namespace DeltaEngine.Input.Tests
 		{
 			bool isTriggered = false;
 			new Command(() => isTriggered = true).Add(new MouseHoverTrigger());
-			Resolve<Mouse>().SetPosition(Point.Zero);
+			Resolve<Mouse>().SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(0.5f);
-			Resolve<Mouse>().SetPosition(Point.One);
+			Resolve<Mouse>().SetPosition(Vector2D.One);
 			AdvanceTimeAndUpdateEntities(0.5f);
 			Assert.IsFalse(isTriggered);
 		}

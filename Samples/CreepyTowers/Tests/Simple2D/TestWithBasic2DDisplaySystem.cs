@@ -1,9 +1,11 @@
-﻿using CreepyTowers.Simple2D;
+﻿using CreepyTowers.Creeps;
+using CreepyTowers.Simple2D;
+using CreepyTowers.Towers;
 using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests.Simple2D
@@ -58,20 +60,20 @@ namespace CreepyTowers.Tests.Simple2D
 		[Test]
 		public void AddFireTower()
 		{
-			display.AddTower(new Point(12, 12), Tower.TowerType.Water);
+			display.AddTower(new Vector2D(12, 12), Tower.TowerType.Water);
 		}
 
 		[Test]
 		public void AddClothCreep()
 		{
-			display.AddCreep(new Point(0, 10), new Point(24, 10), Creep.CreepType.Cloth);
+			display.AddCreep(new Vector2D(0, 10), new Vector2D(24, 10), Creep.CreepType.Cloth);
 		}
 
 		[Test]
 		public void TestPerformanceAStar()
 		{
 			for (int i = 0; i < 50; i++)
-				display.GetPath(new Point(0, 10), new Point(24, 10));
+				display.GetPath(new Vector2D(0, 10), new Vector2D(24, 10));
 		}
 	}
 }

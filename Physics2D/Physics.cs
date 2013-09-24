@@ -11,16 +11,21 @@ namespace DeltaEngine.Physics2D
 	{
 		public abstract PhysicsBody CreateCircle(float radius);
 		public abstract PhysicsBody CreateRectangle(Size size);
-		public abstract PhysicsBody CreateEdge(Point startPoint, Point endPoint);
-		public abstract PhysicsBody CreateEdge(params Point[] points);
-		public abstract PhysicsBody CreatePolygon(params Point[] points);
+		public abstract PhysicsBody CreateEdge(Vector2D startPoint, Vector2D endPoint);
+		public abstract PhysicsBody CreateEdge(params Vector2D[] positions);
+		public abstract PhysicsBody CreatePolygon(params Vector2D[] positions);
 		public abstract PhysicsJoint CreateFixedAngleJoint(PhysicsBody body, float targetAngle);
+
 		public abstract PhysicsJoint CreateAngleJoint(PhysicsBody bodyA, PhysicsBody bodyB,
 			float targetAngle);
+
 		public abstract PhysicsJoint CreateRevoluteJoint(PhysicsBody bodyA, PhysicsBody bodyB,
-			Point anchor);
-		public abstract PhysicsJoint CreateLineJoint(PhysicsBody bodyA, PhysicsBody bodyB, Point axis);
-		public abstract Point Gravity { get; set; }
+			Vector2D anchor);
+
+		public abstract PhysicsJoint CreateLineJoint(PhysicsBody bodyA, PhysicsBody bodyB,
+			Vector2D axis);
+
+		public abstract Vector2D Gravity { get; set; }
 
 		public void RapidUpdate()
 		{

@@ -21,8 +21,10 @@ namespace DeltaEngine.Logging
 
 		public override void Write(MessageType messageType, string message)
 		{
-			if (message.StartsWith("Server Error: "))
+			if (message.StartsWith("Server Error: ") || message.StartsWith("No content available."))
 				return;
+			if (!connection.IsConnected)
+				connection.ConnectToService();
 			if (!connection.IsLoggedIn)
 				connection.LoggedIn += () => Write(messageType, message);
 			else if (messageType == MessageType.Info)

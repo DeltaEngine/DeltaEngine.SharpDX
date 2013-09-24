@@ -34,17 +34,17 @@ namespace DeltaEngine.Physics2D.Farseer
 			return displayUnits * displayUnitsToSimUnits;
 		}
 
-		public Point Convert(Vector2 value)
+		public Vector2D Convert(Vector2 value)
 		{
-			return new Point(value.X, value.Y);
+			return new Vector2D(value.X, value.Y);
 		}
 
-		public Vector2 Convert(Point value)
+		public Vector2 Convert(Vector2D value)
 		{
 			return new Vector2(value.X, value.Y);
 		}
 
-		public Vertices Convert(params Point[] vertices)
+		public Vertices Convert(params Vector2D[] vertices)
 		{
 			var farseerVertices = new Vertices(vertices.Length);
 			farseerVertices.AddRange(vertices.Select(t => ToSimUnits(Convert(t))));

@@ -56,13 +56,13 @@
       <Project>{5231706E-2955-43BF-9C06-291E12AF5C5C}</Project>
       <Name>DeltaEngine.Networking</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\DeltaEngine.Rendering.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+      <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Rendering\Fonts\DeltaEngine.Rendering.Fonts.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
-      <Name>DeltaEngine.Rendering.Fonts</Name>
+      <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drench.csproj">
       <Project>{095C92EB-9CFB-442B-B7CF-19027C18EAFB}</Project>

@@ -25,15 +25,15 @@ namespace DeltaEngine.Graphics.Tests
 		[Test]
 		public void Draw30000LinesPerFrame()
 		{
-			var manyLines = new DrawingTests.Line(Point.Zero, new Point(1280, 720), Color.Red);
+			var manyLines = new DrawingTests.Line(Vector2D.Zero, new Vector2D(1280, 720), Color.Red);
 			const int NumberOfRandomLines = 30000;
 			var vertices = new VertexPosition2DColor[2 * NumberOfRandomLines];
 			var random = Randomizer.Current;
 			var viewport = Resolve<Window>().ViewportPixelSize;
 			for (int i = 0; i < NumberOfRandomLines; i++)
 			{
-				var startPoint = new Point(random.Get(0, viewport.Width), random.Get(0, viewport.Height));
-				var endPoint = startPoint + new Point(random.Get(-50, 50), random.Get(-50, 50));
+				var startPoint = new Vector2D(random.Get(0, viewport.Width), random.Get(0, viewport.Height));
+				var endPoint = startPoint + new Vector2D(random.Get(-50, 50), random.Get(-50, 50));
 				vertices[i * 2 + 0] = new VertexPosition2DColor(startPoint, Color.GetRandomColor());
 				vertices[i * 2 + 1] = new VertexPosition2DColor(endPoint, Color.GetRandomColor());
 			}
@@ -72,15 +72,15 @@ namespace DeltaEngine.Graphics.Tests
 
 		private void CreateVertices(int x, int y)
 		{
-			var margin = new Point(5, 5);
-			imagesVertices.Add(new VertexPosition2DColorUV(new Point(x, y) * 10 + margin,
-				Color.GetRandomColor(), Point.Zero));
-			imagesVertices.Add(new VertexPosition2DColorUV(new Point(x + 1, y) * 10 + margin,
-				Color.GetRandomColor(), Point.UnitX));
-			imagesVertices.Add(new VertexPosition2DColorUV(new Point(x + 1, y + 1) * 10 + margin,
-				Color.GetRandomColor(), Point.One));
-			imagesVertices.Add(new VertexPosition2DColorUV(new Point(x, y + 1) * 10 + margin,
-				Color.GetRandomColor(), Point.UnitY));
+			var margin = new Vector2D(5, 5);
+			imagesVertices.Add(new VertexPosition2DColorUV(new Vector2D(x, y) * 10 + margin,
+				Color.GetRandomColor(), Vector2D.Zero));
+			imagesVertices.Add(new VertexPosition2DColorUV(new Vector2D(x + 1, y) * 10 + margin,
+				Color.GetRandomColor(), Vector2D.UnitX));
+			imagesVertices.Add(new VertexPosition2DColorUV(new Vector2D(x + 1, y + 1) * 10 + margin,
+				Color.GetRandomColor(), Vector2D.One));
+			imagesVertices.Add(new VertexPosition2DColorUV(new Vector2D(x, y + 1) * 10 + margin,
+				Color.GetRandomColor(), Vector2D.UnitY));
 		}
 
 		private void CreateIndicesForTwoPolygonsPerQuad(int x, int y)

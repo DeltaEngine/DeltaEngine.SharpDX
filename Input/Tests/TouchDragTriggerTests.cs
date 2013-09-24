@@ -2,7 +2,7 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -14,7 +14,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			touch = Resolve<Touch>() as MockTouch;
 			if (touch != null)
-				touch.SetTouchState(0, State.Released, Point.Zero);
+				touch.SetTouchState(0, State.Released, Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -37,13 +37,13 @@ namespace DeltaEngine.Input.Tests
 		{
 			bool isFinished = false;
 			new Command((start, end, done) => isFinished = done).Add(new TouchDragTrigger());
-			SetTouchState(State.Pressing, Point.Zero);
-			SetTouchState(State.Pressed, Point.One);
-			SetTouchState(State.Releasing, Point.One);
+			SetTouchState(State.Pressing, Vector2D.Zero);
+			SetTouchState(State.Pressed, Vector2D.One);
+			SetTouchState(State.Releasing, Vector2D.One);
 			Assert.IsTrue(isFinished);
 		}
 
-		private void SetTouchState(State state, Point position)
+		private void SetTouchState(State state, Vector2D position)
 		{
 			if (touch == null)
 				return; //ncrunch: no coverage

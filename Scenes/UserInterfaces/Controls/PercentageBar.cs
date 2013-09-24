@@ -1,6 +1,6 @@
 ﻿using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {

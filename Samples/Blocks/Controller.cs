@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 
 namespace Blocks
 {
@@ -55,13 +55,13 @@ namespace Blocks
 
 		private void CreateUpcomingBlock()
 		{
-			UpcomingBlock = new Block(displayMode, content, Point.Zero);
+			UpcomingBlock = new Block(displayMode, content, Vector2D.Zero);
 			UpcomingBlock.Left = upcomingBlockCenter.X - UpcomingBlock.Center.X;
 			UpcomingBlock.Top = upcomingBlockCenter.Y - UpcomingBlock.Center.Y;
 			UpcomingBlock.UpdateBrickDrawAreas(0.0f);
 		}
 
-		private readonly Point upcomingBlockCenter = new Point(9, -4);
+		private readonly Vector2D upcomingBlockCenter = new Vector2D(9, -4);
 		public Block FallingBlock { get; internal set; }
 
 		private bool IsABrickOnTopRowOrIsNoRoomForNextBlock()

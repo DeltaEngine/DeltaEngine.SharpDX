@@ -54,6 +54,10 @@
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Mocks\DeltaEngine.Mocks.csproj">
+      <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
+      <Name>DeltaEngine.Mocks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
       <Name>DeltaEngine.Platforms</Name>
@@ -80,6 +84,7 @@
     <Compile Include="CircularBufferTests.cs" />
     <Compile Include="DrawingPerformanceTests.cs" />
     <Compile Include="GeometryTests.cs" />
+    <Compile Include="IndexTests.cs" />
     <Compile Include="MaterialTests.cs" />
     <Compile Include="ScreenshotTests.cs" />
     <Compile Include="ShaderGenerationTests.cs" />

@@ -25,15 +25,15 @@ namespace Drench
 			if (oldColor == newColor)
 				return;
 			unprocessedPoints.Clear();
-			unprocessedPoints.Add(new Point(x, y));
+			unprocessedPoints.Add(new Vector2D(x, y));
 			while (unprocessedPoints.Any())
 				ProcessNextUnprocessedPoint();
 		}
 
 		private Color oldColor;
 		private Color newColor;
-		private readonly HashSet<Point> processedPoints = new HashSet<Point>();
-		private readonly HashSet<Point> unprocessedPoints = new HashSet<Point>();
+		private readonly HashSet<Vector2D> processedPoints = new HashSet<Vector2D>();
+		private readonly HashSet<Vector2D> unprocessedPoints = new HashSet<Vector2D>();
 
 		private void ProcessNextUnprocessedPoint()
 		{
@@ -45,18 +45,18 @@ namespace Drench
 				ProcessNeighbour(point, direction);
 		}
 
-		private static readonly Point[] Directions = new[]
-		{ -Point.UnitX, Point.UnitX, -Point.UnitY, Point.UnitY };
+		private static readonly Vector2D[] Directions = new[]
+		{ -Vector2D.UnitX, Vector2D.UnitX, -Vector2D.UnitY, Vector2D.UnitY };
 
-		private void ProcessNeighbour(Point point, Point direction)
+		private void ProcessNeighbour(Vector2D point, Vector2D direction)
 		{
 			var x = (int)point.X + (int)direction.X;
 			var y = (int)point.Y + (int)direction.Y;
 			if (x >= 0 && x < width && y >= 0 && y < height)
-				ProcessValidNeighbour(new Point(x, y), colors[x, y]);
+				ProcessValidNeighbour(new Vector2D(x, y), colors[x, y]);
 		}
 
-		private void ProcessValidNeighbour(Point point, Color color)
+		private void ProcessValidNeighbour(Vector2D point, Color color)
 		{
 			if (!processedPoints.Contains(point) && color == oldColor)
 				unprocessedPoints.Add(point);

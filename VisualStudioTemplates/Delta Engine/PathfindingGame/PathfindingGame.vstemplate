@@ -14,7 +14,7 @@
 	<TemplateContent>
 		<Project File="PathfindingGame.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="true" TargetFileName="PathfindingGameIcon.ico">PathfindingGameIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="PathfindingGameIcon.ico">PathfindingGameIcon.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="AStar.cs">AStar.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Graph.cs">Graph.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GraphSearch.cs">GraphSearch.cs</ProjectItem>

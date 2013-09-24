@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
-using DeltaEngine.Entities;
+﻿using DeltaEngine.Entities;
 
 namespace DeltaEngine.Mocks
 {
 	/// <summary>
-	/// Entity that does nothing. For unit testing.
+	/// Updateable Entity that does nothing. For unit testing.
 	/// </summary>
-	public class MockEntity : Entity
+	public class MockEntity : Entity, Updateable, VerifiableUpdate
 	{
-		private MockEntity(List<object> createFromComponents)
-			: base(createFromComponents) {}
+		public void Update()
+		{
+			WasUpdated = true;
+		}
 
-		public MockEntity() {}
+		public bool WasUpdated { get; set; }
 	}
 }

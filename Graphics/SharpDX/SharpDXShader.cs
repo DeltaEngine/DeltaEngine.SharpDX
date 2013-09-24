@@ -1,4 +1,5 @@
 ﻿using DeltaEngine.Content;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Graphics.Vertices;
 using SharpDX;
 using SharpDX.D3DCompiler;
@@ -164,6 +165,16 @@ namespace DeltaEngine.Graphics.SharpDX
 		public override void SetLightmapTexture(Image texture)
 		{
 			context.PixelShader.SetShaderResource(1, (texture as SharpDXImage).NativeResourceView);
+		}
+
+		public override void SetLightPosition(Vector3D vector)
+		{
+			// not implemented yet
+		}
+
+		public override void SetViewPosition(Vector3D vector)
+		{
+			// not implemented yet
 		}
 
 		protected override void DisposeData()

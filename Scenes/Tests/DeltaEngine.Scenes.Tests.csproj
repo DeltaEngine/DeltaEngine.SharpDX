@@ -50,10 +50,6 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Graphics\DeltaEngine.Graphics.csproj">
-      <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
-      <Name>DeltaEngine.Graphics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Input\DeltaEngine.Input.csproj">
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
@@ -74,25 +70,21 @@
       <Project>{D0AAD622-ED82-40E5-88A9-980EAFC12C16}</Project>
       <Name>DeltaEngine.Platforms.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\DeltaEngine.Rendering.csproj">
+    <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+      <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Fonts\DeltaEngine.Rendering.Fonts.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
-      <Name>DeltaEngine.Rendering.Fonts</Name>
+      <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
-      <Name>DeltaEngine.Rendering.Shapes</Name>
+      <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Sprites\DeltaEngine.Rendering2D.Sprites.csproj">
       <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
-      <Name>DeltaEngine.Rendering.Sprites</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Tests\DeltaEngine.Tests.csproj">
-      <Project>{17822284-7AE0-4C91-B444-CFECF4927A59}</Project>
-      <Name>DeltaEngine.Tests</Name>
+      <Name>DeltaEngine.Rendering2D.Sprites</Name>
     </ProjectReference>
     <ProjectReference Include="..\DeltaEngine.Scenes.csproj">
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
@@ -113,6 +105,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AutoArrangingMenuTests.cs" />
     <Compile Include="SceneTests.cs" />
+    <Compile Include="UserInterfaces\Controls\ColorGradientTests.cs" />
     <Compile Include="UserInterfaces\Controls\ComplexMenuTutorial.cs" />
     <Compile Include="UserInterfaces\Controls\DropdownListTests.cs" />
     <Compile Include="UserInterfaces\Controls\ScrollbarTests.cs" />

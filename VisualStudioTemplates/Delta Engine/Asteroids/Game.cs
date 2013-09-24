@@ -1,7 +1,7 @@
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
@@ -57,7 +57,7 @@ namespace $safeprojectname$
 		private static void SetUpBackground()
 		{
 			var background = new Sprite(new Material(Shader.Position2DColorUv, "black-background"), new 
-				Rectangle(Point.Zero, new Size(1)));
+				Rectangle(Vector2D.Zero, new Size(1)));
 			background.RenderLayer = (int)AsteroidsRenderLayer.Background;
 		}
 

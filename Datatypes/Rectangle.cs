@@ -27,7 +27,7 @@ namespace DeltaEngine.Datatypes
 		public float Width { get; set; }
 		public float Height { get; set; }
 
-		public Rectangle(Point position, Size size)
+		public Rectangle(Vector2D position, Size size)
 			: this(position.X, position.Y, size.Width, size.Height) {}
 
 		public Rectangle(string rectangleAsString)
@@ -42,12 +42,41 @@ namespace DeltaEngine.Datatypes
 			Height = componentStrings[3].Convert<float>();
 		}
 
+		public static Rectangle FromPoints(IEnumerable<Vector2D> points)
+		{
+			var leftUpper = new Vector2D(float.MaxValue, float.MaxValue);
+			var rightLower = new Vector2D(float.MinValue, float.MinValue);
+			foreach (var point in points)
+			{
+				if (point.X < leftUpper.X)
+					leftUpper.X = point.X;
+				else if (point.X > rightLower.X)
+					rightLower.X = point.X;
+				if (point.Y < leftUpper.Y)
+					leftUpper.Y = point.Y;
+				else if (point.Y > rightLower.Y)
+					rightLower.Y = point.Y;
+			}
+			return FromCorners(leftUpper, rightLower);
+		}
+
+		public Rectangle Merge(Rectangle other)
+		{
+			var leftUpper = Vector2D.Zero;
+			var rightLower = Vector2D.Zero;
+			leftUpper.X = MathExtensions.Min(Left, other.Left);
+			leftUpper.Y = MathExtensions.Min(Top, other.Top);
+			rightLower.X = MathExtensions.Max(Right, other.Right);
+			rightLower.Y = MathExtensions.Max(Bottom, other.Bottom);
+			return FromCorners(leftUpper, rightLower);
+		}
+
 		public class InvalidNumberOfComponents : Exception {}
 
 		public static readonly Rectangle Zero = new Rectangle();
-		public static readonly Rectangle One = new Rectangle(Point.Zero, Size.One);
-		public static readonly Rectangle HalfCentered = Rectangle.FromCenter(Point.Half, Size.Half);
-		public static readonly Rectangle Unused = new Rectangle(Point.Unused, Size.Unused);
+		public static readonly Rectangle One = new Rectangle(Vector2D.Zero, Size.One);
+		public static readonly Rectangle HalfCentered = FromCenter(Vector2D.Half, Size.Half);
+		public static readonly Rectangle Unused = new Rectangle(Vector2D.Unused, Size.Unused);
 		public static readonly int SizeInBytes = Marshal.SizeOf(typeof(Rectangle));
 
 		public float Right
@@ -67,29 +96,29 @@ namespace DeltaEngine.Datatypes
 			get { return new Size(Width, Height); }
 		}
 
-		public Point TopLeft
+		public Vector2D TopLeft
 		{
-			get { return new Point(Left, Top); }
+			get { return new Vector2D(Left, Top); }
 		}
 
-		public Point TopRight
+		public Vector2D TopRight
 		{
-			get { return new Point(Left + Width, Top); }
+			get { return new Vector2D(Left + Width, Top); }
 		}
 
-		public Point BottomLeft
+		public Vector2D BottomLeft
 		{
-			get { return new Point(Left, Top + Height); }
+			get { return new Vector2D(Left, Top + Height); }
 		}
 
-		public Point BottomRight
+		public Vector2D BottomRight
 		{
-			get { return new Point(Left + Width, Top + Height); }
+			get { return new Vector2D(Left + Width, Top + Height); }
 		}
 
-		public Point Center
+		public Vector2D Center
 		{
-			get { return new Point(Left + Width / 2, Top + Height / 2); }
+			get { return new Vector2D(Left + Width / 2, Top + Height / 2); }
 			set
 			{
 				Left = value.X - Width / 2;
@@ -106,23 +135,24 @@ namespace DeltaEngine.Datatypes
 
 		public static Rectangle FromCenter(float x, float y, float width, float height)
 		{
-			return FromCenter(new Point(x, y), new Size(width, height));
+			return FromCenter(new Vector2D(x, y), new Size(width, height));
 		}
 
-		public static Rectangle FromCenter(Point center, Size size)
+		public static Rectangle FromCenter(Vector2D center, Size size)
 		{
-			return new Rectangle(new Point(center.X - size.Width / 2, center.Y - size.Height / 2), size);
+			return new Rectangle(new Vector2D(center.X - size.Width / 2, center.Y - size.Height / 2),
+				size);
 		}
 
-		public static Rectangle FromCorners(Point topLeft, Point bottomRight)
+		public static Rectangle FromCorners(Vector2D topLeft, Vector2D bottomRight)
 		{
 			return new Rectangle(topLeft, new Size(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
 		}
 
 		[Pure]
-		public bool Contains(Point position)
+		public bool Contains(Vector2D point)
 		{
-			return position.X >= Left && position.X < Right && position.Y >= Top && position.Y < Bottom;
+			return point.X >= Left && point.X < Right && point.Y >= Top && point.Y < Bottom;
 		}
 
 		public float Aspect
@@ -151,24 +181,26 @@ namespace DeltaEngine.Datatypes
 		}
 
 		[Pure]
-		public Point GetRelativePoint(Point point)
+		public Vector2D GetRelativePoint(Vector2D point)
 		{
-			return new Point((point.X - Left) / Width, (point.Y - Top) / Height);
+			return new Vector2D((point.X - Left) / Width, (point.Y - Top) / Height);
 		}
 
-		public Rectangle Move(Point translation)
+		public Rectangle Move(Vector2D translation)
 		{
 			return new Rectangle(Left + translation.X, Top + translation.Y, Width, Height);
 		}
 
 		public static bool operator ==(Rectangle rect1, Rectangle rect2)
 		{
-			return rect1.Equals(rect2);
+			return rect1.Top == rect2.Top && rect1.Left == rect2.Left && rect1.Width == rect2.Width &&
+				rect1.Height == rect2.Height;
 		}
 
 		public static bool operator !=(Rectangle rect1, Rectangle rect2)
 		{
-			return !rect1.Equals(rect2);
+			return rect1.Top != rect2.Top || rect1.Left != rect2.Left || rect1.Width != rect2.Width ||
+				rect1.Height != rect2.Height;
 		}
 
 		public override bool Equals(object obj)
@@ -178,7 +210,7 @@ namespace DeltaEngine.Datatypes
 
 		public bool Equals(Rectangle other)
 		{
-			return TopLeft == other.TopLeft && Size == other.Size;
+			return TopLeft.Equals(other.TopLeft) && Size.Equals(other.Size);
 		}
 
 		public override int GetHashCode()
@@ -193,7 +225,7 @@ namespace DeltaEngine.Datatypes
 				Width.ToInvariantString() + " " + Height.ToInvariantString();
 		}
 
-		public Point[] GetRotatedRectangleCorners(Point center, float rotation)
+		public Vector2D[] GetRotatedRectangleCorners(Vector2D center, float rotation)
 		{
 			return new[]
 			{
@@ -212,19 +244,19 @@ namespace DeltaEngine.Datatypes
 			return true;
 		}
 
-		private static IEnumerable<Point> GetAxes(Point[] rectangle, Point[] otherRect)
+		private static IEnumerable<Vector2D> GetAxes(Vector2D[] rectangle, Vector2D[] otherRect)
 		{
 			return new[]
 			{
-				new Point(rectangle[1].X - rectangle[0].X, rectangle[1].Y - rectangle[0].Y),
-				new Point(rectangle[1].X - rectangle[2].X, rectangle[1].Y - rectangle[2].Y),
-				new Point(otherRect[0].X - otherRect[3].X, otherRect[0].Y - otherRect[3].Y),
-				new Point(otherRect[0].X - otherRect[1].X, otherRect[0].Y - otherRect[1].Y)
+				new Vector2D(rectangle[1].X - rectangle[0].X, rectangle[1].Y - rectangle[0].Y),
+				new Vector2D(rectangle[1].X - rectangle[2].X, rectangle[1].Y - rectangle[2].Y),
+				new Vector2D(otherRect[0].X - otherRect[3].X, otherRect[0].Y - otherRect[3].Y),
+				new Vector2D(otherRect[0].X - otherRect[1].X, otherRect[0].Y - otherRect[1].Y)
 			};
 		}
 
-		public static bool IsProjectedAxisOutsideRectangles(Point axis, IEnumerable<Point> rotatedRect,
-			IEnumerable<Point> rotatedOtherRect)
+		public static bool IsProjectedAxisOutsideRectangles(Vector2D axis,
+			IEnumerable<Vector2D> rotatedRect, IEnumerable<Vector2D> rotatedOtherRect)
 		{
 			var rectMin = float.MaxValue;
 			var rectMax = float.MinValue;
@@ -235,8 +267,8 @@ namespace DeltaEngine.Datatypes
 			return rectMin > otherMax || rectMax < otherMin;
 		}
 
-		private static void GetRectangleProjectionResult(Point axis, IEnumerable<Point> cornerList,
-			ref float min, ref float max)
+		private static void GetRectangleProjectionResult(Vector2D axis,
+			IEnumerable<Vector2D> cornerList, ref float min, ref float max)
 		{
 			foreach (var corner in cornerList)
 			{
@@ -259,6 +291,24 @@ namespace DeltaEngine.Datatypes
 				uvInPixels.Top / imagePixelSize.Height,
 				Math.Min(1.0f, uvInPixels.Width / imagePixelSize.Width),
 				Math.Min(1.0f, uvInPixels.Height / imagePixelSize.Height));
+		}
+
+		public bool IntersectsCircle(Vector2D center, float radius)
+		{
+			Vector2D clampedLocation = Vector2D.Zero;
+			if (center.X > Right)
+				clampedLocation.X = Right;
+			else if (center.X < Left)
+				clampedLocation.X = Left;
+			else
+				clampedLocation.X = center.X;
+			if (center.Y > Bottom)
+				clampedLocation.Y = Bottom;
+			else if (center.Y < Top)
+				clampedLocation.Y = Top;
+			else
+				clampedLocation.Y = center.Y;
+			return clampedLocation.DistanceToSquared(center) <= (radius * radius);
 		}
 	}
 }

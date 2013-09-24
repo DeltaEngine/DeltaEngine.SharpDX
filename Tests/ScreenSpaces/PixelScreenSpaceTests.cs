@@ -13,10 +13,10 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(100, 100);
 			var screen = new PixelScreenSpace(window);
-			Assert.AreEqual(Point.Zero, screen.TopLeft);
+			Assert.AreEqual(Vector2D.Zero, screen.TopLeft);
 			Assert.AreEqual(window.ViewportPixelSize, (Size)screen.BottomRight);
-			Assert.AreEqual(new Rectangle(Point.Zero, window.TotalPixelSize), screen.Viewport);
-			Assert.AreEqual(new Point(100, 100), screen.FromPixelSpace(new Point(100, 100)));
+			Assert.AreEqual(new Rectangle(Vector2D.Zero, window.TotalPixelSize), screen.Viewport);
+			Assert.AreEqual(new Vector2D(100, 100), screen.FromPixelSpace(new Vector2D(100, 100)));
 			Assert.AreEqual(new Rectangle(10, 10, 80, 80),
 				screen.FromPixelSpace(new Rectangle(10, 10, 80, 80)));
 			window.CloseAfterFrame();
@@ -29,8 +29,8 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(800, 600);
 			ScreenSpace screen = new PixelScreenSpace(window);
-			Assert.AreEqual(screen.TopLeft, screen.GetInnerPoint(Point.Zero));
-			Assert.AreEqual(screen.BottomRight, screen.GetInnerPoint(Point.One));
+			Assert.AreEqual(screen.TopLeft, screen.GetInnerPosition(Vector2D.Zero));
+			Assert.AreEqual(screen.BottomRight, screen.GetInnerPosition(Vector2D.One));
 			window.CloseAfterFrame();
 		}
 
@@ -84,8 +84,8 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		[Test]
 		public void MoveWindow()
 		{
-			window.PixelPosition = new Point(100, 200);
-			Assert.AreEqual(new Point(100, 200), window.PixelPosition);
+			window.PixelPosition = new Vector2D(100, 200);
+			Assert.AreEqual(new Vector2D(100, 200), window.PixelPosition);
 			window.CloseAfterFrame();
 		}
 	}

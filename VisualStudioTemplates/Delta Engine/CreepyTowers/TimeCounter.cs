@@ -3,7 +3,7 @@ using System.Globalization;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 
 namespace $safeprojectname$
 {

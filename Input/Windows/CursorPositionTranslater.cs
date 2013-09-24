@@ -18,21 +18,21 @@ namespace DeltaEngine.Input.Windows
 
 		private readonly Window window;
 
-		public void SetCursorPosition(Point newPosition)
+		public void SetCursorPosition(Vector2D position)
 		{
-			var newScreenPosition = ToSysPoint(ToScreenPositionFromScreenSpace(newPosition));
+			var newScreenPosition = ToSysPoint(ToScreenPositionFromScreenSpace(position));
 			NativeMethods.SetCursorPos(newScreenPosition.X, newScreenPosition.Y);
 		}
 
-		private static SysPoint ToSysPoint(Point position)
+		private static SysPoint ToSysPoint(Vector2D position)
 		{
 			return new SysPoint((int)Math.Round(position.X), (int)Math.Round(position.Y));
 		}
 
-		internal Point ToScreenPositionFromScreenSpace(Point newPosition)
+		internal Vector2D ToScreenPositionFromScreenSpace(Vector2D position)
 		{
-			newPosition = ScreenSpace.Current.ToPixelSpace(newPosition);
-			var newScreenPosition = ToSysPoint(newPosition);
+			position = ScreenSpace.Current.ToPixelSpace(position);
+			var newScreenPosition = ToSysPoint(position);
 			if ((IntPtr)window.Handle != IntPtr.Zero)
 				//ncrunch: no coverage start
 				NativeMethods.ClientToScreen((IntPtr)window.Handle, ref newScreenPosition);
@@ -40,22 +40,22 @@ namespace DeltaEngine.Input.Windows
 			return FromSysPoint(newScreenPosition);
 		}
 
-		private static Point FromSysPoint(SysPoint newPosition)
+		private static Vector2D FromSysPoint(SysPoint position)
 		{
-			return new Point(newPosition.X, newPosition.Y);
+			return new Vector2D(position.X, position.Y);
 		}
 
-		public Point GetCursorPosition()
+		public Vector2D GetCursorPosition()
 		{
 			var newPosition = new SysPoint();
 			NativeMethods.GetCursorPos(ref newPosition);
 			var screenspace = FromScreenPositionToScreenSpace(FromSysPoint(newPosition));
-			return new Point((float)Math.Round(screenspace.X, 3), (float)Math.Round(screenspace.Y, 3));
+			return new Vector2D((float)Math.Round(screenspace.X, 3), (float)Math.Round(screenspace.Y, 3));
 		}
 
-		internal Point FromScreenPositionToScreenSpace(Point newPosition)
+		internal Vector2D FromScreenPositionToScreenSpace(Vector2D position)
 		{
-			var screenPoint = ToSysPoint(newPosition);
+			var screenPoint = ToSysPoint(position);
 			if ((IntPtr)window.Handle != IntPtr.Zero)
 				//ncrunch: no coverage start
 				NativeMethods.ScreenToClient((IntPtr)window.Handle, ref screenPoint);

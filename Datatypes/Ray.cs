@@ -13,14 +13,14 @@ namespace DeltaEngine.Datatypes
 	[DebuggerDisplay("Ray(Origin {Origin}, Direction {Direction})")]
 	public struct Ray : IEquatable<Ray>
 	{
-		public Ray(Vector origin, Vector direction)
+		public Ray(Vector3D origin, Vector3D direction)
 		{
 			Origin = origin;
 			Direction = direction;
 		}
 
-		public Vector Origin;
-		public Vector Direction;
+		public Vector3D Origin;
+		public Vector3D Direction;
 
 		public bool Equals(Ray other)
 		{

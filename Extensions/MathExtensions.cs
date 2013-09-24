@@ -118,5 +118,11 @@ namespace DeltaEngine.Extensions
 		{
 			return 1.0f / Sqrt(value);
 		}
+
+		public static float WrapRotationToMinus180ToPlus180(float degrees)
+		{
+			degrees = (float)Math.IEEERemainder(degrees, 360);
+			return degrees <= -180 ? degrees + 360 : (degrees > 180 ? degrees - 360 : degrees);
+		}
 	}
 }

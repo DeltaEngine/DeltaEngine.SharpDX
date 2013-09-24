@@ -1,7 +1,7 @@
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes;
 
 namespace $safeprojectname$
@@ -81,7 +81,7 @@ namespace $safeprojectname$
 		private void AddScore()
 		{
 			Text = new FontText(ContentLoader.Load<Font>("Verdana12"), "", scoreWindow.DrawArea) {
-				RenderLayer = (int)RenderLayer.Foreground
+				RenderLayer = (int)RenderLayer.Foreground + 6
 			};
 		}
 

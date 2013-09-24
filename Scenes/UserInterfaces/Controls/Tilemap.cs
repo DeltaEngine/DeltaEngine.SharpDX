@@ -3,8 +3,8 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
@@ -54,8 +54,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			public int MapWidth { get; private set; }
 			public int MapHeight { get; private set; }
 			public Sprite[,] Map { get; private set; }
-			public Point RenderingTopLeft = new Point(0.0001f, 0.0001f);
-			public Point TargetTopLeft = Point.Zero;
+			public Vector2D RenderingTopLeft = new Vector2D(0.0001f, 0.0001f);
+			public Vector2D TargetTopLeft = Vector2D.Zero;
 		}
 
 		public override void Update()
@@ -67,7 +67,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void ProcessAnyDragging()
 		{
-			if (State.DragDelta == Point.Zero)
+			if (State.DragDelta == Vector2D.Zero)
 				return;
 			data.TargetTopLeft.X -= State.DragDelta.X * data.MapWidth / DrawArea.Width;
 			data.TargetTopLeft.Y -= State.DragDelta.Y * data.MapHeight / DrawArea.Height;
@@ -98,7 +98,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		{
 			float percentage = ScrollingStiffness * Time.Delta;
 			data.RenderingTopLeft =
-				new Point(data.RenderingTopLeft.X.Lerp(data.TargetTopLeft.X, percentage),
+				new Vector2D(data.RenderingTopLeft.X.Lerp(data.TargetTopLeft.X, percentage),
 					data.RenderingTopLeft.Y.Lerp(data.TargetTopLeft.Y, percentage));
 		}
 
@@ -106,19 +106,19 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void UpdateMapSprites()
 		{
-			offset = new Point(data.RenderingTopLeft.X % 1.0f, data.RenderingTopLeft.Y % 1.0f);
+			offset = new Vector2D(data.RenderingTopLeft.X % 1.0f, data.RenderingTopLeft.Y % 1.0f);
 			for (int x = 0; x < data.MapWidth; x++)
 				for (int y = 0; y < data.MapHeight; y++)
 					UpdateTileSprite(x, y);
 			lastRenderingTopLeft = GetIntPoint(data.RenderingTopLeft);
 		}
 
-		private Point offset;
-		private Point lastRenderingTopLeft;
+		private Vector2D offset;
+		private Vector2D lastRenderingTopLeft;
 
-		private static Point GetIntPoint(Point point)
+		private static Vector2D GetIntPoint(Vector2D position)
 		{
-			return new Point((int)point.X, (int)point.Y);
+			return new Vector2D((int)position.X, (int)position.Y);
 		}
 
 		private void UpdateTileSprite(int tileX, int tileY)

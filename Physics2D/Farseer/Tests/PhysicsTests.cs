@@ -19,15 +19,15 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		public void CheckDefaultValues()
 		{
 			Assert.IsFalse(physics.IsPaused);
-			Assert.AreEqual(new Point(0.0f, 98.2f), physics.Gravity);
+			Assert.AreEqual(new Vector2D(0.0f, 98.2f), physics.Gravity);
 			Assert.AreEqual(0, physics.Bodies.Count());
 		}
 
 		[Test]
 		public void ChangeGravity()
 		{
-			physics.Gravity = Point.UnitY;
-			Assert.AreEqual(Point.UnitY, physics.Gravity);
+			physics.Gravity = Vector2D.UnitY;
+			Assert.AreEqual(Vector2D.UnitY, physics.Gravity);
 		}
 
 		[Test]
@@ -45,22 +45,22 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		[Test]
 		public void CreateEdge()
 		{
-			VerifyBodyIsCreated(physics.CreateEdge(Point.Zero, Point.One));
+			VerifyBodyIsCreated(physics.CreateEdge(Vector2D.Zero, Vector2D.One));
 		}
 
 		[Test]
 		public void CreateEdgeMultiPoints()
 		{
-			VerifyBodyIsCreated(physics.CreateEdge(Points));
+			VerifyBodyIsCreated(physics.CreateEdge(Vector2Ds));
 		}
 
-		private static readonly Point[] Points = new[]
-		{ Point.Zero, Point.UnitX, Point.One, Point.UnitY };
+		private static readonly Vector2D[] Vector2Ds = new[]
+		{ Vector2D.Zero, Vector2D.UnitX, Vector2D.One, Vector2D.UnitY };
 
 		[Test]
 		public void CreatePolygon()
 		{
-			VerifyBodyIsCreated(physics.CreatePolygon(Points));
+			VerifyBodyIsCreated(physics.CreatePolygon(Vector2Ds));
 		}
 
 		[Test]
@@ -68,7 +68,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var body = physics.CreateRectangle(Size.One);
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreNotEqual(Point.Zero, body.Position);
+			Assert.AreNotEqual(Vector2D.Zero, body.Position);
 		}
 	}
 }

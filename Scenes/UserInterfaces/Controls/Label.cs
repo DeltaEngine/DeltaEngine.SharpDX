@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Fonts;
+﻿using DeltaEngine.Datatypes;
+using DeltaEngine.Rendering2D.Fonts;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
@@ -9,8 +8,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Label : Picture
 	{
-		protected Label(List<object> createFromComponents)
-			: base(createFromComponents)
+		protected Label()
 		{
 			fontText = new FontText(theme.Font, "", GetFontTextDrawArea());
 			Add(fontText);

@@ -1,4 +1,6 @@
-﻿namespace CreepyTowers.Simple2D
+﻿using CreepyTowers.Towers;
+
+namespace CreepyTowers.Simple2D
 {
 	public class PaperCreepStateChanger2D
 	{
@@ -54,7 +56,7 @@
 
 		private static void SetAffectedByImpact(Creep2D creep)
 		{
-			StateChanger.MakeCreepParalysed(creep);
+			StateChanger.MakeCreepDelayed(creep);
 			if (creep.state.Frozen)
 				StateChanger.CheckChanceForSudden(creep);
 		}

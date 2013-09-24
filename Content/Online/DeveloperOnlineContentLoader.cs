@@ -21,6 +21,8 @@ namespace DeltaEngine.Content.Online
 			this.connection = connection;
 			connection.loadContentMetaData += OnLoadContentMetaData;
 			connection.DataReceived += OnDataReceived;
+			if (!connection.IsConnected)
+				connection.ConnectToService();
 			if (connection.IsLoggedIn)
 				SendCheckProjectContent();
 		}
@@ -261,7 +263,7 @@ namespace DeltaEngine.Content.Online
 			return isContentReady;
 		}
 
-		protected override ContentMetaData GetMetaData(string contentName,
+		public override ContentMetaData GetMetaData(string contentName,
 			Type contentClassType = null)
 		{
 			if (!isContentReady)

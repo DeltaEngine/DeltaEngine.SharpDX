@@ -30,8 +30,8 @@ namespace Drench.Tests.Logics
 			Assert.AreEqual(3, logic.GetPlayerScore(1));
 		}
 
-		private static readonly Point PlayerHomeSquare = Point.Zero;
-		private static readonly Point AiHomeSquare = new Point(BoardTests.Width - 1,
+		private static readonly Vector2D PlayerHomeSquare = Vector2D.Zero;
+		private static readonly Vector2D AiHomeSquare = new Vector2D(BoardTests.Width - 1,
 			BoardTests.Height - 1);
 
 		public void PlayUntilFinished()

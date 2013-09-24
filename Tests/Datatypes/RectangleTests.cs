@@ -10,7 +10,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void Create()
 		{
-			var point = new Point(2f, 2f);
+			var point = new Vector2D(2f, 2f);
 			var size = new Size(1f, 1f);
 			var rect = new Rectangle(point, size);
 			Assert.AreEqual(point.X, rect.Left);
@@ -22,11 +22,37 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void CreateFromPoints()
+		{
+			var pointArray = new[]
+			{ Vector2D.Zero, Vector2D.One, Vector2D.One * 1.5f, Vector2D.Half, -Vector2D.One };
+			var points = new List<Vector2D>(pointArray);
+			var rectangle = Rectangle.FromPoints(points);
+			Assert.AreEqual(-1.0f, rectangle.Left);
+			Assert.AreEqual(-1.0f, rectangle.Top);
+			Assert.AreEqual(1.5f, rectangle.Right);
+			Assert.AreEqual(1.5f, rectangle.Bottom);
+		}
+
+		[Test]
+		public void MergeRectangles()
+		{
+			var leftUpperRect = new Rectangle(-3.0f, -4.5f, 0.6f, 1.0f);
+			var rightUpperRect = new Rectangle(5.0f, -3.0f, 1.0f, 1.0f);
+			var leftLowerRect = new Rectangle(-4.0f, 6.2f, 1.0f, 0.8f);
+			var rightLowerRect = new Rectangle(2.0f, 1.0f, 0.5f, 0.5f);
+			Assert.AreEqual(new Rectangle(-3.0f, -4.5f, 9.0f, 2.5f), leftUpperRect.Merge(rightUpperRect));
+			Assert.AreEqual(new Rectangle(2.0f, -3.0f, 4.0f, 4.5f), rightLowerRect.Merge(rightUpperRect));
+			Assert.AreEqual(new Rectangle(-4.0f, -3.0f, 10.0f, 10.0f),
+				leftLowerRect.Merge(rightUpperRect));
+		}
+
+		[Test]
 		public void StaticRectangles()
 		{
 			Assert.AreEqual(new Rectangle(0, 0, 0, 0), Rectangle.Zero);
 			Assert.AreEqual(new Rectangle(0, 0, 1, 1), Rectangle.One);
-			Assert.AreEqual(new Rectangle(Point.Unused, Size.Unused), Rectangle.Unused);
+			Assert.AreEqual(new Rectangle(Vector2D.Unused, Size.Unused), Rectangle.Unused);
 		}
 
 		[Test]
@@ -74,9 +100,9 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void RectangleToString()
 		{
-			var p = new Point(2f, 2f);
+			var v = new Vector2D(2f, 2f);
 			var s = new Size(1f, 1f);
-			var rect = new Rectangle(p, s);
+			var rect = new Rectangle(v, s);
 			Assert.AreEqual("2 2 1 1", rect.ToString());
 		}
 
@@ -89,12 +115,12 @@ namespace DeltaEngine.Tests.Datatypes
 			Assert.AreEqual(Rectangle.One, new Rectangle("0 0 1 1"));
 			Assert.Throws<Rectangle.InvalidNumberOfComponents>(() => new Rectangle("abc"));
 		}
-		
+
 		[Test]
 		public static void FromInvariantStringWithDatatypes()
 		{
 			Assert.AreEqual(Size.Zero, "0,0".Convert<Size>());
-			Assert.AreEqual(Point.UnitX, "1,0".Convert<Point>());
+			Assert.AreEqual(Vector2D.UnitX, "1,0".Convert<Vector2D>());
 			Assert.AreEqual(new Rectangle(1, 1, 2, 2), "1 1 2 2".Convert<Rectangle>());
 		}
 
@@ -120,49 +146,49 @@ namespace DeltaEngine.Tests.Datatypes
 		public void TopRight()
 		{
 			var rect = new Rectangle(1, 2, 10, 20);
-			Assert.AreEqual(new Point(11, 2), rect.TopRight);
+			Assert.AreEqual(new Vector2D(11, 2), rect.TopRight);
 		}
 
 		[Test]
 		public void BottomLeft()
 		{
 			var rect = new Rectangle(1, 2, 10, 20);
-			Assert.AreEqual(new Point(1, 22), rect.BottomLeft);
+			Assert.AreEqual(new Vector2D(1, 22), rect.BottomLeft);
 		}
 
 		[Test]
 		public void BottomRight()
 		{
 			var rect = new Rectangle(1, 2, 10, 20);
-			Assert.AreEqual(new Point(11, 22), rect.BottomRight);
+			Assert.AreEqual(new Vector2D(11, 22), rect.BottomRight);
 		}
 
 		[Test]
 		public void GetCenter()
 		{
 			var rect = new Rectangle(4, 4, 4, 4);
-			Assert.AreEqual(new Point(4, 4), rect.TopLeft);
-			Assert.AreEqual(new Point(8, 8), rect.BottomRight);
-			Assert.AreEqual(new Point(6, 6), rect.Center);
+			Assert.AreEqual(new Vector2D(4, 4), rect.TopLeft);
+			Assert.AreEqual(new Vector2D(8, 8), rect.BottomRight);
+			Assert.AreEqual(new Vector2D(6, 6), rect.Center);
 		}
 
 		[Test]
 		public void SetCenter()
 		{
-			var rect = new Rectangle(8, 10, 2, 2) { Center = Point.One };
-			Assert.AreEqual(new Point(0, 0), rect.TopLeft);
-			Assert.AreEqual(new Point(2, 2), rect.BottomRight);
-			Assert.AreEqual(new Point(1, 1), rect.Center);
+			var rect = new Rectangle(8, 10, 2, 2) { Center = Vector2D.One };
+			Assert.AreEqual(new Vector2D(0, 0), rect.TopLeft);
+			Assert.AreEqual(new Vector2D(2, 2), rect.BottomRight);
+			Assert.AreEqual(new Vector2D(1, 1), rect.Center);
 		}
 
 		[Test]
 		public void Contains()
 		{
 			var rect = new Rectangle(1, 2, 10, 20);
-			Assert.IsTrue(rect.Contains(new Point(1, 2)));
-			Assert.IsTrue(rect.Contains(new Point(5, 5)));
-			Assert.IsFalse(rect.Contains(new Point(11, 5)));
-			Assert.IsFalse(rect.Contains(new Point(5, 22)));
+			Assert.IsTrue(rect.Contains(new Vector2D(1, 2)));
+			Assert.IsTrue(rect.Contains(new Vector2D(5, 5)));
+			Assert.IsFalse(rect.Contains(new Vector2D(11, 5)));
+			Assert.IsFalse(rect.Contains(new Vector2D(5, 22)));
 		}
 
 		[Test]
@@ -176,7 +202,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void FromCenter()
 		{
-			Rectangle rect = Rectangle.FromCenter(new Point(11, 12), new Size(4, 6));
+			Rectangle rect = Rectangle.FromCenter(new Vector2D(11, 12), new Size(4, 6));
 			Assert.AreEqual(new Rectangle(9, 9, 4, 6), rect);
 			Rectangle anotherRect = Rectangle.FromCenter(0.5f, 0.5f, 1.0f, 1.0f);
 			Assert.AreEqual(new Rectangle(0, 0, 1, 1), anotherRect);
@@ -185,8 +211,8 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void FromCorners()
 		{
-			Rectangle rect = Rectangle.FromCorners(new Point(1, 2), new Point(3, 5));
-			Assert.AreEqual(new Rectangle(new Point(1, 2), new Size(2, 3)), rect);
+			Rectangle rect = Rectangle.FromCorners(new Vector2D(1, 2), new Vector2D(3, 5));
+			Assert.AreEqual(new Rectangle(new Vector2D(1, 2), new Size(2, 3)), rect);
 		}
 
 		[Test]
@@ -225,37 +251,37 @@ namespace DeltaEngine.Tests.Datatypes
 		public void GetRelativePoint()
 		{
 			var rect = new Rectangle(1, 2, 3, 4);
-			Assert.AreEqual(Point.Zero, rect.GetRelativePoint(new Point(1, 2)));
-			Assert.AreEqual(Point.One, rect.GetRelativePoint(new Point(4, 6)));
-			Assert.AreEqual(new Point(-1, -2), rect.GetRelativePoint(new Point(-2, -6)));
+			Assert.AreEqual(Vector2D.Zero, rect.GetRelativePoint(new Vector2D(1, 2)));
+			Assert.AreEqual(Vector2D.One, rect.GetRelativePoint(new Vector2D(4, 6)));
+			Assert.AreEqual(new Vector2D(-1, -2), rect.GetRelativePoint(new Vector2D(-2, -6)));
 		}
 
 		[Test]
 		public void Move()
 		{
 			var rect = new Rectangle(1, 1, 1, 1);
-			Assert.AreEqual(rect, rect.Move(Point.Zero));
-			Assert.AreEqual(new Rectangle(2.0f, 2.0f, 1.0f, 1.0f), rect.Move(Point.One));
-			Assert.AreEqual(new Rectangle(-1.0f, -2.0f, 1.0f, 1.0f), rect.Move(new Point(-2, -3)));
+			Assert.AreEqual(rect, rect.Move(Vector2D.Zero));
+			Assert.AreEqual(new Rectangle(2.0f, 2.0f, 1.0f, 1.0f), rect.Move(Vector2D.One));
+			Assert.AreEqual(new Rectangle(-1.0f, -2.0f, 1.0f, 1.0f), rect.Move(new Vector2D(-2, -3)));
 		}
 
 		[Test]
 		public void GetRotatedRectangleCornersWithoutRotation()
 		{
-			var points = new Rectangle(1, 1, 1, 1).GetRotatedRectangleCorners(Point.Zero, 0);
+			var points = new Rectangle(1, 1, 1, 1).GetRotatedRectangleCorners(Vector2D.Zero, 0);
 			Assert.AreEqual(4, points.Length);
-			Assert.AreEqual(Point.One, points[0]);
-			Assert.AreEqual(new Point(2, 1), points[1]);
-			Assert.AreEqual(new Point(2, 2), points[2]);
+			Assert.AreEqual(Vector2D.One, points[0]);
+			Assert.AreEqual(new Vector2D(2, 1), points[1]);
+			Assert.AreEqual(new Vector2D(2, 2), points[2]);
 		}
 
 		[Test]
 		public void GetRotatedRectangleCornersWith180DegreesRotation()
 		{
-			var points = new Rectangle(1, 1, 1, 1).GetRotatedRectangleCorners(Point.Zero, 180);
-			Assert.AreEqual(-Point.One, points[0]);
-			Assert.AreEqual(-new Point(2, 1), points[1]);
-			Assert.AreEqual(-new Point(2, 2), points[2]);
+			var points = new Rectangle(1, 1, 1, 1).GetRotatedRectangleCorners(Vector2D.Zero, 180);
+			Assert.AreEqual(-Vector2D.One, points[0]);
+			Assert.AreEqual(-new Vector2D(2, 1), points[1]);
+			Assert.AreEqual(-new Vector2D(2, 2), points[2]);
 		}
 
 		[Test]
@@ -286,6 +312,31 @@ namespace DeltaEngine.Tests.Datatypes
 			var outsideRect = new Rectangle(0.2f, 0.2f, 0.3f, 0.3f);
 			Assert.IsTrue(outsideRect.IsColliding(0, insideRect, 0));
 			Assert.IsTrue(outsideRect.IsColliding(0, insideRect, 70));
+		}
+
+		[Test]
+		public void CheckIntersectionWithCircle()
+		{
+			var rectangle = new Rectangle(-1.0f, -1.0f, 2.0f, 2.0f);
+			Assert.IsFalse(rectangle.IntersectsCircle(new Vector2D(2.0f, 2.0f), 0.5f));
+			Assert.IsFalse(rectangle.IntersectsCircle(new Vector2D(-1.5f, -1.0f), 0.4f));
+			Assert.IsTrue(rectangle.IntersectsCircle(Vector2D.Zero, 3.0f));
+			Assert.IsTrue(rectangle.IntersectsCircle(Vector2D.Half, 0.1f));
+			Assert.IsTrue(rectangle.IntersectsCircle(new Vector2D(1.2f, 1.2f), 0.6f));
+			Assert.IsTrue(rectangle.IntersectsCircle(new Vector2D(0.0f, -2.0f), 10.0f));
+		}
+
+		[Test]
+		public void InitializeRectangleFromPoints()
+		{
+			var points =
+				new List<Vector2D>(new[]
+				{
+					new Vector2D(1.0f, 3.0f), new Vector2D(4.0f, 2.0f), new Vector2D(1.0f, 6.0f),
+					new Vector2D(1.7f, 4.3f)
+				});
+			var rectangle = Rectangle.FromPoints(points);
+			Assert.AreEqual(new Rectangle(1.0f, 2.0f, 3.0f, 4.0f), rectangle);
 		}
 	}
 }

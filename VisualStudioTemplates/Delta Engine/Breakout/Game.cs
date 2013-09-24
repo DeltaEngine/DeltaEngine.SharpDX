@@ -3,7 +3,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -36,11 +36,12 @@ namespace $safeprojectname$
 
 			new Background().RenderLayer = 0;
 			score = new Score();
-			ball = new BallInLevel(new Paddle(), new Level(score));
-			hudInterface = new UI(window, this, device);
+			currentLevel = new Level(score);
+			ball = new BallInLevel(new Paddle(), currentLevel);
+			new UI(window, this, device);
 			score.GameOver += () => 
 			{
-				ball.Dispose();
+				RemoveOldObjects();
 				gameOverMessage = new FontText(Font.Default, "That's it.\nGame Over!", Rectangle.One);
 				restartCommand = new Command(InitGame).Add(new KeyTrigger(Key.Space)).Add(new 
 					MouseButtonTrigger()).Add(new TouchTapTrigger());
@@ -48,9 +49,16 @@ namespace $safeprojectname$
 			Score = score;
 		}
 
+		private Level currentLevel;
+
+		private void RemoveOldObjects()
+		{
+			ball.Dispose();
+			currentLevel.Dispose();
+		}
+
 		private BallInLevel ball;
 		private Score score;
-		private UI hudInterface;
 		private readonly Window window;
 		private readonly SoundDevice device;
 		private Command restartCommand;

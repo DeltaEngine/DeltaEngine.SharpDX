@@ -40,7 +40,7 @@ namespace Breakout.Tests
 			var ball = Resolve<Ball>();
 			Assert.IsTrue(ball.Visibility == Visibility.Show);
 			AdvanceTimeAndUpdateEntities(0.01f);
-			var initialBallPosition = new Point(0.5f, 0.86f);
+			var initialBallPosition = new Vector2D(0.5f, 0.86f);
 			Assert.AreEqual(initialBallPosition, ball.Position);
 			Resolve<MockKeyboard>().SetKeyboardState(Key.Space, State.Pressing);
 			AdvanceTimeAndUpdateEntities(1.0f);
@@ -63,7 +63,7 @@ namespace Breakout.Tests
 			//{
 			//	public override void ReceiveMessage(Entity2D entity, object message)
 			//	{
-			//		var gravity = new Point(0.0f, 9.81f);
+			//		var gravity = new Vector2D(0.0f, 9.81f);
 			//		velocity += gravity * 0.15f * Time.Delta;
 			//	}		
 			//}

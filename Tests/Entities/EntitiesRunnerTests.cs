@@ -13,7 +13,8 @@ namespace DeltaEngine.Tests.Entities
 		{
 			entities = new MockEntitiesRunner(typeof(MockUpdateBehavior), typeof(IncrementCounter),
 				typeof(DerivedBehavior), typeof(DrawTest), typeof(LowPriorityBehavior),
-				typeof(AddNewUpdateBehaviorTwice));
+				typeof(AddNewUpdateBehaviorTwice), typeof(MockPauseableUpdateBehavior),
+				typeof(MockNonPauseableUpdateBehavior));
 		}
 
 		private MockEntitiesRunner entities;
@@ -313,7 +314,7 @@ namespace DeltaEngine.Tests.Entities
 		{
 			var entity = new UpdateableEntityWithBehaviors();
 			entities.RunEntities();
-			entity.Set(""); // Resetting string - see below failing test for why I had to do this
+			entity.Set("");
 			entities.RunEntities();
 			Assert.AreEqual("[HighPriorityUpdate][LowPriorityBehavior]", entity.Get<string>());
 		}
@@ -322,8 +323,6 @@ namespace DeltaEngine.Tests.Entities
 		{
 			public UpdateableEntityWithBehaviors()
 			{
-				// If you swap around these two lines of code, both tests pass - because no
-				// behaviors are attached at the time the faulty code is run :)
 				Start<LowPriorityBehavior>();
 				UpdatePriority = Priority.High;
 			}
@@ -352,6 +351,93 @@ namespace DeltaEngine.Tests.Entities
 			var entity = new UpdateableEntityWithBehaviors();
 			entities.RunEntities();
 			Assert.AreEqual("[HighPriorityUpdate][LowPriorityBehavior]", entity.Get<string>());
+		}
+
+		[Test]
+		public void RapidEntityPausesWhenAppIsPaused()
+		{
+			VerifyEntityWasUpdated(new MockRapidEntity(), () => entities.RunEntities());
+			VerifyEntityWasNotUpdated(new MockRapidEntity(), () => entities.RunEntitiesPaused());
+		}
+
+		private static void VerifyEntityWasUpdated(VerifiableUpdate entity, Action run)
+		{
+			run();
+			Assert.IsTrue(entity.WasUpdated);
+		}
+
+		private static void VerifyEntityWasNotUpdated(VerifiableUpdate entity, Action run)
+		{
+			run();
+			Assert.IsFalse(entity.WasUpdated);
+		}
+
+		[Test]
+		public void PauseableRapidEntityPausesWhenAppIsPaused()
+		{
+			VerifyEntityWasUpdated(new MockPauseableRapidEntity(true), () => entities.RunEntities());
+			VerifyEntityWasNotUpdated(new MockPauseableRapidEntity(true),
+				() => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void NonPausableRapidEntityAlwaysRuns()
+		{
+			VerifyEntityWasUpdated(new MockPauseableRapidEntity(false), () => entities.RunEntities());
+			VerifyEntityWasUpdated(new MockPauseableRapidEntity(false),
+				() => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void UpdateableEntityPausesWhenAppIsPaused()
+		{
+			VerifyEntityWasUpdated(new MockEntity(), () => entities.RunEntities());
+			VerifyEntityWasNotUpdated(new MockEntity(), () => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void PauseableEntityPausesWhenAppIsPaused()
+		{
+			VerifyEntityWasUpdated(new MockPauseableEntity(true), () => entities.RunEntities());
+			VerifyEntityWasNotUpdated(new MockPauseableEntity(true), () => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void NonPausableEntityAlwaysRuns()
+		{
+			VerifyEntityWasUpdated(new MockPauseableEntity(false), () => entities.RunEntities());
+			VerifyEntityWasUpdated(new MockPauseableEntity(false), () => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void UpdateBehaviorPausesWhenAppIsPaused()
+		{
+			VerifyEntityWasUpdated((VerifiableUpdate)new MockEntity().Start<MockUpdateBehavior>(),
+				() => entities.RunEntities());
+			VerifyEntityWasNotUpdated((VerifiableUpdate)new MockEntity().Start<MockUpdateBehavior>(),
+				() => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void PauseableUpdateBehaviorPausesWhenAppIsPaused()
+		{
+			VerifyEntityWasUpdated(
+				(VerifiableUpdate)new MockEntity().Start<MockPauseableUpdateBehavior>(),
+				() => entities.RunEntities());
+			VerifyEntityWasNotUpdated(
+				(VerifiableUpdate)new MockEntity().Start<MockPauseableUpdateBehavior>(),
+				() => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void NonPauseableUpdateBehaviorAlwaysRuns()
+		{
+			VerifyEntityWasUpdated(
+				(VerifiableUpdate)new MockEntity().Start<MockNonPauseableUpdateBehavior>(),
+				() => entities.RunEntities());
+			VerifyEntityWasUpdated(
+				(VerifiableUpdate)new MockEntity().Start<MockNonPauseableUpdateBehavior>(),
+				() => entities.RunEntitiesPaused());
 		}
 	}
 }

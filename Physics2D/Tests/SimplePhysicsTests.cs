@@ -2,9 +2,9 @@
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Shapes;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Shapes;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
@@ -30,8 +30,8 @@ namespace DeltaEngine.Physics2D.Tests
 			var sprite = new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"), Rectangle.One);
 			sprite.Add(new SimplePhysics.Data
 			{
-				Velocity = Point.Half,
-				Gravity = new Point(1.0f, 2.0f),
+				Velocity = Vector2D.Half,
+				Gravity = new Vector2D(1.0f, 2.0f),
 				Duration = 1.0f
 			});
 			sprite.Start<SimplePhysics.Move>();
@@ -52,24 +52,24 @@ namespace DeltaEngine.Physics2D.Tests
 			var sprite = new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"), screenCenter);
 			sprite.Add(new SimplePhysics.Data
 			{
-				Velocity = new Point(0.0f, -0.3f),
+				Velocity = new Vector2D(0.0f, -0.3f),
 				RotationSpeed = 100.0f,
-				Gravity = new Point(0.0f, 0.1f),
+				Gravity = new Vector2D(0.0f, 0.1f),
 			});
 			sprite.Color = Color.Red;
 			sprite.Start<SimplePhysics.Move>();
 		}
 
-		private readonly Rectangle screenCenter = Rectangle.FromCenter(Point.Half, new Size(0.2f));
+		private readonly Rectangle screenCenter = Rectangle.FromCenter(Vector2D.Half, new Size(0.2f));
 
 		[Test]
 		public void RenderFallingCircle()
 		{
-			var ellipse = new Ellipse(Point.Half, 0.1f, 0.1f, Color.Blue);
+			var ellipse = new Ellipse(Vector2D.Half, 0.1f, 0.1f, Color.Blue);
 			ellipse.Add(new SimplePhysics.Data
 			{
-				Velocity = new Point(0.1f, -0.1f),
-				Gravity = new Point(0.0f, 0.1f)
+				Velocity = new Vector2D(0.1f, -0.1f),
+				Gravity = new Vector2D(0.0f, 0.1f)
 			});
 			ellipse.Start<SimplePhysics.Move>();
 		}
@@ -77,33 +77,33 @@ namespace DeltaEngine.Physics2D.Tests
 		[Test]
 		public void RenderMovingCircleUsingExtension()
 		{
-			var ellipse = new Ellipse(Point.Half, 0.1f, 0.1f, Color.Blue);
-			ellipse.StartMoving(new Point(0.1f, -0.1f));
+			var ellipse = new Ellipse(Vector2D.Half, 0.1f, 0.1f, Color.Blue);
+			ellipse.StartMoving(new Vector2D(0.1f, -0.1f));
 		}
 
 		[Test]
 		public void RenderFallingCircleUsingExtension()
 		{
-			var ellipse = new Ellipse(Point.Half, 0.1f, 0.1f, Color.Blue);
-			ellipse.StartFalling(new Point(0.1f, -0.1f), new Point(0.0f, 0.1f));
+			var ellipse = new Ellipse(Vector2D.Half, 0.1f, 0.1f, Color.Blue);
+			ellipse.StartFalling(new Vector2D(0.1f, -0.1f), new Vector2D(0.0f, 0.1f));
 		}
 
 
 		[Test]
 		public void RenderRotatingRect()
 		{
-			var rect = new FilledRect(Rectangle.FromCenter(Point.Half, new Size(0.2f)), Color.Orange)
+			var rect = new FilledRect(Rectangle.FromCenter(Vector2D.Half, new Size(0.2f)), Color.Orange)
 			{
 				Rotation = 0
 			};
-			rect.Add(new SimplePhysics.Data { Gravity = Point.Zero, RotationSpeed = 5 });
+			rect.Add(new SimplePhysics.Data { Gravity = Vector2D.Zero, RotationSpeed = 5 });
 			rect.Start<SimplePhysics.Rotate>();
 		}
 
 		[Test]
 		public void RenderRotatingRectViaExtensionMethod()
 		{
-			new FilledRect(Rectangle.FromCenter(Point.Half, new Size(0.2f)), Color.Red).StartRotating(5);
+			new FilledRect(Rectangle.FromCenter(Vector2D.Half, new Size(0.2f)), Color.Red).StartRotating(5);
 		}
 
 		[Test]
@@ -112,7 +112,11 @@ namespace DeltaEngine.Physics2D.Tests
 			var rect =
 				new FilledRect(new Rectangle(ScreenSpace.Current.Viewport.TopLeft, new Size(0.2f)),
 					Color.Red);
-			rect.Add(new SimplePhysics.Data { Gravity = Point.Zero, Velocity = new Point(-0.1f, 0.0f) });
+			rect.Add(new SimplePhysics.Data
+			{
+				Gravity = Vector2D.Zero,
+				Velocity = new Vector2D(-0.1f, 0.0f)
+			});
 			rect.Start<SimplePhysics.Move>();
 			rect.Start<SimplePhysics.BounceIfAtScreenEdge>();
 			var collided = false;
@@ -128,7 +132,7 @@ namespace DeltaEngine.Physics2D.Tests
 			var rect = new FilledRect(new Rectangle(ScreenSpace.Current.Viewport.TopLeft, new Size(0.2f)),
 				Color.Red);
 			rect.Rotation = 0;
-			rect.Add(new SimplePhysics.Data { Gravity = Point.Zero, RotationSpeed = 0.1f });
+			rect.Add(new SimplePhysics.Data { Gravity = Vector2D.Zero, RotationSpeed = 0.1f });
 			rect.Start<SimplePhysics.Rotate>();
 			AdvanceTimeAndUpdateEntities();
 			Assert.Greater(rect.Rotation, 0);
@@ -139,7 +143,7 @@ namespace DeltaEngine.Physics2D.Tests
 		{
 			var sprite = new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"), Rectangle.One);
 			sprite.SetNewUV(new Rectangle(0, 0, 5, 5), FlipMode.Vertical);
-			sprite.StartMovingUv(Point.One);
+			sprite.StartMovingUv(Vector2D.One);
 		}
 	}
 }

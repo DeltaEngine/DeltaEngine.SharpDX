@@ -9,20 +9,20 @@ namespace DeltaEngine.Graphics.Vertices
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexPosition3DNormalUV : Lerp<VertexPosition3DNormalUV>, Vertex
 	{
-		public VertexPosition3DNormalUV(Vector position, Vector normal, Point uv)
+		public VertexPosition3DNormalUV(Vector3D position, Vector3D normal, Vector2D uv)
 		{
 			Position = position;
 			Normal = normal;
 			UV = uv;
 		}
 
-		public Vector Position;
-		public Vector Normal;
-		public Point UV;
+		public Vector3D Position;
+		public Vector3D Normal;
+		public Vector2D UV;
 
-		public VertexPosition3DNormalUV(Point position, Vector normal, Point uv)
+		public VertexPosition3DNormalUV(Vector2D position, Vector3D normal, Vector2D uv)
 		{
-			Position = new Vector(position.X, position.Y, 0.0f);
+			Position = new Vector3D(position.X, position.Y, 0.0f);
 			Normal = normal;
 			UV = uv;
 		}

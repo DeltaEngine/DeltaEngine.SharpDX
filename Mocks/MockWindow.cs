@@ -65,7 +65,7 @@ namespace DeltaEngine.Mocks
 		}
 
 		private Size currentSize;
-		public Point PixelPosition { get; set; }
+		public Vector2D PixelPosition { get; set; }
 		public Color BackgroundColor { get; set; }
 		public bool IsFullscreen { get; private set; }
 

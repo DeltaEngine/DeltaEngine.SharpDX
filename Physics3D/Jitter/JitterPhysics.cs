@@ -101,7 +101,7 @@ namespace DeltaEngine.Physics3D.Jitter
 			jitterBody2.FireCollisionEnd(jitterBody1);
 		}
 
-		protected override PhysicsBody CreateBody(PhysicsShape shape, Vector initialPosition)
+		protected override PhysicsBody CreateBody(PhysicsShape shape, Vector3D initialPosition)
 		{
 			PhysicsBody body = new JitterBody(this, shape, initialPosition);
 			bodies.Add(body);
@@ -158,7 +158,7 @@ namespace DeltaEngine.Physics3D.Jitter
 			return raycastResult;
 		}
 
-		protected override void SetGravity(Vector gravity)
+		protected override void SetGravity(Vector3D gravity)
 		{
 			jitterWorld.Gravity = JitterDatatypesMapping.Convert(ref gravity);
 		}

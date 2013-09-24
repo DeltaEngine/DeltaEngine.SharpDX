@@ -16,8 +16,8 @@ namespace DeltaEngine.Input
 
 		protected GamePadNumber Number { get; private set; }
 
-		public abstract Point GetLeftThumbStick();
-		public abstract Point GetRightThumbStick();
+		public abstract Vector2D GetLeftThumbStick();
+		public abstract Vector2D GetRightThumbStick();
 		public abstract float GetLeftTrigger();
 		public abstract float GetRightTrigger();
 		public abstract State GetButtonState(GamePadButton button);
@@ -48,13 +48,13 @@ namespace DeltaEngine.Input
 				trigger.Position = GetRightThumbStick();
 				break;
 			case GamePadAnalog.LeftTrigger:
-				trigger.Position = new Point(GetLeftTrigger(), GetLeftTrigger());
+				trigger.Position = new Vector2D(GetLeftTrigger(), GetLeftTrigger());
 				break;
 			case GamePadAnalog.RightTrigger:
-				trigger.Position = new Point(GetRightTrigger(), GetRightTrigger());
+				trigger.Position = new Vector2D(GetRightTrigger(), GetRightTrigger());
 				break;
 			}
-			return trigger.Position != Point.Unused;
+			return trigger.Position != Vector2D.Unused;
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Graphics.Mocks;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
@@ -33,6 +34,16 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
+		public void SetFullscreenCallsDevicesOnFullscreenChanged()
+		{
+			var device = Resolve<Device>() as MockDevice;
+			Assert.IsFalse(device.OnFullscreenChangedCalled);
+			var window = Resolve<Window>();
+			window.SetFullscreen(Size.One);
+			Assert.IsTrue(device.OnFullscreenChangedCalled);
+		}
+
+		[Test]
 		public void ToggleFullscreenMode()
 		{
 			var window = Resolve<Window>();
@@ -58,5 +69,14 @@ namespace DeltaEngine.Graphics.Tests
 
 		[DllImport("user32.dll", EntryPoint = "GetSystemMetrics")]
 		private static extern int GetSystemMetrics(int systemMetric);
+
+		[Test]
+		public void OnSet3DModeActionIsCalledWhenSetting3DMode()
+		{
+			var device = Resolve<Device>() as MockDevice;
+			Assert.IsFalse(device.OnSet3DModeCalled);
+			device.Set3DMode();
+			Assert.IsTrue(device.OnSet3DModeCalled);
+		}
 	}
 }

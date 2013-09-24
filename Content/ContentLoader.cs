@@ -116,7 +116,7 @@ namespace DeltaEngine.Content
 			return contentData;
 		}
 
-		protected abstract ContentMetaData GetMetaData(string contentName,
+		public abstract ContentMetaData GetMetaData(string contentName,
 			Type contentClassType = null);
 
 		private void LoadMetaDataAndContent(ContentData contentData)

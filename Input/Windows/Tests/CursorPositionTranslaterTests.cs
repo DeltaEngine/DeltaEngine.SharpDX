@@ -13,7 +13,7 @@ namespace DeltaEngine.Input.Windows.Tests
 		{
 			var window = Resolve<Window>();
 			var translator = new CursorPositionTranslater(window);
-			var outsidePosition = Resolve<ScreenSpace>().FromPixelSpace(new Point(-10, -10));
+			var outsidePosition = Resolve<ScreenSpace>().FromPixelSpace(new Vector2D(-10, -10));
 			var screenPos = translator.ToScreenPositionFromScreenSpace(outsidePosition);
 			Assert.IsTrue(screenPos.X < window.PixelPosition.X || screenPos.Y < window.PixelPosition.Y);
 			Assert.AreEqual(outsidePosition, translator.FromScreenPositionToScreenSpace(screenPos));
@@ -23,7 +23,7 @@ namespace DeltaEngine.Input.Windows.Tests
 		public void ConvertPixelFromScreenPositionAndBack()
 		{
 			var positionTranslator = new CursorPositionTranslater(Resolve<Window>());
-			var topLeftPixel = Point.Zero;
+			var topLeftPixel = Vector2D.Zero;
 			var outside = positionTranslator.FromScreenPositionToScreenSpace(topLeftPixel);
 			Assert.AreEqual(topLeftPixel, positionTranslator.ToScreenPositionFromScreenSpace(outside));
 		}
@@ -33,7 +33,7 @@ namespace DeltaEngine.Input.Windows.Tests
 		public void GetReturnsWhatWasSet()
 		{
 			var positionTranslator = new CursorPositionTranslater(Resolve<Window>());
-			var setPoint = new Point(0.1f, 0.2f);
+			var setPoint = new Vector2D(0.1f, 0.2f);
 			positionTranslator.SetCursorPosition(setPoint);
 			var getPoint = positionTranslator.GetCursorPosition();
 			Assert.AreEqual(setPoint.X, getPoint.X, 0.1f);

@@ -26,7 +26,7 @@ namespace Snake.Tests
 		public void CreateSnakeAtOrigin()
 		{
 			var snake = new Snake(gridSize, Color.Green);
-			Assert.AreEqual(new Point(startPosition, startPosition),
+			Assert.AreEqual(new Vector2D(startPosition, startPosition),
 				snake.Get<Body>().BodyParts[0].TopLeft);
 		}
 
@@ -86,7 +86,7 @@ namespace Snake.Tests
 		public void CheckTrailingVector()
 		{
 			var snake = new Snake(gridSize, Color.Green);
-			Assert.AreEqual(new Point(0, blockSize), snake.Get<Body>().GetTrailingVector());
+			Assert.AreEqual(new Vector2D(0, blockSize), snake.Get<Body>().GetTrailingVector());
 		}
 
 		[Test]

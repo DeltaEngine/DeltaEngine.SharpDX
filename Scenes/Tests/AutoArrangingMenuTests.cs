@@ -2,9 +2,9 @@
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -84,7 +84,7 @@ namespace DeltaEngine.Scenes.Tests
 		public void CreatingSetsButtonSizeAndMenuCenter()
 		{
 			Assert.AreEqual(ButtonSize, menu.ButtonSize);
-			Assert.AreEqual(Point.Half, menu.Center);
+			Assert.AreEqual(Vector2D.Half, menu.Center);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -97,14 +97,14 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ChangingCenterForSetOfButtons()
 		{
-			menu.Center = Point.One;
-			Assert.AreEqual(Point.One, menu.Center);
+			menu.Center = Vector2D.One;
+			Assert.AreEqual(Vector2D.One, menu.Center);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void AddingMenuOptionAddsButton()
 		{
-			menu.Center = new Point(0.6f, 0.6f);
+			menu.Center = new Vector2D(0.6f, 0.6f);
 			menu.AddMenuOption(() => { });
 			Assert.AreEqual(2, menu.Controls.Count);
 			var button = (Button)menu.Controls[1];

@@ -28,7 +28,7 @@ namespace Drench.Tests.Games
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Point.Zero);
+				mouse.SetPosition(Vector2D.Zero);
 		}
 
 		private MockMouse mouse;
@@ -43,19 +43,19 @@ namespace Drench.Tests.Games
 		[Test]
 		public void ClickInvalidSquare()
 		{
-			var firstSquare = new Point(ScreenSpace.Current.Left + Game.Border + 0.01f,
+			var firstSquare = new Vector2D(ScreenSpace.Current.Left + Game.Border + 0.01f,
 				ScreenSpace.Current.Top + Game.Border + 0.01f);
 			ClickMouse(firstSquare);
 			Assert.AreEqual("0 turns taken - Invalid Move!", game.upperText.Text);
 		}
 
-		private void ClickMouse(Point position)
+		private void ClickMouse(Vector2D position)
 		{
 			SetMouseState(State.Pressing, position);
 			SetMouseState(State.Releasing, position);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -67,7 +67,7 @@ namespace Drench.Tests.Games
 		[Test]
 		public void ClickValidSquare()
 		{
-			ClickMouse(Point.Half);
+			ClickMouse(Vector2D.Half);
 			Assert.AreEqual("1 turn taken", game.upperText.Text);
 		}
 
@@ -88,22 +88,22 @@ namespace Drench.Tests.Games
 
 		private void MakeMovesThatFinishGame()
 		{
-			foreach (Point move in WinningMoves)
+			foreach (Vector2D move in WinningMoves)
 				ClickMouse(move);
 		}
 
-		private static readonly List<Point> WinningMoves = new List<Point>
+		private static readonly List<Vector2D> WinningMoves = new List<Vector2D>
 		{
-			new Point(0.2714286f, 0.355f),
-			new Point(0.3857143f, 0.355f),
-			new Point(0.5f, 0.355f),
-			new Point(0.6142857f, 0.355f),
-			new Point(0.7285714f, 0.355f),
-			new Point(0.8428571f, 0.355f),
-			new Point(0.8428571f, 0.4275f),
-			new Point(0.8428571f, 0.5f),
-			new Point(0.8428571f, 0.5725f),
-			new Point(0.8428571f, 0.645f)
+			new Vector2D(0.2714286f, 0.355f),
+			new Vector2D(0.3857143f, 0.355f),
+			new Vector2D(0.5f, 0.355f),
+			new Vector2D(0.6142857f, 0.355f),
+			new Vector2D(0.7285714f, 0.355f),
+			new Vector2D(0.8428571f, 0.355f),
+			new Vector2D(0.8428571f, 0.4275f),
+			new Vector2D(0.8428571f, 0.5f),
+			new Vector2D(0.8428571f, 0.5725f),
+			new Vector2D(0.8428571f, 0.645f)
 		};
 
 		[Test]
@@ -112,7 +112,7 @@ namespace Drench.Tests.Games
 			bool hasExited = false;
 			game.Exited += () => hasExited = true;
 			MakeMovesThatFinishGame();
-			ClickMouse(Point.Half);
+			ClickMouse(Vector2D.Half);
 			Assert.IsTrue(hasExited);
 		}
 	}

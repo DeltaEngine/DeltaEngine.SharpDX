@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -17,14 +16,14 @@ namespace DeltaEngine.Graphics.Tests
 		[Test, ApproveFirstFrameScreenshot]
 		public void DrawRedLine()
 		{
-			new Line(Point.Zero, new Point(1280, 720), Color.Red);
+			new Line(Vector2D.Zero, new Vector2D(1280, 720), Color.Red);
 			RunAfterFirstFrame(
 				() => Assert.AreEqual(2, Resolve<Drawing>().NumberOfDynamicVerticesDrawnThisFrame));
 		}
 
 		public sealed class Line : DrawableEntity
 		{
-			public Line(Point start, Point end, Color color)
+			public Line(Vector2D start, Vector2D end, Color color)
 			{
 				Add(new[]
 				{ new VertexPosition2DColor(start, color), new VertexPosition2DColor(end, color) });
@@ -58,12 +57,12 @@ namespace DeltaEngine.Graphics.Tests
 		[Test]
 		public void IncreaseNumberOfLinesOverTime()
 		{
-			new LineAdder(Point.Zero, new Point(100, 80), Color.Red);
+			new LineAdder(Vector2D.Zero, new Vector2D(100, 80), Color.Red);
 		}
 
 		public sealed class LineAdder : DrawableEntity, Updateable
 		{
-			public LineAdder(Point start, Point end, Color color)
+			public LineAdder(Vector2D start, Vector2D end, Color color)
 			{
 				Add(new[]
 				{ new VertexPosition2DColor(start, color), new VertexPosition2DColor(end, color) });
@@ -85,8 +84,8 @@ namespace DeltaEngine.Graphics.Tests
 					vertices[i] = oldVertices[i];
 				for (int i = oldVertices.Length / 2; i < numberOfLines; i++)
 				{
-					var startPoint = new Point(random.Get(0, 1280), random.Get(0, 720));
-					var endPoint = startPoint + new Point(random.Get(-100, 100), random.Get(-100, 100));
+					var startPoint = new Vector2D(random.Get(0, 1280), random.Get(0, 720));
+					var endPoint = startPoint + new Vector2D(random.Get(-100, 100), random.Get(-100, 100));
 					vertices[i * 2 + 0] = new VertexPosition2DColor(startPoint, Color.GetRandomColor());
 					vertices[i * 2 + 1] = new VertexPosition2DColor(endPoint, Color.GetRandomColor());
 				}
@@ -120,8 +119,8 @@ namespace DeltaEngine.Graphics.Tests
 				var random = Randomizer.Current;
 				for (int line = 0; line < numberOfLines; line++)
 				{
-					var startPoint = new Point(random.Get(0, 640), random.Get(0, 360));
-					var endPoint = startPoint + new Point(random.Get(-50, 50), random.Get(-50, 50));
+					var startPoint = new Vector2D(random.Get(0, 640), random.Get(0, 360));
+					var endPoint = startPoint + new Vector2D(random.Get(-50, 50), random.Get(-50, 50));
 					vertices.Add(new VertexPosition2DColor(startPoint, Color.GetRandomColor()));
 					vertices.Add(new VertexPosition2DColor(endPoint, Color.GetRandomColor()));
 				}
@@ -135,7 +134,7 @@ namespace DeltaEngine.Graphics.Tests
 				for (int line = 0; line < vertices.Count; line++)
 					vertices[line] =
 						new VertexPosition2DColor(
-							vertices[line].Position + new Point(random.Get(-30, 30), random.Get(-20, 20)),
+							vertices[line].Position + new Vector2D(random.Get(-30, 30), random.Get(-20, 20)),
 							Color.GetRandomColor());
 			}
 
@@ -169,9 +168,33 @@ namespace DeltaEngine.Graphics.Tests
 			var settings = Resolve<Settings>();
 			settings.StartInFullscreen = true;
 			settings.Resolution = new Size(1920, 1080);
-			new Line(Point.Zero, settings.Resolution, Color.Yellow);
+			new Line(Vector2D.Zero, settings.Resolution, Color.Yellow);
 			settings.StartInFullscreen = false;
 			settings.Resolution = new Size(640, 360);
+		}
+
+		[Test]
+		public void LineMaterialShouldNotUseDiffuseMap()
+		{
+			var drawing = Resolve<Drawing>();
+			var shader =
+				ContentLoader.Create<Shader>(
+					new ShaderCreationData(ShaderCodeOpenGL.PositionUvOpenGLVertexCode,
+						ShaderCodeOpenGL.PositionUvOpenGLFragmentCode, ShaderCodeDX11.PositionUvDx11,
+						ShaderCodeDX11.PositionUvDx11, VertexFormat.Position2DUv));
+			var image = ContentLoader.Create<Image>(new ImageCreationData(new Size(4)));
+			var generatedMaterial = new Material(shader, image);
+			Assert.Throws<Drawing.LineMaterialShouldNotUseDiffuseMap>(
+				() => drawing.AddLines(generatedMaterial, new VertexPosition2DColor[4]));
+		}
+
+		[Test]
+		public void TestViewportPixelSize()
+		{
+			var drawing = Resolve<Drawing>();
+			var window = Resolve<Window>();
+			window.ViewportPixelSize = new Size(800, 600);
+			Assert.AreEqual(new Size(800, 600), drawing.ViewportPixelSize);
 		}
 	}
 }

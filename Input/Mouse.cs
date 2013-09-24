@@ -12,7 +12,7 @@ namespace DeltaEngine.Input
 	/// </summary>
 	public abstract class Mouse : InputDevice
 	{
-		public Point Position { get; protected set; }
+		public Vector2D Position { get; protected set; }
 		public int ScrollWheelValue { get; protected set; }
 		public State LeftButton { get; protected set; }
 		public State MiddleButton { get; protected set; }
@@ -33,7 +33,7 @@ namespace DeltaEngine.Input
 			return LeftButton;
 		}
 
-		public abstract void SetPosition(Point newPosition);
+		public abstract void SetPosition(Vector2D position);
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
@@ -73,7 +73,7 @@ namespace DeltaEngine.Input
 		{
 			if (GetButtonState(trigger.Button) == State.Pressing)
 				trigger.StartPosition = Position;
-			else if (trigger.StartPosition != Point.Unused &&
+			else if (trigger.StartPosition != Vector2D.Unused &&
 				GetButtonState(trigger.Button) != State.Released)
 			{
 				if (trigger.StartPosition.DistanceTo(Position) > PositionEpsilon)
@@ -85,7 +85,7 @@ namespace DeltaEngine.Input
 			}
 			else
 			{
-				trigger.StartPosition = Point.Unused;
+				trigger.StartPosition = Vector2D.Unused;
 				trigger.DoneDragging = false;
 			}
 			return false;
@@ -97,14 +97,14 @@ namespace DeltaEngine.Input
 		{
 			if (trigger.StartArea.Contains(Position) && GetButtonState(trigger.Button) == State.Pressing)
 				trigger.StartDragPosition = Position;
-			else if (trigger.StartDragPosition != Point.Unused &&
+			else if (trigger.StartDragPosition != Vector2D.Unused &&
 				GetButtonState(trigger.Button) != State.Released)
 			{
 				if (trigger.StartDragPosition.DistanceTo(Position) > PositionEpsilon)
 					return true;
 			}
 			else
-				trigger.StartDragPosition = Point.Unused;
+				trigger.StartDragPosition = Vector2D.Unused;
 			return false;
 		}
 
@@ -137,7 +137,7 @@ namespace DeltaEngine.Input
 
 		private bool IsMouseMovementTriggered(MouseMovementTrigger trigger)
 		{
-			bool changedPosition = trigger.Position != Position && trigger.Position != Point.Unused;
+			bool changedPosition = trigger.Position != Position && trigger.Position != Vector2D.Unused;
 			trigger.Position = Position;
 			return changedPosition;
 		}
@@ -145,7 +145,8 @@ namespace DeltaEngine.Input
 		private bool IsMousePositionTriggered(MousePositionTrigger trigger)
 		{
 			var isButton = GetButtonState(trigger.Button) == trigger.State;
-			bool hasPositionChanged = trigger.Position != Position && trigger.Position != Point.Unused &&
+			bool hasPositionChanged = trigger.Position != Position &&
+				trigger.Position != Vector2D.Unused &&
 				ScreenSpace.Current.Viewport.Contains(trigger.Position);
 			trigger.Position = Position;
 			return isButton && hasPositionChanged;

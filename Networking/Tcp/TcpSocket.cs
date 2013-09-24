@@ -7,6 +7,7 @@ using System.Threading;
 using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 using DeltaEngine.Networking.Messages;
+using Ionic.Zlib;
 
 namespace DeltaEngine.Networking.Tcp
 {
@@ -32,12 +33,9 @@ namespace DeltaEngine.Networking.Tcp
 		protected readonly Socket nativeSocket;
 		private readonly byte[] buffer;
 		/// <summary>
-		/// Receive up to 8 low level packets with 1440 bytes (1500 is MTU -40 bytes for TCP/IP -20
-		/// bytes for different needs, e.g. VPN uses some bytes). Bigger messages will be put together
-		/// inside the TryReceiveBytes via <see cref="DataCollector" />. Most messages are small.
+		/// The .NET default receive buffer size is between 8kb and 64kb (W8 uses 64kb). Use it all.
 		/// </summary>
-		internal const int ReceiveBufferSize = 1440 * 8;
-
+		internal const int ReceiveBufferSize = 65536;
 		private readonly DataCollector dataCollector;
 		private bool isDisposed;
 		public float Timeout { get; set; }
@@ -45,7 +43,9 @@ namespace DeltaEngine.Networking.Tcp
 
 		private void OnObjectFinished(MessageData dataContainer)
 		{
-			using (var dataStream = new MemoryStream(dataContainer.Data))
+			var dataBytes = dataContainer.IsDataCompressed
+				? ZlibStream.UncompressBuffer(dataContainer.Data) : dataContainer.Data;
+			using (var dataStream = new MemoryStream(dataBytes))
 			using (var dataReader = new BinaryReader(dataStream))
 			{
 				object receivedMessage;
@@ -73,8 +73,12 @@ namespace DeltaEngine.Networking.Tcp
 				: base(receivedMessage.ToString()) {}
 		}
 
-		public void Connect(string serverAddress, int serverPort)
+		public void Connect(string serverAddress, int serverPort, Action optionalTimedOut = null)
 		{
+			if (nativeSocket.Connected || nativeSocket.IsBound || nativeSocket.RemoteEndPoint != null)
+				throw new UnableToConnectSocketIsAlreadyInUse();
+			if (optionalTimedOut != null)
+				TimedOut = optionalTimedOut;
 			connectionTargetAddress = serverAddress + ":" + serverPort;
 			try
 			{
@@ -89,6 +93,8 @@ namespace DeltaEngine.Networking.Tcp
 				Dispose();
 			}
 		}
+
+		public class UnableToConnectSocketIsAlreadyInUse : Exception {}
 
 		private string connectionTargetAddress;
 
@@ -124,13 +130,17 @@ namespace DeltaEngine.Networking.Tcp
 		}
 
 		public event Action Connected;
-		public event Action TimedOut;
+		protected event Action TimedOut;
 
-		public void Send(object data)
+		/// <summary>
+		/// Send any object to the receiving side. When byte data is big enough and compression is
+		/// allowed (not already compressed file data) the data will be send compressed via Zip.
+		/// </summary>
+		public void Send(object data, bool allowToCompressMessage = true)
 		{
 			try
 			{
-				SendOrEnqueueData(data);
+				SendOrEnqueueData(data, allowToCompressMessage);
 			}
 			catch (SocketException)
 			{
@@ -138,12 +148,12 @@ namespace DeltaEngine.Networking.Tcp
 			}
 		}
 
-		private void SendOrEnqueueData(object data)
+		private void SendOrEnqueueData(object data, bool allowToCompressMessage)
 		{
 			lock (syncObject)
 			{
 				if (IsConnected)
-					SendDataThroughNativeSocket(data);
+					SendDataThroughNativeSocket(data, allowToCompressMessage);
 				else
 					messages.Enqueue(data);
 			}
@@ -152,11 +162,11 @@ namespace DeltaEngine.Networking.Tcp
 		private readonly Queue<object> messages = new Queue<object>();
 		private readonly Object syncObject = new Object();
 
-		private void SendDataThroughNativeSocket(object message)
+		private void SendDataThroughNativeSocket(object message, bool allowToCompressMessage)
 		{
 			if (nativeSocket == null || isDisposed)
 				throw new SocketException();
-			var byteData = BinaryDataExtensions.ToByteArrayWithLengthHeader(message);
+			var byteData = CreateByteDataWithCompressionIfPossible(message, allowToCompressMessage);
 			int numberOfSendBytes = nativeSocket.Send(byteData);
 			if (numberOfSendBytes == 0)
 				throw new SocketException();
@@ -165,12 +175,44 @@ namespace DeltaEngine.Networking.Tcp
 					numberOfSendBytes + ", messageLength=" + byteData.Length);
 		}
 
+		private static byte[] CreateByteDataWithCompressionIfPossible(object message,
+			bool allowToCompressMessage)
+		{
+			var messageData = BinaryDataExtensions.ToByteArrayWithTypeInformation(message);
+			if (allowToCompressMessage && messageData.Length > MinimumByteDataLengthToZip)
+			{
+				byte[] compressedData = ZlibStream.CompressBuffer(messageData);
+				if (compressedData.Length < messageData.Length)
+					return ToByteArrayWithLengthHeader(compressedData, true);
+			}
+			return ToByteArrayWithLengthHeader(messageData, false);
+		}
+
+		public static byte[] ToByteArrayWithLengthHeader(byte[] messageData, bool dataIsCompressed)
+		{
+			using (var total = new MemoryStream())
+			using (var writer = new BinaryWriter(total))
+			{
+				writer.WriteNumberMostlyBelow255(messageData.Length);
+				writer.Write(dataIsCompressed);
+				writer.Write(messageData);
+				return total.ToArray();
+			}
+		}
+
+		/// <summary>
+		/// The amount of bytes where the packed data start to be smaller than the original one is
+		/// around 500 bytes, but there is also overhead in compressing and decompressing data, so it
+		/// only makes sense for at least 8kb of data (e.g. sending big network files).
+		/// </summary>
+		public const int MinimumByteDataLengthToZip = 1024 * 8;
+
 		private void TrySendAllMessagesInTheQueue()
 		{
 			try
 			{
 				while (messages.Count > 0)
-					SendDataThroughNativeSocket(messages.Dequeue());
+					SendDataThroughNativeSocket(messages.Dequeue(), true);
 			}
 			catch (Exception ex)
 			{
@@ -188,7 +230,7 @@ namespace DeltaEngine.Networking.Tcp
 			}
 			catch (SocketException)
 			{
-				Console.WriteLine("An error has occurred when setting the socket to receive data");
+				Logger.Warning("Server Error: occurred when setting the socket to receive data");
 			}
 		}
 

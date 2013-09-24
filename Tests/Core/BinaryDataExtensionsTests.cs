@@ -11,7 +11,7 @@ namespace DeltaEngine.Tests.Core
 		[Test]
 		public void DynamicallyCreatedTypeIsNotStored()
 		{
-			dynamic unknownObject = new ExpandoObject();
+			var unknownObject = new ExpandoObject();
 			Assert.Throws<BinaryDataExtensions.NoShortNameStoredFor>(
 				() => BinaryDataExtensions.GetShortName(unknownObject));
 		}
@@ -20,7 +20,7 @@ namespace DeltaEngine.Tests.Core
 		public void BuiltInTypeGetShortName()
 		{
 			const int Value = 0;
-			Assert.AreEqual("Int32", Value.GetShortName());
+			Assert.AreEqual("Int32", BinaryDataExtensions.GetShortName(Value));
 		}
 
 		[Test]
@@ -48,6 +48,25 @@ namespace DeltaEngine.Tests.Core
 			var binaryReader = new BinaryReader(memoryStream);
 			int loadedValue = binaryReader.LoadKnownTypeWithoutVersionCheck<int>();
 			Assert.AreEqual(Value, loadedValue);
+		}
+
+		[Test]
+		public void ExpectExceptionForUnreadableData()
+		{
+			var message = new TestMessage() { content = "This message cannot be resolved!", ID = 0 };
+			var memoryStream = new MemoryStream(new byte[64]);
+			var binaryWriter = new BinaryWriter(memoryStream);
+			binaryWriter.Write(BinaryDataExtensions.ToByteArray(message));
+			memoryStream.Position = 0;
+			var binaryReader = new BinaryReader(memoryStream);
+			Assert.Throws<BinaryDataExtensions.UnknownMessageTypeReceived>(() =>
+			{ binaryReader.Create(); });
+		}
+
+		private struct TestMessage
+		{
+			public int ID;
+			public string content;
 		}
 	}
 }

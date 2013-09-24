@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Commands;
+using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -29,7 +31,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Point.Zero);
+				mouse.SetPosition(Vector2D.Zero);
 		}
 
 		private MockMouse mouse;
@@ -38,7 +40,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var touch = Resolve<Touch>() as MockTouch;
 			if (touch != null)
-				touch.SetTouchState(0, State.Released, Point.Zero);
+				touch.SetTouchState(0, State.Released, Vector2D.Zero);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -81,11 +83,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			SetMouseState(State.Pressing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.AreEqual(Color.LightBlue, button.Color);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -97,7 +99,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test, CloseAfterFirstFrame]
 		public void BeginClickOutside()
 		{
-			SetMouseState(State.Pressing, Point.One);
+			SetMouseState(State.Pressing, Vector2D.One);
 			Assert.IsFalse(button.State.IsPressed);
 		}
 
@@ -108,14 +110,14 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; //ncrunch: no coverage
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
-			PressAndReleaseMouse(new Point(0.53f, 0.52f), new Point(0.53f, 0.52f));
+			PressAndReleaseMouse(new Vector2D(0.53f, 0.52f), new Vector2D(0.53f, 0.52f));
 			Assert.IsTrue(clicked);
-			Assert.AreEqual(new Point(0.6f, 0.7f), button.State.RelativePointerPosition);
+			Assert.AreEqual(new Vector2D(0.6f, 0.7f), button.State.RelativePointerPosition);
 			Assert.AreEqual(Color.White, button.Color);
 			Assert.IsFalse(button.State.IsPressed);
 		}
 
-		private void PressAndReleaseMouse(Point pressPosition, Point releasePosition)
+		private void PressAndReleaseMouse(Vector2D pressPosition, Vector2D releasePosition)
 		{
 			SetMouseState(State.Pressing, pressPosition);
 			SetMouseState(State.Releasing, releasePosition);
@@ -126,7 +128,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
-			PressAndReleaseMouse(Point.Half, Point.Zero);
+			PressAndReleaseMouse(Vector2D.Half, Vector2D.Zero);
 			Assert.IsFalse(clicked);
 			Assert.IsFalse(button.State.IsPressed);
 		}
@@ -136,7 +138,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
-			PressAndReleaseMouse(Point.Zero, Point.Half);
+			PressAndReleaseMouse(Vector2D.Zero, Vector2D.Half);
 			Assert.IsFalse(clicked);
 			Assert.IsFalse(button.State.IsPressed);
 		}
@@ -149,10 +151,10 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			button.IsEnabled = false;
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
-			PressAndReleaseMouse(new Point(0.53f, 0.52f), new Point(0.53f, 0.52f));
+			PressAndReleaseMouse(new Vector2D(0.53f, 0.52f), new Vector2D(0.53f, 0.52f));
 			Assert.IsFalse(clicked);
 			Assert.IsFalse(button.State.IsInside);
-			Assert.AreEqual(Point.Zero, button.State.RelativePointerPosition);
+			Assert.AreEqual(Vector2D.Zero, button.State.RelativePointerPosition);
 			Assert.AreEqual(Color.Gray, button.Color);
 		}
 
@@ -164,10 +166,10 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			button.Visibility = Visibility.Hide;
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
-			PressAndReleaseMouse(new Point(0.53f, 0.52f), new Point(0.53f, 0.52f));
+			PressAndReleaseMouse(new Vector2D(0.53f, 0.52f), new Vector2D(0.53f, 0.52f));
 			Assert.IsFalse(clicked);
 			Assert.IsFalse(button.State.IsInside);
-			Assert.AreEqual(Point.Zero, button.State.RelativePointerPosition);
+			Assert.AreEqual(Vector2D.Zero, button.State.RelativePointerPosition);
 		}
 
 		[Test]
@@ -175,6 +177,19 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			new Command(point => button.DrawArea = Rectangle.FromCenter(point, button.DrawArea.Size)).
 				Add(new MouseMovementTrigger());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void LoadSceneWithAButton()
+		{
+			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
+			var loadedButton = loadedScene.Controls[0] as Button;
+			Assert.AreEqual(1, loadedButton.GetActiveBehaviors().Count);
+			Assert.AreEqual("Interact",
+				loadedButton.GetActiveBehaviors()[0].GetShortNameOrFullNameIfNotFound());
+			Assert.AreEqual(1, loadedButton.GetDrawBehaviors().Count);
+			Assert.AreEqual("SpriteBatchRenderer",
+				loadedButton.GetDrawBehaviors()[0].GetShortNameOrFullNameIfNotFound());
 		}
 	}
 }

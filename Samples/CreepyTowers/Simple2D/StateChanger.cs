@@ -1,4 +1,6 @@
-﻿using DeltaEngine.Core;
+﻿using CreepyTowers.Creeps;
+using CreepyTowers.Towers;
+using DeltaEngine.Core;
 
 namespace CreepyTowers.Simple2D
 {

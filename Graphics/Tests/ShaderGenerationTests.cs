@@ -11,27 +11,34 @@ namespace DeltaEngine.Graphics.Tests
 		[Test, Ignore]
 		public void Create3DShaderContentFiles()
 		{
-			Create(ShaderWithFormat.UvVertexCode, ShaderWithFormat.UvFragmentCode,
-				ShaderWithFormat.UvHlslCode, ShaderWithFormat.Dx9Position2DTexture,
+			Create(ShaderCodeOpenGL.PositionUvOpenGLVertexCode, ShaderCodeOpenGL.PositionUvOpenGLFragmentCode,
+				ShaderCodeDX11.PositionUvDx11, ShaderCodeDX9.Position2DUvDx9,
 				VertexFormat.Position2DUv, Shader.Position2DUv);
-			Create(ShaderWithFormat.ColorVertexCode, ShaderWithFormat.ColorFragmentCode,
-				ShaderWithFormat.ColorHlslCode, ShaderWithFormat.Dx9Position2DColor,
+			Create(ShaderCodeOpenGL.PositionColorOpenGLVertexCode, ShaderCodeOpenGL.PositionColorOpenGLFragmentCode,
+				ShaderCodeDX11.PositionColorDx11, ShaderCodeDX9.Position2DColorDx9,
 				VertexFormat.Position2DColor, Shader.Position2DColor);
-			Create(ShaderWithFormat.ColorUvVertexCode, ShaderWithFormat.ColorUvFragmentCode,
-				ShaderWithFormat.ColorUvHlslCode, ShaderWithFormat.Dx9Position2DColorTexture,
+			Create(ShaderCodeOpenGL.PositionColorUvOpenGLVertexCode, ShaderCodeOpenGL.PositionColorUvOpenGLFragmentCode,
+				ShaderCodeDX11.PositionColorUvDx11, ShaderCodeDX9.Position2DColorUvDx9,
 				VertexFormat.Position2DColorUv, Shader.Position2DColorUv);
-			Create(ShaderWithFormat.UvVertexCode, ShaderWithFormat.UvFragmentCode,
-				ShaderWithFormat.UvHlslCode, ShaderWithFormat.Dx9Position3DTexture,
+			Create(ShaderCodeOpenGL.PositionUvOpenGLVertexCode, ShaderCodeOpenGL.PositionUvOpenGLFragmentCode,
+				ShaderCodeDX11.PositionUvDx11, ShaderCodeDX9.Position3DUvDx9,
 				VertexFormat.Position3DUv, Shader.Position3DUv);
-			Create(ShaderWithFormat.ColorVertexCode, ShaderWithFormat.ColorFragmentCode,
-				ShaderWithFormat.ColorHlslCode, ShaderWithFormat.Dx9Position3DColor,
+			Create(ShaderCodeOpenGL.PositionColorOpenGLVertexCode, ShaderCodeOpenGL.PositionColorOpenGLFragmentCode,
+				ShaderCodeDX11.PositionColorDx11, ShaderCodeDX9.Position3DColorDx9,
 				VertexFormat.Position3DColor, Shader.Position3DColor);
-			Create(ShaderWithFormat.ColorUvVertexCode, ShaderWithFormat.ColorUvFragmentCode,
-				ShaderWithFormat.ColorUvHlslCode, ShaderWithFormat.Dx9Position3DColorTexture,
+			Create(ShaderCodeOpenGL.PositionColorUvOpenGLVertexCode, ShaderCodeOpenGL.PositionColorUvOpenGLFragmentCode,
+				ShaderCodeDX11.PositionColorUvDx11, ShaderCodeDX9.Position3DColorUvDx9,
 				VertexFormat.Position3DColorUv, Shader.Position3DColorUv);
-			Create(ShaderWithFormat.UvLightmapVertexCode, ShaderWithFormat.UvLightmapFragmentCode,
-				ShaderWithFormat.UvLightmapHlslCode, ShaderWithFormat.Dx9Position3DLightMap, 
+			Create(ShaderCodeOpenGL.PositionUvLightmapVertexCode, ShaderCodeOpenGL.PositionUvLightmapFragmentCode,
+				ShaderCodeDX11.UvLightmapHlslCode, ShaderCodeDX9.Dx9Position3DLightMap, 
 				VertexFormat.Position3DTexturedLightmap, Shader.Position3DTexturedLightmap);
+			Create(ShaderCodeOpenGL.ColorSkinnedVertexCode, ShaderCodeOpenGL.ColorSkinnedFragmentCode, "_",
+				"_", VertexFormat.Position3DColorSkinned, Shader.Position3DColorSkinned);
+			Create(ShaderCodeOpenGL.UvSkinnedVertexCode, ShaderCodeOpenGL.UvSkinnedFragmentCode, "_",
+				"_", VertexFormat.Position3DUvSkinned, Shader.Position3DUvSkinned);
+			Create(ShaderCodeOpenGL.PositionUvNormalOpenGLVertexCode,
+				ShaderCodeOpenGL.PositionUvNormalOpenGLFragmentCode, ShaderCodeDX11.PositionUvDx11,
+				ShaderCodeDX9.Position3DUvDx9, VertexFormat.Position3DNormalUv, Shader.Position3DNormalUv);				
 		}
 
 		private static void Create(string vertexCode, string fragmentCode, string dx11Code,

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using $safeprojectname$.Creeps;
 using $safeprojectname$.PathFinding;
+using $safeprojectname$.Towers;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$.Simple2D
@@ -14,14 +16,10 @@ namespace $safeprojectname$.Simple2D
 	{
 		public Basic2DDisplaySystem(string levelName)
 		{
-			var parser = new WaveXmlParser();
-			parser.ParseXml(levelName);
-			Size = parser.GridSize;
-			start = new Point(parser.SpawnPointsList [0].Item1, parser.SpawnPointsList [0].Item2);
-			end = new Point(parser.ExitPointsList [0].Item1, parser.ExitPointsList [0].Item2);
-			wave = parser.WaveObjectsList.First();
-			calculateDamage = new CalculateDamage2D();
+			ParseLevel(levelName);
 			graph = new PathFindingGraph((int)Size.Width, (int)Size.Height);
+			Creeps = new ChangeableList<Creep2D>();
+			shootingManager = new ShootingManager(this);
 			InitializeScaling(Size);
 			InitializeTopLeftText();
 			CreateBackgroundGrid(Size);
@@ -35,19 +33,32 @@ namespace $safeprojectname$.Simple2D
 		}
 
 		private readonly PathFindingGraph graph;
-		private Point start;
-		private Point end;
-		private readonly Wave wave;
+		private readonly ShootingManager shootingManager;
+
+		private void ParseLevel(string levelName)
+		{
+			var parser = new WaveXmlParser();
+			parser.ParseXml(levelName);
+			Size = parser.GridSize;
+			start = new Vector2D(parser.SpawnPointsList [0].Item1, parser.SpawnPointsList [0].Item2);
+			end = new Vector2D(parser.ExitPointsList [0].Item1, parser.ExitPointsList [0].Item2);
+			wave = parser.WaveObjectsList.First();
+			gold = parser.Gold;
+		}
+
+		private Vector2D start;
+		private Vector2D end;
+		private Wave wave;
 
 		private void InitializeScaling(Size size)
 		{
-			Point center = Point.Half;
+			Vector2D center = Vector2D.Half;
 			var gridSize = new Size(0.55f);
 			gridOffset = center - gridSize / 2;
 			gridScaling = gridSize / Size;
 		}
 
-		private Point gridOffset;
+		private Vector2D gridOffset;
 		private Size gridScaling;
 
 		private void InitializeTopLeftText()
@@ -62,12 +73,11 @@ namespace $safeprojectname$.Simple2D
 		private void UpdateTopLeftText()
 		{
 			topLeftText.Text = "Gold: " + gold + "\n" + "Kills: " + kills + "\n" + "Towers: " + 
-				towers.Count + "\n" + "Creeps: " + 
-					EntitiesRunner.Current.GetEntitiesOfType<Creep2D>().Count;
+				towers.Count + "\n" + "Creeps: " + Creeps.Count;
 		}
 
 		private FontText topLeftText;
-		private int gold = 150;
+		private int gold;
 		private int kills;
 
 		public int Gold
@@ -99,15 +109,15 @@ namespace $safeprojectname$.Simple2D
 		private void CreateBackgroundGrid(Size size)
 		{
 			for (int x = 0; x < size.Height + 1; x++)
-				new Line2D(CalculateGridScreenPosition(new Point(x, 0)), CalculateGridScreenPosition(new 
-					Point(x, (int)size.Height)), Color.Gray);
+				new Line2D(CalculateGridScreenPosition(new Vector2D(x, 0)), 
+					CalculateGridScreenPosition(new Vector2D(x, (int)size.Height)), Color.Gray);
 
 			for (int y = 0; y < size.Height + 1; y++)
-				new Line2D(CalculateGridScreenPosition(new Point(0, y)), CalculateGridScreenPosition(new 
-					Point((int)size.Width, y)), Color.Gray);
+				new Line2D(CalculateGridScreenPosition(new Vector2D(0, y)), 
+					CalculateGridScreenPosition(new Vector2D((int)size.Width, y)), Color.Gray);
 		}
 
-		private Point CalculateGridScreenPosition(Point position)
+		private Vector2D CalculateGridScreenPosition(Vector2D position)
 		{
 			return gridOffset + position * gridScaling;
 		}
@@ -121,47 +131,50 @@ namespace $safeprojectname$.Simple2D
 			graph.MakeConnections();
 		}
 
-		public List<Point> GetPath(Point startNode, Point endNode)
+		public List<Vector2D> GetPath(Vector2D startNode, Vector2D endNode)
 		{
 			var indexStart = graph.GetClosestNode(startNode);
 			var indexEnd = graph.GetClosestNode(endNode);
 			var aStar = new AStar();
-			var path = new List<Point>();
+			var path = new List<Vector2D>();
 			if (aStar.Search(graph, indexStart, indexEnd))
 				path = aStar.GetPath();
 
 			return GetListWithCoordinates(path);
 		}
 
-		private List<Point> GetListWithCoordinates(List<Point> path)
+		private List<Vector2D> GetListWithCoordinates(List<Vector2D> path)
 		{
-			var list = new List<Point>();
+			var list = new List<Vector2D>();
 			foreach (var node in path)
 				list.Add(GetGridPosition(node));
 
 			return list;
 		}
 
-		public Point GetGridPosition(Point screenPosition)
+		public Vector2D GetGridPosition(Vector2D screenPosition)
 		{
 			var gridPosition = (screenPosition - gridOffset) / gridScaling;
-			return new Point((int)gridPosition.X, (int)gridPosition.Y);
+			return new Vector2D((int)gridPosition.X, (int)gridPosition.Y);
 		}
 
-		public Point GetPositionOfNode(int column, int row)
+		public Vector2D GetPositionOfNode(int column, int row)
 		{
-			return CalculateGridScreenPosition(new Point(column + 0.5f, row + 0.5f));
+			return CalculateGridScreenPosition(new Vector2D(column + 0.5f, row + 0.5f));
 		}
 
-		public void AddWall(Point position)
+		public void AddWall(Vector2D position)
 		{
+			if (position.X < 0 || position.Y < 0 || position.X >= Size.Width || position.Y >= Size.Height)
+				return;
+
 			if (IsPossibleAddUnreachableGrid(position))
 				walls.Add(new FilledRect(CalculateGridScreenDrawArea(position), Color.White));
 		}
 
 		private readonly List<FilledRect> walls = new List<FilledRect>();
 
-		private bool IsPossibleAddUnreachableGrid(Point position)
+		private bool IsPossibleAddUnreachableGrid(Vector2D position)
 		{
 			var index = (int)(position.Y * Size.Width + position.X);
 			if (graph.IsUnreachableNode(index))
@@ -181,7 +194,7 @@ namespace $safeprojectname$.Simple2D
 			graph.SetUnreachableAndUpdate(index);
 		}
 
-		private bool UpdateListStartEnd(List<Point> list, int index, Point position)
+		private bool UpdateListStartEnd(List<Vector2D> list, int index, Vector2D position)
 		{
 			if (!UpdateExistingCreeps(position) || list.Count == 0)
 			{
@@ -191,9 +204,9 @@ namespace $safeprojectname$.Simple2D
 			return true;
 		}
 
-		private bool UpdateExistingCreeps(Point position)
+		private bool UpdateExistingCreeps(Vector2D position)
 		{
-			foreach (var creep in EntitiesRunner.Current.GetEntitiesOfType<Creep2D>())
+			foreach (var creep in Creeps)
 			{
 				if (creep.listOfNodes.Count == 0 || !creep.listOfNodes.Contains(position))
 					continue;
@@ -208,13 +221,16 @@ namespace $safeprojectname$.Simple2D
 			return true;
 		}
 
-		public Rectangle CalculateGridScreenDrawArea(Point position)
+		public Rectangle CalculateGridScreenDrawArea(Vector2D position)
 		{
 			return new Rectangle(gridOffset + position * gridScaling, gridScaling);
 		}
 
-		public void AddTower(Point position, Tower.TowerType towerType)
+		public void AddTower(Vector2D position, Tower.TowerType towerType)
 		{
+			if (position.X < 0 || position.Y < 0 || position.X >= Size.Width || position.Y >= Size.Height)
+				return;
+
 			if (new TowerPropertiesXmlParser().TowerPropertiesData [towerType].Cost <= Gold)
 				if (IsPossibleAddUnreachableGrid(position))
 					towers.Add(new Tower2D(this, position, towerType));
@@ -224,17 +240,11 @@ namespace $safeprojectname$.Simple2D
 
 		public void Update()
 		{
-			if (Time.CheckEvery(wave.CreepSpawnInterval))
+			if (Time.CheckEvery(wave.CreepSpawnInterval) && Creeps.Count < wave.MaxCreeps)
 				SpawnCreeps();
 
 			RemoveDeadCreeps();
-			foreach (var line in lines)
-				line.IsActive = false;
-
-			lines.Clear();
-			foreach (var tower in towers)
-				ShootCreeps(tower);
-
+			shootingManager.ShootCreeps(towers);
 			UpdateTopLeftText();
 		}
 
@@ -243,10 +253,13 @@ namespace $safeprojectname$.Simple2D
 			AddCreep(start, end, wave.GetCreepList() [0]);
 		}
 
-		private readonly List<Line2D> lines = new List<Line2D>();
-		private readonly CalculateDamage2D calculateDamage;
+		public ChangeableList<Creep2D> Creeps
+		{
+			get;
+			private set;
+		}
 
-		public void AddCreep(Point startNode, Point targetNode, Creep.CreepType creepType)
+		public Creep2D AddCreep(Vector2D startNode, Vector2D targetNode, Creep.CreepType creepType)
 		{
 			var list = GetPath(GetPositionOfNode((int)startNode.X, (int)startNode.Y), 
 				GetPositionOfNode((int)targetNode.X, (int)targetNode.Y));
@@ -254,93 +267,26 @@ namespace $safeprojectname$.Simple2D
 				Target = targetNode
 			};
 			creep.listOfNodes = list;
+			Creeps.Add(creep);
+			return creep;
 		}
 
 		private void RemoveDeadCreeps()
 		{
-			foreach (var creep in EntitiesRunner.Current.GetEntitiesOfType<Creep2D>())
+			foreach (var creep in Creeps)
 			{
-				if (creep.Hitpoints > 0)
+				if (creep.Hitpoints > 0 && creep.Position != creep.Target)
 					continue;
 
 				gold += creep.GoldReward;
 				kills++;
 				creep.hitpointBar.IsActive = false;
 				creep.IsActive = false;
+				Creeps.Remove(creep);
 			}
 		}
 
-		private void ShootCreeps(Tower2D tower)
-		{
-			if (tower.IsOnCooldown)
-				return;
-
-			foreach (var creep in EntitiesRunner.Current.GetEntitiesOfType<Creep2D>())
-			{
-				creep.UpdateStateTimersAndTimeBasedDamage();
-				if (tower.GetAttackType() == Tower.AttackType.DirectShot)
-					ShootDirectShot(tower, creep);
-			}
-		}
-
-		private void ShootDirectShot(Tower2D tower, Creep2D creep)
-		{
-			if (!((tower.Position - creep.Position).Length < tower.Range))
-				return;
-
-			lines.Add(new Line2D(tower.Center, creep.Center, tower.Color));
-			creep.Hitpoints = DamageCalculation(creep, tower);
-			tower.SetOnCooldown();
-		}
-
-		private float DamageCalculation(Creep2D creep, Tower2D tower)
-		{
-			var properties = creep.data;
-			CheckCreepState(tower.Type, creep);
-			if (!IsActive)
-				return 0;
-
-			var interactionEffect = calculateDamage.CalculateResistanceBasedOnStates(tower.Type, creep);
-			var dmg = CalculateDamage(creep, tower, interactionEffect);
-			properties.CurrentHp = properties.CurrentHp - dmg < properties.MaxHp ? properties.CurrentHp 
-				- dmg : properties.MaxHp;
-			return properties.CurrentHp;
-		}
-
-		private static float CalculateDamage(Creep2D creep, Tower2D tower, float interactionEffect)
-		{
-			var properties = creep.data;
-			float dmg;
-			if (creep.state.Healing)
-			{
-				dmg = -(tower.Damage * 0.5f);
-				creep.state.Healing = false;
-			} else if (creep.state.Enfeeble)
-				dmg = (tower.Damage - (properties.Resistance / 2)) * interactionEffect;
-			else
-				dmg = (tower.Damage - properties.Resistance) * interactionEffect;
-			return dmg;
-		}
-
-		private void CheckCreepState(Tower.TowerType type, Creep2D creep)
-		{
-			if (creep.Type == Creep.CreepType.Cloth)
-				ClothCreepStateChanger2D.ChangeStatesIfClothCreep(type, creep);
-			else if (creep.Type == Creep.CreepType.Sand)
-				SandCreepStateChanger2D.ChangeStatesIfSandCreep(type, creep, this);
-			else if (creep.Type == Creep.CreepType.Glass)
-				GlassCreepStateChanger2D.ChangeStatesIfGlassCreep(type, creep);
-			else if (creep.Type == Creep.CreepType.Wood)
-				WoodCreepStateChanger2D.ChangeStatesIfWoodCreep(type, creep);
-			else if (creep.Type == Creep.CreepType.Plastic)
-				PlasticCreepStateChanger2D.ChangeStatesIfPlasticCreep(type, creep);
-			else if (creep.Type == Creep.CreepType.Iron)
-				IronCreepStateChanger2D.ChangeStatesIfIronCreep(type, creep);
-			else if (creep.Type == Creep.CreepType.Paper)
-				PaperCreepStateChanger2D.ChangeStatesIfPaperCreep(type, creep);
-		}
-
-		public void RemoveElement(Point position)
+		public void RemoveElement(Vector2D position)
 		{
 			var index = (int)(position.Y * Size.Width + position.X);
 			if (!graph.IsUnreachableNode(index))
@@ -350,13 +296,13 @@ namespace $safeprojectname$.Simple2D
 			RemoveTowersOrWalls(position);
 		}
 
-		private void RemoveTowersOrWalls(Point position)
+		private void RemoveTowersOrWalls(Vector2D position)
 		{
 			RemoveTower(position);
 			RemoveWall(position);
 		}
 
-		private void RemoveTower(Point position)
+		private void RemoveTower(Vector2D position)
 		{
 			var tower = towers.FirstOrDefault(x => x.Position == position);
 			if (tower == null)
@@ -366,7 +312,7 @@ namespace $safeprojectname$.Simple2D
 			towers.Remove(tower);
 		}
 
-		private void RemoveWall(Point position)
+		private void RemoveWall(Vector2D position)
 		{
 			var wall = walls.FirstOrDefault(x => x.DrawArea == CalculateGridScreenDrawArea(position));
 			if (wall == null)
@@ -374,6 +320,20 @@ namespace $safeprojectname$.Simple2D
 
 			wall.IsActive = false;
 			walls.Remove(wall);
+		}
+
+		public bool ThereIsWallInPosition(Vector2D position)
+		{
+			int nodeIndex = (int)(position.Y + 0.5f) * (int)Size.Width + (int)(position.X + 0.5f);
+			if (!graph.IsUnreachableNode(nodeIndex))
+				return false;
+
+			foreach (var tower in towers)
+				if ((int)(position.X + 0.5f) == (int)tower.Position.X && (int)(position.Y + 0.5f) == 
+					(int)tower.Position.Y)
+					return false;
+
+			return true;
 		}
 	}
 }

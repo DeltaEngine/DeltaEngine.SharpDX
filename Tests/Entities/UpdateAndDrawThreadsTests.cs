@@ -20,7 +20,7 @@ namespace DeltaEngine.Tests.Entities
 			const float UpdateTimeStep = 0.2f;
 			const float RenderTimeStep = 0.016f;
 			var entities = new MockEntitiesRunner(typeof(MockUpdateBehavior));
-			var state = new PositionEntity(Point.Zero);
+			var state = new PositionEntity(Vector2D.Zero);
 			float drawTime = 0.0f;
 			float updateTime = 0.0f;
 			float accumulator = 0.0f;
@@ -30,7 +30,7 @@ namespace DeltaEngine.Tests.Entities
 				accumulator += RenderTimeStep;
 				while (accumulator >= UpdateTimeStep)
 				{
-					state.InternalNextUpdateStarted();
+					state.InvokeNextUpdateStarted();
 					state.Update();
 					updateTime += UpdateTimeStep;
 					accumulator -= UpdateTimeStep;
@@ -47,20 +47,20 @@ namespace DeltaEngine.Tests.Entities
 
 		public sealed class PositionEntity : DrawableEntity, Updateable
 		{
-			public PositionEntity(Point pos)
+			public PositionEntity(Vector2D pos)
 			{
 				Add(pos);
 			}
 
-			public Point Position
+			public Vector2D Position
 			{
-				get { return Get<Point>(); }
+				get { return Get<Vector2D>(); }
 				set { Set(value); }
 			}
 
 			public void Update()
 			{
-				Position += Point.One;
+				Position += Vector2D.One;
 			}
 		}
 	}

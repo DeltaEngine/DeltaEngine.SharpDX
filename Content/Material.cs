@@ -121,7 +121,18 @@ namespace DeltaEngine.Content
 				pixelSize = ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1280));
 			else if (renderSize == RenderSize.Size1920X1080)
 				pixelSize = ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1920));
+			else if (renderSize == RenderSize.SettingsBased)
+				pixelSize = GetRenderSizeBassedOnSettings(pixelSize);
 			return pixelSize;
+		}
+
+		private static Size GetRenderSizeBassedOnSettings(Size pixelSize)
+		{
+			Settings settings = Settings.Current;
+			var quadSizeSettings =
+				new Size(settings.Resolution.Width > settings.Resolution.Height
+					? settings.Resolution.Width : settings.Resolution.Height);
+			return ScreenSpace.Current.FromPixelSpace(pixelSize / quadSizeSettings);
 		}
 
 		protected override void LoadData(Stream fileData)

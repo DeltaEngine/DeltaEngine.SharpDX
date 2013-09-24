@@ -5,8 +5,8 @@ using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Platforms.Mocks;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -74,10 +74,10 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void TestWithMouseDrag()
 		{
 			var tilemap = new ColoredLogoTilemap(World, Map);
-			tilemap.State.DragStart = new Point(0.5f, 0.5f);
-			tilemap.State.DragEnd = new Point(0.7f, 0.9f);
+			tilemap.State.DragStart = new Vector2D(0.5f, 0.5f);
+			tilemap.State.DragEnd = new Vector2D(0.7f, 0.9f);
 			tilemap.Update();
-			Assert.AreEqual(tilemap.State.DragDelta, new Point(0.2f, 0.4f));
+			Assert.AreEqual(tilemap.State.DragDelta, new Vector2D(0.2f, 0.4f));
 		}
 
 		[Test]

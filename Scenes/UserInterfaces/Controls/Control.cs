@@ -4,8 +4,8 @@ using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
@@ -16,13 +16,9 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Control : Sprite, Updateable
 	{
-		protected Control(List<object> createFromComponents)
-			: base(createFromComponents)
-		{
-			Add(new InteractiveState());
-		}
+		protected Control() {}
 
-		public Control(Rectangle drawArea)
+		protected Control(Rectangle drawArea)
 			: base(CreateTransparentMaterial(), drawArea)
 		{
 			Add(new InteractiveState());

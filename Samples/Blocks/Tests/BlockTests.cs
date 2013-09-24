@@ -25,7 +25,7 @@ namespace Blocks.Tests
 		[Test]
 		public void ConstructorTopLeft()
 		{
-			var block = new Block(displayMode, content, new Point(1, 2));
+			var block = new Block(displayMode, content, new Vector2D(1, 2));
 			Assert.AreEqual(1, block.Left);
 			Assert.AreEqual(2, block.Top);
 		}
@@ -34,7 +34,7 @@ namespace Blocks.Tests
 		public void RotateClockwise()
 		{
 			{
-				var block = new Block(displayMode, content, new Point(8, 1));
+				var block = new Block(displayMode, content, new Vector2D(8, 1));
 				Assert.AreEqual("O.../OOO./..../....", block.ToString());
 				block.RotateClockwise();
 				Assert.AreEqual("OO../O.../O.../....", block.ToString());
@@ -48,7 +48,7 @@ namespace Blocks.Tests
 		{
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(JBlock)))
 			{
-				var block = new Block(displayMode, content, new Point(8, 1));
+				var block = new Block(displayMode, content, new Vector2D(8, 1));
 				Assert.AreEqual("O.../OOO./..../....", block.ToString());
 				block.RotateAntiClockwise();
 				Assert.AreEqual(".O../.O../OO../....", block.ToString());
@@ -58,7 +58,7 @@ namespace Blocks.Tests
 		[Test]
 		public void Left()
 		{
-			var shape = new Block(displayMode, content, Point.Zero) { Left = 1 };
+			var shape = new Block(displayMode, content, Vector2D.Zero) { Left = 1 };
 			Assert.AreEqual(1, shape.Left);
 			Assert.AreEqual(1, shape.Bricks[0].TopLeftGridCoord.X);
 			Assert.AreEqual(1, shape.Bricks[1].TopLeftGridCoord.X);
@@ -69,7 +69,7 @@ namespace Blocks.Tests
 		[Test]
 		public void Top()
 		{
-			var shape = new Block(displayMode, content, Point.Zero) { Top = 1 };
+			var shape = new Block(displayMode, content, Vector2D.Zero) { Top = 1 };
 			Assert.AreEqual(1, shape.Top);
 			Assert.AreEqual(1, shape.Bricks[0].TopLeftGridCoord.Y);
 			Assert.AreEqual(1, shape.Bricks[1].TopLeftGridCoord.Y);
@@ -80,7 +80,7 @@ namespace Blocks.Tests
 		[Test, Ignore]
 		public void RunMovesTheBlock()
 		{
-			var block = new Block(displayMode, content, Point.Zero);
+			var block = new Block(displayMode, content, Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(0.0167f);
 			block.UpdateBrickDrawAreas(2.0f);
 			Assert.AreEqual(0.0333f, block.Top, 0.001f);
@@ -92,7 +92,7 @@ namespace Blocks.Tests
 			int count = 0;
 			for (int i = 0; i < 1000; i++)
 			{
-				var block = new Block(displayMode, content, Point.Zero);
+				var block = new Block(displayMode, content, Vector2D.Zero);
 				if (block.ToString() == "OOOO/..../..../...." || block.ToString() == "O.../O.../O.../O...")
 					count++;
 			}
@@ -105,7 +105,7 @@ namespace Blocks.Tests
 		{
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(JBlock)))
 			{
-				var block = new Block(displayMode, content, Point.Zero);
+				var block = new Block(displayMode, content, Vector2D.Zero);
 				block.UpdateBrickDrawAreas(0.0f);
 			}
 		}

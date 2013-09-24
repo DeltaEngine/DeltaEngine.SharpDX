@@ -70,8 +70,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			float aspectRatio = Pointer.Material.MaterialRenderSize.AspectRatio;
 			var size = new Size(aspectRatio * drawArea.Height, drawArea.Height);
 			float percentage = (Value - MinValue) / (float)(MaxValue - MinValue);
-			var leftCenter = new Point(drawArea.Left + size.Width / 2, drawArea.Center.Y);
-			var rightCenter = new Point(drawArea.Right - size.Width / 2, drawArea.Center.Y);
+			var leftCenter = new Vector2D(drawArea.Left + size.Width / 2, drawArea.Center.Y);
+			var rightCenter = new Vector2D(drawArea.Right - size.Width / 2, drawArea.Center.Y);
 			Pointer.DrawArea = Rectangle.FromCenter(leftCenter.Lerp(rightCenter, percentage), size);
 		}
 

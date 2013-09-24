@@ -8,7 +8,7 @@
 		/// <summary>
 		/// 2D position data.
 		/// </summary>
-		Position2D,
+		Position2D = 1,
 		/// <summary>
 		/// 3D position data.
 		/// </summary>

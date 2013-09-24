@@ -7,7 +7,7 @@ namespace $safeprojectname$
 {
 	internal class AvailableColorFinder
 	{
-		public AvailableColorFinder(Board board, Point[] homeSquares)
+		public AvailableColorFinder(Board board, Vector2D[] homeSquares)
 		{
 			this.board = board;
 			this.homeSquares = homeSquares;
@@ -15,7 +15,7 @@ namespace $safeprojectname$
 		}
 
 		private readonly Board board;
-		private readonly Point[] homeSquares;
+		private readonly Vector2D[] homeSquares;
 		private readonly Color[] homeColors;
 
 		public List<Color> GetAvailableColors()

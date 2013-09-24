@@ -9,13 +9,13 @@ namespace DeltaEngine.Content
 	/// </summary>
 	public sealed class ContentMetaData
 	{
-		public string Name { get; internal set; }
-		public ContentType Type { get; internal set; }
-		public DateTime LastTimeUpdated { get; internal set; }
-		public string Language { get; internal set; }
-		public string LocalFilePath { get; internal set; }
-		public int PlatformFileId { get; internal set; }
-		public int FileSize { get; internal set; }
+		public string Name { get; set; }
+		public ContentType Type { get; set; }
+		public DateTime LastTimeUpdated { get; set; }
+		public string Language { get; set; }
+		public string LocalFilePath { get; set; }
+		public int PlatformFileId { get; set; }
+		public int FileSize { get; set; }
 
 		public T Get<T>(string attributeName, T defaultValue)
 		{

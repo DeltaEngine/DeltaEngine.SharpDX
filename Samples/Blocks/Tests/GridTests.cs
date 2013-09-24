@@ -16,7 +16,8 @@ namespace Blocks.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f ? Orientation.Landscape : Orientation.Portrait;
+			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f
+				? Orientation.Landscape : Orientation.Portrait;
 			content = new JewelBlocksContent();
 			var controller = new Controller(displayMode, content);
 			grid = controller.Get<Grid>();
@@ -32,10 +33,10 @@ namespace Blocks.Tests
 		public void AffixBlocksWhichFillOneRow()
 		{
 			Assert.AreEqual(0,
-				AffixBlocks(grid, new[] { new Point(0, 18), new Point(4, 18), new Point(7, 18) }));
+				AffixBlocks(grid, new[] { new Vector2D(0, 18), new Vector2D(4, 18), new Vector2D(7, 18) }));
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(IBlock)))
 			//{
-				Assert.AreEqual(1, grid.AffixBlock(new Block(displayMode, content, new Point(11, 15))));
+				Assert.AreEqual(1, grid.AffixBlock(new Block(displayMode, content, new Vector2D(11, 15))));
 				Assert.AreEqual(3, ControllerTests.CountBricks(grid));
 				Assert.IsNotNull(grid.bricks[11, 16]);
 				Assert.IsNotNull(grid.bricks[11, 17]);
@@ -46,7 +47,7 @@ namespace Blocks.Tests
 		//private static readonly float[] IBlock = new[]
 		//{ 0.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f };
 
-		private int AffixBlocks(Grid gameGrid, IEnumerable<Point> points)
+		private int AffixBlocks(Grid gameGrid, IEnumerable<Vector2D> points)
 		{
 			return points.Sum(point => gameGrid.AffixBlock(new Block(displayMode, content, point)));
 		}
@@ -58,15 +59,15 @@ namespace Blocks.Tests
 				AffixBlocks(grid,
 					new[]
 					{
-						new Point(0, 17), new Point(4, 17), new Point(7, 17), new Point(0, 18), new Point(4, 18)
-						, new Point(7, 18)
+						new Vector2D(0, 17), new Vector2D(4, 17), new Vector2D(7, 17), new Vector2D(0, 18),
+						new Vector2D(4, 18), new Vector2D(7, 18)
 					}));
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(IBlock)))
 			//{
-				Assert.AreEqual(2, grid.AffixBlock(new Block(displayMode, content, new Point(11, 15))));
-				Assert.AreEqual(2, ControllerTests.CountBricks(grid));
-				Assert.IsNotNull(grid.bricks[11, 17]);
-				Assert.IsNotNull(grid.bricks[11, 18]);
+			Assert.AreEqual(2, grid.AffixBlock(new Block(displayMode, content, new Vector2D(11, 15))));
+			Assert.AreEqual(2, ControllerTests.CountBricks(grid));
+			Assert.IsNotNull(grid.bricks[11, 17]);
+			Assert.IsNotNull(grid.bricks[11, 18]);
 			//}
 		}
 
@@ -75,10 +76,10 @@ namespace Blocks.Tests
 		{
 			content.DoBricksSplitInHalfWhenRowFull = false;
 			Assert.AreEqual(0,
-				AffixBlocks(grid, new[] { new Point(0, 18), new Point(4, 18), new Point(7, 18) }));
+				AffixBlocks(grid, new[] { new Vector2D(0, 18), new Vector2D(4, 18), new Vector2D(7, 18) }));
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(IBlock)))
 			//{
-				Assert.AreEqual(1, grid.AffixBlock(new Block(displayMode, content, new Point(11, 15))));
+				Assert.AreEqual(1, grid.AffixBlock(new Block(displayMode, content, new Vector2D(11, 15))));
 				AdvanceTimeAndUpdateEntities();
 				//Assert.AreEqual(30, entitySystem.GetHandler<Render>().NumberOfActiveRenderableObjects);
 			//}
@@ -89,10 +90,10 @@ namespace Blocks.Tests
 		{
 			content.DoBricksSplitInHalfWhenRowFull = true;
 			Assert.AreEqual(0,
-				AffixBlocks(grid, new[] { new Point(0, 18), new Point(4, 18), new Point(7, 18) }));
+				AffixBlocks(grid, new[] { new Vector2D(0, 18), new Vector2D(4, 18), new Vector2D(7, 18) }));
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(IBlock)))
 			//{
-				Assert.AreEqual(1, grid.AffixBlock(new Block(displayMode, content, new Point(11, 15))));
+				Assert.AreEqual(1, grid.AffixBlock(new Block(displayMode, content, new Vector2D(11, 15))));
 				AdvanceTimeAndUpdateEntities();
 				//Assert.AreEqual(42, entitySystem.GetHandler<Render>().NumberOfActiveRenderableObjects);
 			//}
@@ -101,30 +102,30 @@ namespace Blocks.Tests
 		[Test, Ignore]
 		public void IsValidPositionInEmptyGrid()
 		{
-			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Point(-1, 1))));
-			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Point(9, 1))));
-			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Point(0, 0))));
+			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(-1, 1))));
+			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(9, 1))));
+			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(0, 0))));
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(IBlock)))
-				Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Point(0, 17))));
+				Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(0, 17))));
 
-			Assert.IsTrue(grid.IsValidPosition(new Block(displayMode, content, new Point(2, 2))));
+			Assert.IsTrue(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(2, 2))));
 		}
 
 		[Test, Ignore]
 		public void IsValidPositionInOccupiedGrid()
 		{
-			grid.AffixBlock(new Block(displayMode, content, new Point(5, 1)));
-			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Point(3, 0))));
-			Assert.IsTrue(grid.IsValidPosition(new Block(displayMode, content, new Point(5, 2))));
+			grid.AffixBlock(new Block(displayMode, content, new Vector2D(5, 1)));
+			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(3, 0))));
+			Assert.IsTrue(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(5, 2))));
 		}
 
 		[Test]
 		public void IsABrickOnFirstRow()
 		{
 			Assert.IsFalse(grid.IsABrickOnFirstRow());
-			grid.AffixBlock(new Block(displayMode, content, new Point(1, 1)));
+			grid.AffixBlock(new Block(displayMode, content, new Vector2D(1, 1)));
 			Assert.IsFalse(grid.IsABrickOnFirstRow());
-			grid.AffixBlock(new Block(displayMode, content, new Point(2, 0)));
+			grid.AffixBlock(new Block(displayMode, content, new Vector2D(2, 0)));
 			Assert.IsTrue(grid.IsABrickOnFirstRow());
 		}
 
@@ -133,7 +134,7 @@ namespace Blocks.Tests
 		{
 			//using (NUnit.Framework.Randomizer.Use(new FixedRandom(new[] { 0.8f, 0.0f })))
 			//{
-				grid.AffixBlock(new Block(displayMode, content, Point.One));
+			grid.AffixBlock(new Block(displayMode, content, Vector2D.One));
 				Assert.AreEqual(4, ControllerTests.CountBricks(grid));
 				AdvanceTimeAndUpdateEntities();
 				grid.Clear();
@@ -145,9 +146,9 @@ namespace Blocks.Tests
 		public void GetValidStartingColumns()
 		{
 			content.DoBlocksStartInARandomColumn = true;
-			var block = new Block(displayMode, content, Point.Zero);
+			var block = new Block(displayMode, content, Vector2D.Zero);
 			Assert.AreEqual(new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, grid.GetValidStartingColumns(block));
-			grid.AffixBlock(new Block(displayMode, content, new Point(1, 1)));
+			grid.AffixBlock(new Block(displayMode, content, new Vector2D(1, 1)));
 			Assert.AreEqual(new[] { 5, 6, 7, 8 }, grid.GetValidStartingColumns(block));
 		}
 
@@ -155,7 +156,7 @@ namespace Blocks.Tests
 		public void GetSingleValidStartingColumn()
 		{
 			content.DoBlocksStartInARandomColumn = false;
-			var block = new Block(displayMode, content, Point.Zero);
+			var block = new Block(displayMode, content, Vector2D.Zero);
 			Assert.AreEqual(new[] { 4 }, grid.GetValidStartingColumns(block));
 		}
 

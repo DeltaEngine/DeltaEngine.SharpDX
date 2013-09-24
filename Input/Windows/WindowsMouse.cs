@@ -32,9 +32,9 @@ namespace DeltaEngine.Input.Windows
 			protected set { } //ncrunch: no coverage (senseless regarding the "get" part)
 		}
 
-		public override void SetPosition(Point newPosition)
+		public override void SetPosition(Vector2D position)
 		{
-			positionTranslater.SetCursorPosition(newPosition);
+			positionTranslater.SetCursorPosition(position);
 		}
 
 		private void UpdateMousePosition()

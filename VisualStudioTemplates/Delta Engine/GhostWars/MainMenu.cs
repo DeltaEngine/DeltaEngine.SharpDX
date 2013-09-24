@@ -8,8 +8,8 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -29,9 +29,9 @@ namespace $safeprojectname$
 		{
 			Clear();
 			AddMenuBackground();
-			AddMenuOption(OnHowToPlay, GameLogic.MenuHowToPlay, new Point(0.5f, 0.50f));
-			AddMenuOption(OnSingleplayer, GameLogic.MenuSingleplayer, new Point(0.5f, 0.57f));
-			AddMenuOption(OnCredits, GameLogic.MenuCredits, new Point(0.5f, 0.64f));
+			AddMenuOption(OnHowToPlay, GameLogic.MenuHowToPlay, new Vector2D(0.5f, 0.50f));
+			AddMenuOption(OnSingleplayer, GameLogic.MenuSingleplayer, new Vector2D(0.5f, 0.57f));
+			AddMenuOption(OnCredits, GameLogic.MenuCredits, new Vector2D(0.5f, 0.64f));
 		}
 
 		private void AddMenuBackground()
@@ -64,7 +64,7 @@ namespace $safeprojectname$
 			entities.Add(entity);
 		}
 
-		private void AddMenuOption(Action clickAction, string buttonText, Point position)
+		private void AddMenuOption(Action clickAction, string buttonText, Vector2D position)
 		{
 			var buttonRect = Rectangle.FromCenter(position, new Size(0.29f, 0.0525f));
 			Add(new Sprite("ButtonBackground", buttonRect));
@@ -105,7 +105,8 @@ namespace $safeprojectname$
 		private void AddLevelSelection(int levelNumber, Rectangle mapDrawArea)
 		{
 			var levelText = new FontText(Font, "Level " + levelNumber, 
-				Rectangle.FromCenter(mapDrawArea.Center - new Point(0.0f, 0.115f), new Size(0.2f, 0.1f)));
+				Rectangle.FromCenter(mapDrawArea.Center - new Vector2D(0.0f, 0.115f), new Size(0.2f, 
+					0.1f)));
 			Add(levelText);
 			var map = new Sprite("GhostWarsLevel" + levelNumber, mapDrawArea);
 			Add(map);
@@ -136,40 +137,40 @@ namespace $safeprojectname$
 
 		private void SetupLevel1Trees()
 		{
-			trees.AddTree(new Point(0.11f, 0.5f), Team.HumanYellow);
-			trees.AddTree(new Point(0.2f, 0.4f), Team.None);
-			trees.AddTree(new Point(0.12f, 0.675f), Team.None);
-			trees.AddTree(new Point(0.365f, 0.45f), Team.None);
-			trees.AddTree(new Point(0.265f, 0.6f), Team.None);
-			trees.AddTree(new Point(0.9f, 0.675f), Team.ComputerPurple);
-			trees.AddTree(new Point(0.89f, 0.5f), Team.None);
-			trees.AddTree(new Point(0.91f, 0.325f), Team.ComputerTeal);
-			trees.AddTree(new Point(0.74f, 0.325f), Team.None);
-			trees.AddTree(new Point(0.73f, 0.675f), Team.None);
+			trees.AddTree(new Vector2D(0.11f, 0.5f), Team.HumanYellow);
+			trees.AddTree(new Vector2D(0.2f, 0.4f), Team.None);
+			trees.AddTree(new Vector2D(0.12f, 0.675f), Team.None);
+			trees.AddTree(new Vector2D(0.365f, 0.45f), Team.None);
+			trees.AddTree(new Vector2D(0.265f, 0.6f), Team.None);
+			trees.AddTree(new Vector2D(0.9f, 0.675f), Team.ComputerPurple);
+			trees.AddTree(new Vector2D(0.89f, 0.5f), Team.None);
+			trees.AddTree(new Vector2D(0.91f, 0.325f), Team.ComputerTeal);
+			trees.AddTree(new Vector2D(0.74f, 0.325f), Team.None);
+			trees.AddTree(new Vector2D(0.73f, 0.675f), Team.None);
 		}
 
 		private void SetupLevel2Trees()
 		{
-			trees.AddTree(new Point(0.325f, 0.55f), Team.HumanYellow);
-			trees.AddTree(new Point(0.225f, 0.4f), Team.None);
-			trees.AddTree(new Point(0.225f, 0.7f), Team.None);
-			trees.AddTree(new Point(0.575f, 0.41f), Team.None);
-			trees.AddTree(new Point(0.575f, 0.68f), Team.None);
-			trees.AddTree(new Point(0.725f, 0.42f), Team.ComputerPurple);
-			trees.AddTree(new Point(0.85f, 0.56f), Team.None);
-			trees.AddTree(new Point(0.685f, 0.53f), Team.None);
-			trees.AddTree(new Point(0.725f, 0.67f), Team.ComputerTeal);
+			trees.AddTree(new Vector2D(0.325f, 0.55f), Team.HumanYellow);
+			trees.AddTree(new Vector2D(0.225f, 0.4f), Team.None);
+			trees.AddTree(new Vector2D(0.225f, 0.7f), Team.None);
+			trees.AddTree(new Vector2D(0.575f, 0.41f), Team.None);
+			trees.AddTree(new Vector2D(0.575f, 0.68f), Team.None);
+			trees.AddTree(new Vector2D(0.725f, 0.42f), Team.ComputerPurple);
+			trees.AddTree(new Vector2D(0.85f, 0.56f), Team.None);
+			trees.AddTree(new Vector2D(0.685f, 0.53f), Team.None);
+			trees.AddTree(new Vector2D(0.725f, 0.67f), Team.ComputerTeal);
 		}
 
 		private void SetupLevel3Trees()
 		{
-			trees.AddTree(new Point(0.14f, 0.45f), Team.HumanYellow);
-			trees.AddTree(new Point(0.5f, 0.4f), Team.None);
-			trees.AddTree(new Point(0.8f, 0.45f), Team.ComputerPurple);
-			trees.AddTree(new Point(0.85f, 0.62f), Team.None);
-			trees.AddTree(new Point(0.715f, 0.549f), Team.None);
-			trees.AddTree(new Point(0.46f, 0.67f), Team.ComputerTeal);
-			trees.AddTree(new Point(0.25f, 0.56f), Team.None);
+			trees.AddTree(new Vector2D(0.14f, 0.45f), Team.HumanYellow);
+			trees.AddTree(new Vector2D(0.5f, 0.4f), Team.None);
+			trees.AddTree(new Vector2D(0.8f, 0.45f), Team.ComputerPurple);
+			trees.AddTree(new Vector2D(0.85f, 0.62f), Team.None);
+			trees.AddTree(new Vector2D(0.715f, 0.549f), Team.None);
+			trees.AddTree(new Vector2D(0.46f, 0.67f), Team.ComputerTeal);
+			trees.AddTree(new Vector2D(0.25f, 0.56f), Team.None);
 		}
 
 		private void OnCredits()

@@ -13,14 +13,6 @@ namespace DeltaEngine.Entities
 	/// </summary>
 	public abstract class Entity
 	{
-		protected Entity(List<object> createFromComponents)
-			: this()
-		{
-			foreach (var component in createFromComponents)
-				if (!(component is Rectangle) && !(component is Visibility))
-					components.Add(component);
-		}
-
 		/// <summary>
 		/// Entities start out active and are automatically added to the current EntitiesRunner. Call
 		/// IsActive to activate or deactivate one. To disable UpdateBehaviors use <see cref="Stop{T}"/>
@@ -61,7 +53,19 @@ namespace DeltaEngine.Entities
 			EntitiesRunner.Current.Remove(this);
 		}
 
+		protected internal virtual void FillComponents(List<object> createFromComponents)
+		{
+			foreach (var component in createFromComponents)
+				if (!(component is Rectangle) && !(component is Visibility))
+					if (components.Any(c => c.GetType() == component.GetType()))
+						throw new ComponentOfTheSameTypeAddedMoreThanOnce();
+					else
+						components.Add(component);
+		}
+
 		protected readonly List<object> components = new List<object>();
+
+		public class ComponentOfTheSameTypeAddedMoreThanOnce : Exception { }
 
 		/// <summary>
 		/// Gets a specific component, derived classes can return faster cached values (e.g. Entity2D)
@@ -104,8 +108,6 @@ namespace DeltaEngine.Entities
 
 		public class InstantiatedHandlerAddedToEntity : Exception {}
 
-		public class ComponentOfTheSameTypeAddedMoreThanOnce : Exception {}
-
 		public virtual void Set<T>(T component)
 		{
 			EntitiesRunner.Current.CheckIfInUpdateState();
@@ -132,12 +134,17 @@ namespace DeltaEngine.Entities
 
 		public Entity Start<T>() where T : UpdateBehavior
 		{
-			var behavior = EntitiesRunner.Current.GetUpdateBehavior<T>();
+			Start(typeof(T));
+			return this;
+		}
+
+		internal void Start(Type behaviorType)
+		{
+			var behavior = EntitiesRunner.Current.GetUpdateBehavior(behaviorType);
 			if (activeBehaviors.Contains(behavior))
-				return this;
+				return;
 			activeBehaviors.Add(behavior);
 			EntitiesRunner.Current.AddToUpdateBehavior(behavior, this);
-			return this;
 		}
 
 		private readonly List<UpdateBehavior> activeBehaviors = new List<UpdateBehavior>();
@@ -239,6 +246,11 @@ namespace DeltaEngine.Entities
 		protected internal virtual List<object> GetComponentsForSaving()
 		{
 			return components;
+		}
+
+		protected internal List<UpdateBehavior> GetActiveBehaviors()
+		{
+			return activeBehaviors;
 		}
 	}
 }

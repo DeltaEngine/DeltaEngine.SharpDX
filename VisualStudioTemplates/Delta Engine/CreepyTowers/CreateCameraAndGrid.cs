@@ -1,5 +1,6 @@
+using $safeprojectname$.Levels;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Cameras;
+using DeltaEngine.Rendering3D.Cameras;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -41,7 +42,7 @@ namespace $safeprojectname$
 			var camera = Camera.Use<OrthoCamera>();
 			camera.Size = new Size(ScreenSpace.Current.Viewport.Width * FovSizeFactor, 
 				ScreenSpace.Current.Viewport.Height * FovSizeFactor);
-			camera.Position = new Vector(6.0f, 5.9f, -6.3f);
+			camera.Position = new Vector3D(6.0f, 5.9f, 6.3f);
 		}
 
 		private void CreateGrid()

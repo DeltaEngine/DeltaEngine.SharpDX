@@ -1,6 +1,6 @@
-﻿using DeltaEngine.Extensions;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
 {
@@ -11,25 +11,25 @@ namespace DeltaEngine.Datatypes
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Plane : IEquatable<Plane>
 	{
-		public Plane(Vector normal, float distance)
+		public Plane(Vector3D normal, float distance)
 		{
-			Normal = Vector.Normalize(normal);
+			Normal = Vector3D.Normalize(normal);
 			Distance = distance;
 		}
 
-		public Vector Normal;
+		public Vector3D Normal;
 		public float Distance;
 
-		public Plane(Vector normal, Vector vectorOnPlane)
+		public Plane(Vector3D normal, Vector3D vectorOnPlane)
 		{
-			Normal = Vector.Normalize(normal);
-			Distance = -Vector.Dot(normal, vectorOnPlane);
+			Normal = Vector3D.Normalize(normal);
+			Distance = -Vector3D.Dot(normal, vectorOnPlane);
 		}
 
-		public Vector? Intersect(Ray ray)
+		public Vector3D? Intersect(Ray ray)
 		{
-			float numerator = Vector.Dot(Normal, ray.Origin) + Distance;
-			float denominator = Vector.Dot(Normal, ray.Direction);
+			float numerator = Vector3D.Dot(Normal, ray.Origin) + Distance;
+			float denominator = Vector3D.Dot(Normal, ray.Direction);
 			if (denominator.IsNearlyEqual(0.0f))
 				return null;
 			float distance = -(numerator / denominator);

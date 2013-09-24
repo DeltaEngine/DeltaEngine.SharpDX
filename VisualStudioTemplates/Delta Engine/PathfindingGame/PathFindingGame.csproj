@@ -40,28 +40,31 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="DeltaEngine">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Graphics">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Graphics.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Graphics.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Input">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Input.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Input.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering.Cameras">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Cameras.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering3D.Cameras">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Cameras.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering2D">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering.Models">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Models.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering3D">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering.Shapes3D">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Rendering.Shapes3D.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering3D.Models">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering3D.Shapes3D">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Shapes3D.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.WindowsSharpDX">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.WindowsSharpDX.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.WindowsSharpDX.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -51,15 +51,15 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		public void TestBodyDefaultPosition()
 		{
 			var body = physics.CreateRectangle(new Size(45.0f, 45.0f));
-			Assert.AreEqual(body.Position, Point.Zero);
+			Assert.AreEqual(body.Position, Vector2D.Zero);
 		}
 
 		[Test]
 		public void TestBodySetPosition()
 		{
 			var body = physics.CreateRectangle(new Size(45.0f, 45.0f));
-			body.Position = new Point(100, 100);
-			Assert.AreEqual(body.Position, new Point(100, 100));
+			body.Position = new Vector2D(100, 100);
+			Assert.AreEqual(body.Position, new Vector2D(100, 100));
 		}
 
 		[Test]
@@ -83,7 +83,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var body = physics.CreateRectangle(new Size(45.0f, 45.0f));
 			Assert.IsNotNull(body);
-			body.ApplyLinearImpulse(Point.Zero);
+			body.ApplyLinearImpulse(Vector2D.Zero);
 		}
 
 		[Test]

@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Platforms;
+﻿using CreepyTowers.GUI;
+using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests
@@ -10,7 +11,7 @@ namespace CreepyTowers.Tests
 		{
 				var xmlParser = new UIXmlParser();
 				xmlParser.ParseXml(Names.XmlMenuScene, "MainMenu");
-				Assert.IsNotNull(xmlParser.UIObjectList);
+				Assert.IsNotNull(xmlParser.UiObjectList);
 		}
 	}
 }

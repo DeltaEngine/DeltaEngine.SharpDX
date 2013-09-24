@@ -17,6 +17,7 @@ namespace Blocks
 			this.window = window;
 			this.content = content;
 			var menu = new MainMenu();
+			window.ViewportPixelSize = new Size(800, 800);
 			menu.InitGame += () => { menu.Hide(); StartGame(); };
 			menu.QuitGame += window.CloseAfterFrame;
 		}
@@ -119,7 +120,7 @@ namespace Blocks
 			//input.Add(MouseButton.Left, State.Releasing, mouse => { Controller.IsFallingFast = false; });
 		}
 
-		private void Pressing(Point position)
+		private void Pressing(Vector2D position)
 		{
 			if (position.X < 0.4f)
 				Controller.MoveBlockLeftIfPossible();

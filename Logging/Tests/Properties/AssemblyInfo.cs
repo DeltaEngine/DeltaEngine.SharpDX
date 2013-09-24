@@ -7,5 +7,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Delta Engine 2012")]
 [assembly: ComVisible(false)]
 [assembly: Guid("2458a2a0-d50e-46fa-8999-de0a7193b021")]
-[assembly: AssemblyVersion("0.9.9.2")]
-[assembly: AssemblyFileVersion("0.9.9.2")]
+[assembly: AssemblyVersion("0.9.9.3")]
+[assembly: AssemblyFileVersion("0.9.9.3")]

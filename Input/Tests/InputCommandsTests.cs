@@ -4,7 +4,7 @@ using DeltaEngine.Content.Mocks;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests

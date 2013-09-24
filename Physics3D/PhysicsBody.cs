@@ -29,21 +29,21 @@ namespace DeltaEngine.Physics3D
 
 		//private Action<PhysicsBody> CollisionEnd;
 
-		public abstract Vector Position { get; set; }
-		public abstract Point Position2D { get; }
+		public abstract Vector3D Position { get; set; }
+		public abstract Vector2D Position2D { get; }
 		public abstract Matrix RotationMatrix { get; set; }
-		public abstract Vector LinearVelocity { get; set; }
-		public abstract Vector AngularVelocity { get; set; }
+		public abstract Vector3D LinearVelocity { get; set; }
+		public abstract Vector3D AngularVelocity { get; set; }
 		public abstract float AngularVelocity2D { get; set; }
 		public virtual float Mass { get; set; }
 		public virtual float Restitution { get; set; }
 		public abstract BoundingBox BoundingBox { get; }
-		public abstract void ApplyForce(Vector force);
-		public abstract void ApplyForce(Vector force, Vector position);
-		public abstract void ApplyTorque(Vector torque);
-		public abstract void ApplyLinearImpulse(Vector impulse);
-		public abstract void ApplyLinearImpulse(Vector impulse, Vector position);
-		public abstract void ApplyAngularImpulse(Vector impulse);
+		public abstract void ApplyForce(Vector3D force);
+		public abstract void ApplyForce(Vector3D force, Vector3D position);
+		public abstract void ApplyTorque(Vector3D torque);
+		public abstract void ApplyLinearImpulse(Vector3D impulse);
+		public abstract void ApplyLinearImpulse(Vector3D impulse, Vector3D position);
+		public abstract void ApplyAngularImpulse(Vector3D impulse);
 		protected abstract void SetIsStatic(bool value);
 		protected abstract void SetIsActive(bool value);
 		protected abstract void SetFriction(float value);

@@ -14,7 +14,7 @@
 	<TemplateContent>
 		<Project File="GhostWars.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="true" TargetFileName="GhostWars.ico">GhostWars.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="GhostWars.ico">GhostWars.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Effects.cs">Effects.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GameLogic.cs">GameLogic.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GameState.cs">GameState.cs</ProjectItem>

@@ -1,3 +1,6 @@
+using $safeprojectname$.Creeps;
+using $safeprojectname$.Towers;
+
 namespace $safeprojectname$.Simple2D
 {
 	public class CalculateDamage2D

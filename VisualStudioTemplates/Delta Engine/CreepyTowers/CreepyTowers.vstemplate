@@ -13,13 +13,22 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project File="CreepyTowers.csproj" ReplaceParameters="true">
-			<Folder Name="" TargetFolderName="">
+			<Folder Name="GUI" TargetFolderName="GUI">
+				<ProjectItem ReplaceParameters="true" TargetFileName="Credits.cs">Credits.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreepProperties.cs">CreepProperties.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="ClothCreepStateChanger.cs">ClothCreepStateChanger.cs</ProjectItem>
+			</Folder>
+			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="true" TargetFileName="FadeEffect.cs">FadeEffect.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="GlassCreepStateChanger.cs">GlassCreepStateChanger.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Group.cs">Group.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GroupXmlParser.cs">GroupXmlParser.cs</ProjectItem>
+			</Folder>
+			<Folder Name="GUI" TargetFolderName="GUI">
 				<ProjectItem ReplaceParameters="true" TargetFileName="IntroScene.cs">IntroScene.cs</ProjectItem>
 			</Folder>
 			<Folder Name="PathFinding" TargetFolderName="PathFinding">
@@ -28,34 +37,55 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="GraphSearch.cs">GraphSearch.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="PathFindingGraph.cs">PathFindingGraph.cs</ProjectItem>
 			</Folder>
-			<Folder Name="" TargetFolderName="">
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="SandCreepStateChanger.cs">SandCreepStateChanger.cs</ProjectItem>
 			</Folder>
 			<Folder Name="Simple2D" TargetFolderName="Simple2D">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Basic2DDisplaySystem.cs">Basic2DDisplaySystem.cs</ProjectItem>
 			</Folder>
-			<Folder Name="" TargetFolderName="">
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="CalculateDamage.cs">CalculateDamage.cs</ProjectItem>
+			</Folder>
+			<Folder Name="GUI" TargetFolderName="GUI">
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreateSceneFromXml.cs">CreateSceneFromXml.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreepState.cs">CreepState.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreepStateChanger.cs">CreepStateChanger.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Levels" TargetFolderName="Levels">
 				<ProjectItem ReplaceParameters="true" TargetFileName="LevelGridXmlParser.cs">LevelGridXmlParser.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="LevelBathroom.cs">LevelBathroom.cs</ProjectItem>
+			</Folder>
+			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreateCameraAndGrid.cs">CreateCameraAndGrid.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Creep.cs">Creep.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreepPropertiesXmlParser.cs">CreepPropertiesXmlParser.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Towers" TargetFolderName="Towers">
 				<ProjectItem ReplaceParameters="true" TargetFileName="FindPossibleTargets.cs">FindPossibleTargets.cs</ProjectItem>
+			</Folder>
+			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="InputCommands.cs">InputCommands.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Levels" TargetFolderName="Levels">
 				<ProjectItem ReplaceParameters="true" TargetFileName="LevelGrid.cs">LevelGrid.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Level.cs">Level.cs</ProjectItem>
+			</Folder>
+			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Manager.cs">Manager.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Levels" TargetFolderName="Levels">
 				<ProjectItem ReplaceParameters="true" TargetFileName="LevelLivingRoom.cs">LevelLivingRoom.cs</ProjectItem>
 			</Folder>
 			<Folder Name="Simple2D" TargetFolderName="Simple2D">
 				<ProjectItem ReplaceParameters="true" TargetFileName="CalculateDamage2D.cs">CalculateDamage2D.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Creep2D.cs">Creep2D.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="ClothCreepStateChanger2D.cs">ClothCreepStateChanger2D.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="ShootingManager.cs">ShootingManager.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="StateChanger.cs">StateChanger.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GlassCreepStateChanger2D.cs">GlassCreepStateChanger2D.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="IronCreepStateChanger2D.cs">IronCreepStateChanger2D.cs</ProjectItem>
@@ -65,24 +95,44 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="Tower2D.cs">Tower2D.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="WoodCreepStateChanger2D.cs">WoodCreepStateChanger2D.cs</ProjectItem>
 			</Folder>
-			<Folder Name="" TargetFolderName="">
+			<Folder Name="Towers" TargetFolderName="Towers">
 				<ProjectItem ReplaceParameters="true" TargetFileName="TowerProperties.cs">TowerProperties.cs</ProjectItem>
+			</Folder>
+			<Folder Name="GUI" TargetFolderName="GUI">
 				<ProjectItem ReplaceParameters="true" TargetFileName="UIXmlParser.cs">UIXmlParser.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="UIObject.cs">UIObject.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Levels" TargetFolderName="Levels">
 				<ProjectItem ReplaceParameters="true" TargetFileName="GridProperties.cs">GridProperties.cs</ProjectItem>
+			</Folder>
+			<Folder Name="GUI" TargetFolderName="GUI">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Hud.cs">Hud.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="MainMenu.cs">MainMenu.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Levels" TargetFolderName="Levels">
 				<ProjectItem ReplaceParameters="true" TargetFileName="MovememtInGrid.cs">MovememtInGrid.cs</ProjectItem>
+			</Folder>
+			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Names.cs">Names.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="RemapCoordinates.cs">RemapCoordinates.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreepyTowersRenderLayer.cs">CreepyTowersRenderLayer.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="TimeCounter.cs">TimeCounter.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Towers" TargetFolderName="Towers">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Tower.cs">Tower.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="TowerPropertiesXmlParser.cs">TowerPropertiesXmlParser.cs</ProjectItem>
+			</Folder>
+			<Folder Name="GUI" TargetFolderName="GUI">
 				<ProjectItem ReplaceParameters="true" TargetFileName="TowerSelectionPanel.cs">TowerSelectionPanel.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Levels" TargetFolderName="Levels">
 				<ProjectItem ReplaceParameters="true" TargetFileName="LevelChildsRoom.cs">LevelChildsRoom.cs</ProjectItem>
+			</Folder>
+			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Messages.cs">Messages.cs</ProjectItem>
+			</Folder>
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Wave.cs">Wave.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="WaveManager.cs">WaveManager.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="WaveXmlParser.cs">WaveXmlParser.cs</ProjectItem>

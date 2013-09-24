@@ -1,4 +1,6 @@
-﻿using CreepyTowers.Simple2D;
+﻿using CreepyTowers.Creeps;
+using CreepyTowers.Simple2D;
+using CreepyTowers.Towers;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using NUnit.Framework;
@@ -10,7 +12,7 @@ namespace CreepyTowers.Tests.Simple2D
 		[SetUp]
 		public void SetUpCreep()
 		{
-			creep = new Creep2D(display, new Point(0, 1), Creep.CreepType.Cloth);
+			creep = new Creep2D(display, new Vector2D(0, 1), Creep.CreepType.Cloth);
 		}
 
 		private Creep2D creep;

@@ -1,4 +1,6 @@
-﻿using DeltaEngine.Content;
+﻿using System;
+using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Graphics.Mocks;
 using DeltaEngine.Graphics.Vertices;
 using DeltaEngine.Platforms;
@@ -26,6 +28,32 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(VertexFormat.Position3DUv, shader3DUv.Format);
 			Assert.AreEqual(Shader.Position3DColorUv, shader3DColorUv.Name);
 			Assert.AreEqual(VertexFormat.Position3DColorUv, shader3DColorUv.Format);
+		}
+
+		[Test]
+		public void InvalidVertexFormat
+			()
+		{
+			var data = new ShaderCreationData("", "", "", "", null);
+			AssertActionThrowsInnerException<ShaderWithFormat.InvalidVertexFormat>(
+				() => ContentLoader.Create<Shader>(data));
+			data = new ShaderCreationData("", "", "", "", new VertexFormat(new VertexElement[0]));
+			AssertActionThrowsInnerException<ShaderWithFormat.InvalidVertexFormat>(
+				() => ContentLoader.Create<Shader>(data));
+		}
+
+		[Test]
+		public void InvalidVertexAndPixelCode()
+		{
+			var data = new ShaderCreationData("", "", "", "", VertexFormat.Position2DColor);
+			AssertActionThrowsInnerException<ShaderWithFormat.InvalidShaderCode>(
+				() => ContentLoader.Create<Shader>(data));
+		}
+
+		private static void AssertActionThrowsInnerException<T>(Action action) where T : Exception
+		{
+			Assert.That(() => action(),
+				Throws.TargetInvocationException.With.InnerException.TypeOf<T>());
 		}
 	}
 }

@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using DeltaEngine.Content;
-using DeltaEngine.Content.Disk;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
@@ -14,7 +13,7 @@ namespace DeltaEngine.Graphics.Tests
 {
 	/// <summary>
 	/// The image tests here are limited to loading and integration tests, not visual tests, which
-	/// you can find in DeltaEngine.Rendering.Tests.SpriteTests.
+	/// you can find in DeltaEngine.Rendering2D.Tests.SpriteTests.
 	/// </summary>
 	public class ImageTests : TestWithMocksOrVisually
 	{
@@ -54,10 +53,10 @@ namespace DeltaEngine.Graphics.Tests
 
 				private static readonly VertexPosition2DColorUV[] QuadVertices = new[]
 				{
-					new VertexPosition2DColorUV(new Point(175, 25), Color.Yellow, Point.Zero),
-					new VertexPosition2DColorUV(new Point(475, 25), Color.Red, Point.UnitX),
-					new VertexPosition2DColorUV(new Point(475, 325), Color.Blue, Point.One),
-					new VertexPosition2DColorUV(new Point(175, 325), Color.Teal, Point.UnitY)
+					new VertexPosition2DColorUV(new Vector2D(175, 25), Color.Yellow, Vector2D.Zero),
+					new VertexPosition2DColorUV(new Vector2D(475, 25), Color.Red, Vector2D.UnitX),
+					new VertexPosition2DColorUV(new Vector2D(475, 325), Color.Blue, Vector2D.One),
+					new VertexPosition2DColorUV(new Vector2D(175, 325), Color.Teal, Vector2D.UnitY)
 				};
 				private static readonly short[] QuadIndices = new short[] { 0, 1, 2, 0, 2, 3 };
 			}
@@ -157,10 +156,10 @@ namespace DeltaEngine.Graphics.Tests
 			{
 				return new[]
 				{
-					new VertexPosition2DUV(new Point(x, y), Point.Zero),
-					new VertexPosition2DUV(new Point(x + Size, y), Point.UnitX),
-					new VertexPosition2DUV(new Point(x + Size, y + Size), Point.One),
-					new VertexPosition2DUV(new Point(x, y + Size), Point.UnitY)
+					new VertexPosition2DUV(new Vector2D(x, y), Vector2D.Zero),
+					new VertexPosition2DUV(new Vector2D(x + Size, y), Vector2D.UnitX),
+					new VertexPosition2DUV(new Vector2D(x + Size, y + Size), Vector2D.One),
+					new VertexPosition2DUV(new Vector2D(x, y + Size), Vector2D.UnitY)
 				};
 			}
 		}

@@ -4,9 +4,8 @@ using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace DeltaEngine.Scenes
@@ -71,7 +70,7 @@ namespace DeltaEngine.Scenes
 
 		public virtual void Clear()
 		{
-			foreach (Entity control in controls)
+			foreach (Entity2D control in controls)
 				control.IsActive = false;
 			controls.Clear();
 		}

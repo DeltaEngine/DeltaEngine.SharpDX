@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using DeltaEngine.Content;
-using DeltaEngine.Content.Mocks;
 using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Content
@@ -23,14 +21,14 @@ namespace DeltaEngine.Tests.Content
 		[Test]
 		public void ContentLoadWithNullStream()
 		{
-			Assert.DoesNotThrow(() => ContentLoader.Load<MockXmlContent>("XmlContentWithNoPath"));
+			Assert.DoesNotThrow(() => ContentLoader.Load<DynamicXmlMockContent>("XmlContentWithNoPath"));
 		}
 
 		[Test]
 		public void ContentLoadWithWrongFilePath()
 		{
 			Assert.Throws<ContentLoader.ContentFileDoesNotExist>(
-				() => ContentLoader.Load<MockXmlContent>("ContentWithWrongPath"));
+				() => ContentLoader.Load<DynamicXmlMockContent>("ContentWithWrongPath"));
 		}
 
 		[Test]
@@ -40,29 +38,6 @@ namespace DeltaEngine.Tests.Content
 			Assert.Throws
 				<ContentLoader.ContentLoaderAlreadyExistsItIsOnlyAllowedToSetBeforeTheAppStarts>(
 					() => ContentLoader.Use<FakeContentLoader>());
-		}
-
-		private class FakeContentLoader : ContentLoader
-		{
-			private FakeContentLoader()
-			{
-				contentPath = "NoPath";
-			}
-
-			protected override ContentMetaData GetMetaData(string contentName,
-				Type contentClassType = null)
-			{
-				HasValidContentAndMakeSureItIsLoaded();
-				var metaData = new ContentMetaData { Type = ContentType.Xml };
-				if (contentName.Contains("WrongPath"))
-					metaData.LocalFilePath = "No.xml";
-				return metaData;
-			}
-
-			protected override bool HasValidContentAndMakeSureItIsLoaded()
-			{
-				return ContentMetaDataFilePath == null;
-			}
 		}
 
 		[Test]

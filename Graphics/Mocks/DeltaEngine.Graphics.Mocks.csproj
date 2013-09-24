@@ -49,7 +49,6 @@
     <Compile Include="MockCircularBuffer.cs" />
     <Compile Include="MockDevice.cs" />
     <Compile Include="MockGeometry.cs" />
-    <Compile Include="MockImage.cs" />
     <Compile Include="MockScreenshotCapturer.cs" />
     <Compile Include="MockShader.cs" />
   </ItemGroup>

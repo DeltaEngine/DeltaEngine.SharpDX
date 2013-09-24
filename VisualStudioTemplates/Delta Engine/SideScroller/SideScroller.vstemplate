@@ -14,7 +14,7 @@
 	<TemplateContent>
 		<Project File="SideScroller.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="true" TargetFileName="Sidescroller.ico">Sidescroller.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="Sidescroller.ico">Sidescroller.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="app.config">app.config</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="EnemyPlane.cs">EnemyPlane.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GameControls.cs">GameControls.cs</ProjectItem>

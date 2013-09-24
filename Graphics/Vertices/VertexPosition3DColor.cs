@@ -9,17 +9,17 @@ namespace DeltaEngine.Graphics.Vertices
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexPosition3DColor : Lerp<VertexPosition3DColor>, Vertex
 	{
-		public VertexPosition3DColor(Vector position, Color color)
+		public VertexPosition3DColor(Vector3D position, Color color)
 		{
 			Position = position;
 			Color = color;
 		}
 
-		public Vector Position;
+		public Vector3D Position;
 		public Color Color;
 
-		public VertexPosition3DColor(Point position, Color color)
-			: this(new Vector(position.X, position.Y, 0.0f), color) {}
+		public VertexPosition3DColor(Vector2D position, Color color)
+			: this(new Vector3D(position.X, position.Y, 0.0f), color) {}
 
 		public static readonly int SizeInBytes = VertexFormat.Position3DColor.Stride;
 

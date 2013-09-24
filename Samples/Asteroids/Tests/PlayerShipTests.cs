@@ -18,7 +18,7 @@ namespace Asteroids.Tests
 		[Test]
 		public void Accelarate()
 		{
-			Point originalVelocity = playerShip.Get<Velocity2D>().velocity;
+			Vector2D originalVelocity = playerShip.Get<Velocity2D>().velocity;
 			playerShip.ShipAccelerate();
 			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D>().velocity);
 		}
@@ -47,7 +47,8 @@ namespace Asteroids.Tests
 		[Test]
 		public void HittingBordersTopLeft()
 		{
-			playerShip.Set(new Rectangle(ScreenSpace.Current.TopLeft - new Point(0.1f, 0.1f), new Size(.05f)));
+			playerShip.Set(new Rectangle(ScreenSpace.Current.TopLeft - new Vector2D(0.1f, 0.1f), 
+				new Size(.05f)));
 		}
 
 		[Test]

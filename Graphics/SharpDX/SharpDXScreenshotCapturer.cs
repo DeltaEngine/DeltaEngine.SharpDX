@@ -10,15 +10,14 @@ namespace DeltaEngine.Graphics.SharpDX
 	{
 		public SharpDXScreenshotCapturer(Device device)
 		{
-			this.device = device;
+			this.device = (SharpDXDevice)device;
 		}
 
-		private readonly Device device;
+		private readonly SharpDXDevice device;
 
 		public void MakeScreenshot(string fileName)
 		{
-			var sharpDevice = (SharpDXDevice)device;
-			Resource.ToFile(sharpDevice.Context, sharpDevice.BackBuffer, ImageFileFormat.Png, fileName);
+			Resource.ToFile(device.Context, device.BackBuffer, ImageFileFormat.Png, fileName);
 		}
 	}
 }

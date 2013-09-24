@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Platforms;
+﻿using CreepyTowers.Towers;
+using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests
@@ -13,7 +14,7 @@ namespace CreepyTowers.Tests
 		{
 			towerProp = new TowerProperties
 			{
-				Name = Names.TowerAcidConeJanitorHigh,
+				Name = Names.TowerAcidConeJanitor,
 				TowerType = Tower.TowerType.Acid,
 				AttackType = Tower.AttackType.DirectShot,
 				Range = 30.0f,
@@ -28,7 +29,7 @@ namespace CreepyTowers.Tests
 		[Test, CloseAfterFirstFrame]
 		public void LoadTowerPropertiesAndCheckNumberOfAvailableTowers()
 		{
-			Assert.AreEqual(Names.TowerAcidConeJanitorHigh, towerProp.Name);
+			Assert.AreEqual(Names.TowerAcidConeJanitor, towerProp.Name);
 			Assert.AreEqual(Tower.TowerType.Acid, towerProp.TowerType);
 			Assert.AreEqual(Tower.AttackType.DirectShot, towerProp.AttackType);
 			Assert.AreEqual(30.0f, towerProp.Range);

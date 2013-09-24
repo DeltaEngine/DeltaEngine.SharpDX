@@ -7,7 +7,7 @@ namespace Breakout.Tests
 		public TestBall(Paddle paddle)
 			: base(paddle) {}
 
-		public Point CurrentVelocity
+		public Vector2D CurrentVelocity
 		{
 			get { return velocity; }
 			set { velocity = value; }
@@ -18,7 +18,7 @@ namespace Breakout.Tests
 			get { return isOnPaddle; }
 		}
 
-		public void SetPosition(Point newPosition)
+		public void SetPosition(Vector2D newPosition)
 		{
 			isOnPaddle = false;
 			Position = newPosition;

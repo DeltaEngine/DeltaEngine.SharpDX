@@ -10,18 +10,18 @@ namespace SideScroller
 {
 	public class EnemyPlane : Plane
 	{
-		public EnemyPlane(Material enemyTexture, Point initialPosition)
+		public EnemyPlane(Material enemyTexture, Vector2D initialPosition)
 			: base(enemyTexture, initialPosition)
 		{
 			Hitpoints = 5;
 			verticalDecelerationFactor = 3.0f;
 			verticalAccelerationFactor = 1.5f;
 			RenderLayer = (int)DefRenderLayer.Player;
-			Add(new Velocity2D(new Point(-0.5f, 0), MaximumSpeed));
+			Add(new Velocity2D(new Vector2D(-0.5f, 0), MaximumSpeed));
 			Start<EnemyHandler>();
 		}
 
-		public void CheckIfHitAndReact(Point playerShotStartPosition)
+		public void CheckIfHitAndReact(Vector2D playerShotStartPosition)
 		{
 			if (Math.Abs(playerShotStartPosition.Y - Center.Y) < 0.1f)
 				Hitpoints--;
@@ -32,7 +32,7 @@ namespace SideScroller
 			private static Rectangle CalculateRectAfterMove(Entity entity)
 			{
 				var pointAfterVerticalMovement =
-					new Point(
+					new Vector2D(
 						entity.Get<Rectangle>().TopLeft.X +
 							entity.Get<Velocity2D>().velocity.X * Time.Delta,
 						entity.Get<Rectangle>().TopLeft.Y +
@@ -46,7 +46,7 @@ namespace SideScroller
 				entity.Set(rect);
 			}
 
-			private static float RotationAccordingToVerticalSpeed(Point vel)
+			private static float RotationAccordingToVerticalSpeed(Vector2D vel)
 			{
 				return - 50 * vel.Y / MaximumSpeed;
 			}
@@ -90,6 +90,6 @@ namespace SideScroller
 		}
 
 		internal float timeLastShot;
-		public event Action<Point> EnemyFiredShot;
+		public event Action<Vector2D> EnemyFiredShot;
 	}
 }

@@ -5,8 +5,8 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using DeltaEngine.ScreenSpaces;
 

@@ -5,7 +5,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
@@ -16,7 +16,7 @@ namespace $safeprojectname$
 		{
 			timeLastShot = GlobalTime.Current.Milliseconds;
 			viewportBorders = borders;
-			Add(new Velocity2D.Data(Point.Zero, Constants.MaximumObjectVelocity));
+			Add(new Velocity2D.Data(Vector2D.Zero, Constants.MaximumObjectVelocity));
 			Start<MovementHandler>();
 			Start<ProjectileHandler>();
 			RenderLayer = (int)Constants.RenderLayer.PlayerShip;
@@ -26,9 +26,9 @@ namespace $safeprojectname$
 		private float timeLastShot;
 		private Rectangle viewportBorders;
 
-		public void Accelerate(Point accelerateDirection)
+		public void Accelerate(Vector2D accelerateDirection)
 		{
-			var direction = new Point(accelerateDirection.X * Time.Delta, accelerateDirection.Y);
+			var direction = new Vector2D(accelerateDirection.X * Time.Delta, accelerateDirection.Y);
 			Get<Velocity2D.Data>().Accelerate(direction);
 		}
 		private class MovementHandler : UpdateBehavior
@@ -64,13 +64,13 @@ namespace $safeprojectname$
 				if (rect.Left < entity.viewportBorders.Left)
 				{
 					vel.Accelerate(0);
-					vel.Accelerate(new Point(0.02f, 0));
+					vel.Accelerate(new Vector2D(0.02f, 0));
 					rect.Left = entity.viewportBorders.Left;
 				}
 				if (rect.Right > entity.viewportBorders.Right)
 				{
 					vel.Accelerate(0);
-					vel.Accelerate(new Point(-0.02f, 0));
+					vel.Accelerate(new Vector2D(-0.02f, 0));
 					rect.Right = entity.viewportBorders.Right;
 				}
 				entity.Set(vel);
@@ -95,9 +95,9 @@ namespace $safeprojectname$
 		private readonly List<Projectile> addProjectileList = new List<Projectile>();
 		public List<Projectile> ActiveProjectileList = new List<Projectile>();
 
-		public event Action<Point> ProjectileFired;
+		public event Action<Vector2D> ProjectileFired;
 
-		private void SpawnProjectile(Point point)
+		private void SpawnProjectile(Vector2D point)
 		{
 			var projectile = new Projectile(new Material(Shader.Position2DColorUv, "projectile"), 
 				point, viewportBorders);

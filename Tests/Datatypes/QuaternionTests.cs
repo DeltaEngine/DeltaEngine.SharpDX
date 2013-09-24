@@ -19,7 +19,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void CreateQuaternionFromAxisAngle()
 		{
-			var axis = Vector.UnitY;
+			var axis = Vector3D.UnitY;
 			const float Angle = 90.0f;
 			var quaternion = Quaternion.FromAxisAngle(axis, Angle);
 			var sinHalfAngle = MathExtensions.Sin(Angle * 0.5f);
@@ -53,10 +53,19 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void Lerp()
 		{
-			var rightOrientedQuat = Quaternion.FromAxisAngle(Vector.UnitY, 90.0f);
-			var leftOrientedQuat = Quaternion.FromAxisAngle(Vector.UnitY, -90.0f);
+			var rightOrientedQuat = Quaternion.FromAxisAngle(Vector3D.UnitY, 90.0f);
+			var leftOrientedQuat = Quaternion.FromAxisAngle(Vector3D.UnitY, -90.0f);
 			var result = rightOrientedQuat.Lerp(leftOrientedQuat, 0.5f);
 			Assert.AreEqual(result, new Quaternion(0.0f, 0.0f, 0.0f, 0.7071f));
+		}
+
+		[Test]
+		public void Slerp()
+		{
+			var rightOrientedQuat = Quaternion.FromAxisAngle(Vector3D.UnitY, 90.0f);
+			var leftOrientedQuat = Quaternion.FromAxisAngle(Vector3D.UnitY, -90.0f);
+			var result = rightOrientedQuat.Slerp(leftOrientedQuat, 0.5f);
+			Assert.AreEqual(result, Quaternion.FromAxisAngle(Vector3D.UnitY, 0.0f));
 		}
 
 		[Test]
@@ -75,19 +84,19 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void RotatingUnitXbyQuaternionMatchesRotatingItByMatrix()
 		{
-			var quaternion = Quaternion.FromAxisAngle(Vector.UnitY, 90.0f);
-			var rotatedViaMatrix = Matrix.FromQuaternion(quaternion) * Vector.UnitX;
-			var rotatedViaQuaternion = quaternion * Vector.UnitX;
+			var quaternion = Quaternion.FromAxisAngle(Vector3D.UnitY, 90.0f);
+			var rotatedViaMatrix = Matrix.FromQuaternion(quaternion) * Vector3D.UnitX;
+			var rotatedViaQuaternion = quaternion * Vector3D.UnitX;
 			Assert.AreEqual(rotatedViaMatrix, rotatedViaQuaternion);
 		}
 
 		[Test]
 		public void RotatingVectorbyQuaternionMatchesRotatingItByMatrix()
 		{
-			var axis = new Vector(4, 5, 6);
+			var axis = new Vector3D(4, 5, 6);
 			axis.Normalize();
 			var quaternion = Quaternion.FromAxisAngle(axis, 23.0f);
-			var direction = new Vector(1, 2, 3);
+			var direction = new Vector3D(1, 2, 3);
 			var rotatedViaMatrix = Matrix.FromQuaternion(quaternion) * direction;
 			var rotatedViaQuaternion = quaternion * direction;
 			Assert.AreEqual(rotatedViaMatrix, rotatedViaQuaternion);
@@ -96,8 +105,8 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void MultiplyingTwoQuaternionsMatchesMultiplyingTwoMatrices()
 		{
-			var q1 = Quaternion.FromAxisAngle(Vector.Normalize(new Vector(1, 2, 3)), 40.0f);
-			var q2 = Quaternion.FromAxisAngle(Vector.Normalize(new Vector(4, -5, 6)), -10.0f);
+			var q1 = Quaternion.FromAxisAngle(Vector3D.Normalize(new Vector3D(1, 2, 3)), 40.0f);
+			var q2 = Quaternion.FromAxisAngle(Vector3D.Normalize(new Vector3D(4, -5, 6)), -10.0f);
 			var q3 = q1 * q2;
 			var m1 = Matrix.FromQuaternion(q1);
 			var m2 = Matrix.FromQuaternion(q2);
@@ -106,9 +115,23 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void CheckCreateLookAt()
+		{
+			var matLookAt = Matrix.CreateLookAt(Vector3D.One, Vector3D.UnitY, Vector3D.UnitZ);
+			var quaternion = Quaternion.CreateLookAt(Vector3D.One, Vector3D.UnitY, Vector3D.UnitZ);
+			Assert.AreEqual(quaternion, Quaternion.FromRotationMatrix(matLookAt));
+		}
+
+		[Test]
 		public void CheckVector()
 		{
-			Assert.AreEqual(new Vector(1, 2, 3), new Quaternion(1, 2, 3, 4).Vector);
+			Assert.AreEqual(new Vector3D(1, 2, 3), new Quaternion(1, 2, 3, 4).Vector3D);
+		}
+
+		[Test]
+		public void CheckConjugate()
+		{
+			Assert.AreEqual(new Quaternion(-1, -2, -3, 4), new Quaternion(1, 2, 3, 4).Conjugate());
 		}
 
 		[Test]

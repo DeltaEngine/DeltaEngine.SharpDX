@@ -10,9 +10,9 @@ namespace DeltaEngine.Graphics.Tests
 		[Test]
 		public void CreationWithInvalidTypeThrows()
 		{
-			const VertexElementType invalidType = (VertexElementType)999;
+			const VertexElementType InvalidType = (VertexElementType)0;
 			Assert.Throws<VertexElement.ElementTypeNotYetSupported>(
-				() => new VertexElement(invalidType));
+				() => new VertexElement(InvalidType));
 		}
 
 		[Test]
@@ -41,7 +41,7 @@ namespace DeltaEngine.Graphics.Tests
 			using (var stream = new MemoryStream())
 			{
 				var writer = new BinaryWriter(stream);
-				element.SaveData(writer, Vector.UnitX);
+				element.SaveData(writer, Vector3D.UnitX);
 				Assert.AreEqual(stream.Length, 12);
 			}
 		}
@@ -53,7 +53,7 @@ namespace DeltaEngine.Graphics.Tests
 			using (var stream = new MemoryStream())
 			{
 				var writer = new BinaryWriter(stream);
-				element.SaveData(writer, Point.UnitX);
+				element.SaveData(writer, Vector2D.UnitX);
 				Assert.AreEqual(stream.Length, 8);
 			}
 		}

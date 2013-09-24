@@ -10,12 +10,12 @@ namespace DeltaEngine.Input.Mocks
 		public MockTouch()
 		{
 			IsAvailable = true;
-			position = Point.Half;
+			position = Vector2D.Half;
 			TouchStates = new State[MaxNumberOfTouchIndices];
 		}
 
 		public override bool IsAvailable { get; protected set; }
-		private Point position;
+		private Vector2D position;
 		internal readonly State[] TouchStates;
 		private const int MaxNumberOfTouchIndices = 10;
 
@@ -24,12 +24,12 @@ namespace DeltaEngine.Input.Mocks
 			IsAvailable = false;
 		}
 
-		public override Point GetPosition(int touchIndex)
+		public override Vector2D GetPosition(int touchIndex)
 		{
 			return position;
 		}
 
-		public void SetTouchState(int touchIndex, State state, Point newTouchPosition)
+		public void SetTouchState(int touchIndex, State state, Vector2D newTouchPosition)
 		{
 			position = newTouchPosition;
 			TouchStates[touchIndex] = state;

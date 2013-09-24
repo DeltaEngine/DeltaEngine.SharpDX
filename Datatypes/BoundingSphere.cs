@@ -8,13 +8,13 @@ namespace DeltaEngine.Datatypes
 	[DebuggerDisplay("BoundingSphere(Center={Center}, Radius={Radius})")]
 	public class BoundingSphere
 	{
-		public BoundingSphere(Vector center, float radius)
+		public BoundingSphere(Vector3D center, float radius)
 		{
 			Center = center;
 			Radius = radius;
 		}
 
-		public Vector Center { get; set; }
+		public Vector3D Center { get; set; }
 		public float Radius { get; set; }
 	}
 }

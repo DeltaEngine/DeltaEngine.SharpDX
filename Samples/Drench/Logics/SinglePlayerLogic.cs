@@ -5,7 +5,7 @@ namespace Drench.Logics
 	public class SinglePlayerLogic : Logic
 	{
 		public SinglePlayerLogic(int width, int height)
-			: base(width, height, new[] { Point.Zero }) {}
+			: base(width, height, new[] { Vector2D.Zero }) {}
 
 		public override void MakeMove(Color color)
 		{

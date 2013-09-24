@@ -71,13 +71,13 @@
       <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
       <Name>DeltaEngine.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\DeltaEngine.Rendering.csproj">
+    <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
-      <Name>DeltaEngine.Rendering</Name>
+      <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
-      <Name>DeltaEngine.Rendering.Shapes</Name>
+      <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
     <ProjectReference Include="..\DeltaEngine.Platforms.csproj">
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
@@ -104,6 +104,7 @@
     <Compile Include="ConsoleCommandManagerTests.cs" />
     <Compile Include="FileSettingsTests.cs" />
     <Compile Include="InAppPurchaseTests.cs" />
+    <Compile Include="MaterialRenderSizeTests.cs" />
     <Compile Include="OrientationTests.cs" />
     <Compile Include="ResolverTests.cs" />
     <Compile Include="TestCommand.cs" />

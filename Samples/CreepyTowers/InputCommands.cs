@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using CreepyTowers.GUI;
+using CreepyTowers.Levels;
 using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Cameras;
+using DeltaEngine.Rendering3D.Cameras;
 
 namespace CreepyTowers
 {
@@ -35,7 +37,7 @@ namespace CreepyTowers
 				new Command(Game.EndGame).Add(new KeyTrigger(Key.Escape, State.Pressed)));
 		}
 
-		private void DisplayTowerSelectionPanel(Point pos, List<string> inactiveButtonsTagList)
+		private void DisplayTowerSelectionPanel(Vector2D pos, List<string> inactiveButtonsTagList)
 		{
 			if (isPanelDisplayed)
 				return;
@@ -51,21 +53,21 @@ namespace CreepyTowers
 		private bool isPanelDisplayed;
 		public TowerSelectionPanel TowerPanel { get; private set; }
 
-		private static Vector ConvertMouseClickTo3D(Point pos)
+		private static Vector3D ConvertMouseClickTo3D(Vector2D pos)
 		{
-			var floor = new Plane(Vector.UnitY, 0.0f);
+			var floor = new Plane(Vector3D.UnitY, 0.0f);
 			var ray = Camera.Current.ScreenPointToRay(pos);
-			return (Vector)floor.Intersect(ray);
+			return (Vector3D)floor.Intersect(ray);
 		}
 
-		private bool ClickedPositionInGrid(Vector clickedPos)
+		private bool ClickedPositionInGrid(Vector3D clickedPos)
 		{
 			var interactablePointsList = manager.Level.Get<Level.GridData>().InteractablePointsList;
 			PositionInGrid = grid.ComputeGridCoordinates(grid, clickedPos, interactablePointsList);
 			return grid.IsClickInGrid;
 		}
 
-		public Vector PositionInGrid { get; private set; }
+		public Vector3D PositionInGrid { get; private set; }
 
 		public void Dispose()
 		{

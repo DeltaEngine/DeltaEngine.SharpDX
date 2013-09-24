@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Models;
-using DeltaEngine.Rendering.Shapes3D;
+using DeltaEngine.Rendering3D.Models;
+using DeltaEngine.Rendering3D.Shapes3D;
 
 namespace $safeprojectname$
 {
@@ -34,10 +34,10 @@ namespace $safeprojectname$
 			for (int i = -halfGridRowSize; i <= halfGridRowSize; i++)
 				for (int j = -halfGridColumnSize; j <= halfGridColumnSize; j++)
 				{
-					new Line3D(new Vector(-halfGridColumnSize * gridScale, i * gridScale, 0.0f), new 
-						Vector(halfGridColumnSize * gridScale, i * gridScale, 0.0f), Color.White);
-					new Line3D(new Vector(j * gridScale, -halfGridRowSize * gridScale, 0.0f), new Vector(j 
-						* gridScale, halfGridRowSize * gridScale, 0.0f), Color.White);
+					new Line3D(new Vector3D(-halfGridColumnSize * gridScale, i * gridScale, 0.0f), new 
+						Vector3D(halfGridColumnSize * gridScale, i * gridScale, 0.0f), Color.White);
+					new Line3D(new Vector3D(j * gridScale, -halfGridRowSize * gridScale, 0.0f), new 
+						Vector3D(j * gridScale, halfGridRowSize * gridScale, 0.0f), Color.White);
 				}
 		}
 
@@ -46,16 +46,17 @@ namespace $safeprojectname$
 			for (int i = 0; i < gridColumnSize; i++)
 				for (int j = 0; j < gridRowSize; j++)
 				{
-					var box = new Box(new Vector(0.04f, 0.04f, 0.04f), Color.Red);
-					var y = Vector.UnitY.Y * gridScale * -halfGridRowSize + gridScale / 2.0f + j * gridScale;
-					var x = Vector.UnitX.X * gridScale * -halfGridColumnSize + gridScale / 2.0f + i * 
+					var box = new Box(new Vector3D(0.04f, 0.04f, 0.04f), Color.Red);
+					var y = Vector3D.UnitY.Y * gridScale * -halfGridRowSize + gridScale / 2.0f + j * 
 						gridScale;
-					graph.SetNodePosition(j, i, new Vector(x, y, 0));
-					new Model(new ModelData(box), new Vector(x, y, 0));
+					var x = Vector3D.UnitX.X * gridScale * -halfGridColumnSize + gridScale / 2.0f + i * 
+						gridScale;
+					graph.SetNodePosition(j, i, new Vector3D(x, y, 0));
+					new Model(new ModelData(box), new Vector3D(x, y, 0));
 				}
 		}
 
-		public void GetPathAndPaint(Vector start, Vector end)
+		public void GetPathAndPaint(Vector3D start, Vector3D end)
 		{
 			var indexStart = graph.GetClosestNode(start);
 			new Line3D(start, graph.GetPositionOfNode(indexStart), Color.Green);
@@ -71,23 +72,23 @@ namespace $safeprojectname$
 			}
 		}
 
-		public void SetUnreachableNode(Vector position)
+		public void SetUnreachableNode(Vector3D position)
 		{
 			var index = graph.GetClosestNode(position);
 			graph.SetUnreachableAndUpdate(index);
-			var box = new Box(new Vector(0.2f, 0.2f, 0.2f), Color.Blue);
+			var box = new Box(new Vector3D(0.2f, 0.2f, 0.2f), Color.Blue);
 			new Model(new ModelData(box), graph.GetPositionOfNode(index));
 		}
 
 		public void AddCubeInTheGrid(Ray ray)
 		{
-			var floor = new Plane(Vector.UnitZ, 0.0f);
+			var floor = new Plane(Vector3D.UnitZ, 0.0f);
 			var position = floor.Intersect(ray);
-			var index = graph.GetClosestNode((Vector)position);
+			var index = graph.GetClosestNode((Vector3D)position);
 			if (graph.IsUnreachableNode(index))
 				return;
 
-			var box = new Box(new Vector(0.2f, 0.2f, 0.2f), Color.Blue);
+			var box = new Box(new Vector3D(0.2f, 0.2f, 0.2f), Color.Blue);
 			new Model(new ModelData(box), graph.GetPositionOfNode(index));
 			graph.SetUnreachableAndUpdate(index);
 			foreach (var line in lines)

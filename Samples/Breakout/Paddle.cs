@@ -5,7 +5,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace Breakout
 {
@@ -24,19 +24,18 @@ namespace Breakout
 
 		private void RegisterInputCommands()
 		{
-			new Command(() => { xPosition -= PaddleMovementSpeed * Time.Delta; }).Add(
-				new KeyTrigger(Key.CursorLeft, State.Pressed));
-			new Command(() => { xPosition += PaddleMovementSpeed * Time.Delta; }).Add(
-				new KeyTrigger(Key.CursorRight, State.Pressed));
-
-			new Command(pos => { xPosition += pos.X - Position.X; }).Add(new MouseButtonTrigger(MouseButton.Left, State.Pressed));
-			//inputCommands.Add(MouseButton.Left, State.Pressed,
-			//	mouse => xPosition += mouse.Position.X - Position.X);
-			//inputCommands.Add(State.Pressed, touch => xPosition += touch.GetPosition(0).X - Position.X);
-			//inputCommands.Add(GamePadButton.Left, State.Pressed,
-			//	() => xPosition -= PaddleMovementSpeed * Time.Delta);
-			//inputCommands.Add(GamePadButton.Right, State.Pressed,
-			//	() => xPosition += PaddleMovementSpeed * Time.Delta);
+			new Command(() =>
+			{
+				xPosition -= PaddleMovementSpeed * Time.Delta;
+			}).Add(new KeyTrigger(Key.CursorLeft, State.Pressed));
+			new Command(() =>
+			{
+				xPosition += PaddleMovementSpeed * Time.Delta;
+			}).Add(new KeyTrigger(Key.CursorRight, State.Pressed));
+			new Command(pos =>
+			{
+				xPosition += pos.X - Position.X;
+			}).Add(new MouseButtonTrigger(MouseButton.Left, State.Pressed));
 		}
 
 		private float xPosition = 0.5f;
@@ -50,6 +49,7 @@ namespace Breakout
 				{
 					var paddle = (Paddle)entity;
 					var xPosition = paddle.xPosition.Clamp(HalfWidth, 1.0f - HalfWidth);
+					paddle.xPosition = xPosition;
 					paddle.DrawArea = Rectangle.FromCenter(xPosition, YPosition, Width, Height);
 				}
 			}
@@ -60,9 +60,9 @@ namespace Breakout
 		private const float Width = 0.2f;
 		private const float Height = 0.04f;
 
-		public Point Position
+		public Vector2D Position
 		{
-			get { return new Point(DrawArea.Center.X, DrawArea.Top); }
+			get { return new Vector2D(DrawArea.Center.X, DrawArea.Top); }
 		}
 	}
 }

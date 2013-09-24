@@ -56,7 +56,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var bodyA = physics.CreateCircle(3.0f);
 			var bodyB = physics.CreateCircle(3.0f);
-			var joint = physics.CreateRevoluteJoint(bodyA, bodyB, Point.Zero);
+			var joint = physics.CreateRevoluteJoint(bodyA, bodyB, Vector2D.Zero);
 			Assert.IsNotNull(joint);
 		}
 
@@ -65,7 +65,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var bodyA = physics.CreateCircle(3.0f);
 			var bodyB = physics.CreateCircle(3.0f);
-			var joint = physics.CreateRevoluteJoint(bodyA, bodyB, Point.Zero);
+			var joint = physics.CreateRevoluteJoint(bodyA, bodyB, Vector2D.Zero);
 			Assert.AreEqual(joint.BodyA, bodyA);
 			Assert.AreEqual(joint.BodyB, bodyB);
 		}
@@ -75,7 +75,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var bodyA = physics.CreateCircle(3.0f);
 			var bodyB = physics.CreateCircle(3.0f);
-			var joint = physics.CreateLineJoint(bodyA, bodyB, Point.Zero);
+			var joint = physics.CreateLineJoint(bodyA, bodyB, Vector2D.Zero);
 			Assert.AreEqual(joint.MotorEnabled, false);
 			joint.MotorEnabled = true;
 			Assert.AreEqual(joint.MotorEnabled, true);
@@ -86,7 +86,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var bodyA = physics.CreateCircle(3.0f);
 			var bodyB = physics.CreateCircle(3.0f);
-			var joint = physics.CreateLineJoint(bodyA, bodyB, Point.Zero);
+			var joint = physics.CreateLineJoint(bodyA, bodyB, Vector2D.Zero);
 			joint.MaxMotorTorque = 1.0f;
 			Assert.AreEqual(joint.MaxMotorTorque, 1.0f);
 		}
@@ -96,7 +96,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var bodyA = physics.CreateCircle(3.0f);
 			var bodyB = physics.CreateCircle(3.0f);
-			var joint = physics.CreateLineJoint(bodyA, bodyB, Point.Zero);
+			var joint = physics.CreateLineJoint(bodyA, bodyB, Vector2D.Zero);
 			joint.MotorSpeed = 4.0f;
 			Assert.AreEqual(joint.MotorSpeed, 4.0f);
 		}
@@ -106,7 +106,7 @@ namespace DeltaEngine.Physics2D.Farseer.Tests
 		{
 			var bodyA = physics.CreateCircle(3.0f);
 			var bodyB = physics.CreateCircle(3.0f);
-			var joint = physics.CreateLineJoint(bodyA, bodyB, Point.Zero);
+			var joint = physics.CreateLineJoint(bodyA, bodyB, Vector2D.Zero);
 			joint.Frequency = 1.0f;
 			Assert.AreEqual(joint.Frequency, 1.0f);
 		}

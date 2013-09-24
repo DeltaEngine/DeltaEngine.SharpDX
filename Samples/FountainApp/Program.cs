@@ -7,7 +7,7 @@ namespace FountainApp
 	{
 		public Program()
 		{
-			new ParticleFountain(new Point(0.5f, 0.6f));
+			new ParticleFountain(new Vector2D(0.5f, 0.6f));
 		}
 
 		public static void Main()

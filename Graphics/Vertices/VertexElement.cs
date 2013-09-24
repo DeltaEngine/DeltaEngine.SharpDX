@@ -40,8 +40,8 @@ namespace DeltaEngine.Graphics.Vertices
 				break;
 			case VertexElementType.SkinIndices:
 			case VertexElementType.SkinWeights:
-				Size = 4;
 				ComponentCount = 2;
+				Size = 8;
 				break;
 			default:
 				throw new ElementTypeNotYetSupported(ElementType);
@@ -68,17 +68,17 @@ namespace DeltaEngine.Graphics.Vertices
 			return ElementType + "*" + ComponentCount;
 		}
 
-		public void SaveData(BinaryWriter writer, Vector vector)
+		public void SaveData(BinaryWriter writer, Vector3D position)
 		{
-			writer.Write(vector.X);
-			writer.Write(vector.Y);
-			writer.Write(vector.Z);
+			writer.Write(position.X);
+			writer.Write(position.Y);
+			writer.Write(position.Z);
 		}
 
-		public void SaveData(BinaryWriter writer, Point point)
+		public void SaveData(BinaryWriter writer, Vector2D position)
 		{
-			writer.Write(point.X);
-			writer.Write(point.Y);
+			writer.Write(position.X);
+			writer.Write(position.Y);
 		}
 
 		public void SaveData(BinaryWriter writer, Color color)

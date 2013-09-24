@@ -28,7 +28,7 @@ namespace $safeprojectname$
 			return unreachableNodes [nodeIndex];
 		}
 
-		public void SetNodePosition(int row, int column, Vector position)
+		public void SetNodePosition(int row, int column, Vector3D position)
 		{
 			int nodeIndex = row * nodesColumns + column;
 			if (nodeIndex < 0 || nodeIndex >= NumberOfNodes)
@@ -96,7 +96,7 @@ namespace $safeprojectname$
 				AdjacencyList [adjacency.destinyNode].Add(new GraphConnection(index, adjacency.weight));
 		}
 
-		public int GetClosestNode(Vector position)
+		public int GetClosestNode(Vector3D position)
 		{
 			var minimumDistance = (Nodes [0] - position).LengthSquared;
 			int index = 0;
@@ -112,7 +112,7 @@ namespace $safeprojectname$
 			return index;
 		}
 
-		public Vector GetPositionOfNode(int index)
+		public Vector3D GetPositionOfNode(int index)
 		{
 			return Nodes [index];
 		}

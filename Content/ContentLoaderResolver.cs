@@ -14,9 +14,14 @@ namespace DeltaEngine.Content
 
 		public virtual ContentLoader ResolveContentLoader(Type contentLoaderType)
 		{
+			var parameters = CreationParameterForContentLoader != null
+				? new[] { CreationParameterForContentLoader } : null;
+			CreationParameterForContentLoader = null;
 			return Activator.CreateInstance(contentLoaderType, PrivateBindingFlags, Type.DefaultBinder,
-				null, CultureInfo.CurrentCulture) as ContentLoader;
+				parameters, CultureInfo.CurrentCulture) as ContentLoader;
 		}
+
+		internal static object CreationParameterForContentLoader;
 
 		private const BindingFlags PrivateBindingFlags =
 			BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -24,12 +29,13 @@ namespace DeltaEngine.Content
 		public virtual ContentData Resolve(Type contentType, string contentName)
 		{
 			return Activator.CreateInstance(contentType, PrivateBindingFlags, Type.DefaultBinder,
-					new object[] { contentName }, CultureInfo.CurrentCulture) as ContentData;
+				new object[] { contentName }, CultureInfo.CurrentCulture) as ContentData;
 		}
 
 		public virtual ContentData Resolve(Type contentType, ContentCreationData data)
 		{
-			return Activator.CreateInstance(contentType, data) as ContentData;
+			return Activator.CreateInstance(contentType, PrivateBindingFlags, Type.DefaultBinder,
+				new object[] { data }, CultureInfo.CurrentCulture) as ContentData;
 		}
 
 		public virtual void MakeSureResolverIsInitializedAndContentIsReady() {}

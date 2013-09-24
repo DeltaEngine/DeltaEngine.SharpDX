@@ -23,7 +23,7 @@ namespace DeltaEngine.Physics2D.Farseer
 		public Body Body { get; private set; }
 		internal UnitConverter UnitConverter { get; set; }
 
-		public Point Position
+		public Vector2D Position
 		{
 			get { return UnitConverter.Convert(UnitConverter.ToDisplayUnits(Body.Position)); }
 			set
@@ -57,7 +57,7 @@ namespace DeltaEngine.Physics2D.Farseer
 			set { Body.Rotation = value.DegreesToRadians(); }
 		}
 
-		public Point LinearVelocity
+		public Vector2D LinearVelocity
 		{
 			get { return UnitConverter.Convert(UnitConverter.ToDisplayUnits(Body.LinearVelocity)); }
 			set
@@ -67,7 +67,7 @@ namespace DeltaEngine.Physics2D.Farseer
 			}
 		}
 
-		public void ApplyLinearImpulse(Point impulse)
+		public void ApplyLinearImpulse(Vector2D impulse)
 		{
 			Vector2 fImpulse = UnitConverter.Convert(impulse);
 			Body.ApplyLinearImpulse(ref fImpulse);
@@ -83,20 +83,20 @@ namespace DeltaEngine.Physics2D.Farseer
 			Body.ApplyTorque(torque);
 		}
 
-		public Point[] LineVertices
+		public Vector2D[] LineVertices
 		{
 			get
 			{
 				Transform xf;
 				Body.GetTransform(out xf);
-				var vertices = new List<Point>();
+				var vertices = new List<Vector2D>();
 				foreach (var fixture in Body.FixtureList)
 					vertices.AddRange(GetShapeVerticesFromFixture(fixture, xf));
 				return vertices.ToArray();
 			}
 		}
 
-		private IEnumerable<Point> GetShapeVerticesFromFixture(Fixture fixture, Transform xf)
+		private IEnumerable<Vector2D> GetShapeVerticesFromFixture(Fixture fixture, Transform xf)
 		{
 			var shape = fixture.Shape;
 			switch (shape.ShapeType)
@@ -109,10 +109,10 @@ namespace DeltaEngine.Physics2D.Farseer
 				return GetCircleShapeVertices(shape as CircleShape, xf);
 			}
 			//This will never be reached, PhysicsBody internally will not allow it.
-			return new List<Point>(); //ncrunch: no coverage
+			return new List<Vector2D>(); //ncrunch: no coverage
 		}
 
-		private IEnumerable<Point> GetPolygonShapeVertices(PolygonShape polygon, Transform xf)
+		private IEnumerable<Vector2D> GetPolygonShapeVertices(PolygonShape polygon, Transform xf)
 		{
 			int vertexCount = polygon.Vertices.Count;
 			var tempVertices = new Vector2[vertexCount];
@@ -121,9 +121,9 @@ namespace DeltaEngine.Physics2D.Farseer
 			return GetDrawVertices(tempVertices, vertexCount);
 		}
 
-		private IEnumerable<Point> GetDrawVertices(Vector2[] vertices, int vertexCount)
+		private IEnumerable<Vector2D> GetDrawVertices(Vector2[] vertices, int vertexCount)
 		{
-			var drawVertices = new List<Point>();
+			var drawVertices = new List<Vector2D>();
 			for (int i = 0; i < (vertexCount - 1); i++)
 			{
 				drawVertices.Add(UnitConverter.Convert(UnitConverter.ToDisplayUnits(vertices[i])));
@@ -135,7 +135,7 @@ namespace DeltaEngine.Physics2D.Farseer
 			return drawVertices.ToArray();
 		}
 
-		private IEnumerable<Point> GetEdgeShapeVertices(EdgeShape edge, Transform xf)
+		private IEnumerable<Vector2D> GetEdgeShapeVertices(EdgeShape edge, Transform xf)
 		{
 			Vector2 v1 = MathUtils.Mul(ref xf, edge.Vertex1);
 			Vector2 v2 = MathUtils.Mul(ref xf, edge.Vertex2);
@@ -147,7 +147,7 @@ namespace DeltaEngine.Physics2D.Farseer
 			};
 		}
 
-		private IEnumerable<Point> GetCircleShapeVertices(CircleShape circle, Transform xf)
+		private IEnumerable<Vector2D> GetCircleShapeVertices(CircleShape circle, Transform xf)
 		{
 			CircleData circleData = CreateCircleData(circle, xf);
 			return CreateCircleVertexArray(circleData);
@@ -177,9 +177,9 @@ namespace DeltaEngine.Physics2D.Farseer
 			internal double theta;
 		}
 
-		private Point[] CreateCircleVertexArray(CircleData circleData)
+		private Vector2D[] CreateCircleVertexArray(CircleData circleData)
 		{
-			var vertices = new List<Point>();
+			var vertices = new List<Vector2D>();
 			for (int i = 0; i < circleData.segments; i++)
 			{
 				Vector2 v1 = CreateCircleVertexVectorV1(circleData);

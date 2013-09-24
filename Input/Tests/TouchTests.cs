@@ -2,9 +2,9 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -21,7 +21,7 @@ namespace DeltaEngine.Input.Tests
 
 		private void TranslateOnTouch(Entity2D ellipse)
 		{
-			Point position = Resolve<Touch>().GetPosition(0);
+			Vector2D position = Resolve<Touch>().GetPosition(0);
 			var drawArea = ellipse.DrawArea;
 			drawArea.Left = position.X;
 			drawArea.Top = position.Y;

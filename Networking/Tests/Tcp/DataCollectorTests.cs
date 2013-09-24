@@ -21,7 +21,7 @@ namespace DeltaEngine.Networking.Tests.Tcp
 			var dataCollector = new DataCollector();
 			dataCollector.ObjectFinished += container => collectedDataObjects.Add(container);
 			Assert.IsEmpty(collectedDataObjects);
-			var bytePackages = SplitDataStream(CreateByteList(), 7, 7, 8, 1);
+			var bytePackages = SplitDataStream(CreateByteList(), 7, 7, 8, 3, 1);
 			foreach (byte[] package in bytePackages)
 				dataCollector.ReadBytes(package, 0, package.Length);
 			Assert.AreEqual(3, collectedDataObjects.Count);
@@ -33,7 +33,7 @@ namespace DeltaEngine.Networking.Tests.Tcp
 			byteList.AddRange(GetTestBytesWithLengthHeader(6));
 			byteList.AddRange(GetTestBytesWithLengthHeader(4));
 			byteList.AddRange(GetTestBytesWithLengthHeader(10));
-			Assert.AreEqual(6+4+10+3, byteList.Count);
+			Assert.AreEqual(8+6+12, byteList.Count);
 			return byteList;
 		}
 
@@ -42,6 +42,7 @@ namespace DeltaEngine.Networking.Tests.Tcp
 			var data = new MemoryStream();
 			var writer = new BinaryWriter(data);
 			writer.WriteNumberMostlyBelow255(numberOfWishedTestBytes);
+			writer.Write(false);
 			for (int num = 0; num < numberOfWishedTestBytes; num++)
 				writer.Write((byte)(100 + num));
 			return data.ToArray();

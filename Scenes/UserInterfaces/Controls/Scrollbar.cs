@@ -66,8 +66,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			Rectangle drawArea = DrawArea;
 			var size = new Size(drawArea.Width * GetPointerPercentageWidth(), drawArea.Height);
 			float percentage = (LeftValue - MinValue) / (float)(MaxValue - MinValue - ValueWidth + 1);
-			var min = new Point(drawArea.Left, drawArea.Top);
-			var max = new Point(drawArea.Right - size.Width, drawArea.Top);
+			var min = new Vector2D(drawArea.Left, drawArea.Top);
+			var max = new Vector2D(drawArea.Right - size.Width, drawArea.Top);
 			Pointer.DrawArea = new Rectangle(min.Lerp(max, percentage), size);
 		}
 

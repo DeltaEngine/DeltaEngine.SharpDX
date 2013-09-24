@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using $safeprojectname$.Creeps;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 
 namespace $safeprojectname$.Simple2D
 {
 	public class Creep2D : Ellipse, Updateable
 	{
-		public Creep2D(Basic2DDisplaySystem display, Point position, Creep.CreepType creepType) : 
+		public Creep2D(Basic2DDisplaySystem display, Vector2D position, Creep.CreepType creepType) : 
 			base(display.CalculateGridScreenDrawArea(position), GetColor(creepType))
 		{
 			this.display = display;
@@ -17,9 +18,48 @@ namespace $safeprojectname$.Simple2D
 			data.CurrentHp = data.MaxHp;
 			Hitpoints = data.MaxHp;
 			hitpointBar = new FilledRect(HitpointsRect, Color.Green);
-			listOfNodes = new List<Point>();
+			listOfNodes = new List<Vector2D>();
 			state = new CreepState();
 			SetStartStateOfCreep(creepType, this);
+		}
+
+		public List<Vector2D> listOfNodes;
+		internal readonly Basic2DDisplaySystem display;
+		public FilledRect hitpointBar;
+		internal readonly CreepProperties data;
+		public CreepState state;
+
+		public Creep.CreepType Type
+		{
+			get;
+			private set;
+		}
+
+		public Vector2D Position
+		{
+			get;
+			private set;
+		}
+
+		public Vector2D Target
+		{
+			get;
+			set;
+		}
+
+		public float Hitpoints
+		{
+			get;
+			set;
+		}
+
+		private Rectangle HitpointsRect
+		{
+			get
+			{
+				return new Rectangle(DrawArea.TopLeft, new Size((Hitpoints / data.MaxHp) * 
+					DrawArea.Width, 0.002f));
+			}
 		}
 
 		private static void SetStartStateOfCreep(Creep.CreepType creepType, Creep2D creep2D)
@@ -38,17 +78,6 @@ namespace $safeprojectname$.Simple2D
 				IronCreepStateChanger2D.ChangeStartStatesIfIronCreep(creep2D);
 			else if (creepType == Creep.CreepType.Paper)
 				PaperCreepStateChanger2D.ChangeStartStatesIfPaperCreep(creep2D);
-		}
-
-		public List<Point> listOfNodes;
-
-		private Rectangle HitpointsRect
-		{
-			get
-			{
-				return new Rectangle(DrawArea.TopLeft, new Size((Hitpoints / data.MaxHp) * 
-					DrawArea.Width, 0.002f));
-			}
 		}
 
 		private static Color GetColor(Creep.CreepType creepType)
@@ -72,30 +101,6 @@ namespace $safeprojectname$.Simple2D
 			}
 		}
 
-		internal readonly Basic2DDisplaySystem display;
-
-		public Creep.CreepType Type
-		{
-			get;
-			private set;
-		}
-
-		public Point Position
-		{
-			get;
-			private set;
-		}
-
-		public FilledRect hitpointBar;
-		internal readonly CreepProperties data;
-		public CreepState state;
-
-		public Point Target
-		{
-			get;
-			set;
-		}
-
 		public void Update()
 		{
 			if (Target == Position)
@@ -103,16 +108,28 @@ namespace $safeprojectname$.Simple2D
 
 			var previous = Direction;
 			Position += previous * GetVelocity(this, data.Speed) * Time.Delta;
-			if (listOfNodes.Count > 0)
-			{
-				var current = listOfNodes [0] - Position;
-				if (previous.DotProduct(current) < 0.0f)
-					listOfNodes.Remove(listOfNodes [0]);
-			}
+			CheckIfWeCanRemoveFirstNode(previous);
 			DrawArea = display.CalculateGridScreenDrawArea(Position);
 			hitpointBar.DrawArea = HitpointsRect;
 			hitpointBar.Color = Hitpoints > data.MaxHp / 2 ? Color.Green : Hitpoints > data.MaxHp / 4 ? 
 				Color.Orange : Color.Red;
+		}
+
+		protected Vector2D Direction
+		{
+			get
+			{
+				if (listOfNodes.Count == 0)
+					return Vector2D.Normalize(Target - Position);
+
+				if (listOfNodes [0] == Position && listOfNodes.Count > 1)
+					return Vector2D.Normalize(listOfNodes [1] - Position);
+
+				if (listOfNodes [0] == Position)
+					return Vector2D.Normalize(Target - Position);
+
+				return Vector2D.Normalize(listOfNodes [0] - Position);
+			}
 		}
 
 		private static float GetVelocity(Creep2D creep, float velocity)
@@ -132,27 +149,17 @@ namespace $safeprojectname$.Simple2D
 			return velocity;
 		}
 
-		protected Point Direction
+		private void CheckIfWeCanRemoveFirstNode(Vector2D previous)
 		{
-			get
-			{
-				if (listOfNodes.Count == 0)
-					return Point.Normalize(Target - Position);
+			if (listOfNodes.Count <= 0)
+				return;
 
-				if (listOfNodes [0] == Position && listOfNodes.Count > 1)
-					return Point.Normalize(listOfNodes [1] - Position);
+			var current = listOfNodes [0] - Position;
+			if (!(previous.DotProduct(current) < 0.0f))
+				return;
 
-				if (listOfNodes [0] == Position)
-					return Point.Normalize(Target - Position);
-
-				return Point.Normalize(listOfNodes [0] - Position);
-			}
-		}
-
-		public float Hitpoints
-		{
-			get;
-			set;
+			Position = listOfNodes [0];
+			listOfNodes.Remove(listOfNodes [0]);
 		}
 
 		public int GoldReward

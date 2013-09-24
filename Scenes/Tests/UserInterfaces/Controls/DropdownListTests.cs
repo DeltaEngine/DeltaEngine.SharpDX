@@ -5,7 +5,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -36,7 +36,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; //ncrunch: no coverage
 
-			mouse.SetPosition(Point.Zero);
+			mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -126,11 +126,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			Click(new Point(0.5f, 0.31f));
+			Click(new Vector2D(0.5f, 0.31f));
 			Assert.AreEqual(Visibility.Show, dropdownList.selectBox.Visibility);
 		}
 
-		private void Click(Point position)
+		private void Click(Vector2D position)
 		{
 			mouse.SetPosition(position);
 			mouse.SetButtonState(MouseButton.Left, State.Pressing);
@@ -145,8 +145,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			Click(new Point(0.5f, 0.31f));
-			Click(new Point(0.5f, 0.41f));
+			Click(new Vector2D(0.5f, 0.31f));
+			Click(new Vector2D(0.5f, 0.41f));
 			Assert.AreEqual("value 2", dropdownList.SelectedValue);
 			Assert.AreEqual(Visibility.Hide, dropdownList.selectBox.Visibility);
 		}
@@ -166,7 +166,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			Click(new Point(0.5f, 0.41f));
+			Click(new Vector2D(0.5f, 0.41f));
 			Assert.AreEqual("value 1", dropdownList.SelectedValue);
 		}
 
@@ -175,14 +175,14 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			Click(new Point(0.5f, 0.31f));
-			MoveMouse(new Point(0.5f, 0.41f));
+			Click(new Vector2D(0.5f, 0.31f));
+			MoveMouse(new Vector2D(0.5f, 0.41f));
 			Assert.AreEqual(Color.VeryLightGray, dropdownList.selectBox.texts[0].Color);
 			Assert.AreEqual(Color.White, dropdownList.selectBox.texts[1].Color);
 			Assert.AreEqual(Color.VeryLightGray, dropdownList.selectBox.texts[2].Color);
 		}
 
-		private void MoveMouse(Point position)
+		private void MoveMouse(Vector2D position)
 		{
 			mouse.SetPosition(position);
 			AdvanceTimeAndUpdateEntities();
@@ -193,7 +193,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			Click(new Point(0.5f, 0.31f));
+			Click(new Vector2D(0.5f, 0.31f));
 			dropdownList.IsEnabled = false;
 			Assert.AreEqual(Visibility.Hide, dropdownList.selectBox.Visibility);
 			foreach (FontText text in dropdownList.selectBox.texts)
@@ -214,7 +214,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			{
 				foreach (DropdownList dropdownList in entities)
 				{
-					var center = dropdownList.DrawArea.Center + new Point(0.01f, 0.01f) * Time.Delta;
+					var center = dropdownList.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
 					var size = dropdownList.DrawArea.Size * (1.0f + Time.Delta / 10);
 					dropdownList.DrawArea = Rectangle.FromCenter(center, size);
 				}

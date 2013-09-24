@@ -45,11 +45,17 @@
     <Compile Include="MockDrawableEntity.cs" />
     <Compile Include="MockEntity.cs" />
     <Compile Include="MockImage.cs" />
+    <Compile Include="MockNonPauseableUpdateBehavior.cs" />
+    <Compile Include="MockPauseableEntity.cs" />
+    <Compile Include="MockPauseableUpdateBehavior.cs" />
+    <Compile Include="MockRapidEntity.cs" />
+    <Compile Include="MockPauseableRapidEntity.cs" />
     <Compile Include="MockTrigger.cs" />
     <Compile Include="MockUpdateBehavior.cs" />
     <Compile Include="MockLogger.cs" />
     <Compile Include="MockSettings.cs" />
     <Compile Include="MockGlobalTime.cs" />
+    <Compile Include="MockVerifiableEntity.cs" />
     <Compile Include="MockWindow.cs" />
     <Compile Include="MockEntitiesRunner.cs" />
   </ItemGroup>

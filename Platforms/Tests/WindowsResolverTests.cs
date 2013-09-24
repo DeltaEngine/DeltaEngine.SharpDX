@@ -2,7 +2,7 @@
 using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Mocks;
 using DeltaEngine.Mocks;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Platforms.Tests
@@ -38,7 +38,7 @@ namespace DeltaEngine.Platforms.Tests
 		[Test, Category("Slow")]
 		public void RegisterNonRenderableObject()
 		{
-			var rect = new Rectangle(Point.Half, Size.Half);
+			var rect = new Rectangle(Vector2D.Half, Size.Half);
 			resolver.Register(rect);
 		}
 
@@ -51,7 +51,7 @@ namespace DeltaEngine.Platforms.Tests
 				device.Present();
 				resolver.Register(device);
 				resolver.RegisterSingleton<Drawing>();
-				resolver.Register(new Line2D(Point.One, Point.Zero, Color.Red));
+				resolver.Register(new Line2D(Vector2D.One, Vector2D.Zero, Color.Red));
 			}
 		}
 	}

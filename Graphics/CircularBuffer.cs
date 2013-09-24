@@ -41,12 +41,14 @@ namespace DeltaEngine.Graphics
 		private void Initialize()
 		{
 			if (isCreated)
-				Dispose();
+				DisposeNextFrame();
 			isCreated = true;
 			CreateNative();
 		}
 
 		protected bool isCreated;
+		protected abstract void DisposeNextFrame();
+		protected abstract void CreateNative();
 
 		public void Dispose()
 		{
@@ -56,7 +58,6 @@ namespace DeltaEngine.Graphics
 		}
 
 		protected abstract void DisposeNative();
-		protected abstract void CreateNative();
 
 		protected bool UsesIndexBuffer
 		{
@@ -98,15 +99,27 @@ namespace DeltaEngine.Graphics
 			if (numberOfNeededVertices <= maxNumberOfVertices &&
 				numberOfNeededIndices <= maxNumberOfIndices)
 				return;
+			if (newVerticesCount > TotalMaximumVerticesLimit)
+				throw new TooManyVerticesForCircularBuffer(newVerticesCount);
 			if (textureChunks.Count > 0)
 				DrawEverythingWhenBufferIsFull();
 			numberOfNeededVertices = verticesAddedSinceBeginningOfFrame + newVerticesCount;
 			BufferIsFullResetToBeginning();
-			if (numberOfNeededVertices > maxNumberOfVertices)
-				ResizeBuffer(numberOfNeededVertices);
+			if ((numberOfNeededVertices > maxNumberOfVertices ||
+				numberOfNeededIndices > maxNumberOfIndices) &&
+				maxNumberOfVertices < TotalMaximumVerticesLimit)
+				ResizeBuffers(numberOfNeededVertices, numberOfNeededIndices);
 		}
 
-		private void DrawEverythingWhenBufferIsFull()
+		public const int TotalMaximumVerticesLimit = 65536;
+
+		private class TooManyVerticesForCircularBuffer : Exception
+		{
+			public TooManyVerticesForCircularBuffer(int newVerticesCount)
+				: base("Vertices " + newVerticesCount + ", Maximum: " + TotalMaximumVerticesLimit) {}
+		}
+
+		protected void DrawEverythingWhenBufferIsFull()
 		{
 			if (Is3D)
 				device.Set3DMode();
@@ -154,29 +167,21 @@ namespace DeltaEngine.Graphics
 			public readonly int FirstIndexOffsetInBytes;
 			public int NumberOfIndices;
 		}
-
-		private void ResizeBuffer(int newVerticesNeeded)
+		
+		private void ResizeBuffers(int newVerticesNeeded, int newIndicesNeeded)
 		{
-			if (maxNumberOfVertices == 65536 && !hasShownWarning)
-			{
-				hasShownWarning = true;
-				Logger.Warning("CircularBuffer " + shader + " reached its maximum (65536) and cannot " +
-					"hold more vertices. Rendering still works, but performance might be impacted as data " +
-					"needs to be flushed multiple times per frame.");
-			}
 			do
-			{
 				maxNumberOfVertices *= 2;
+			while (maxNumberOfVertices < newVerticesNeeded);
+			do
 				maxNumberOfIndices *= 2;
-			} while (maxNumberOfVertices < newVerticesNeeded);
-			if (maxNumberOfVertices > 65536)
-				maxNumberOfVertices = 65536;
-			if (maxNumberOfIndices > 65536 * 6 / 4)
-				maxNumberOfIndices = 65536 * 6 / 4;
+			while (maxNumberOfIndices < newIndicesNeeded);
+			if (maxNumberOfVertices > TotalMaximumVerticesLimit)
+				maxNumberOfVertices = TotalMaximumVerticesLimit;
+			if (maxNumberOfIndices > maxNumberOfVertices * 3)
+				maxNumberOfIndices = maxNumberOfVertices * 3;
 			Initialize();
 		}
-
-		private bool hasShownWarning;
 
 		/// <summary>
 		/// We are only interested in the last chunk. Either it uses the same texture we want to use
@@ -192,7 +197,7 @@ namespace DeltaEngine.Graphics
 			return newChunk;
 		}
 
-		private class ShaderVertexFormatDoesNotMatchVertex : Exception
+		internal class ShaderVertexFormatDoesNotMatchVertex : Exception
 		{
 			public ShaderVertexFormatDoesNotMatchVertex(VertexFormat materialFormat,
 				VertexFormat vertexFormat)
@@ -286,5 +291,7 @@ namespace DeltaEngine.Graphics
 			textureChunks.Clear();
 			verticesAddedSinceBeginningOfFrame = 0;
 		}
+
+		public abstract void DisposeUnusedBuffersFromPreviousFrame();
 	}
 }

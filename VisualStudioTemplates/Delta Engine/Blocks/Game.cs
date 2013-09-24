@@ -14,6 +14,7 @@ namespace $safeprojectname$
 			this.window = window;
 			this.content = content;
 			var menu = new MainMenu();
+			window.ViewportPixelSize = new Size(800, 800);
 			menu.InitGame += () => 
 			{
 				menu.Hide();
@@ -143,7 +144,7 @@ namespace $safeprojectname$
 		{
 		}
 
-		private void Pressing(Point position)
+		private void Pressing(Vector2D position)
 		{
 			if (position.X < 0.4f)
 				Controller.MoveBlockLeftIfPossible();

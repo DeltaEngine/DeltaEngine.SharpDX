@@ -1,5 +1,8 @@
-﻿using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Commands;
+using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 using DeltaEngine.Graphics;
+using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -46,6 +49,14 @@ namespace LogoApp.Tests
 		{
 			for (int i = 0; i < 1000; i++)
 				new BouncingLogo();
+		}
+
+		[Test]
+		public void PressingSpacePausesLogoApp()
+		{
+			for (int i = 0; i < 10; i++)
+				new BouncingLogo();
+			new Command(() => Time.IsPaused = !Time.IsPaused).Add(new KeyTrigger(Key.Space));
 		}
 	}
 }

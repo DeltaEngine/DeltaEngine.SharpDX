@@ -16,8 +16,8 @@ namespace DeltaEngine.Extensions
 		{
 			AddConvertTypeCreation(typeof(Color), value => new Color(value));
 			AddConvertTypeCreation(typeof(Size), value => new Size(value));
-			AddConvertTypeCreation(typeof(Point), value => new Point(value));
-			AddConvertTypeCreation(typeof(Vector), value => new Vector(value));
+			AddConvertTypeCreation(typeof(Vector2D), value => new Vector2D(value));
+			AddConvertTypeCreation(typeof(Vector3D), value => new Vector3D(value));
 			AddConvertTypeCreation(typeof(Rectangle), value => new Rectangle(value));
 		}
 
@@ -80,7 +80,7 @@ namespace DeltaEngine.Extensions
 		public static float[] SplitIntoFloats(this string value, char[] separators = null)
 		{
 			if (separators == null)
-				separators = new[] { ',', '(', ')' };
+				separators = new[] { ',', '(', ')', '{', '}' };
 			string[] components = value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 			return SplitIntoFloats(components);
 		}

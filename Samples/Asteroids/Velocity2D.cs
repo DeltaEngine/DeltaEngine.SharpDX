@@ -10,21 +10,21 @@ namespace Asteroids
 	/// </summary>
 	public class Velocity2D
 	{
-		public Velocity2D(Point velocity, float maximumSpeed)
+		public Velocity2D(Vector2D velocity, float maximumSpeed)
 		{
 			this.velocity = velocity;
 			this.maximumSpeed = maximumSpeed;
 		}
 
-		public Point velocity;
+		public Vector2D velocity;
 		public readonly float maximumSpeed;
 
-		public void Accelerate(Point acceleration2D)
+		public void Accelerate(Vector2D acceleration2D)
 		{
 			Velocity += acceleration2D;
 		}
 
-		public Point Velocity
+		public Vector2D Velocity
 		{
 			get { return velocity; }
 			set
@@ -43,7 +43,7 @@ namespace Asteroids
 
 		public void Accelerate(float magnitude, float angle)
 		{
-			Velocity = new Point(velocity.X + MathExtensions.Sin(angle) * magnitude,
+			Velocity = new Vector2D(velocity.X + MathExtensions.Sin(angle) * magnitude,
 				velocity.Y - MathExtensions.Cos(angle) * magnitude);
 		}
 

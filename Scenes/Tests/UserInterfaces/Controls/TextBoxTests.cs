@@ -30,7 +30,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(Point.Zero);
+			mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -53,20 +53,20 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; //ncrunch: no coverage
 			Assert.IsFalse(topTextBox.State.HasFocus);
-			PressAndReleaseMouse(Point.One);
+			PressAndReleaseMouse(Vector2D.One);
 			Assert.IsFalse(topTextBox.State.HasFocus);
 			PressAndReleaseMouse(Top.Center);
 			Assert.IsTrue(topTextBox.State.HasFocus);
 		}
 
-		private void PressAndReleaseMouse(Point position)
+		private void PressAndReleaseMouse(Vector2D position)
 		{
 			SetMouseState(State.Pressing, position);
 			SetMouseState(State.Releasing, position);
 			SetMouseState(State.Released, position);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage

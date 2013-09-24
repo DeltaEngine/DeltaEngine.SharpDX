@@ -10,7 +10,8 @@ namespace DeltaEngine.Datatypes
 	/// <summary>
 	/// 4x4 Matrix from 16 floats, access happens via indexer, optimizations done in BuildService.
 	/// </summary>
-	[DebuggerDisplay("Matrix(Right={Right},\nUp={Up},\nForward={Forward},\nTranslation={Translation})")]
+	[DebuggerDisplay(
+		"Matrix(Right={Right},\nUp={Up},\nForward={Forward},\nTranslation={Translation})")]
 	public struct Matrix : IEquatable<Matrix>
 	{
 		public Matrix(params float[] values)
@@ -28,10 +29,7 @@ namespace DeltaEngine.Datatypes
 					return GetValues[index];
 				throw new IndexOutOfRangeException();
 			}
-			set
-			{
-				SetValue(index, value);
-			}
+			set { SetValue(index, value); }
 		}
 
 		public float[] GetValues
@@ -47,27 +45,27 @@ namespace DeltaEngine.Datatypes
 
 		private void SetValue(int index, float value)
 		{
-			if (index == 0)				m11 = value;
-			else if (index == 1)	m12 = value;
-			else if (index == 2)  m13 = value;
-			else if (index == 3)	m14 = value; 
-			else if (index == 4)	m21 = value;
-			else if (index == 5)	m22 = value;
-			else if (index == 6)	m23 = value;
-			else if (index == 7)	m24 = value; 
-			else if (index == 8)	m31 = value;
-			else if (index == 9)	m32 = value;
-			else if (index == 10)	m33 = value;
-			else if (index == 11) m34 = value; 
+			if (index == 0) m11 = value;
+			else if (index == 1) m12 = value;
+			else if (index == 2) m13 = value;
+			else if (index == 3) m14 = value;
+			else if (index == 4) m21 = value;
+			else if (index == 5) m22 = value;
+			else if (index == 6) m23 = value;
+			else if (index == 7) m24 = value;
+			else if (index == 8) m31 = value;
+			else if (index == 9) m32 = value;
+			else if (index == 10) m33 = value;
+			else if (index == 11) m34 = value;
 			else if (index == 12) m41 = value;
 			else if (index == 13) m42 = value;
 			else if (index == 14) m43 = value;
 			else if (index == 15) m44 = value;
 		}
 
-		public Vector Right
+		public Vector3D Right
 		{
-			get { return new Vector(m11, m12, m13);}
+			get { return new Vector3D(m11, m12, m13); }
 			set
 			{
 				m11 = value.X;
@@ -75,9 +73,9 @@ namespace DeltaEngine.Datatypes
 				m13 = value.Z;
 			}
 		}
-		public Vector Up
+		public Vector3D Up
 		{
-			get { return new Vector(m21, m22, m23); }
+			get { return new Vector3D(m21, m22, m23); }
 			set
 			{
 				m21 = value.X;
@@ -85,9 +83,9 @@ namespace DeltaEngine.Datatypes
 				m23 = value.Z;
 			}
 		}
-		public Vector Forward
+		public Vector3D Forward
 		{
-			get { return new Vector(m31, m32, m33); }
+			get { return new Vector3D(m31, m32, m33); }
 			set
 			{
 				m31 = value.X;
@@ -95,14 +93,20 @@ namespace DeltaEngine.Datatypes
 				m33 = value.Z;
 			}
 		}
-		public Vector Translation
+		public Vector3D Translation
 		{
-			get { return new Vector(m41, m42, m43); }
-			set { m41 = value.X; m42 = value.Y; m43 = value.Z; }
+			get { return new Vector3D(m41, m42, m43); }
+			set
+			{
+				m41 = value.X;
+				m42 = value.Y;
+				m43 = value.Z;
+			}
 		}
 
 		public static readonly Matrix Identity = 
 			new Matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
 		public static readonly int SizeInBytes = Marshal.SizeOf(typeof(Matrix));
 
 		public static Matrix CreateScale(float scaleX, float scaleY, float scaleZ)
@@ -127,10 +131,11 @@ namespace DeltaEngine.Datatypes
 
 		public static Matrix Transpose(Matrix matrix)
 		{
-			return new Matrix(	matrix[0], matrix[4], matrix[8],  matrix[12],
-													matrix[1], matrix[5], matrix[9],  matrix[13],
-													matrix[2], matrix[6], matrix[10], matrix[14],
-													matrix[3], matrix[7], matrix[11], matrix[15] );
+			return new Matrix(
+				matrix[0], matrix[4], matrix[8], matrix[12], 
+				matrix[1], matrix[5], matrix[9], matrix[13], 
+				matrix[2], matrix[6], matrix[10], matrix[14], 
+				matrix[3], matrix[7], matrix[11], matrix[15]);
 		}
 
 		public static Matrix Invert(Matrix matrix)
@@ -146,7 +151,7 @@ namespace DeltaEngine.Datatypes
 		public static Matrix CreatePerspective(float fieldOfView, float aspectRatio,
 			float nearPlaneDistance, float farPlaneDistance)
 		{
-			return LinearMapExtensions.CreatePerspectiveMatrix(fieldOfView, aspectRatio, 
+			return LinearMapExtensions.CreatePerspectiveMatrix(fieldOfView, aspectRatio,
 				nearPlaneDistance, farPlaneDistance);
 		}
 
@@ -160,17 +165,18 @@ namespace DeltaEngine.Datatypes
 			return LinearMapExtensions.CreateOrthoProjectionMatrix(viewportSize, nearPlane, farPlane);
 		}
 
-		public static Matrix CreateLookAt(Vector cameraPosition, Vector cameraTarget, Vector cameraUp)
+		public static Matrix CreateLookAt(Vector3D cameraPosition, Vector3D cameraTarget,
+			Vector3D cameraUp)
 		{
 			return LinearMapExtensions.CreateLookAtMatrix(cameraPosition, cameraTarget, cameraUp);
 		}
 
-		public Vector TransformNormal(Vector normal)
+		public Vector3D TransformNormal(Vector3D normal)
 		{
 			return LinearMapExtensions.TransformVector(normal, this);
 		}
 
-		public static Vector TransformHomogeneousCoordinate(Vector coord, Matrix matrix)
+		public static Vector3D TransformHomogeneousCoordinate(Vector3D coord, Matrix matrix)
 		{
 			return LinearMapExtensions.TransformVectorWithHomogeneousCoordinate(coord, matrix);
 		}
@@ -207,8 +213,8 @@ namespace DeltaEngine.Datatypes
 			float qxw = quaternion.X * quaternion.W;
 			return new Matrix(
 				1.0f - 2.0f * (qyy + qzz), 2.0f * (qxy + qzw), 2.0f * (qxz - qyw), 0.0f,
-				2.0f * (qxy - qzw), 1.0f - 2.0f * (qxx + qzz), 2.0f * (qyz + qxw), 0.0f,
-				2.0f * (qxz + qyw), 2.0f * (qyz - qxw), 1.0f - 2.0f * (qxx + qyy), 0.0f,
+				2.0f * (qxy - qzw), 1.0f - 2.0f * (qxx + qzz), 2.0f * (qyz + qxw), 0.0f, 
+				2.0f * (qxz + qyw), 2.0f * (qyz - qxw), 1.0f - 2.0f * (qxx + qyy), 0.0f, 
 				0.0f, 0.0f, 0.0f, 1.0f);
 		}
 
@@ -254,24 +260,26 @@ namespace DeltaEngine.Datatypes
 			for (int i = 0; i < 16; i++)
 				if (!this[i].IsNearlyEqual(matrix[i]))
 					return false;
-
 			return true;
 		}
 
 		public static Matrix operator /(Matrix matrix, float scalar)
 		{
 			var value = 1.0f / scalar;
-			return new Matrix(matrix.m11 * value, matrix.m12 * value, matrix.m13 * value, matrix.m14 * value,
-												matrix.m21 * value, matrix.m22 * value, matrix.m23 * value, matrix.m24 * value,
-												matrix.m31 * value, matrix.m32 * value, matrix.m33 * value, matrix.m34 * value,
-												matrix.m41 * value, matrix.m42 * value, matrix.m43 * value, matrix.m44 * value);
+			return new Matrix(
+				matrix.m11 * value, matrix.m12 * value, matrix.m13 * value, matrix.m14 * value, 
+				matrix.m21 * value, matrix.m22 * value, matrix.m23 * value, matrix.m24 * value, 
+				matrix.m31 * value, matrix.m32 * value, matrix.m33 * value, matrix.m34 * value, 
+				matrix.m41 * value, matrix.m42 * value, matrix.m43 * value, matrix.m44 * value);
 		}
 
-		public static Vector operator *(Matrix matrix, Vector vector)
+		public static Vector3D operator *(Matrix matrix, Vector3D vector)
 		{
-			return new Vector(vector.X * matrix.m11 + vector.Y * matrix.m21 + vector.Z * matrix.m31 + matrix.m41,
-												vector.X * matrix.m12 + vector.Y * matrix.m22 + vector.Z * matrix.m32 + matrix.m42,
-												vector.X * matrix.m13 + vector.Y * matrix.m23 + vector.Z * matrix.m33 + matrix.m43);
+			return
+				new Vector3D(
+					vector.X * matrix.m11 + vector.Y * matrix.m21 + vector.Z * matrix.m31 + matrix.m41,
+					vector.X * matrix.m12 + vector.Y * matrix.m22 + vector.Z * matrix.m32 + matrix.m42,
+					vector.X * matrix.m13 + vector.Y * matrix.m23 + vector.Z * matrix.m33 + matrix.m43);
 		}
 
 		public static Matrix operator *(Matrix matrix1, Matrix matrix2)
@@ -281,7 +289,6 @@ namespace DeltaEngine.Datatypes
 				for (int j = 0; j < 4; j++)
 					for (int k = 0; k < 4; k++)
 						result[i * 4 + j] += matrix1[i * 4 + k] * matrix2[k * 4 + j];
-
 			return new Matrix(result);
 		}
 

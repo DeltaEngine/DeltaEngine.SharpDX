@@ -40,6 +40,10 @@ namespace DeltaEngine.Graphics.Vertices
 		{
 			get { return Elements.Any(t => t.ElementType == VertexElementType.TextureUV); }
 		}
+		public bool HasNormal
+		{
+			get { return Elements.Any(t => t.ElementType == VertexElementType.Normal); }
+		}
 
 		public VertexElement GetElementFromType(VertexElementType type)
 		{
@@ -48,7 +52,7 @@ namespace DeltaEngine.Graphics.Vertices
 
 		public static bool operator ==(VertexFormat f1, VertexFormat f2)
 		{
-			return (object)f1 != null && f1.Equals(f2);
+			return object.ReferenceEquals(f1, f2) || (object)f1 != null && f1.Equals(f2);
 		}
 
 		public bool Equals(VertexFormat other)
@@ -141,6 +145,32 @@ namespace DeltaEngine.Graphics.Vertices
 				new VertexElement(VertexElementType.Position3D),
 				new VertexElement(VertexElementType.Normal),
 				new VertexElement(VertexElementType.TextureUV)
+			});
+
+		public static readonly VertexFormat Position3DSkinned =
+			new VertexFormat(new[]
+			{
+				new VertexElement(VertexElementType.Position3D),
+				new VertexElement(VertexElementType.SkinIndices),
+				new VertexElement(VertexElementType.SkinWeights)
+			});
+
+		public static readonly VertexFormat Position3DColorSkinned =
+			new VertexFormat(new[]
+			{
+				new VertexElement(VertexElementType.Position3D),
+				new VertexElement(VertexElementType.Color), 
+				new VertexElement(VertexElementType.SkinIndices),
+				new VertexElement(VertexElementType.SkinWeights)
+			});
+
+		public static readonly VertexFormat Position3DUvSkinned =
+			new VertexFormat(new[]
+			{
+				new VertexElement(VertexElementType.Position3D),
+				new VertexElement(VertexElementType.TextureUV),
+				new VertexElement(VertexElementType.SkinIndices),
+				new VertexElement(VertexElementType.SkinWeights)
 			});
 	}
 }

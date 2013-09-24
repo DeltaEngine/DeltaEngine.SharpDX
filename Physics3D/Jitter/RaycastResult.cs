@@ -17,7 +17,7 @@ namespace DeltaEngine.Physics3D.Jitter
 			JVector rayDirection = JitterDatatypesMapping.Convert(ref ray.Direction);
 			Found = collisionSystem.Raycast(rayOrigin, rayDirection, null, out RigidBody,
 				out JVectorNormal, out fraction);
-			Vector surfaceNormal = Vector.Zero;
+			Vector3D surfaceNormal = Vector3D.Zero;
 			JitterDatatypesMapping.Convert(ref JVectorNormal, ref surfaceNormal);
 			SurfaceNormal = surfaceNormal;
 		}
@@ -26,7 +26,7 @@ namespace DeltaEngine.Physics3D.Jitter
 		public readonly RigidBody RigidBody;
 		public readonly JVector JVectorNormal;
 		public float Fraction { get; private set; }
-		public Vector SurfaceNormal  { get; private set; }
+		public Vector3D SurfaceNormal  { get; private set; }
 		public PhysicsBody PhysicsBody { get; set; }
 	}
 }

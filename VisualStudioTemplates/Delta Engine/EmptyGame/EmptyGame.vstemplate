@@ -14,7 +14,7 @@
 	<TemplateContent>
 		<Project File="EmptyGame.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="true" TargetFileName="EmptyGameIcon.ico">EmptyGameIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="EmptyGameIcon.ico">EmptyGameIcon.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 			</Folder>

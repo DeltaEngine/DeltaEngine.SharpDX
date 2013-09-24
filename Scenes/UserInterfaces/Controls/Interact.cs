@@ -29,17 +29,17 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			}).Add(new MouseDragTrigger()).Add(new TouchDragTrigger());
 		}
 
-		private Point leftClick = Point.Unused;
-		private Point leftRelease = Point.Unused;
-		private Point movement = Point.Unused;
-		private Point dragStart = Point.Unused;
-		private Point dragEnd = Point.Unused;
+		private Vector2D leftClick = Vector2D.Unused;
+		private Vector2D leftRelease = Vector2D.Unused;
+		private Vector2D movement = Vector2D.Unused;
+		private Vector2D dragStart = Vector2D.Unused;
+		private Vector2D dragEnd = Vector2D.Unused;
 		private bool dragDone;
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
 			// ReSharper disable PossibleMultipleEnumeration
-			if (dragStart == Point.Unused)
+			if (dragStart == Vector2D.Unused)
 				ResetDrag(entities);
 			if (DidATriggerFireThisFrame())
 				UpdateStateOfControls(entities);
@@ -55,15 +55,15 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private static void ResetDragForControl(InteractiveState state)
 		{
-			state.DragStart = Point.Unused;
-			state.DragEnd = Point.Unused;
+			state.DragStart = Vector2D.Unused;
+			state.DragEnd = Vector2D.Unused;
 			state.DragDone = false;
 		}
 
 		private bool DidATriggerFireThisFrame()
 		{
-			return leftClick != Point.Unused || leftRelease != Point.Unused || movement != Point.Unused ||
-				dragStart != Point.Unused;
+			return leftClick != Vector2D.Unused || leftRelease != Vector2D.Unused ||
+				movement != Vector2D.Unused || dragStart != Vector2D.Unused;
 		}
 
 		private void UpdateStateOfControls(IEnumerable<Entity> entities)
@@ -83,13 +83,13 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void ProcessAnyLeftClick(Control control, InteractiveState state)
 		{
-			if (leftClick != Point.Unused)
+			if (leftClick != Vector2D.Unused)
 				state.IsPressed = control.RotatedDrawAreaContains(leftClick);
 		}
 
 		private void ProcessAnyLeftRelease(Control control, InteractiveState state)
 		{
-			if (leftRelease == Point.Unused)
+			if (leftRelease == Vector2D.Unused)
 				return;
 			if (state.IsPressed && control.RotatedDrawAreaContains(leftRelease))
 				ClickControl(control, state);
@@ -107,17 +107,17 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void ProcessAnyMovement(Control control, InteractiveState state)
 		{
-			if (movement == Point.Unused)
+			if (movement == Vector2D.Unused)
 				return;
 			state.IsInside = control.RotatedDrawAreaContains(movement);
-			Point rotatedMovement = control.Rotation == 0.0f
+			Vector2D rotatedMovement = control.Rotation == 0.0f
 				? movement : movement.RotateAround(control.RotationCenter, -control.Rotation);
 			state.RelativePointerPosition = control.DrawArea.GetRelativePoint(rotatedMovement);
 		}
 
 		private void ProcessAnyDrag(InteractiveState state)
 		{
-			if (dragStart == Point.Unused)
+			if (dragStart == Vector2D.Unused)
 				return;
 			state.DragStart = dragStart;
 			state.DragEnd = dragEnd;
@@ -142,10 +142,10 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void Reset()
 		{
-			leftClick = Point.Unused;
-			leftRelease = Point.Unused;
-			movement = Point.Unused;
-			dragStart = Point.Unused;
+			leftClick = Vector2D.Unused;
+			leftRelease = Vector2D.Unused;
+			movement = Vector2D.Unused;
+			dragStart = Vector2D.Unused;
 			dragDone = false;
 		}
 	}

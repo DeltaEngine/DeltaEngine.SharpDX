@@ -14,7 +14,8 @@ namespace ShadowShot.Tests
 		public void SetUp()
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(500, 500);
-			projectile = new Projectile(new Material(Shader.Position2DColorUv, "projectile"), Point.Half, Resolve<ScreenSpace>().Viewport);
+			projectile = new Projectile(new Material(Shader.Position2DColorUv, "projectile"),
+				Vector2D.Half, Resolve<ScreenSpace>().Viewport);
 		}
 
 		private Projectile projectile;
@@ -23,7 +24,7 @@ namespace ShadowShot.Tests
 		public void CreateProjectileInScreen()
 		{
 			//projectile.Size = new Size(0.05f, 0.1f);
-			projectile.Get<SimplePhysics.Data>().Velocity = Point.Zero;
+			projectile.Get<SimplePhysics.Data>().Velocity = Vector2D.Zero;
 			Assert.IsTrue(projectile.IsActive);
 		}
 
@@ -32,7 +33,7 @@ namespace ShadowShot.Tests
 		{
 			AdvanceTimeAndUpdateEntities();
 			var newProjectileCenter = projectile.DrawArea.Center;
-			Assert.AreNotEqual(Point.Half, newProjectileCenter);
+			Assert.AreNotEqual(Vector2D.Half, newProjectileCenter);
 		}
 
 		[Test]
@@ -40,7 +41,7 @@ namespace ShadowShot.Tests
 		{
 			AdvanceTimeAndUpdateEntities();
 			var newProjectileCenter = projectile.DrawArea.Center;
-			Assert.AreNotEqual(Point.Half, newProjectileCenter);
+			Assert.AreNotEqual(Vector2D.Half, newProjectileCenter);
 			AdvanceTimeAndUpdateEntities(5.0f);
 			newProjectileCenter = projectile.DrawArea.Center;
 			Assert.GreaterOrEqual(0.0f, newProjectileCenter.Y);

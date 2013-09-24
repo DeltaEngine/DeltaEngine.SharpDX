@@ -28,7 +28,7 @@ namespace $safeprojectname$.PathFinding
 			return unreachableNodes [nodeIndex];
 		}
 
-		public void SetNodePosition(int row, int column, Point position)
+		public void SetNodePosition(int row, int column, Vector2D position)
 		{
 			int nodeIndex = row * nodesColumns + column;
 			if (nodeIndex < 0 || nodeIndex >= NumberOfNodes)
@@ -96,7 +96,7 @@ namespace $safeprojectname$.PathFinding
 			unreachableNodes [index] = false;
 		}
 
-		public int GetClosestNode(Point position)
+		public int GetClosestNode(Vector2D position)
 		{
 			var minimumDistance = (Nodes [0] - position).LengthSquared;
 			int index = 0;
@@ -112,7 +112,7 @@ namespace $safeprojectname$.PathFinding
 			return index;
 		}
 
-		public Point GetPositionOfNode(int index)
+		public Vector2D GetPositionOfNode(int index)
 		{
 			return Nodes [index];
 		}

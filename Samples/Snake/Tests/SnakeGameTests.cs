@@ -45,7 +45,7 @@ namespace Snake.Tests
 			var direction = game.Snake.Get<Body>().Direction;
 			var originalLength = game.Snake.Get<Body>().BodyParts.Count;
 			game.Chunk.DrawArea =
-				new Rectangle(new Point(snakeHead.Left + direction.X, snakeHead.Top + direction.Y),
+				new Rectangle(new Vector2D(snakeHead.Left + direction.X, snakeHead.Top + direction.Y),
 					new Size(blockSize));
 			game.MoveUp();
 			AdvanceTimeAndUpdateEntities(moveSpeed);

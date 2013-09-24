@@ -1,13 +1,13 @@
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
 	public class Brick : Sprite
 	{
-		public Brick(Material material, Point offset, Orientation displayMode) : base(material, 
+		public Brick(Material material, Vector2D offset, Orientation displayMode) : base(material, 
 			Rectangle.Zero)
 		{
 			Offset = offset;
@@ -15,29 +15,29 @@ namespace $safeprojectname$
 			this.displayMode = displayMode;
 		}
 
-		public Point Offset;
+		public Vector2D Offset;
 		private readonly Orientation displayMode;
 
 		public void UpdateDrawArea()
 		{
-			Point newPoint;
+			Vector2D newPoint;
 			if (displayMode == Orientation.Landscape)
 			{
-				newPoint = OffsetLandscape + (Position - Point.UnitY) * ZoomLandscape;
+				newPoint = OffsetLandscape + (Position - Vector2D.UnitY) * ZoomLandscape;
 				DrawArea = NewDrawArea(newPoint, SizeLandscape);
 			} else
 			{
-				newPoint = OffsetPortrait + (Position - Point.UnitY) * ZoomPortrait;
+				newPoint = OffsetPortrait + (Position - Vector2D.UnitY) * ZoomPortrait;
 				DrawArea = new Rectangle(newPoint, SizePortrait);
 			}
 		}
 
-		private static Rectangle NewDrawArea(Point point, Size size)
+		private static Rectangle NewDrawArea(Vector2D point, Size size)
 		{
 			return new Rectangle(point, size);
 		}
 
-		public Point Position
+		public Vector2D Position
 		{
 			get
 			{
@@ -45,9 +45,9 @@ namespace $safeprojectname$
 			}
 		}
 
-		public Point TopLeftGridCoord;
-		public static readonly Point OffsetLandscape = new Point(0.38f, 0.385f);
-		public static readonly Point OffsetPortrait = new Point(0.38f, 0.385f);
+		public Vector2D TopLeftGridCoord;
+		public static readonly Vector2D OffsetLandscape = new Vector2D(0.38f, 0.385f);
+		public static readonly Vector2D OffsetPortrait = new Vector2D(0.38f, 0.385f);
 		public const float ZoomLandscape = 0.02f;
 		public const float ZoomPortrait = 0.02f;
 		private static readonly Size SizeLandscape = new Size(ZoomLandscape);

@@ -1,3 +1,5 @@
+using $safeprojectname$.Towers;
+
 namespace $safeprojectname$.Simple2D
 {
 	public class PlasticCreepStateChanger2D

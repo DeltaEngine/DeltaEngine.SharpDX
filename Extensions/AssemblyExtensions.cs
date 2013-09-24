@@ -81,5 +81,36 @@ namespace DeltaEngine.Extensions
 				assemblyName.StartsWith("DeltaEngine.Windows") ||
 				assemblyName.StartsWith("DeltaEngine.TestWith");
 		}
+
+		/// <summary>
+		/// See http://geekswithblogs.net/rupreet/archive/2005/11/02/58873.aspx
+		/// </summary>
+		public static bool IsManagedAssembly(string fileName)
+		{
+			using (Stream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+			{
+				var reader = new BinaryReader(fs);
+				GoToDataDictionaryOfPeOptionalHeaders(fs, reader);
+				var dataDictionaryRva = new uint[16];
+				var dataDictionarySize = new uint[16];
+				for (int i = 0; i < 15; i++)
+				{
+					dataDictionaryRva[i] = reader.ReadUInt32();
+					dataDictionarySize[i] = reader.ReadUInt32();
+				}
+				return dataDictionaryRva[14] != 0;
+			}
+		}
+
+		/// <summary>
+		/// See http://msdn.microsoft.com/en-us/library/windows/desktop/ms680313(v=vs.85).aspx
+		/// </summary>
+		private static void GoToDataDictionaryOfPeOptionalHeaders(Stream fs, BinaryReader reader)
+		{
+			fs.Position = 0x3C;
+			fs.Position = reader.ReadUInt32();
+			reader.ReadBytes(24);
+			fs.Position = Convert.ToUInt16(Convert.ToUInt16(fs.Position) + 0x60);
+		}
 	}
 }

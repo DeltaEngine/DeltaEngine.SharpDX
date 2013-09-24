@@ -21,13 +21,13 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 
 		private InteractiveButton button;
 		private static readonly Size BaseSize = new Size(0.3f, 0.1f);
-		private static readonly Rectangle Center = Rectangle.FromCenter(Point.Half, BaseSize);
+		private static readonly Rectangle Center = Rectangle.FromCenter(Vector2D.Half, BaseSize);
 
 		private void InitializeMouse()
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Point.Zero);
+				mouse.SetPosition(Vector2D.Zero);
 		}
 
 		private MockMouse mouse;
@@ -36,7 +36,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var touch = Resolve<Touch>() as MockTouch;
 			if (touch != null)
-				touch.SetTouchState(0, State.Released, Point.Zero);
+				touch.SetTouchState(0, State.Released, Vector2D.Zero);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -70,11 +70,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			SetMouseState(State.Pressing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.IsTrue(button.Size.Width < BaseSize.Width);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -88,8 +88,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			SetMouseState(State.Pressing, Point.Half);
-			SetMouseState(State.Releasing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
+			SetMouseState(State.Releasing, Vector2D.Half);
 			Assert.IsTrue(button.Size.Width > BaseSize.Width);
 		}
 
@@ -98,15 +98,15 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			SetMouseState(State.Released, Point.Half);
+			SetMouseState(State.Released, Vector2D.Half);
 			Assert.IsTrue(button.Size.Width > BaseSize.Width);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ExitingMakesItNormalize()
 		{
-			SetMouseState(State.Released, Point.Half);
-			SetMouseState(State.Released, Point.Zero);
+			SetMouseState(State.Released, Vector2D.Half);
+			SetMouseState(State.Released, Vector2D.Zero);
 			Assert.AreEqual(BaseSize, button.Size);
 		}
 
@@ -114,7 +114,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void BeginningClickDoesNothingIfDisabled()
 		{
 			button.IsEnabled = false;
-			SetMouseState(State.Pressing, Point.Half);
+			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.AreEqual(BaseSize.Width, button.Size.Width);
 		}
 

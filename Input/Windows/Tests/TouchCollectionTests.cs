@@ -68,8 +68,8 @@ namespace DeltaEngine.Input.Windows.Tests
 		[Test]
 		public void CalculateQuadraticPosition()
 		{
-			Point quadPosition = touchCollection.CalculateQuadraticPosition(400 * 100, 300 * 100);
-			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Point(400, 300)), quadPosition);
+			Vector2D quadPosition = touchCollection.CalculateQuadraticPosition(400 * 100, 300 * 100);
+			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Vector2D(400, 300)), quadPosition);
 		}
 
 		[Test]
@@ -78,7 +78,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			var newTouches = new List<NativeTouchInput> { GetTestTouchInput() };
 			touchCollection.ProcessNewTouches(newTouches);
 			Assert.AreEqual(15, touchCollection.ids[0]);
-			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Point(400, 300)),
+			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Vector2D(400, 300)),
 				touchCollection.locations[0]);
 			Assert.AreEqual(State.Pressing, touchCollection.states[0]);
 		}
@@ -111,7 +111,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			touchCollection.UpdateAllTouches(newTouches);
 			Assert.AreEqual(0, newTouches.Count);
 			Assert.AreEqual(15, touchCollection.ids[0]);
-			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Point(400, 300)),
+			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Vector2D(400, 300)),
 				touchCollection.locations[0]);
 			Assert.AreEqual(State.Pressed, touchCollection.states[0]);
 		}
@@ -125,7 +125,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			touchCollection.UpdatePreviouslyActiveTouches(newTouches);
 			Assert.AreEqual(0, newTouches.Count);
 			Assert.AreEqual(15, touchCollection.ids[0]);
-			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Point(400, 300)),
+			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Vector2D(400, 300)),
 				touchCollection.locations[0]);
 			Assert.AreEqual(State.Pressed, touchCollection.states[0]);
 		}

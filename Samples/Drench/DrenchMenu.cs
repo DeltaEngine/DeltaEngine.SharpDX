@@ -2,7 +2,7 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Networking;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using Drench.Games;

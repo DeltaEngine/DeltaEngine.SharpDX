@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Networking.Messages;
 using DeltaEngine.Networking.Tcp;
@@ -17,8 +18,7 @@ namespace DeltaEngine.Networking.Tests.Tcp
 			clientReceivedResponseCount = 0;
 			echoServer = new TcpServer();
 			echoServer.Start(serverPort);
-			echoServer.ClientDataReceived +=
-				(connection, data) => connection.Send(new TextMessage("TestMessage"));
+			echoServer.ClientDataReceived += (connection, data) => connection.Send(data);
 		}
 
 		private int serverReceivedMessageCount;
@@ -111,6 +111,43 @@ namespace DeltaEngine.Networking.Tests.Tcp
 		}
 
 		[Test, Category("Slow")]
+		public void SendCompressedMessageToServer()
+		{
+			using (var client = CreatedConnectedClient())
+			{
+				var message = new BigData(new byte[32000]);
+				message.Bytes[0] = 5;
+				message.Bytes[3458] = 34;
+				BigData receivedBigData = null;
+				client.DataReceived += o => Console.WriteLine("Received: " + o);
+				echoServer.ClientDataReceived += (c, m) =>
+				{
+					Assert.AreEqual(typeof(BigData), m.GetType());
+					receivedBigData = m as BigData;
+				};
+				client.Send(message);
+				Thread.Sleep(100);
+				Assert.IsNotNull(receivedBigData);
+				Assert.AreEqual(32000, receivedBigData.Bytes.Length);
+				Assert.AreEqual(5, receivedBigData.Bytes[0]);
+				Assert.AreEqual(0, receivedBigData.Bytes[1]);
+				Assert.AreEqual(34, receivedBigData.Bytes[3458]);
+			}
+		}
+
+		public class BigData
+		{
+			private BigData() {}
+
+			public BigData(byte[] bytes)
+			{
+				Bytes = bytes;
+			}
+
+			public byte[] Bytes { get; private set; }
+		}
+
+		[Test, Category("Slow")]
 		public void SendMessagesToServer()
 		{
 			using (var client = CreatedConnectedClient())
@@ -149,8 +186,7 @@ namespace DeltaEngine.Networking.Tests.Tcp
 			using (var client = new TcpSocket())
 			{
 				bool isTimedOut = false;
-				client.TimedOut += () => isTimedOut = true;
-				client.Connect(ServerAddress, 12345);
+				client.Connect(ServerAddress, 12345, () => isTimedOut = true);
 				Assert.IsFalse(isTimedOut);
 				Thread.Sleep(3500);
 				Assert.IsTrue(isTimedOut);

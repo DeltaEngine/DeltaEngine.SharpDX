@@ -10,7 +10,10 @@ namespace DeltaEngine.Graphics.Mocks
 	public class MockDevice : Device
 	{
 		public MockDevice(Window window)
-			: base(window) {}
+			: base(window)
+		{
+			OnSet3DMode += () => OnSet3DModeCalled = true;
+		}
 
 		public override void Dispose() { }
 		public override void Clear() {}
@@ -25,5 +28,14 @@ namespace DeltaEngine.Graphics.Mocks
 		{
 			return new MockCircularBuffer(this, shader, blendMode, drawMode);
 		}
+
+		protected override void OnFullscreenChanged(Size displaySize, bool wantFullscreen)
+		{
+			OnFullscreenChangedCalled = true;
+			base.OnFullscreenChanged(displaySize, wantFullscreen);
+		}
+
+		public bool OnFullscreenChangedCalled { get; private set; }
+		public bool OnSet3DModeCalled { get; private set; }
 	}
 }

@@ -29,14 +29,14 @@ namespace CreepyTowers.PathFinding
 
 	public class Graph
 	{
-		public Point[] Nodes { get; set; }
+		public Vector2D[] Nodes { get; set; }
 		public List<GraphConnection>[] AdjacencyList { get; protected set; }
 		public int NumberOfNodes { get; protected set; }
 
 		public Graph(int numberOfNodes)
 		{
 			NumberOfNodes = numberOfNodes;
-			Nodes = new Point[numberOfNodes];
+			Nodes = new Vector2D[numberOfNodes];
 			AdjacencyList = new List<GraphConnection>[numberOfNodes];
 
 			for (int i = 0; i < numberOfNodes; i++)

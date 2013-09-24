@@ -1,4 +1,7 @@
-﻿namespace CreepyTowers.Simple2D
+﻿using CreepyTowers.Creeps;
+using CreepyTowers.Towers;
+
+namespace CreepyTowers.Simple2D
 {
 	public class CalculateDamage2D
 	{

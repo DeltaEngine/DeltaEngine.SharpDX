@@ -3,14 +3,14 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering.Fonts;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
 	public class Tree : Sprite, Updateable
 	{
-		public Tree(Point position, Team team) : base(new Material(Shader.Position2DColorUv, 
+		public Tree(Vector2D position, Team team) : base(new Material(Shader.Position2DColorUv, 
 			TreeImageName[0]), position)
 		{
 			Level = 1;
@@ -61,10 +61,10 @@ namespace $safeprojectname$
 
 		private int numberOfGhosts;
 		public readonly FontText NumberText;
-		private static readonly Point[] NumberTextPositionPerLevel = {
-			new Point(0.002f, -0.0495f),
-			new Point(0.002f, -0.0775f),
-			new Point(0.0015f, -0.0875f)
+		private static readonly Vector2D[] NumberTextPositionPerLevel = {
+			new Vector2D(0.002f, -0.0495f),
+			new Vector2D(0.002f, -0.0775f),
+			new Vector2D(0.0015f, -0.0875f)
 		};
 
 		public bool IsAi
@@ -82,8 +82,8 @@ namespace $safeprojectname$
 				return;
 
 			NumberOfGhosts++;
-			Effects.CreateSparkleEffect(Team, Center + new Point(Randomizer.Current.Get(-0.04f, 0.04f), 
-				Randomizer.Current.Get(-0.04f, 0.04f)), 1);
+			Effects.CreateSparkleEffect(Team, Center + new Vector2D(Randomizer.Current.Get(-0.04f, 
+				0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 1);
 		}
 
 		private void UpdateImage()
@@ -121,8 +121,8 @@ namespace $safeprojectname$
 			if (Team == Team.HumanYellow)
 				ContentLoader.Load<Sound>("GhostWaveStart").Play(0.7f);
 
-			Effects.CreateSparkleEffect(Team, Center + new Point(Randomizer.Current.Get(-0.04f, 0.04f), 
-				Randomizer.Current.Get(-0.04f, 0.04f)), numberOfAttackerGhosts);
+			Effects.CreateSparkleEffect(Team, Center + new Vector2D(Randomizer.Current.Get(-0.04f, 
+				0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), numberOfAttackerGhosts);
 		}
 
 		private void AttackEnemyTree(Team attackerTeam, int numberOfAttackerGhosts)
@@ -145,7 +145,7 @@ namespace $safeprojectname$
 		private void ShowAttackEffects(int numberOfAttackerGhosts)
 		{
 			for (int num = 0; num < numberOfAttackerGhosts; num++)
-				Effects.CreateDeathEffect(Center + new Point(Randomizer.Current.Get(-0.03f, 0.03f), 
+				Effects.CreateDeathEffect(Center + new Vector2D(Randomizer.Current.Get(-0.03f, 0.03f), 
 					Randomizer.Current.Get(-0.03f, 0.03f)));
 
 			Effects.CreateHitEffect(Center);
@@ -178,8 +178,8 @@ namespace $safeprojectname$
 			Level++;
 			UpdateImage();
 			ContentLoader.Load<Sound>("Upgrading").Play();
-			Effects.CreateSparkleEffect(Team, Center + new Point(Randomizer.Current.Get(-0.04f, 0.04f), 
-				Randomizer.Current.Get(-0.04f, 0.04f)), 8);
+			Effects.CreateSparkleEffect(Team, Center + new Vector2D(Randomizer.Current.Get(-0.04f, 
+				0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 8);
 		}
 	}
 }

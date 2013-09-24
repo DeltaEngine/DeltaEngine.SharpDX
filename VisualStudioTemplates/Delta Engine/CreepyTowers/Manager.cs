@@ -1,9 +1,12 @@
 using System;
+using $safeprojectname$.Creeps;
+using $safeprojectname$.Levels;
+using $safeprojectname$.Towers;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering.Cameras;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering3D.Cameras;
 
 namespace $safeprojectname$
 {
@@ -25,10 +28,11 @@ namespace $safeprojectname$
 			set;
 		}
 
-		public Creep CreateCreep(Vector position, string name, MovementInGrid.MovementData movementData)
+		public Creep CreateCreep(Vector3D position, string name, MovementInGrid.MovementData 
+			movementData)
 		{
 			var creep = new Creep(position, Creep.CreepType.Cloth, name);
-			creep.Orientation = Quaternion.FromAxisAngle(Vector.UnitY, 180.0f);
+			creep.Orientation = Quaternion.FromAxisAngle(Vector3D.UnitY, 180.0f);
 			creep.Add(movementData);
 			creep.UpdateHealthBar += () => UpdateCreepHealthBar(creep);
 			return creep;
@@ -39,7 +43,8 @@ namespace $safeprojectname$
 			if (creep.HealthBar == null)
 				return;
 
-			var healthBar3DPos = new Vector(creep.Position.X, creep.Position.Y + 0.25f, creep.Position.Z);
+			var healthBar3DPos = new Vector3D(creep.Position.X, creep.Position.Y + 0.25f, 
+				creep.Position.Z);
 			var healthBar2DPos = Camera.Current.WorldToScreenPoint(healthBar3DPos);
 			var creepProperties = creep.Get<CreepProperties>();
 			var healthPercent = (creepProperties.CurrentHp / creepProperties.MaxHp) * 100;
@@ -74,7 +79,7 @@ namespace $safeprojectname$
 			creep.HealthBar.DrawArea = drawArea;
 		}
 
-		public void CreateTower(Vector position, Tower.TowerType towerType, string name)
+		public void CreateTower(Vector3D position, Tower.TowerType towerType, string name)
 		{
 			if (playerData.ResourceFinances < 100)
 				MessageInsufficientMoney(100);

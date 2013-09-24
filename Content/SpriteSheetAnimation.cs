@@ -46,12 +46,12 @@ namespace DeltaEngine.Content
 		{
 			var imageName = MetaData.Get("ImageName", "");
 			if (string.IsNullOrEmpty(imageName))
-				throw new NeedValidImageName();
+				throw new NeedValidImageName(); //ncrunch: no coverage
 			Image = ContentLoader.Load<Image>(imageName);
 			DefaultDuration = MetaData.Get("DefaultDuration", 0.0f);
 			SubImageSize = MetaData.Get("SubImageSize", Size.Zero);
 			if (SubImageSize == Size.Zero)
-				throw new NeedValidSubImageSize();
+				throw new NeedValidSubImageSize(); //ncrunch: no coverage
 			CreateUVs();
 		}
 

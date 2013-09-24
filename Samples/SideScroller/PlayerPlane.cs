@@ -15,7 +15,7 @@ namespace SideScroller
 		/// Can be controlled in its vertical position, fire shots and make the environment move.
 		/// (It is so mighty that when it flies faster, in truth the world turns faster!)
 		/// </summary>
-		public PlayerPlane(Material playerTexture, Point initialPosition)
+		public PlayerPlane(Material playerTexture, Vector2D initialPosition)
 			: base(playerTexture, initialPosition)
 
 		{
@@ -24,7 +24,7 @@ namespace SideScroller
 			verticalAccelerationFactor = 1.5f;
 			RenderLayer = (int)DefRenderLayer.Player;
 			PlayerFiredShot += point => {};
-			Add(new Velocity2D(Point.Zero, MaximumSpeed));
+			Add(new Velocity2D(Vector2D.Zero, MaximumSpeed));
 			Start<PlayerMovement>();
 			Start<MachineGunFire>();
 		}
@@ -48,7 +48,7 @@ namespace SideScroller
 
 			private static Rectangle CalculateRectAfterMove(PlayerPlane entity)
 			{
-				var pointAfterVerticalMovement = new Point(entity.Get<Rectangle>().TopLeft.X,
+				var pointAfterVerticalMovement = new Vector2D(entity.Get<Rectangle>().TopLeft.X,
 					entity.Get<Rectangle>().TopLeft.Y + entity.Get<Velocity2D>().velocity.Y * Time.Delta);
 
 				return new Rectangle(pointAfterVerticalMovement, entity.Get<Rectangle>().Size);
@@ -88,7 +88,7 @@ namespace SideScroller
 				}
 			}
 
-			private static float RotationAccordingToVerticalSpeed(Point vel)
+			private static float RotationAccordingToVerticalSpeed(Vector2D vel)
 			{
 				return 50 * vel.Y / MaximumSpeed;
 			}
@@ -119,6 +119,6 @@ namespace SideScroller
 
 		public bool IsFireing;
 		public const float Cadence = 0.01f;
-		public event Action<Point> PlayerFiredShot;
+		public event Action<Vector2D> PlayerFiredShot;
 	}
 }

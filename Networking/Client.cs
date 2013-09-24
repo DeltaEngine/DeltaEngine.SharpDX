@@ -8,10 +8,10 @@ namespace DeltaEngine.Networking
 	public interface Client : IDisposable
 	{
 		int UniqueID { get; set; }
-		void Connect(string targetAddress, int targetPort);
+		void Connect(string targetAddress, int targetPort, Action optionalTimedOut = null);
 		bool IsConnected { get; }
 		string TargetAddress { get; }
-		void Send(object message);
+		void Send(object message, bool allowToCompressMessage = true);
 		event Action<object> DataReceived;
 		event Action Connected;
 		event Action Disconnected;

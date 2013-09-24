@@ -4,7 +4,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace GhostWars
 {
@@ -13,7 +13,7 @@ namespace GhostWars
 	/// </summary>
 	public class GhostWave : Entity, Updateable, IDisposable
 	{
-		public GhostWave(Point start, Point target, int waveSize, Color color)
+		public GhostWave(Vector2D start, Vector2D target, int waveSize, Color color)
 		{
 			this.start = start;
 			this.target = target;
@@ -24,8 +24,8 @@ namespace GhostWars
 			UpdatePriority = Priority.Low;
 		}
 
-		private readonly Point start;
-		private readonly Point target;
+		private readonly Vector2D start;
+		private readonly Vector2D target;
 		private readonly Sprite[] sprites;
 
 		private Sprite CreateSpriteWithOrientation(Material ghostMaterial)
@@ -59,9 +59,9 @@ namespace GhostWars
 
 		private Rectangle CurrentDrawArea(int num)
 		{
-			var direction = Point.Normalize(target - start);
+			var direction = Vector2D.Normalize(target - start);
 			var pos = start + direction * runTime * Speed;
-			var vertical = direction.RotateAround(Point.Zero, 90);
+			var vertical = direction.RotateAround(Vector2D.Zero, 90);
 			pos += vertical * MathExtensions.Sin(runTime * 300) * 0.0035f;
 			pos += vertical * MathExtensions.Sin(runTime * 44 + num * 27) * 0.0135f;
 			pos += vertical * SpreadDistance * CalcDistanceFromCenter(num, 1.0f, 90, 90);

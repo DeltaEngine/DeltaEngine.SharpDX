@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Input.Windows
 {
@@ -16,8 +15,11 @@ namespace DeltaEngine.Input.Windows
 		{
 			var positionTranslator = new CursorPositionTranslater(window);
 			touches = new TouchCollection(positionTranslator);
-			hook = new TouchHook(window);
 			IsAvailable = CheckIfWindows7OrHigher();
+			if (IsAvailable)
+				hook = new TouchHook(window);
+			else
+				Logger.Warning("Touch is not supported by the OS. Touch triggers won't work!");
 		}
 
 		private readonly TouchHook hook;
@@ -27,7 +29,8 @@ namespace DeltaEngine.Input.Windows
 
 		public override void Dispose()
 		{
-			hook.Dispose();
+			if (hook != null)
+				hook.Dispose();
 		}
 
 		private static bool CheckIfWindows7OrHigher()
@@ -36,7 +39,7 @@ namespace DeltaEngine.Input.Windows
 			return version.Major >= 6 && version.Minor >= 1;
 		}
 
-		public override Point GetPosition(int touchIndex)
+		public override Vector2D GetPosition(int touchIndex)
 		{
 			return touches.locations[touchIndex];
 		}
@@ -48,8 +51,8 @@ namespace DeltaEngine.Input.Windows
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
-			//if (!IsAvailable)
-			//	return;
+			if (!IsAvailable)
+				return;
 
 			var newTouches = new List<NativeTouchInput>(hook.nativeTouches.ToArray());
 			touches.UpdateAllTouches(newTouches);

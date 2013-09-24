@@ -29,8 +29,8 @@ namespace DeltaEngine.Input.Windows.Tests
 		public void GetIdleStates()
 		{
 			Assert.AreEqual(State.Released, gamePad.GetButtonState(GamePadButton.A));
-			Assert.AreEqual(Point.Zero, gamePad.GetLeftThumbStick());
-			Assert.AreEqual(Point.Zero, gamePad.GetRightThumbStick());
+			Assert.AreEqual(Vector2D.Zero, gamePad.GetLeftThumbStick());
+			Assert.AreEqual(Vector2D.Zero, gamePad.GetRightThumbStick());
 			Assert.AreEqual(0.0f, gamePad.GetLeftTrigger());
 			Assert.AreEqual(0.0f, gamePad.GetRightTrigger());
 		}

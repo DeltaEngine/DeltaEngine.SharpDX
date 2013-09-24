@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Graphics", "Gra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Platforms", "Platforms\DeltaEngine.Platforms.csproj", "{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering", "Rendering\DeltaEngine.Rendering.csproj", "{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering2D", "Rendering2D\DeltaEngine.Rendering2D.csproj", "{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Platforms.Windows", "Platforms\Windows\DeltaEngine.Platforms.Windows.csproj", "{BD8A80E2-A313-437E-B0EF-FC0B066280A7}"
 EndProject
@@ -99,27 +99,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmptyLibrary", "Samples\Emp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmptyGame.Tests", "Samples\EmptyGame\Tests\EmptyGame.Tests.csproj", "{3E2F7578-D7BE-43CB-AA5B-EBADBA94BE74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Cameras", "Rendering\Cameras\DeltaEngine.Rendering.Cameras.csproj", "{F5992CBF-8E17-4EB0-B483-F1DE7993C416}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering3D.Cameras", "Rendering3D\Cameras\DeltaEngine.Rendering3D.Cameras.csproj", "{F5992CBF-8E17-4EB0-B483-F1DE7993C416}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Fonts", "Rendering\Fonts\DeltaEngine.Rendering.Fonts.csproj", "{4A00FD90-FF7B-4250-9CBC-B6855130090B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering2D.Fonts", "Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj", "{4A00FD90-FF7B-4250-9CBC-B6855130090B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Models", "Rendering\Models\DeltaEngine.Rendering.Models.csproj", "{701FDD1A-6B8A-4CA9-B796-AC9546233F47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering3D.Models", "Rendering3D\Models\DeltaEngine.Rendering3D.Models.csproj", "{701FDD1A-6B8A-4CA9-B796-AC9546233F47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Particles", "Rendering\Particles\DeltaEngine.Rendering.Particles.csproj", "{BECE691C-BAC6-434B-B1F9-4D8653922585}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering3D.Particles", "Rendering3D\Particles\DeltaEngine.Rendering3D.Particles.csproj", "{BECE691C-BAC6-434B-B1F9-4D8653922585}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Shapes", "Rendering\Shapes\DeltaEngine.Rendering.Shapes.csproj", "{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering2D.Shapes", "Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj", "{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Shapes3D", "Rendering\Shapes3D\DeltaEngine.Rendering.Shapes3D.csproj", "{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering3D.Shapes3D", "Rendering3D\Shapes3D\DeltaEngine.Rendering3D.Shapes3D.csproj", "{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Sprites", "Rendering\Sprites\DeltaEngine.Rendering.Sprites.csproj", "{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering2D.Sprites", "Rendering2D\Sprites\DeltaEngine.Rendering2D.Sprites.csproj", "{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Triggers", "Rendering\Triggers\DeltaEngine.Rendering.Triggers.csproj", "{5423079E-7FB8-4190-AEE1-100EF328E74E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering2D.Triggers", "Rendering2D\Triggers\DeltaEngine.Rendering2D.Triggers.csproj", "{5423079E-7FB8-4190-AEE1-100EF328E74E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Physics3D", "Physics3D\DeltaEngine.Physics3D.csproj", "{EA4135BF-0FFF-4714-ACC1-DEBB8381739F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Physics3D.Jitter", "Physics3D\Jitter\DeltaEngine.Physics3D.Jitter.csproj", "{560B70DE-F4D0-41A7-A684-406F08336543}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Graphs", "Rendering\Graphs\DeltaEngine.Rendering.Graphs.csproj", "{BFD23A13-90D3-46FC-8EAB-78664F4FB37D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering2D.Graphs", "Rendering2D\Graphs\DeltaEngine.Rendering2D.Graphs.csproj", "{BFD23A13-90D3-46FC-8EAB-78664F4FB37D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Input.Windows", "Input\Windows\DeltaEngine.Input.Windows.csproj", "{C0D2430E-714D-476C-80E7-5C80A7FA68EE}"
 EndProject
@@ -143,7 +143,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Input.SharpDX",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Multimedia.SharpDX", "Multimedia\SharpDX\DeltaEngine.Multimedia.SharpDX.csproj", "{7D6C8627-CF35-4E3F-A3FE-1600327437C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering.Mocks", "Rendering\Mocks\DeltaEngine.Rendering.Mocks.csproj", "{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering3D.Mocks", "Rendering3D\Mocks\DeltaEngine.Rendering3D.Mocks.csproj", "{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Rendering3D", "Rendering3D\DeltaEngine.Rendering3D.csproj", "{3266F559-74EE-4A1C-B37B-2C591F73611B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Networking", "Networking", "{35D4ACC8-B908-4032-8B79-C19F62F601F0}"
 EndProject
@@ -151,11 +153,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{3F2D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Physics3D", "Physics3D", "{4346AC68-FD03-479B-9E98-EA83C8396151}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rendering", "Rendering", "{522A44BD-D0DA-4659-83B8-E9A47990D80D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rendering2D", "Rendering2D", "{522A44BD-D0DA-4659-83B8-E9A47990D80D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Multimedia", "Multimedia", "{5C35E17F-C8B5-42E2-AFDB-115F251E96F7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Graphics", "Graphics", "{7F0A5478-2290-4052-82A4-819339D9E873}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rendering3D", "Rendering3D", "{8371B1C3-2FFD-4DA3-B07E-9B2D5E384C55}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{878871C4-1FEE-48B5-8756-2A37CBA4E56A}"
 EndProject
@@ -453,6 +457,10 @@ Global
 		{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3266F559-74EE-4A1C-B37B-2C591F73611B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3266F559-74EE-4A1C-B37B-2C591F73611B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3266F559-74EE-4A1C-B37B-2C591F73611B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3266F559-74EE-4A1C-B37B-2C591F73611B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -495,15 +503,17 @@ Global
 		{BD8A80E2-A313-437E-B0EF-FC0B066280A7} = {A4442410-EF9F-43E5-AD76-5D5A6183C805}
 		{462DC673-E132-4A82-B49B-EC353D25B409} = {AE4D6C30-C5FC-4747-8D4D-F8AEE8B7B409}
 		{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
-		{F5992CBF-8E17-4EB0-B483-F1DE7993C416} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
 		{4A00FD90-FF7B-4250-9CBC-B6855130090B} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
 		{BFD23A13-90D3-46FC-8EAB-78664F4FB37D} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
-		{701FDD1A-6B8A-4CA9-B796-AC9546233F47} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
-		{BECE691C-BAC6-434B-B1F9-4D8653922585} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
 		{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
-		{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
 		{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
 		{5423079E-7FB8-4190-AEE1-100EF328E74E} = {522A44BD-D0DA-4659-83B8-E9A47990D80D}
+		{3266F559-74EE-4A1C-B37B-2C591F73611B} = {8371B1C3-2FFD-4DA3-B07E-9B2D5E384C55}
+		{F5992CBF-8E17-4EB0-B483-F1DE7993C416} = {8371B1C3-2FFD-4DA3-B07E-9B2D5E384C55}
+		{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4} = {8371B1C3-2FFD-4DA3-B07E-9B2D5E384C55}
+		{701FDD1A-6B8A-4CA9-B796-AC9546233F47} = {8371B1C3-2FFD-4DA3-B07E-9B2D5E384C55}
+		{BECE691C-BAC6-434B-B1F9-4D8653922585} = {8371B1C3-2FFD-4DA3-B07E-9B2D5E384C55}
+		{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203} = {8371B1C3-2FFD-4DA3-B07E-9B2D5E384C55}
 		{75BB4C75-DE36-47B3-9910-10EA8E8973B7} = {DAF2D134-A7A2-4647-8B7B-3229688185C6}
 		{6FC44240-845D-405A-A7F8-0AC465E30703} = {A4442410-EF9F-43E5-AD76-5D5A6183C805}
 		{05569371-855C-4667-8228-20491337C431} = {A4442410-EF9F-43E5-AD76-5D5A6183C805}

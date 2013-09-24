@@ -10,7 +10,7 @@ namespace DeltaEngine.Physics2D.Tests
 		public void SetUp()
 		{
 			physics = Resolve<Physics>();
-			physics.Gravity = Point.UnitY;
+			physics.Gravity = Vector2D.UnitY;
 			body = physics.CreateRectangle(new Size(0.5f));
 		}
 
@@ -20,8 +20,8 @@ namespace DeltaEngine.Physics2D.Tests
 		[Test]
 		public void ChangeLinearVelocity()
 		{
-			body.LinearVelocity = new Point(5, -5);
-			Assert.AreEqual(new Point(5, -5), body.LinearVelocity);
+			body.LinearVelocity = new Vector2D(5, -5);
+			Assert.AreEqual(new Vector2D(5, -5), body.LinearVelocity);
 		}
 
 		[Test]
@@ -34,8 +34,8 @@ namespace DeltaEngine.Physics2D.Tests
 		[Test]
 		public void ChangePosition()
 		{
-			body.Position = Point.One;
-			Assert.AreEqual(Point.One, body.Position);
+			body.Position = Vector2D.One;
+			Assert.AreEqual(Vector2D.One, body.Position);
 		}
 
 		[Test]
@@ -62,9 +62,9 @@ namespace DeltaEngine.Physics2D.Tests
 		[Test]
 		public void ApplyLinearImpulse()
 		{
-			body.ApplyLinearImpulse(Point.Zero);
+			body.ApplyLinearImpulse(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(0.1f);
-			Assert.AreNotEqual(Point.Zero, body.Position);
+			Assert.AreNotEqual(Vector2D.Zero, body.Position);
 		}
 
 		[Test]
@@ -86,17 +86,17 @@ namespace DeltaEngine.Physics2D.Tests
 		[Test]
 		public void CreateEdgeFromTwoSinglePoints()
 		{
-			Point[] edgePoints = { Point.Zero, Point.Half };
-			var edge = physics.CreateEdge(Point.Zero, Point.Half);
-			Assert.AreEqual(edgePoints, edge.LineVertices);
+			Vector2D[] edges = { Vector2D.Zero, Vector2D.Half };
+			var edge = physics.CreateEdge(Vector2D.Zero, Vector2D.Half);
+			Assert.AreEqual(edges, edge.LineVertices);
 		}
 
 		[Test]
 		public void CreateEdgeFromPointArray()
 		{
-			Point[] edgePoints = { Point.Zero, Point.Half };
-			var edge = physics.CreateEdge(edgePoints);
-			Assert.AreEqual(edgePoints, edge.LineVertices);
+			Vector2D[] edges = { Vector2D.Zero, Vector2D.Half };
+			var edge = physics.CreateEdge(edges);
+			Assert.AreEqual(edges, edge.LineVertices);
 		}
 
 		[Test]
@@ -109,8 +109,8 @@ namespace DeltaEngine.Physics2D.Tests
 		[Test]
 		public void CreatePolygonFromPoints()
 		{
-			Point[] polyPoints = { Point.Zero, Point.Half, Point.One, Point.UnitX };
-			var polygon = physics.CreatePolygon(polyPoints);
+			Vector2D[] points = { Vector2D.Zero, Vector2D.Half, Vector2D.One, Vector2D.UnitX };
+			var polygon = physics.CreatePolygon(points);
 			Assert.IsNotEmpty(polygon.LineVertices);
 		}
 

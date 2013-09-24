@@ -1,39 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using DeltaEngine;
-using DeltaEngine.Content;
+using CreepyTowers.Creeps;
+using CreepyTowers.Levels;
+using CreepyTowers.Towers;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Cameras;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering3D.Cameras;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests
 {
 	public class CreepTests : TestWithMocksOrVisually
 	{
-		/*fix
 		[SetUp]
 		public void Initialize()
 		{
-			//window.ViewportPixelSize = new Size(1920, 1080);
-			
-			//camera =
-			//	new OrthoCamera(
-			//		new Size(ScreenSpace.Current.Viewport.Width * 6.0f,
-			//			ScreenSpace.Current.Viewport.Height * 6.0f), Vector.One * 6.0f);
-
-			//camera.Update();
-			//grid = new LevelGrid(20, 0.20f);
-			//new Game(Resolve<Window>(), Resolve<Device>()).GameMainMenu.Dispose();
-			//camera = Game.CameraAndGrid.Camera;
-			//grid = Game.CameraAndGrid.Grid;
+			game = new Game(Resolve<Window>(), Resolve<Device>());
+			grid = Game.CameraAndGrid.Grid;
 		}
 
 		private LevelGrid grid;
-		private Camera camera;
+		private Game game;
 
 		[Test]
 		public void CreateClothCreep()
@@ -46,13 +35,66 @@ namespace CreepyTowers.Tests
 		{
 			var position = grid.PropertyMatrix[2, 3].MidPoint;
 			var creep = new Creep(position, Creep.CreepType.Cloth, Names.CreepCottonMummy);
+			AddDefaultMovementComponent(creep);
+			return creep;
+		}
+
+		private static void AddDefaultMovementComponent(Creep creep)
+		{
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.0f, 0.0f, 0.0f),
+				Velocity = new Vector3D(0.0f, 0.0f, 0.0f),
 				StartGridPos = new Tuple<int, int>(4, 0),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(1, 0) }
 			});
-			return creep;
+		}
+
+		[Test]
+		public void CreateIronCreep()
+		{
+			var creep = new Creep(Vector3D.Zero, Creep.CreepType.Iron, Names.CreepIronTyrannosaurusAxe);
+			AddDefaultMovementComponent(creep);
+			creep.Remove<MovementInGrid>();
+		}
+
+		[Test]
+		public void CreateGlassCreep()
+		{
+			var creep = new Creep(Vector3D.Zero, Creep.CreepType.Glass, Names.CreepGlass);
+			AddDefaultMovementComponent(creep);
+			creep.Remove<MovementInGrid>();
+		}
+
+		[Test]
+		public void CreateSandCreep()
+		{
+			var creep = new Creep(Vector3D.Zero, Creep.CreepType.Sand, Names.CreepsSandSandy);
+			AddDefaultMovementComponent(creep);
+			creep.Remove<MovementInGrid>();
+		}
+
+		[Test]
+		public void CreatePaperCreep()
+		{
+			var creep = new Creep(Vector3D.Zero, Creep.CreepType.Paper, Names.CreepPaperPaperplane);
+			AddDefaultMovementComponent(creep);
+			creep.Remove<MovementInGrid>();
+		}
+
+		[Test]
+		public void CreateWoodCreep()
+		{
+			var creep = new Creep(Vector3D.Zero, Creep.CreepType.Wood, Names.CreepsWoodScarecrow);
+			AddDefaultMovementComponent(creep);
+			creep.Remove<MovementInGrid>();
+		}
+
+		[Test]
+		public void CreatePlasticCreep()
+		{
+			var creep = new Creep(Vector3D.Zero, Creep.CreepType.Plastic, Names.CreepPlasticBottledog);
+			AddDefaultMovementComponent(creep);
+			creep.Remove<MovementInGrid>();
 		}
 
 		[Test]
@@ -72,7 +114,7 @@ namespace CreepyTowers.Tests
 
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(1.0f, 0.0f, 0.0f),
+				Velocity = new Vector3D(1.0f, 0.0f, 0.0f),
 				StartGridPos = new Tuple<int, int>(0, 0),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(14, 0) }
 			});
@@ -88,7 +130,7 @@ namespace CreepyTowers.Tests
 			creep.Position = grid.PropertyMatrix[4, 0].MidPoint;
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(1.0f, 0.0f, 0.0f),
+				Velocity = new Vector3D(1.0f, 0.0f, 0.0f),
 				StartGridPos = new Tuple<int, int>(4, 0),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(1, 0) }
 			});
@@ -102,7 +144,7 @@ namespace CreepyTowers.Tests
 			creep.Position = grid.PropertyMatrix[0, 10].MidPoint;
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.0f, 0.0f, 0.5f),
+				Velocity = new Vector3D(0.0f, 0.0f, 0.5f),
 				StartGridPos = new Tuple<int, int>(0, 0),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(0, 16) }
 			});
@@ -119,7 +161,7 @@ namespace CreepyTowers.Tests
 
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.0f, 0.0f, 1.0f),
+				Velocity = new Vector3D(0.0f, 0.0f, 1.0f),
 				StartGridPos = new Tuple<int, int>(0, 10),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(0, 4) }
 			});
@@ -135,7 +177,7 @@ namespace CreepyTowers.Tests
 
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.5f, 0.0f, 0.5f),
+				Velocity = new Vector3D(0.5f, 0.0f, 0.5f),
 				StartGridPos = new Tuple<int, int>(15, 2),
 				FinalGridPos = new Tuple<int, int>(4, 19),
 				Waypoints =
@@ -164,7 +206,7 @@ namespace CreepyTowers.Tests
 
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.5f, 0.0f, 0.5f),
+				Velocity = new Vector3D(0.5f, 0.0f, 0.5f),
 				StartGridPos = new Tuple<int, int>(15, 2),
 				FinalGridPos = new Tuple<int, int>(11, 2),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(11, 2) }
@@ -173,7 +215,8 @@ namespace CreepyTowers.Tests
 			Assert.AreEqual(grid.PropertyMatrix[15, 2].MidPoint, creep.Position);
 			AdvanceTimeAndUpdateEntities(3.0f);
 			var data = creep.Get<MovementInGrid.MovementData>();
-			Assert.AreEqual(grid.PropertyMatrix[data.FinalGridPos.Item1, data.FinalGridPos.Item2].MidPoint,
+			Assert.AreEqual(
+				grid.PropertyMatrix[data.FinalGridPos.Item1, data.FinalGridPos.Item2].MidPoint,
 				creep.Position);
 			Assert.IsFalse(creep.IsActive);
 		}
@@ -187,7 +230,7 @@ namespace CreepyTowers.Tests
 
 			creep.Add(new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.5f, 0.0f, 0.5f),
+				Velocity = new Vector3D(0.5f, 0.0f, 0.5f),
 				StartGridPos = new Tuple<int, int>(15, 2),
 				FinalGridPos = new Tuple<int, int>(11, 2),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(11, 2) }
@@ -204,51 +247,73 @@ namespace CreepyTowers.Tests
 		{
 			var creep = CreateDefaultCreep();
 			//creep.ReceiveAttack(Tower.TowerType.Acid, creep.Get<CreepProperties>().MaxHp);
-			var creep2DPoint = camera.WorldToScreenPoint(creep.Position);
+			var creep2DPoint = Camera.Current.WorldToScreenPoint(creep.Position);
 			var drawArea = Rectangle.FromCenter(creep2DPoint, new Size(0.07f));
 			//new SpriteSheetAnimation("SpriteDyingCloud", drawArea);
 		}
 
-		//[Test]
-		//public void RenderFadingLogo()
-		//{
-		//	var image = ContentLoader.Load<Image>(Names.ComicStripDragon);
-		//	var button = new InteractiveButton(CreateTheme(image), new Rectangle(Point.Half, Size.Half));
-		//	//var sprite = new Sprite(new Material(image), Rectangle.One);
-		//	button.Add(new Transition.Duration(2));
-		//	button.Start<Transition>().Add(new Transition.FadingColor(Color.Green));
-		//}
+		[Test]
+		public void CheckForDamageWhenStateIsBurst()
+		{
+			var creep = CreateDefaultCreep();
+			creep.Add(new CreepProperties
+			{
+				MaxHp = 100.0f,
+				CurrentHp = 100.0f,
+				Resistance = 1.0f,
+				CreepType = Creep.CreepType.Cloth,
+				GoldReward = 20,
+				Speed = 2.0f,
+				Name = Names.CreepCottonMummy,
+			});
+			creep.state.Burst = true;
+			creep.UpdateStateTimersAndTimeBasedDamage();
+			AdvanceTimeAndUpdateEntities(2.0f);
+			Assert.Less(creep.Get<CreepProperties>().CurrentHp, creep.Get<CreepProperties>().MaxHp);
+		}
 
-		//private static Theme CreateTheme(Image buttonImage)
-		//{
-		//	var appearance = new Theme.Appearance(buttonImage);
-		//	return new Theme
-		//	{
-		//		Button = appearance,
-		//		ButtonDisabled = new Theme.Appearance(buttonImage, Color.Gray),
-		//		ButtonMouseover = appearance,
-		//		ButtonPressed = appearance,
-		//		Font = new Font(Names.FontChelseaMarket14)
-		//	};
-		//}
+		[Test]
+		public void CheckWhenShatteredCreepIsCloseToAnotherCreep()
+		{
+			var glassCreep = new Creep(Vector3D.Zero, Creep.CreepType.Glass, Names.CreepGlass);
+			var clothCreep = new Creep(new Vector3D(1.0f, 1.0f, 0.0f), Creep.CreepType.Cloth,
+				Names.CreepCottonMummy);
+			clothCreep.Add(new CreepProperties
+			{
+				MaxHp = 100.0f,
+				CurrentHp = 100.0f,
+				Resistance = 1.0f,
+				CreepType = Creep.CreepType.Cloth,
+				GoldReward = 20,
+				Speed = 2.0f,
+				Name = Names.CreepCottonMummy,
+			});
+			AddDefaultMovementComponent(glassCreep);
+			AddDefaultMovementComponent(clothCreep);
+			glassCreep.Shatter();
+			Assert.Less(clothCreep.Get<CreepProperties>().CurrentHp, clothCreep.Get<CreepProperties>().MaxHp);
+		}
 
-		//	[Test, Ignore]
-		//	public void ShowHitEffectOnCreep()
-		//	{
-		//		var creep = new Creep(Point.Half, Creep.CreepType.Sand);
-		//		var window = Resolve<ScreenSpace>().Window;
-		//		window.ViewportPixelSize = new Size(900.0f);
-		//		if (resolver.GetType() == typeof(MockResolver))
-		//		{
-		//			creep.ReceiveAttack(Tower.TowerType.Water, 0);
-		//			AdvanceTimeAndUpdateEntities();
-		//			Assert.AreEqual(Color.Red, creep.WalkAnimation.Color);
-		//			return;
-		//		}
-
-		//		new Command(() => { creep.ReceiveAttack(Tower.TowerType.Water, 0); }).Add(
-		//			new MouseButtonTrigger(MouseButton.Left, State.Releasing));
-		//	}
-		 */
+		[Test]
+		public void CheckWhenShatteredCreepIsFarFromOtherCreeps()
+		{
+			var glassCreep = new Creep(Vector3D.Zero, Creep.CreepType.Glass, Names.CreepGlass);
+			var clothCreep = new Creep(new Vector3D(3.0f, 3.0f, 0.0f), Creep.CreepType.Cloth,
+				Names.CreepCottonMummy);
+			clothCreep.Add(new CreepProperties
+			{
+				MaxHp = 100.0f,
+				CurrentHp = 100.0f,
+				Resistance = 1.0f,
+				CreepType = Creep.CreepType.Cloth,
+				GoldReward = 20,
+				Speed = 2.0f,
+				Name = Names.CreepCottonMummy,
+			});
+			AddDefaultMovementComponent(glassCreep);
+			AddDefaultMovementComponent(clothCreep);
+			glassCreep.Shatter();
+			Assert.AreEqual(clothCreep.Get<CreepProperties>().CurrentHp, clothCreep.Get<CreepProperties>().MaxHp);
+		}
 	}
 }

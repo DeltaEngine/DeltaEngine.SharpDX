@@ -9,13 +9,13 @@ namespace DeltaEngine.Input
 	{
 		protected TouchMessage() {}
 
-		public TouchMessage(Point[] positions, bool[] pressedTouches)
+		public TouchMessage(Vector2D[] positions, bool[] pressedTouches)
 		{
 			Positions = positions;
 			PressedTouches = pressedTouches;
 		}
 
-		public Point[] Positions { get; private set; }
+		public Vector2D[] Positions { get; private set; }
 		public bool[] PressedTouches { get; private set; }
 
 		public const int MaxNumberOfTouches = 10;

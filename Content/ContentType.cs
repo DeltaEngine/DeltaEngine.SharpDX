@@ -61,7 +61,7 @@
 		/// .DeltaParticleEmitter represent the content of a particle effect system. Use the Particle
 		/// Effect Editor to edit particle effects.
 		/// </summary>
-		Particle2DEmitter = 12,
+		ParticleEmitter = 12,
 		/// <summary>
 		/// Delta Spritefont used in the eninge! TTF font when used in sending from editor to server.
 		/// </summary>

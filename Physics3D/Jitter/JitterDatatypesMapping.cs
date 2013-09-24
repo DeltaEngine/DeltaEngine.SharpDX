@@ -36,7 +36,7 @@ namespace DeltaEngine.Physics3D.Jitter
 			result[10] = matrix.M33;
 		}
 
-		public static JVector Convert(ref Vector vector)
+		public static JVector Convert(ref Vector3D vector)
 		{
 			JVector result;
 			result.X = vector.X;
@@ -45,14 +45,14 @@ namespace DeltaEngine.Physics3D.Jitter
 			return result;
 		}
 
-		public static void Convert(ref Vector vector, out JVector result)
+		public static void Convert(ref Vector3D vector, out JVector result)
 		{
 			result.X = vector.X;
 			result.Y = vector.Y;
 			result.Z = vector.Z;
 		}
 
-		public static JVector ConvertSlow(Vector vector)
+		public static JVector ConvertSlow(Vector3D vector)
 		{
 			JVector result;
 			result.X = vector.X;
@@ -61,14 +61,14 @@ namespace DeltaEngine.Physics3D.Jitter
 			return result;
 		}
 
-		public static void Convert(JVector vector, ref Vector result)
+		public static void Convert(JVector vector, ref Vector3D result)
 		{
 			result.X = vector.X;
 			result.Y = vector.Y;
 			result.Z = vector.Z;
 		}
 
-		public static void Convert(ref JVector vector, ref Vector result)
+		public static void Convert(ref JVector vector, ref Vector3D result)
 		{
 			result.X = vector.X;
 			result.Y = vector.Y;

@@ -1,7 +1,7 @@
 ﻿using DeltaEngine.Datatypes;
 using DeltaEngine.Physics2D.Farseer;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Physics2D.Tests
@@ -25,8 +25,8 @@ namespace DeltaEngine.Physics2D.Tests
 
 		private void CreateFloor()
 		{
-			var startPoint = new Point(0.0f, 0.7f);
-			var endPoint = new Point(1.0f, 0.65f);
+			var startPoint = new Vector2D(0.0f, 0.7f);
+			var endPoint = new Vector2D(1.0f, 0.65f);
 			new Line2D(startPoint, endPoint, Color.Blue);
 			physics.CreateEdge(startPoint, endPoint);
 		}
@@ -35,13 +35,13 @@ namespace DeltaEngine.Physics2D.Tests
 		{
 			PhysicsBody physicsCircle = physics.CreateCircle(Radius);
 			physicsCircle.Position = Center;
-			physicsCircle.LinearVelocity = new Point(0.1f, 0.0f);
+			physicsCircle.LinearVelocity = new Vector2D(0.1f, 0.0f);
 			physicsCircle.Restitution = 0.85f;
 			physicsCircle.Friction = 0.9f;
 			new Ellipse(Center, Radius, Radius, Color.White).AffixToPhysics(physicsCircle);
 		}
 
 		private const float Radius = 0.02f;
-		private static readonly Point Center = Point.Half;
+		private static readonly Vector2D Center = Vector2D.Half;
 	}
 }

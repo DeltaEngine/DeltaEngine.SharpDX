@@ -6,7 +6,7 @@ namespace DeltaEngine.Commands
 	/// Whenever a trigger condition is matched it is invoked and will fire the action of the Command
 	/// attached, for example a KeyTrigger will fire when the key is the specified key state.
 	/// </summary>
-	public abstract class Trigger : Entity, Updateable
+	public abstract class Trigger : Entity, Updateable, Pauseable
 	{
 		protected Trigger()
 		{
@@ -19,5 +19,7 @@ namespace DeltaEngine.Commands
 		{
 			WasInvoked = false;
 		}
+
+		public bool IsPauseable { get { return false; } }
 	}
 }

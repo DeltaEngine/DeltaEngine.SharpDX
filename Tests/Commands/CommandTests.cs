@@ -1,9 +1,10 @@
 ﻿using System;
 using DeltaEngine.Commands;
+using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Mocks;
-using DeltaEngine.Platforms.Mocks;
+using DeltaEngine.Tests.Content;
 using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Commands
@@ -13,18 +14,17 @@ namespace DeltaEngine.Tests.Commands
 		[SetUp]
 		public void InitializeResolver()
 		{
-			resolver = new MockResolver();
+			ContentLoader.Use<FakeContentLoader>();
 			entities = new MockEntitiesRunner(typeof(MockUpdateBehavior));
 		}
 
-		private MockResolver resolver;
 		private MockEntitiesRunner entities;
 
 		[TearDown]
 		public void RunTestAndDisposeResolverWhenDone()
 		{
 			entities.Dispose();
-			resolver.Dispose();
+			ContentLoader.DisposeIfInitialized();
 		}
 
 		[Test]
@@ -84,7 +84,7 @@ namespace DeltaEngine.Tests.Commands
 			var trigger = new MockTrigger();
 			Command.Register(CommandName, trigger);
 			actionPerformed = false;
-			new Command(CommandName, delegate(Point point) { actionPerformed = true; });
+			new Command(CommandName, delegate(Vector2D point) { actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
 

@@ -15,11 +15,11 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			new QuadraticScreenSpace(window);
 			window.ViewportPixelSize = new Size(100, 100);
-			Assert.AreEqual(Point.Zero, ScreenSpace.Current.TopLeft);
-			Assert.AreEqual(Point.One, ScreenSpace.Current.BottomRight);
+			Assert.AreEqual(Vector2D.Zero, ScreenSpace.Current.TopLeft);
+			Assert.AreEqual(Vector2D.One, ScreenSpace.Current.BottomRight);
 			Assert.AreEqual(Rectangle.One, ScreenSpace.Current.Viewport);
-			Assert.AreEqual(Point.One, ScreenSpace.Current.FromPixelSpace(new Point(100, 100)));
-			Assert.AreEqual(Point.Half, ScreenSpace.Current.FromPixelSpace(new Point(50, 50)));
+			Assert.AreEqual(Vector2D.One, ScreenSpace.Current.FromPixelSpace(new Vector2D(100, 100)));
+			Assert.AreEqual(Vector2D.Half, ScreenSpace.Current.FromPixelSpace(new Vector2D(50, 50)));
 			Assert.AreEqual(new Rectangle(0.1f, 0.1f, 0.8f, 0.8f),
 				ScreenSpace.Current.FromPixelSpace(new Rectangle(10, 10, 80, 80)));
 		}
@@ -31,9 +31,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(99, 199);
 			var screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(new Point(0.2512563f, 0), screen.TopLeft);
-			Assert.AreEqual(new Point(0.7487437f, 1), screen.BottomRight);
-			Assert.AreEqual(screen.BottomRight, screen.FromPixelSpace(new Point(99, 199)));
+			Assert.AreEqual(new Vector2D(0.2512563f, 0), screen.TopLeft);
+			Assert.AreEqual(new Vector2D(0.7487437f, 1), screen.BottomRight);
+			Assert.AreEqual(screen.BottomRight, screen.FromPixelSpace(new Vector2D(99, 199)));
 		}
 
 		[Test]
@@ -46,8 +46,8 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			Assert.AreEqual(1, screen.Right);
 			Assert.AreEqual(0.875f, screen.Bottom);
 			Assert.AreEqual(new Rectangle(0, 0.125f, 1, 0.75f), screen.Viewport);
-			Assert.AreEqual(new Point(1f, 0.875f), screen.FromPixelSpace(new Point(100, 75)));
-			Assert.AreEqual(Point.Half, screen.FromPixelSpace(new Point(50, 37.5f)));
+			Assert.AreEqual(new Vector2D(1f, 0.875f), screen.FromPixelSpace(new Vector2D(100, 75)));
+			Assert.AreEqual(Vector2D.Half, screen.FromPixelSpace(new Vector2D(50, 37.5f)));
 			Assert.AreEqual(new Size(0.1f, 0.1f), screen.FromPixelSpace(new Size(10, 10)));
 		}
 
@@ -56,11 +56,11 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(75, 100);
 			var screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(new Point(0.125f, 0), screen.TopLeft);
-			Assert.AreEqual(new Point(0.875f, 1), screen.BottomRight);
+			Assert.AreEqual(new Vector2D(0.125f, 0), screen.TopLeft);
+			Assert.AreEqual(new Vector2D(0.875f, 1), screen.BottomRight);
 			Assert.AreEqual(new Rectangle(0.125f, 0, 0.75f, 1), screen.Viewport);
-			Assert.AreEqual(new Point(0.875f, 1f), screen.FromPixelSpace(new Point(75, 100)));
-			Assert.AreEqual(Point.Half, screen.FromPixelSpace(new Point(37.5f, 50)));
+			Assert.AreEqual(new Vector2D(0.875f, 1f), screen.FromPixelSpace(new Vector2D(75, 100)));
+			Assert.AreEqual(Vector2D.Half, screen.FromPixelSpace(new Vector2D(37.5f, 50)));
 			Assert.AreEqual(new Size(0.1f, 0.1f), screen.FromPixelSpace(new Size(10, 10)));
 		}
 
@@ -69,9 +69,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(100, 100);
 			var screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(new Point(100, 100), screen.ToPixelSpace(Point.One));
-			Assert.AreEqual(Point.Zero, screen.ToPixelSpace(Point.Zero));
-			Assert.AreEqual(new Point(50, 50), screen.ToPixelSpace(Point.Half));
+			Assert.AreEqual(new Vector2D(100, 100), screen.ToPixelSpace(Vector2D.One));
+			Assert.AreEqual(Vector2D.Zero, screen.ToPixelSpace(Vector2D.Zero));
+			Assert.AreEqual(new Vector2D(50, 50), screen.ToPixelSpace(Vector2D.Half));
 		}
 
 		[Test]
@@ -79,12 +79,12 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(99, 199);
 			var screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(new Point(149, 199), screen.ToPixelSpace(Point.One));
-			Assert.AreEqual(new Point(-50, 0), screen.ToPixelSpace(Point.Zero));
-			Assert.AreEqual(new Point(49.5f, 99.5f), screen.ToPixelSpace(Point.Half));
-			Assert.AreEqual(new Point(50, 100), screen.ToPixelSpaceRounded(Point.Half));
-			Assert.AreEqual(new Point(199, 199),
-				screen.ToPixelSpaceRounded(Point.One) - screen.ToPixelSpaceRounded(Point.Zero));
+			Assert.AreEqual(new Vector2D(149, 199), screen.ToPixelSpace(Vector2D.One));
+			Assert.AreEqual(new Vector2D(-50, 0), screen.ToPixelSpace(Vector2D.Zero));
+			Assert.AreEqual(new Vector2D(49.5f, 99.5f), screen.ToPixelSpace(Vector2D.Half));
+			Assert.AreEqual(new Vector2D(50, 100), screen.ToPixelSpaceRounded(Vector2D.Half));
+			Assert.AreEqual(new Vector2D(199, 199),
+				screen.ToPixelSpaceRounded(Vector2D.One) - screen.ToPixelSpaceRounded(Vector2D.Zero));
 		}
 
 		[Test]
@@ -92,9 +92,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(100, 75);
 			var screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(new Point(100, 75), screen.ToPixelSpace(new Point(1f, 0.875f)));
-			Assert.AreEqual(Point.Zero, screen.ToPixelSpace(new Point(0, 0.125f)));
-			Assert.AreEqual(new Point(50, 37.5f), screen.ToPixelSpace(Point.Half));
+			Assert.AreEqual(new Vector2D(100, 75), screen.ToPixelSpace(new Vector2D(1f, 0.875f)));
+			Assert.AreEqual(Vector2D.Zero, screen.ToPixelSpace(new Vector2D(0, 0.125f)));
+			Assert.AreEqual(new Vector2D(50, 37.5f), screen.ToPixelSpace(Vector2D.Half));
 			Assert.AreEqual(new Size(10, 20), screen.ToPixelSpace(new Size(0.1f, 0.2f)));
 			Assert.AreEqual(new Rectangle(20, 7.5f, 60, 60),
 				screen.ToPixelSpace(new Rectangle(0.2f, 0.2f, 0.6f, 0.6f)));
@@ -105,9 +105,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(75, 100);
 			var screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(new Point(75, 100), screen.ToPixelSpace(new Point(0.875f, 1f)));
-			Assert.AreEqual(Point.Zero, screen.ToPixelSpace(new Point(0.125f, 0)));
-			Assert.AreEqual(new Point(37.5f, 50), screen.ToPixelSpace(Point.Half));
+			Assert.AreEqual(new Vector2D(75, 100), screen.ToPixelSpace(new Vector2D(0.875f, 1f)));
+			Assert.AreEqual(Vector2D.Zero, screen.ToPixelSpace(new Vector2D(0.125f, 0)));
+			Assert.AreEqual(new Vector2D(37.5f, 50), screen.ToPixelSpace(Vector2D.Half));
 			Assert.AreEqual(new Size(10, 20), screen.ToPixelSpace(new Size(0.1f, 0.2f)));
 		}
 
@@ -116,13 +116,13 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(1920, 1080);
 			var screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(new Point(1680, 1500), screen.ToPixelSpace(new Point(0.875f, 1f)));
-			var somePoint = screen.FromPixelSpace(new Point(324, 483));
-			var somePointPlusOne = screen.FromPixelSpace(new Point(325, 483));
+			Assert.AreEqual(new Vector2D(1680, 1500), screen.ToPixelSpace(new Vector2D(0.875f, 1f)));
+			var somePoint = screen.FromPixelSpace(new Vector2D(324, 483));
+			var somePointPlusOne = screen.FromPixelSpace(new Vector2D(325, 483));
 			Assert.IsFalse(somePoint.X.IsNearlyEqual(somePointPlusOne.X),
 				somePoint + " should not be nearly equal to " + somePointPlusOne);
-			Assert.AreEqual(new Point(324, 483), screen.ToPixelSpaceRounded(somePoint));
-			Assert.AreEqual(new Point(325, 483), screen.ToPixelSpaceRounded(somePointPlusOne));
+			Assert.AreEqual(new Vector2D(324, 483), screen.ToPixelSpaceRounded(somePoint));
+			Assert.AreEqual(new Vector2D(325, 483), screen.ToPixelSpaceRounded(somePointPlusOne));
 		}
 
 		[Test]
@@ -130,8 +130,8 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			window.ViewportPixelSize = new Size(800, 600);
 			ScreenSpace screen = new QuadraticScreenSpace(window);
-			Assert.AreEqual(screen.TopLeft, screen.GetInnerPoint(Point.Zero));
-			Assert.AreEqual(screen.BottomRight, screen.GetInnerPoint(Point.One));
+			Assert.AreEqual(screen.TopLeft, screen.GetInnerPosition(Vector2D.Zero));
+			Assert.AreEqual(screen.BottomRight, screen.GetInnerPosition(Vector2D.One));
 		}
 
 		[Test]
@@ -148,6 +148,7 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		[Test]
 		public void TestAspectRatio()
 		{
+			new QuadraticScreenSpace(window);
 			window.ViewportPixelSize = new Size(800, 800);
 			Assert.AreEqual(1f, ScreenSpace.Current.AspectRatio);
 			window.ViewportPixelSize = new Size(1920, 1080);

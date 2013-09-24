@@ -1,4 +1,4 @@
-﻿using DeltaEngine.Rendering.Cameras;
+﻿using DeltaEngine.Rendering3D.Cameras;
 
 namespace DeltaEngine.Platforms
 {

@@ -32,7 +32,7 @@ namespace CreepyTowers.Tests
 		[Test]
 		public void CheckCreepCreation()
 		{
-			var creep = manager.CreateCreep(Vector.Zero, Names.CreepCottonMummy, MovementData());
+			var creep = manager.CreateCreep(Vector3D.Zero, Names.CreepCottonMummy, MovementData());
 			Assert.AreEqual(1, EntitiesRunner.Current.GetEntitiesOfType<Creep>().Count);
 			Assert.AreEqual(Creep.CreepType.Cloth, creep.Get<CreepProperties>().CreepType);
 		}
@@ -41,7 +41,7 @@ namespace CreepyTowers.Tests
 		{
 			return new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.0f, 0.0f, 0.0f),
+				Velocity = new Vector3D(0.0f, 0.0f, 0.0f),
 				StartGridPos = new Tuple<int, int>(11, 8),
 				FinalGridPos = new Tuple<int, int>(11, 18),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(11, 18) }
@@ -51,7 +51,7 @@ namespace CreepyTowers.Tests
 		[Test]
 		public void CheckTowerCreation()
 		{
-			manager.CreateTower(Vector.Zero, Tower.TowerType.Water, Names.TowerWaterRangedWatersprayHigh);
+			manager.CreateTower(Vector3D.Zero, Tower.TowerType.Water, Names.TowerWaterRangedWaterspray);
 			Assert.AreEqual(1, EntitiesRunner.Current.GetEntitiesOfType<Tower>().Count);
 			Assert.AreEqual(Tower.TowerType.Water,
 				EntitiesRunner.Current.GetEntitiesOfType<Tower>()[0].Get<TowerProperties>().TowerType);
@@ -60,8 +60,8 @@ namespace CreepyTowers.Tests
 		[Test]
 		public void ClearAllData()
 		{
-			var creep = manager.CreateCreep(Vector.Zero, Names.CreepCottonMummy, MovementData());
-			manager.CreateTower(Vector.Zero, Tower.TowerType.Water, Names.TowerWaterRangedWatersprayHigh);
+			var creep = manager.CreateCreep(Vector3D.Zero, Names.CreepCottonMummy, MovementData());
+			manager.CreateTower(Vector3D.Zero, Tower.TowerType.Water, Names.TowerWaterRangedWaterspray);
 			manager.Dispose();
 			Assert.AreEqual(0, EntitiesRunner.Current.GetEntitiesOfType<Creep>().Count);
 			Assert.AreEqual(0, EntitiesRunner.Current.GetEntitiesOfType<Tower>().Count);
@@ -74,7 +74,7 @@ namespace CreepyTowers.Tests
 			var gridProp = Game.CameraAndGrid.Grid.PropertyMatrix;
 			manager.CreateCreep(gridProp[2, 2].MidPoint, Names.CreepCottonMummy, MovementData());
 			manager.CreateTower(gridProp[2, 4].MidPoint, Tower.TowerType.Water,
-				Names.TowerWaterRangedWatersprayHigh);
+				Names.TowerWaterRangedWaterspray);
 			var towerList = EntitiesRunner.Current.GetEntitiesOfType<Tower>();
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			var distanceBetweenCreepAndTower = (towerList[0].Position - creepList[0].Position).Length;
@@ -92,7 +92,7 @@ namespace CreepyTowers.Tests
 			var gridProp = Game.CameraAndGrid.Grid.PropertyMatrix;
 			manager.CreateCreep(gridProp[2, 2].MidPoint, Names.CreepCottonMummy, MovementData());
 			manager.CreateTower(gridProp[2, 10].MidPoint, Tower.TowerType.Water,
-				Names.TowerWaterRangedWatersprayHigh);
+				Names.TowerWaterRangedWaterspray);
 			var towerList = EntitiesRunner.Current.GetEntitiesOfType<Tower>();
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			var distanceBetweenCreepAndTower = (towerList[0].Position - creepList[0].Position).Length;
@@ -109,7 +109,7 @@ namespace CreepyTowers.Tests
 			var gridProp = Game.CameraAndGrid.Grid.PropertyMatrix;
 			var movementData = new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.0f, 0.0f, 0.0f),
+				Velocity = new Vector3D(0.0f, 0.0f, 0.0f),
 				StartGridPos = new Tuple<int, int>(16, 0),
 				FinalGridPos = new Tuple<int, int>(16, 0),
 				Waypoints = new List<Tuple<int, int>>()

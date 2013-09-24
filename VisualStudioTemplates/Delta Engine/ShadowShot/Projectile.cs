@@ -4,20 +4,20 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering.Sprites;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
 	public class Projectile : Sprite, IDisposable
 	{
-		public Projectile(Material projectileMaterial, Point centerPoint, Rectangle borders) : 
+		public Projectile(Material projectileMaterial, Vector2D centerPoint, Rectangle borders) : 
 			base(projectileMaterial, Rectangle.FromCenter(centerPoint, ProjectileSize))
 		{
 			this.borders = borders;
 			RenderLayer = (int)Constants.RenderLayer.Rockets;
 			Add(new SimplePhysics.Data {
-				Gravity = Point.Zero,
-				Velocity = new Point(0.0f, -1.0f),
+				Gravity = Vector2D.Zero,
+				Velocity = new Vector2D(0.0f, -1.0f),
 			});
 			Start<MovementHandler>();
 		}
@@ -42,7 +42,7 @@ namespace $safeprojectname$
 					projectile.Get<SimplePhysics.Data>().Velocity * Time.Delta, projectile.DrawArea.Size);
 			}
 
-			private bool ObjectHasCrossedScreenBorder(Rectangle objectArea, Rectangle borders)
+			private static bool ObjectHasCrossedScreenBorder(Rectangle objectArea, Rectangle borders)
 			{
 				return (objectArea.Right <= borders.Left || objectArea.Left >= borders.Right || 
 					objectArea.Bottom <= borders.Top || objectArea.Top >= borders.Bottom);

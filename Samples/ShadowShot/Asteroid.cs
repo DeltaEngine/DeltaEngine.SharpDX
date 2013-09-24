@@ -4,8 +4,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering.Sprites;
-using DeltaEngine.ScreenSpaces;
+using DeltaEngine.Rendering2D.Sprites;
 
 namespace ShadowShot
 {
@@ -18,8 +17,8 @@ namespace ShadowShot
 			RenderLayer = (int)Constants.RenderLayer.Asteroids;
 			Add(new SimplePhysics.Data
 			{
-				Gravity = Point.Zero,
-				Velocity = new Point(0.0f, 0.1f),
+				Gravity = Vector2D.Zero,
+				Velocity = new Vector2D(0.0f, 0.1f),
 				RotationSpeed = 30.0f
 			});
 			Start<SimplePhysics.Move>();

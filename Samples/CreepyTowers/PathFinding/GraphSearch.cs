@@ -8,7 +8,7 @@ namespace CreepyTowers.PathFinding
 	{
 		public abstract bool Search(Graph graph, int startNode, int targetNode);
 
-		public List<Point> GetPath()
+		public List<Vector2D> GetPath()
 		{
 			Stack<int> shortestPath = new Stack<int>();
 			int currentNode = targetNode;
@@ -24,10 +24,10 @@ namespace CreepyTowers.PathFinding
 		protected int targetNode;
 		protected int[] previousNode;
 
-		private List<Point> CalculateListToReturn(Stack<int> shortestPath, int currentNode)
+		private List<Vector2D> CalculateListToReturn(Stack<int> shortestPath, int currentNode)
 		{
 			shortestPath.Push(currentNode);
-			var list = new List<Point>();
+			var list = new List<Vector2D>();
 			foreach (var nodeIndex in shortestPath.ToArray())
 				list.Add(graph.Nodes[nodeIndex]);
 			return list;

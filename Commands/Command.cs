@@ -11,7 +11,7 @@ namespace DeltaEngine.Commands
 	/// Input Commands are loaded via the InputCommands.xml file, see InputCommands.cs for details.
 	/// You can also create your own commands, which will be executed whenever any trigger is invoked.
 	/// </summary>
-	public class Command : Entity, Updateable
+	public class Command : Entity, Updateable, Pauseable
 	{
 		static Command()
 		{
@@ -56,13 +56,13 @@ namespace DeltaEngine.Commands
 
 		public class CommandNameWasNotRegistered : Exception {}
 
-		public Command(string commandName, Action<Point> positionAction)
+		public Command(string commandName, Action<Vector2D> positionAction)
 			: this(positionAction)
 		{
 			triggers.AddRange(LoadTriggersForCommand(commandName));
 		}
 
-		public Command(string commandName, Action<Point, Point, bool> dragAction)
+		public Command(string commandName, Action<Vector2D, Vector2D, bool> dragAction)
 			: this(dragAction)
 		{
 			triggers.AddRange(LoadTriggersForCommand(commandName));
@@ -82,21 +82,21 @@ namespace DeltaEngine.Commands
 
 		private readonly Action action;
 
-		public Command(Action<Point> positionAction)
+		public Command(Action<Vector2D> positionAction)
 		{
 			this.positionAction = positionAction;
 			UpdatePriority = Priority.First;
 		}
 
-		private readonly Action<Point> positionAction;
+		private readonly Action<Vector2D> positionAction;
 
-		public Command(Action<Point, Point, bool> dragAction)
+		public Command(Action<Vector2D, Vector2D, bool> dragAction)
 		{
 			this.dragAction = dragAction;
 			UpdatePriority = Priority.First;
 		}
 
-		private readonly Action<Point, Point, bool> dragAction;
+		private readonly Action<Vector2D, Vector2D, bool> dragAction;
 
 		public Command(Action<float> zoomAction)
 		{
@@ -163,12 +163,14 @@ namespace DeltaEngine.Commands
 			else if (action != null)
 				action();
 			else if (positionAction != null)
-				positionAction(Point.Half);
+				positionAction(Vector2D.Half);
 			else if (dragAction != null)
-				dragAction(Point.Half, Point.Half, false);
+				dragAction(Vector2D.Half, Vector2D.Half, false);
 			else if (zoomAction != null)
 				zoomAction(0);
 		}
+
+		public bool IsPauseable { get { return false; } }
 
 		public List<Trigger> GetTriggers()
 		{

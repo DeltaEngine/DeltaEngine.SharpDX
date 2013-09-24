@@ -37,12 +37,12 @@ namespace $safeprojectname$
 
 		private void MoveLeft()
 		{
-			ship.Accelerate(new Point(-1.0f, 0.0f));
+			ship.Accelerate(new Vector2D(-1.0f, 0.0f));
 		}
 
 		private void MoveRight()
 		{
-			ship.Accelerate(new Point(1.0f, 0.0f));
+			ship.Accelerate(new Vector2D(1.0f, 0.0f));
 		}
 
 		private void StopMovement()
@@ -52,10 +52,7 @@ namespace $safeprojectname$
 
 		private void AddFireCommand()
 		{
-			var fireCommand = new Command(() => 
-			{
-				ship.Fire();
-			});
+			var fireCommand = new Command(() => ship.Fire());
 			fireCommand.Add(new KeyTrigger(Key.Space, State.Pressed)).Add(new KeyTrigger(Key.Space));
 			fireCommand.Add(new TouchPressTrigger());
 			fireCommand.Add(new MouseButtonTrigger(MouseButton.Left, State.Pressed)).Add(new 
@@ -71,7 +68,7 @@ namespace $safeprojectname$
 			mouseMoveCommand.Add(new TouchTapTrigger()).Add(new TouchPressTrigger(State.Pressed));
 		}
 
-		private void MouseControlledMovement(Point position)
+		private void MouseControlledMovement(Vector2D position)
 		{
 			var distance = position.X - ship.Center.X;
 			if (Math.Abs(distance) < 0.05f)

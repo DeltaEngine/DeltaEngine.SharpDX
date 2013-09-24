@@ -42,9 +42,9 @@ namespace Drench.Tests
 		public void GetAndSetColor()
 		{
 			board.SetColor(0, 0, Color.Red);
-			board.SetColor(Point.One, Color.Green);
+			board.SetColor(Vector2D.One, Color.Green);
 			Assert.AreEqual(Color.Red, board.GetColor(0, 0));
-			Assert.AreEqual(Color.Green, board.GetColor(Point.One));
+			Assert.AreEqual(Color.Green, board.GetColor(Vector2D.One));
 		}
 
 		[Test]

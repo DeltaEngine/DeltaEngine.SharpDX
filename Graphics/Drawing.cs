@@ -228,6 +228,7 @@ namespace DeltaEngine.Graphics
 		{
 			NumberOfDynamicDrawCallsThisFrame++;
 			NumberOfDynamicVerticesDrawnThisFrame += buffer.NumberOfActiveVertices;
+			buffer.DisposeUnusedBuffersFromPreviousFrame();
 			buffer.DrawAllTextureChunks();
 		}
 

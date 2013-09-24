@@ -1,4 +1,6 @@
-﻿namespace CreepyTowers.Simple2D
+﻿using CreepyTowers.Towers;
+
+namespace CreepyTowers.Simple2D
 {
 	public class PlasticCreepStateChanger2D
 	{

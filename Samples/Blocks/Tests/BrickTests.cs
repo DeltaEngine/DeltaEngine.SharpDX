@@ -30,45 +30,45 @@ namespace Blocks.Tests
 		[Test]
 		public void Constructor()
 		{
-			var brick = new Brick(material, Point.Half, displayMode);
-			Assert.AreEqual(Point.Half, brick.Offset);
+			var brick = new Brick(material, Vector2D.Half, displayMode);
+			Assert.AreEqual(Vector2D.Half, brick.Offset);
 		}
 
 		[Test]
 		public void Constants()
 		{
-			Assert.AreEqual(new Point(0.38f, 0.385f), Brick.OffsetLandscape);
+			Assert.AreEqual(new Vector2D(0.38f, 0.385f), Brick.OffsetLandscape);
 			Assert.AreEqual(0.02f, Brick.ZoomLandscape);
 		}
 
 		[Test]
 		public void Offset()
 		{
-			var brick = new Brick(material, Point.Zero, displayMode) { Offset = Point.Half };
-			Assert.AreEqual(Point.Half, brick.Offset);
+			var brick = new Brick(material, Vector2D.Zero, displayMode) { Offset = Vector2D.Half };
+			Assert.AreEqual(Vector2D.Half, brick.Offset);
 		}
 
 		[Test]
 		public void TopLeft()
 		{
-			var brick = new Brick(material, Point.Zero, displayMode) { TopLeftGridCoord = Point.Half };
-			Assert.AreEqual(Point.Half, brick.TopLeftGridCoord);
+			var brick = new Brick(material, Vector2D.Zero, displayMode) { TopLeftGridCoord = Vector2D.Half };
+			Assert.AreEqual(Vector2D.Half, brick.TopLeftGridCoord);
 		}
 
 		[Test]
 		public void Position()
 		{
-			var brick = new Brick(material, new Point(0.1f, 0.2f), displayMode)
+			var brick = new Brick(material, new Vector2D(0.1f, 0.2f), displayMode)
 			{
-				TopLeftGridCoord = new Point(0.4f, 0.8f)
+				TopLeftGridCoord = new Vector2D(0.4f, 0.8f)
 			};
-			Assert.AreEqual(new Point(0.5f, 1.0f), brick.Position);
+			Assert.AreEqual(new Vector2D(0.5f, 1.0f), brick.Position);
 		}
 
 		[Test]
 		public void RenderBrick()
 		{
-			var brick = new Brick(material, new Point(5, 5), displayMode);
+			var brick = new Brick(material, new Vector2D(5, 5), displayMode);
 			brick.UpdateDrawArea();
 		}
 
@@ -76,7 +76,7 @@ namespace Blocks.Tests
 		public void RenderBrickInPortrait()
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(600, 800);
-			var brick = new Brick(material, new Point(5, 5), displayMode);
+			var brick = new Brick(material, new Vector2D(5, 5), displayMode);
 			brick.UpdateDrawArea();
 		}
 	}

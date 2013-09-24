@@ -3,13 +3,13 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering.Particles;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace FountainApp
 {
 	public class ParticleFountain
 	{
-		public ParticleFountain(Point position)
+		public ParticleFountain(Vector2D position)
 		{
 			new Particle2DEmitter(EmitterData, position);
 			CreateCommands();
@@ -19,17 +19,20 @@ namespace FountainApp
 		{
 			get
 			{
-				return emitterData = new ParticleEmitterData
-				{
-					StartVelocity = new RangeGraph<Vector>(new Point(0.0f, -1.0f), new Point(0.5f, 0.1f)),
-					Acceleration = new RangeGraph<Vector>(new Point(0, 0.9f), new Point(0, 0.9f)),
-					LifeTime = 1.0f,
-					MaximumNumberOfParticles = 512,
-					Size = new RangeGraph<Size>(new Size(0.01f), new Size(0.015f)),
-					ParticleMaterial = new Material(Shader.Position2DColorUv, "Particle"),
-					SpawnInterval = 0.01f,
-					Color = new RangeGraph<Color>(Color.Red, Color.Orange),
-				};
+				return
+					emitterData =
+						new ParticleEmitterData
+						{
+							StartVelocity =
+								new RangeGraph<Vector3D>(new Vector2D(0.0f, -1.0f), new Vector2D(0.5f, 0.1f)),
+							Acceleration = new RangeGraph<Vector3D>(new Vector2D(0, 0.9f), new Vector2D(0, 0.9f)),
+							LifeTime = 1.0f,
+							MaximumNumberOfParticles = 512,
+							Size = new RangeGraph<Size>(new Size(0.01f), new Size(0.015f)),
+							ParticleMaterial = new Material(Shader.Position2DColorUv, "Particle"),
+							SpawnInterval = 0.01f,
+							Color = new RangeGraph<Color>(Color.Red, Color.Orange),
+						};
 			}
 		}
 
@@ -37,38 +40,34 @@ namespace FountainApp
 
 		private static void CreateCommands()
 		{
-			new Command(
-				() =>
-				{
-					emitterData.StartVelocity =
-						new RangeGraph<Vector>(emitterData.StartVelocity.Start + new Point(0, -0.3f) * Time.Delta,
-							emitterData.StartVelocity.End + new Point(0, -0.3f) * Time.Delta);
-				}).Add(
-					new KeyTrigger(Key.CursorUp, State.Pressed));
-			new Command(
-				() =>
-				{
-					emitterData.StartVelocity =
-						new RangeGraph<Vector>(emitterData.StartVelocity.Start + new Point(0, 0.3f) * Time.Delta,
-							emitterData.StartVelocity.End + new Point(0, 0.3f) * Time.Delta);
-				}).Add(
-					new KeyTrigger(Key.CursorDown, State.Pressed));
-			new Command(
-				() =>
-				{
-					emitterData.Acceleration =
-						new RangeGraph<Vector>(emitterData.Acceleration.Start + new Point(0, -0.3f) * Time.Delta,
-							emitterData.Acceleration.Start + new Point(0, -0.3f) * Time.Delta);
-				}).Add(
-					new KeyTrigger(Key.CursorLeft, State.Pressed));
-			new Command(
-				() =>
-				{
-					emitterData.Acceleration =
-						new RangeGraph<Vector>(emitterData.Acceleration.Start + new Point(0, 0.3f) * Time.Delta,
-							emitterData.Acceleration.Start + new Point(0, 0.3f) * Time.Delta);
-				}).Add(
-					new KeyTrigger(Key.CursorRight, State.Pressed));
+			new Command(() =>
+			{
+				emitterData.StartVelocity =
+					new RangeGraph<Vector3D>(
+						emitterData.StartVelocity.Start + new Vector2D(0, -0.3f) * Time.Delta,
+						emitterData.StartVelocity.End + new Vector2D(0, -0.3f) * Time.Delta);
+			}).Add(new KeyTrigger(Key.CursorUp, State.Pressed));
+			new Command(() =>
+			{
+				emitterData.StartVelocity =
+					new RangeGraph<Vector3D>(
+						emitterData.StartVelocity.Start + new Vector2D(0, 0.3f) * Time.Delta,
+						emitterData.StartVelocity.End + new Vector2D(0, 0.3f) * Time.Delta);
+			}).Add(new KeyTrigger(Key.CursorDown, State.Pressed));
+			new Command(() =>
+			{
+				emitterData.Acceleration =
+					new RangeGraph<Vector3D>(
+						emitterData.Acceleration.Start + new Vector2D(0, -0.3f) * Time.Delta,
+						emitterData.Acceleration.Start + new Vector2D(0, -0.3f) * Time.Delta);
+			}).Add(new KeyTrigger(Key.CursorLeft, State.Pressed));
+			new Command(() =>
+			{
+				emitterData.Acceleration =
+					new RangeGraph<Vector3D>(
+						emitterData.Acceleration.Start + new Vector2D(0, 0.3f) * Time.Delta,
+						emitterData.Acceleration.Start + new Vector2D(0, 0.3f) * Time.Delta);
+			}).Add(new KeyTrigger(Key.CursorRight, State.Pressed));
 		}
 	}
 }

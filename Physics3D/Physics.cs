@@ -27,11 +27,11 @@ namespace DeltaEngine.Physics3D
 		protected PhysicsBody groundBody;
 		protected readonly List<PhysicsJoint> joints = new List<PhysicsJoint>();
 		public bool IsMultithreaded { get; set; }
-		public Vector DefaultGravity { get; set; }
+		public Vector3D DefaultGravity { get; set; }
 
-		protected abstract void SetGravity(Vector gravity);
+		protected abstract void SetGravity(Vector3D gravity);
 		protected abstract double GetTotalPhysicsTime();
-		protected abstract PhysicsBody CreateBody(PhysicsShape shape, Vector initialPosition);
+		protected abstract PhysicsBody CreateBody(PhysicsShape shape, Vector3D initialPosition);
 		protected abstract void RemoveJoint(PhysicsJoint joint);
 		protected abstract void RemoveBody(PhysicsBody body);
 		public abstract RaycastResult DoRayCastIncludingGround(Ray ray);

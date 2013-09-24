@@ -1,0 +1,17 @@
+﻿using System.Collections.Generic;
+using CreepyTowers.Towers;
+
+namespace CreepyTowers.Creeps
+{
+	public class CreepProperties
+	{
+		public string Name { get; set; }
+		public float MaxHp { get; set; }
+		public float CurrentHp { get; set; }
+		public float Speed { get; set; }
+		public float Resistance { get; set; }
+		public Creep.CreepType CreepType { get; set; }
+		public int GoldReward { get; set; }
+		public Dictionary<Tower.TowerType, float> TypeDamageModifier;
+	}
+}

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace DeltaEngine.Scenes
@@ -20,12 +20,12 @@ namespace DeltaEngine.Scenes
 			: base("<GeneratedScene>")
 		{
 			this.buttonSize = buttonSize;
-			center = Point.Half;
+			center = Vector2D.Half;
 			this.renderLayer = renderLayer;
 		}
 
 		private Size buttonSize;
-		private Point center;
+		private Vector2D center;
 		private int renderLayer;
 
 		public Size ButtonSize
@@ -61,7 +61,7 @@ namespace DeltaEngine.Scenes
 			return top + button * (ButtonSize.Height + gapHeight);
 		}
 
-		public Point Center
+		public Vector2D Center
 		{
 			get { return center; }
 			set
@@ -97,7 +97,7 @@ namespace DeltaEngine.Scenes
 
 		private void AddButton(Theme theme, Action clicked, string text)
 		{
-			var button = new InteractiveButton(theme, new Rectangle(Point.Zero, ButtonSize), text);
+			var button = new InteractiveButton(theme, new Rectangle(Vector2D.Zero, ButtonSize), text);
 			button.Clicked += clicked;
 			buttons.Add(button);
 			Add(button);

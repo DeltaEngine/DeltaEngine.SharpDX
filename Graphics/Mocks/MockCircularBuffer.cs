@@ -9,6 +9,9 @@ namespace DeltaEngine.Graphics.Mocks
 			VerticesMode drawMode)
 			: base(device, shader, blendMode, drawMode) {}
 
+		protected override void DisposeNextFrame() {}
+		public override void DisposeUnusedBuffersFromPreviousFrame() { }
+
 		protected override void CreateNative()
 		{
 			IsCreated = true;
@@ -22,7 +25,16 @@ namespace DeltaEngine.Graphics.Mocks
 		}
 
 		protected override void AddDataNative<VertexType>(Chunk textureChunk, VertexType[] vertexData,
-			short[] indices, int numberOfVertices, int numberOfIndices) {}
+			short[] indices, int numberOfVertices, int numberOfIndices)
+		{
+			if (indices == null)
+				indices = ComputeIndices(textureChunk.NumberOfVertices, numberOfVertices);
+			else if (totalIndicesCount > 0)
+				indices = RemapIndices(indices, numberOfIndices);
+			CachedIndices = indices;
+		}
+
+		public short[] CachedIndices { get; private set; }
 
 		protected override void DrawChunk(Chunk chunk)
 		{
@@ -33,14 +45,21 @@ namespace DeltaEngine.Graphics.Mocks
 		{
 			get { return totalVertexOffsetInBytes; }
 		}
+
 		public int IndexOffset
 		{
 			get { return totalIndexOffsetInBytes; }
 		}
+
 		public bool HasDrawn { get; private set; }
+
 		public int MaxNumberOfVertices
 		{
 			get { return maxNumberOfVertices; }
 		}
+
+		public new bool UsesIndexBuffer { get { return base.UsesIndexBuffer; } }
+
+		public new bool UsesTexturing { get { return base.UsesTexturing; } }
 	}
 }

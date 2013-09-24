@@ -1,5 +1,4 @@
-﻿using System;
-using DeltaEngine.Core;
+﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.ScreenSpaces
@@ -24,9 +23,9 @@ namespace DeltaEngine.ScreenSpaces
 		}
 
 		private Size quadraticToPixelScale;
-		private Point quadraticToPixelOffset;
+		private Vector2D quadraticToPixelOffset;
 		private Size pixelToQuadraticScale;
-		private Point pixelToQuadraticOffset;
+		private Vector2D pixelToQuadraticOffset;
 
 		private Size CalculateToPixelScale()
 		{
@@ -38,9 +37,9 @@ namespace DeltaEngine.ScreenSpaces
 			return scale;
 		}
 
-		private Point CalculateToPixelOffset()
+		private Vector2D CalculateToPixelOffset()
 		{
-			Point offset = Point.Zero;
+			Vector2D offset = Vector2D.Zero;
 			if (viewportPixelSize.AspectRatio < 1.0f)
 				offset.X = (viewportPixelSize.Width - quadraticToPixelScale.Width) * 0.5f;
 			else
@@ -53,9 +52,9 @@ namespace DeltaEngine.ScreenSpaces
 			return 1.0f / quadraticToPixelScale;
 		}
 
-		private Point CalculateToQuadraticOffset()
+		private Vector2D CalculateToQuadraticOffset()
 		{
-			return new Point(-quadraticToPixelOffset.X / quadraticToPixelScale.Width,
+			return new Vector2D(-quadraticToPixelOffset.X / quadraticToPixelScale.Width,
 				-quadraticToPixelOffset.Y / quadraticToPixelScale.Height);
 		}
 
@@ -65,11 +64,10 @@ namespace DeltaEngine.ScreenSpaces
 			CalculateScalesAndOffsets();
 		}
 
-		public override Point FromPixelSpace(Point pixelPosition)
+		public override Vector2D FromPixelSpace(Vector2D pixelPosition)
 		{
-			var scaledPixelPosition = new Point(pixelToQuadraticScale.Width * pixelPosition.X,
-				pixelToQuadraticScale.Height * pixelPosition.Y);
-			return scaledPixelPosition + pixelToQuadraticOffset;
+			return new Vector2D(pixelToQuadraticScale.Width * pixelPosition.X + pixelToQuadraticOffset.X,
+				pixelToQuadraticScale.Height * pixelPosition.Y + pixelToQuadraticOffset.Y);
 		}
 
 		public override Size FromPixelSpace(Size pixelSize)
@@ -77,12 +75,11 @@ namespace DeltaEngine.ScreenSpaces
 			return pixelToQuadraticScale * pixelSize;
 		}
 
-		public override Point ToPixelSpace(Point currentScreenSpacePos)
+		public override Vector2D ToPixelSpace(Vector2D currentScreenSpacePosition)
 		{
-			var pixelPos =
-				new Point(quadraticToPixelScale.Width * currentScreenSpacePos.X + quadraticToPixelOffset.X,
-					quadraticToPixelScale.Height * currentScreenSpacePos.Y + quadraticToPixelOffset.Y);
-			return new Point((float)Math.Round(pixelPos.X, 2), (float)Math.Round(pixelPos.Y, 2));
+			return new Vector2D(
+				quadraticToPixelScale.Width * currentScreenSpacePosition.X + quadraticToPixelOffset.X,
+				quadraticToPixelScale.Height * currentScreenSpacePosition.Y + quadraticToPixelOffset.Y);
 		}
 
 		public override Size ToPixelSpace(Size currentScreenSpaceSize)
@@ -90,14 +87,14 @@ namespace DeltaEngine.ScreenSpaces
 			return quadraticToPixelScale * currentScreenSpaceSize;
 		}
 
-		public override Point TopLeft
+		public override Vector2D TopLeft
 		{
 			get { return pixelToQuadraticOffset; }
 		}
 
-		public override Point BottomRight
+		public override Vector2D BottomRight
 		{
-			get { return new Point(1 - pixelToQuadraticOffset.X, 1 - pixelToQuadraticOffset.Y); }
+			get { return new Vector2D(1 - pixelToQuadraticOffset.X, 1 - pixelToQuadraticOffset.Y); }
 		}
 
 		public override float Left
@@ -120,10 +117,10 @@ namespace DeltaEngine.ScreenSpaces
 			get { return 1 - pixelToQuadraticOffset.Y; }
 		}
 
-		public override Point GetInnerPoint(Point relativePoint)
+		public override Vector2D GetInnerPosition(Vector2D relativePosition)
 		{
-			return new Point(Left + (Right - Left) * relativePoint.X,
-				Top + (Bottom - Top) * relativePoint.Y);
+			return new Vector2D(Left + (Right - Left) * relativePosition.X,
+				Top + (Bottom - Top) * relativePosition.Y);
 		}
 	}
 }

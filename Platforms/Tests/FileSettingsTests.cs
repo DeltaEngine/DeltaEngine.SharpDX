@@ -52,5 +52,13 @@ namespace DeltaEngine.Platforms.Tests
 
 		private const string ModifiedPlayerName = "John Doe";
 		private const string ModifiedTwoLetterLanguageName = "de";
+
+		[Test]
+		public void ChangeFileSettings()
+		{
+			fileSettings.StartInFullscreen = true;
+			Assert.AreEqual(true, fileSettings.StartInFullscreen);
+			fileSettings.StartInFullscreen = false;
+		}
 	}
 }

@@ -2,15 +2,15 @@ using System.Collections.Generic;
 using System.Linq;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering;
-using DeltaEngine.Rendering.Shapes;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Shapes;
 
 namespace $safeprojectname$
 {
 	public class Chunk : FilledRect
 	{
 		public Chunk(int gridSize, float blockSize, Color color) : base(new Rectangle(new 
-			Point(blockSize * (int)(gridSize / 2.0f), blockSize * (int)(gridSize / 2.0f)), new 
+			Vector2D(blockSize * (int)(gridSize / 2.0f), blockSize * (int)(gridSize / 2.0f)), new 
 				Size(blockSize)), color)
 		{
 			this.gridSize = gridSize;
@@ -26,7 +26,7 @@ namespace $safeprojectname$
 		{
 			int x = random.Get(2, gridSize - 2);
 			int y = random.Get(2, gridSize - 2);
-			var newRandomPos = new Point(x * blockSize, y * blockSize);
+			var newRandomPos = new Vector2D(x * blockSize, y * blockSize);
 			var newDrawArea = new Rectangle(newRandomPos, new Size(blockSize));
 			DrawArea = newDrawArea;
 		}

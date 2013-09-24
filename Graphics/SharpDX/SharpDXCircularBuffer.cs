@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using DeltaEngine.Core;
 using DeltaEngine.Graphics.Vertices;
 using SharpDX;
@@ -42,6 +43,15 @@ namespace DeltaEngine.Graphics.SharpDX
 			nativeIndexBuffer.Dispose();
 		}
 
+		protected override void DisposeNextFrame()
+		{
+			buffersToDisposeNextFrame.Add(nativeVertexBuffer);
+			if (UsesIndexBuffer)
+				buffersToDisposeNextFrame.Add(nativeIndexBuffer);
+		}
+
+		private readonly List<SharpDXBuffer> buffersToDisposeNextFrame = new List<SharpDXBuffer>();
+
 		protected override void AddDataNative<VertexType>(Chunk textureChunk, VertexType[] vertexData,
 			short[] indices, int numberOfVertices, int numberOfIndices)
 		{
@@ -73,6 +83,15 @@ namespace DeltaEngine.Graphics.SharpDX
 			dataStream.Seek(totalIndexOffsetInBytes, SeekOrigin.Begin);
 			dataStream.WriteRange(indices, 0, numberOfIndices);
 			deviceContext.UnmapSubresource(nativeIndexBuffer, 0);
+		}
+
+		public override void DisposeUnusedBuffersFromPreviousFrame()
+		{
+			if (buffersToDisposeNextFrame.Count <= 0)
+				return;
+			foreach (var buffer in buffersToDisposeNextFrame)
+				buffer.Dispose();
+			buffersToDisposeNextFrame.Clear();
 		}
 
 		protected override void DrawChunk(Chunk chunk)

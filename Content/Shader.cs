@@ -16,6 +16,8 @@ namespace DeltaEngine.Content
 		public abstract void SetJointMatrices(Matrix[] jointMatrices);
 		public abstract void SetDiffuseTexture(Image texture);
 		public abstract void SetLightmapTexture(Image texture);
+		public abstract void SetLightPosition(Vector3D vector);
+		public abstract void SetViewPosition(Vector3D vector);
 		public abstract void Bind();
 		public abstract void BindVertexDeclaration();
 
@@ -27,6 +29,7 @@ namespace DeltaEngine.Content
 		public const string Position3DColor = "Position3DColor";
 		public const string Position3DNormalUv = "Position3DNormalUv";
 		public const string Position3DTexturedLightmap = "Position3DTexturedLightmap";
+		public const string Position3DColorSkinned = "Position3DColorSkinned";
 		public const string Position3DUvSkinned = "Position3DUvSkinned";
 	}
 }

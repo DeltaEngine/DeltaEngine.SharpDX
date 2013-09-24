@@ -2,7 +2,7 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering;
+using DeltaEngine.Rendering2D;
 
 namespace DeltaEngine.Physics2D
 {
@@ -24,21 +24,21 @@ namespace DeltaEngine.Physics2D
 
 		public class Data
 		{
-			public Data(Point velocity, float maximumSpeed)
+			public Data(Vector2D velocity, float maximumSpeed)
 			{
 				this.velocity = velocity;
 				this.maximumSpeed = maximumSpeed;
 			}
 
-			private Point velocity;
+			private Vector2D velocity;
 			public readonly float maximumSpeed;
 
-			public void Accelerate(Point acceleration2D)
+			public void Accelerate(Vector2D acceleration2D)
 			{
 				Velocity += acceleration2D;
 			}
 
-			public Point Velocity
+			public Vector2D Velocity
 			{
 				get { return velocity; }
 				set
@@ -57,7 +57,7 @@ namespace DeltaEngine.Physics2D
 
 			public void Accelerate(float magnitude, float angle)
 			{
-				Velocity = new Point(velocity.X + MathExtensions.Sin(angle) * magnitude,
+				Velocity = new Vector2D(velocity.X + MathExtensions.Sin(angle) * magnitude,
 					velocity.Y - MathExtensions.Cos(angle) * magnitude);
 			}
 

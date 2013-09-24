@@ -1,3 +1,5 @@
+using $safeprojectname$.Creeps;
+using $safeprojectname$.Towers;
 using DeltaEngine.Core;
 
 namespace $safeprojectname$.Simple2D

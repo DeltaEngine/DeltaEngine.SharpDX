@@ -9,16 +9,16 @@ namespace DeltaEngine.Graphics.Vertices
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexPosition2DColorUV : Lerp<VertexPosition2DColorUV>, Vertex
 	{
-		public VertexPosition2DColorUV(Point position, Color color, Point uv)
+		public VertexPosition2DColorUV(Vector2D position, Color color, Vector2D uv)
 		{
 			Position = position;
 			Color = color;
 			UV = uv;
 		}
 
-		public Point Position;
+		public Vector2D Position;
 		public Color Color;
-		public Point UV;
+		public Vector2D UV;
 
 		public static readonly int SizeInBytes = VertexFormat.Position2DColorUv.Stride;
 

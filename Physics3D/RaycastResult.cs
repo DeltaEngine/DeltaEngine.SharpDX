@@ -10,6 +10,6 @@ namespace DeltaEngine.Physics3D
 		bool Found { get; }
 		PhysicsBody PhysicsBody { get; }
 		float Fraction { get; }
-		Vector SurfaceNormal { get; }
+		Vector3D SurfaceNormal { get; }
 	}
 }

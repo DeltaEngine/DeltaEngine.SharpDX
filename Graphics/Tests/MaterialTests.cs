@@ -12,8 +12,9 @@ namespace DeltaEngine.Graphics.Tests
 		public void CreateCustomMaterial()
 		{
 			var shader =
-				ContentLoader.Create<Shader>(new ShaderCreationData(ShaderWithFormat.UvVertexCode,
-					ShaderWithFormat.UvFragmentCode, ShaderWithFormat.UvHlslCode, ShaderWithFormat.UvHlslCode, VertexFormat.Position2DUv));
+				ContentLoader.Create<Shader>(new ShaderCreationData(ShaderCodeOpenGL.PositionUvOpenGLVertexCode,
+					ShaderCodeOpenGL.PositionUvOpenGLFragmentCode, ShaderCodeDX11.PositionUvDx11, 
+					ShaderCodeDX9.Position2DUvDx9, VertexFormat.Position2DUv));
 			var image = ContentLoader.Create<Image>(new ImageCreationData(new Size(4)));
 			var generatedMaterial = new Material(shader, image);
 			Assert.IsNotNull(generatedMaterial);

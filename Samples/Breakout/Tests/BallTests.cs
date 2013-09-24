@@ -24,7 +24,7 @@ namespace Breakout.Tests
 			var ball = Resolve<Ball>();
 			Assert.IsTrue(ball.Visibility == Visibility.Show);
 			AdvanceTimeAndUpdateEntities(0.1f);
-			var initialBallPosition = new Point(0.5f, 0.86f);
+			var initialBallPosition = new Vector2D(0.5f, 0.86f);
 			Assert.AreEqual(initialBallPosition, ball.Position);
 			Resolve<MockKeyboard>().SetKeyboardState(Key.Space, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.1f);
@@ -38,7 +38,7 @@ namespace Breakout.Tests
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.Space, State.Pressing);
 			keyboard.SetKeyboardState(Key.CursorRight, State.Pressing);
-			ball.DrawArea = Rectangle.FromCenter(new Point(0.1f, 0.2f), ball.Size);
+			ball.DrawArea = Rectangle.FromCenter(new Vector2D(0.1f, 0.2f), ball.Size);
 			AdvanceTimeAndUpdateEntities(0.1f);
 			Assert.AreNotEqual(0.5f, ball.Position.X);
 		}
@@ -61,11 +61,11 @@ namespace Breakout.Tests
 		{
 			var ball = Resolve<TestBall>();
 			Resolve<Paddle>();
-			ball.CurrentVelocity = new Point(0.5f, 0f);
-			Assert.AreEqual(new Point(0.5f, 0f), ball.CurrentVelocity);
-			ball.SetPosition(new Point(1, 0.5f));
+			ball.CurrentVelocity = new Vector2D(0.5f, 0f);
+			Assert.AreEqual(new Vector2D(0.5f, 0f), ball.CurrentVelocity);
+			ball.SetPosition(new Vector2D(1, 0.5f));
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(new Point(-0.5f, 0f), ball.CurrentVelocity);
+			Assert.AreEqual(new Vector2D(-0.5f, 0f), ball.CurrentVelocity);
 		}
 
 		[Test]
@@ -80,10 +80,10 @@ namespace Breakout.Tests
 			var paddle = Resolve<Paddle>();
 			var ball = new TestBall(paddle);
 			
-			ball.CurrentVelocity = new Point(0.5f, 0.1f);
-			ball.SetPosition(new Point(0, 0.5f));
+			ball.CurrentVelocity = new Vector2D(0.5f, 0.1f);
+			ball.SetPosition(new Vector2D(0, 0.5f));
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(new Point(0.5f, 0.1f), ball.CurrentVelocity);
+			Assert.AreEqual(new Vector2D(0.5f, 0.1f), ball.CurrentVelocity);
 		}
 
 		[Test,Ignore]
@@ -91,10 +91,10 @@ namespace Breakout.Tests
 		{
 			var ball = Resolve<TestBall>();
 			Resolve<Paddle>();
-			ball.CurrentVelocity = new Point(-0.5f, -0.5f);
-			ball.SetPosition(new Point(0.5f, 0));
+			ball.CurrentVelocity = new Vector2D(-0.5f, -0.5f);
+			ball.SetPosition(new Vector2D(0.5f, 0));
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(new Point(-0.5f, 0.5f), ball.CurrentVelocity);
+			Assert.AreEqual(new Vector2D(-0.5f, 0.5f), ball.CurrentVelocity);
 		}
 
 		[Test, Ignore]
@@ -102,12 +102,12 @@ namespace Breakout.Tests
 		{
 			var ball = Resolve<TestBall>();
 			Resolve<Paddle>();
-			ball.CurrentVelocity = new Point(-0.5f, -0.5f);
-			ball.SetPosition(new Point(0.5f, 1.0f));
+			ball.CurrentVelocity = new Vector2D(-0.5f, -0.5f);
+			ball.SetPosition(new Vector2D(0.5f, 1.0f));
 			Assert.IsFalse(ball.IsCurrentlyOnPaddle);
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.IsTrue(ball.IsCurrentlyOnPaddle);
-			Assert.AreEqual(Point.Zero, ball.CurrentVelocity);
+			Assert.AreEqual(Vector2D.Zero, ball.CurrentVelocity);
 		}
 
 		[Test, Ignore]
@@ -116,11 +116,11 @@ namespace Breakout.Tests
 			var ball = Resolve<TestBall>();
 			var paddle = Resolve<Paddle>();
 			AdvanceTimeAndUpdateEntities(0.01f);
-			ball.CurrentVelocity = new Point(0f, 0.1f);
+			ball.CurrentVelocity = new Vector2D(0f, 0.1f);
 			ball.SetPosition(paddle.Position);
 			Assert.IsFalse(ball.IsCurrentlyOnPaddle);
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(new Point(0f, -0.1015f), ball.CurrentVelocity);
+			Assert.AreEqual(new Vector2D(0f, -0.1015f), ball.CurrentVelocity);
 		}
 
 		[Test]
@@ -130,7 +130,7 @@ namespace Breakout.Tests
 			Resolve<Paddle>();
 			Resolve<MockKeyboard>().SetKeyboardState(Key.Space, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Point velocity = ball.CurrentVelocity;
+			Vector2D velocity = ball.CurrentVelocity;
 			Resolve<MockKeyboard>().SetKeyboardState(Key.Space, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.AreEqual(velocity, ball.CurrentVelocity);

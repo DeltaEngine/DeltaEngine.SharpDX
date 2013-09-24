@@ -34,8 +34,8 @@ namespace DeltaEngine.Extensions
 			if (dateString.Length == 0)
 				return DateTime.MinValue;
 			DateTime result;
-			return DateTime.TryParse(dateString, new CultureInfo("en-US"), DateTimeStyles.AssumeLocal,
-				out result) ? result : DateTime.Now;
+			return DateTime.TryParse(dateString, new CultureInfo("en-US", false),
+				DateTimeStyles.AssumeLocal, out result) ? result : DateTime.Now;
 		}
 	}
 }

@@ -43,11 +43,15 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GeometryCreationData.cs" />
+    <Compile Include="ShaderCodeDX11.cs" />
+    <Compile Include="ShaderCodeDX9.cs" />
+    <Compile Include="ShaderCodeOpenGL.cs" />
     <Compile Include="ShaderWithFormat.cs" />
     <Compile Include="CircularBuffer.cs" />
     <Compile Include="Geometry.cs" />
     <Compile Include="ScreenshotCapturer.cs" />
     <Compile Include="ShaderCreationData.cs" />
+    <Compile Include="Vertices\SkinningData.cs" />
     <Compile Include="Vertices\Vertex.cs" />
     <Compile Include="Vertices\VertexPosition2DColor.cs" />
     <Compile Include="Vertices\VertexPosition2DColorUV.cs" />
@@ -55,11 +59,13 @@
     <Compile Include="Vertices\VertexElementType.cs" />
     <Compile Include="Vertices\VertexFormat.cs" />
     <Compile Include="Vertices\VertexPosition2DUV.cs" />
+    <Compile Include="Vertices\VertexPosition3DColorSkinned.cs" />
     <Compile Include="Vertices\VertexPosition3DColorUV.cs" />
     <Compile Include="Drawing.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Vertices\VertexPosition3DNormalUV.cs" />
     <Compile Include="Vertices\VertexPosition3DUV.cs" />
+    <Compile Include="Vertices\VertexPosition3DUvSkinned.cs" />
     <Compile Include="Vertices\VerticesMode.cs" />
     <Compile Include="Vertices\VertexPosition3DColor.cs" />
   </ItemGroup>

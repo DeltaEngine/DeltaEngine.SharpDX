@@ -5,7 +5,7 @@ namespace $safeprojectname$.Logics
 	public class SinglePlayerLogic : Logic
 	{
 		public SinglePlayerLogic(int width, int height) : base(width, height, new[] {
-			Point.Zero
+			Vector2D.Zero
 		})
 		{
 		}

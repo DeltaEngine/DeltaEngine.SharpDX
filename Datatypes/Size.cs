@@ -42,7 +42,7 @@ namespace DeltaEngine.Datatypes
 		public static readonly Size Half = new Size(0.5f, 0.5f);
 		public static readonly Size Unused = new Size(-1, -1);
 		public static readonly int SizeInBytes = Marshal.SizeOf(typeof(Size));
-		
+
 		[Pure]
 		public Size Lerp(Size other, float interpolation)
 		{
@@ -120,9 +120,9 @@ namespace DeltaEngine.Datatypes
 			return other is Size ? Equals((Size)other) : base.Equals(other);
 		}
 
-		public static explicit operator Size(Point p)
+		public static explicit operator Size(Vector2D vector2D)
 		{
-			return new Size(p.X, p.Y);
+			return new Size(vector2D.X, vector2D.Y);
 		}
 
 		public override int GetHashCode()
@@ -132,7 +132,7 @@ namespace DeltaEngine.Datatypes
 
 		public override string ToString()
 		{
-			return Width.ToInvariantString() + ", " + Height.ToInvariantString();
+			return "{" + Width.ToInvariantString() + ", " + Height.ToInvariantString() + "}";
 		}
 	}
 }

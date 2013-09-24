@@ -5,9 +5,6 @@ namespace CreepyTowers
 {
 	public class RemapCoordinates
 	{
-		private float aspectX;
-		private float aspectY;
-
 		public Size RemapCoordinateSpaces(Size objectSize)
 		{
 			CalculateAspect();
@@ -15,13 +12,16 @@ namespace CreepyTowers
 				ScreenSpace.Current.FromPixelSpace(objectSize).Height * aspectY);
 		}
 
+		private float aspectX;
+		private float aspectY;
+
 		private void CalculateAspect()
 		{
 			aspectX = Game.window.ViewportPixelSize.Width / 1920.0f;
 			aspectY = Game.window.ViewportPixelSize.Height / 1080.0f;
 		}
 
-		public Size RemapCoordinateSpaces(Point position)
+		public Size RemapCoordinateSpaces(Vector2D position)
 		{
 			CalculateAspect();
 			return new Size(ScreenSpace.Current.FromPixelSpace(position).X * aspectX,

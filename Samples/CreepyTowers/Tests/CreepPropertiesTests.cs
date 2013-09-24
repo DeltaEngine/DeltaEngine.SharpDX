@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using CreepyTowers.Creeps;
+using CreepyTowers.Towers;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 

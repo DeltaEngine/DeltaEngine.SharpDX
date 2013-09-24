@@ -4,7 +4,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -71,7 +71,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			{
 				foreach (SelectBox selectBox in entities)
 				{
-					var center = selectBox.DrawArea.Center + new Point(0.01f, 0.01f) * Time.Delta;
+					var center = selectBox.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
 					var size = selectBox.DrawArea.Size * (1.0f + Time.Delta / 10);
 					selectBox.DrawArea = Rectangle.FromCenter(center, size);
 				}

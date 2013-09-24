@@ -6,12 +6,13 @@ namespace CreepyTowers
 	{
 		//  Names of Fonts
 		public const string FontChelseaMarket14 = "ChelseaMarket14";
-	  public const string FontVerdana12 = "Verdana12";
+		public const string FontVerdana12 = "Verdana12";
 
 		// Names of UI XMLs
-	  public const string XmlIntroScene = "IntroMenu";
+		public const string XmlIntroScene = "IntroMenu";
 		public const string XmlMenuScene = "SceneMainMenu";
 		public const string XmlCreditsScene = "SceneCredits";
+		public const string XmlGameHud = "GameHud";
 		public const string XmlSceneChildsRoom = "SceneChildsRoom";
 		public const string XmlSceneBathroom = "SceneBathroom";
 		public const string XmlSceneLivingRoom = "SceneLivingRoom";
@@ -22,7 +23,7 @@ namespace CreepyTowers
 		public const string XmlLevelsLivingRoomGrid = "LevelsLivingRoomGrid";
 
 		//Names of Level GenerateWaves XMLs
-		public const string XmlChildrensRoom = "LevelsChildrensRoom";
+		public const string XmlChildrensRoom = "LevelsChildrensRoomInfo";
 
 		//Names of Creep Groups XMLs
 		public const string XmlGroupCreeps = "GroupCreeps";
@@ -48,9 +49,9 @@ namespace CreepyTowers
 		public const string ImageHealthBarRed20 = "HealthBarRed20";
 		public const string ImageHealthBarRed10 = "HealthBarRed10";
 		public const string ImageHealthBarRed05 = "HealthBarRed5";
-	  public const string ButtonIntroFlipRight = "IntroButtonFlipRight";
-	  public const string ButtonIntroFlipLeft = "IntroButtonFlipLeft";
-	  public const string ButtonIntroSkip = "IntroButtonSkip";
+		public const string ButtonIntroFlipRight = "IntroButtonFlipRight";
+		public const string ButtonIntroFlipLeft = "IntroButtonFlipLeft";
+		public const string ButtonIntroSkip = "IntroButtonSkip";
 		public const string ButtonMainMenuPlay = "MenuButtonPlay";
 		public const string ButtonMainMenuHelpAndOptions = "MenuButtonHelpAndOptions";
 		public const string ButtonMainMenuCredits = "MenuButtonCredits";
@@ -62,10 +63,8 @@ namespace CreepyTowers
 		public const string ButtonImpactTower = "ButtonImpactTower";
 		public const string ButtonSliceTower = "ButtonSliceTower";
 		public const string ButtonWaterTower = "ButtonWaterTower";
-		public const string ButtonRefresh = "ButtonRefresh";
-		public const string ButtonCreep = "ButtonCreep";
-		public const string ButtonNext = "ButtonNext";
-		public const string ButtonBackLeft = "ButtonBackLeft";
+		public const string ButtonMessageNext = "ButtonMessageNext";
+		public const string ButtonMessageBack = "ButtonMessageBack";
 		public const string ButtonContinue = "ButtonContinue";
 		public const string UIOptions = "UIOptions";
 		public const string UICreepwave = "UICreepwave";
@@ -80,11 +79,11 @@ namespace CreepyTowers
 		public const string UIGem = "UIGem";
 
 		// Names of Comic strip elements
-	  public const string ComicStripsStoryboardPanel1 = "ComicStripsStoryboardPanel1";
-    public const string ComicStripsStoryboardPanel2 = "ComicStripsStoryboardPanel2";
-    public const string ComicStripsStoryboardPanel3 = "ComicStripsStoryboardPanel3";
-    public const string ComicStripsStoryboardPanel4 = "ComicStripsStoryboardPanel4";
-    public const string ComicStripsStoryboardPanel5 = "ComicStripsStoryboardPanel5";
+		public const string ComicStripsStoryboardPanel1 = "ComicStripsStoryboardPanel1";
+		public const string ComicStripsStoryboardPanel2 = "ComicStripsStoryboardPanel2";
+		public const string ComicStripsStoryboardPanel3 = "ComicStripsStoryboardPanel3";
+		public const string ComicStripsStoryboardPanel4 = "ComicStripsStoryboardPanel4";
+		public const string ComicStripsStoryboardPanel5 = "ComicStripsStoryboardPanel5";
 		public const string ComicStripDragon = "ComicStripDragon";
 		public const string ComicStripPiggybank = "ComicStripPiggybank";
 		public const string ComicStripUnicorn = "ComicStripUnicorn";
@@ -95,19 +94,25 @@ namespace CreepyTowers
 		public const string DragonAttackMockup = "ComicStripsDragonAttackMockup512";
 
 		// Names of 3D Tower models 
-		public const string TowerAcidConeJanitorHigh = "TowerAcidConeJanitorHigh";
-		public const string TowerFireCandlehulaHigh = "TowerFireCandlehulaHigh";
-		public const string ModelIceTower = "TowerFireCandlehulaHigh";
-		public const string TowersImpactRangedKnightscalesHigh = "TowersImpactRangedKnightscalesHigh";
-		public const string ModelSliceTower = "TowersImpactRangedKnightscalesHigh";
-		public const string TowerWaterRangedWatersprayHigh = "TowerWaterRangedWatersprayHigh";
+		public const string TowerAcidConeJanitor = "TowerAcidConeJanitorHigh";
+		public const string TowerFireCandlehula = "TowerFireCandlehulaHigh";
+		public const string TowerIceConeIcelady = "TowerIceConeIceladyHigh";
+		public const string TowerImpactRangedKnightscales = "TowerImpactRangedKnightscalesHigh";
+		public const string TowerSliceConeKnifeblock = "TowerSliceConeKnifeblockHigh";
+		public const string TowerWaterRangedWaterspray = "TowerWaterRangedWatersprayHigh";
 
 		// Names of 3D Creep models
-		public const string CreepCottonMummy = "walk01";
+		public const string CreepCottonMummy = "CreepCottonMummyHigh";
+		public const string CreepIronTyrannosaurusAxe = "CreepMetalTAxeHigh";
+		public const string CreepGlass = "CreepGlassHigh";
+		public const string CreepPaperPaperplane = "CreepPaperPaperplaneHigh";
+		public const string CreepPlasticBottledog = "CreepPlasticBottledogHigh";
+		public const string CreepsSandSandy = "CreepSandSandyHigh";
+		public const string CreepsWoodScarecrow = "CreepWoodScarecrowHigh";
 
 		// Names of 3D level models
-		public const string LevelsChildsRoom = "LevelsChildsRoom";
-		public const string LevelsBathRoom = "LevelsBathroom";
+		public const string LevelsChildrensRoom = "LevelsChildsRoom";
+		public const string LevelsBathroom = "LevelsBathroom";
 		public const string LevelsLivingRoom = "LevelsLivingRoom";
 
 		public static readonly List<string> ComicStripImages = new List<string>
@@ -128,10 +133,8 @@ namespace CreepyTowers
 			UIPlayerHealth
 		};
 
-		public static readonly List<string> UiButtons  = new List<string>
+		public static readonly List<string> UiButtons = new List<string>
 		{
-			ButtonCreep,
-			ButtonRefresh,
 			ButtonContinue,
 			UIUnicornSpecialAttackIntervention,
 			UIUnicornSpecialAttackSwap,

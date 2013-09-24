@@ -14,7 +14,7 @@
 	<TemplateContent>
 		<Project File="Breakout.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="true" TargetFileName="BreakoutIcon.ico">BreakoutIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="BreakoutIcon.ico">BreakoutIcon.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="packages.config">packages.config</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Ball.cs">Ball.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Background.cs">Background.cs</ProjectItem>

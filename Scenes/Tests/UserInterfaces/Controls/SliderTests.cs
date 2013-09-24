@@ -7,7 +7,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering.Fonts;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -42,7 +42,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; //ncrunch: no coverage
 
-			mouse.SetPosition(Point.Zero);
+			mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -100,7 +100,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			{
 				foreach (Slider slider in entities)
 				{
-					var center = slider.DrawArea.Center + new Point(0.01f, 0.01f) * Time.Delta;
+					var center = slider.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
 					var size = slider.DrawArea.Size * (1.0f + Time.Delta / 10);
 					slider.DrawArea = Rectangle.FromCenter(center, size);
 				}
@@ -132,18 +132,18 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test, CloseAfterFirstFrame]
 		public void ValidatePointerCenter()
 		{
-			var position = new Point(0.42f, 0.52f);
+			var position = new Vector2D(0.42f, 0.52f);
 			DragMouse(position);
-			Assert.AreEqual(new Point(0.42f, 0.5f), slider.Pointer.DrawArea.Center);
+			Assert.AreEqual(new Vector2D(0.42f, 0.5f), slider.Pointer.DrawArea.Center);
 		}
 
-		private void DragMouse(Point position)
+		private void DragMouse(Vector2D position)
 		{
-			SetMouseState(State.Pressing, position + new Point(0.1f, 0.1f));
+			SetMouseState(State.Pressing, position + new Vector2D(0.1f, 0.1f));
 			SetMouseState(State.Pressing, position);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -196,7 +196,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			int sliderValue = -1;
 			slider.ValueChanged += value => sliderValue = value;
-			var position = new Point(0.42f, 0.52f);
+			var position = new Vector2D(0.42f, 0.52f);
 			DragMouse(position);
 			Assert.AreEqual(slider.Value, sliderValue);
 		}

@@ -8,8 +8,8 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void CreateBoundingSphere()
 		{
-			var boundingSphere = new BoundingSphere(Vector.One, 2.0f);
-			Assert.AreEqual(Vector.One, boundingSphere.Center);
+			var boundingSphere = new BoundingSphere(Vector3D.One, 2.0f);
+			Assert.AreEqual(Vector3D.One, boundingSphere.Center);
 			Assert.AreEqual(2.0f, boundingSphere.Radius);
 		}
 	}

@@ -1,4 +1,4 @@
-﻿using DeltaEngine.Rendering.Sprites;
+﻿using DeltaEngine.Rendering2D.Sprites;
 
 namespace Breakout
 {

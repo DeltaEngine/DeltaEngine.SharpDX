@@ -33,7 +33,7 @@ namespace Drench.Tests.Games
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Point.Zero);
+				mouse.SetPosition(Vector2D.Zero);
 		}
 
 		private MockMouse mouse;
@@ -51,7 +51,7 @@ namespace Drench.Tests.Games
 		[Test]
 		public void ClickInvalidSquare()
 		{
-			var firstSquare = new Point(ScreenSpace.Current.Left + Game.Border + 0.01f,
+			var firstSquare = new Vector2D(ScreenSpace.Current.Left + Game.Border + 0.01f,
 				ScreenSpace.Current.Top + Game.Border + 0.01f);
 			ClickMouse(firstSquare);
 			Assert.AreEqual("*** Player 1: 1 - Invalid Move! ***", game1.upperText.Text);
@@ -59,13 +59,13 @@ namespace Drench.Tests.Games
 				game2.upperText.Text);
 		}
 
-		private void ClickMouse(Point position)
+		private void ClickMouse(Vector2D position)
 		{
 			SetMouseState(State.Pressing, position);
 			SetMouseState(State.Releasing, position);
 		}
 
-		private void SetMouseState(State state, Point position)
+		private void SetMouseState(State state, Vector2D position)
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
@@ -77,7 +77,7 @@ namespace Drench.Tests.Games
 		[Test]
 		public void ClickValidSquare()
 		{
-			ClickMouse(Point.Half);
+			ClickMouse(Vector2D.Half);
 			Assert.AreEqual(" Player 1: 3 Game Over! Player 1 wins! ", game1.upperText.Text);
 			Assert.AreEqual(" Player 1: 3 Game Over! Player 1 wins! ", game2.upperText.Text);
 		}

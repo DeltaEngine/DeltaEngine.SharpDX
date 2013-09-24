@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Graphics.Vertices;
@@ -21,7 +22,7 @@ namespace DeltaEngine.Graphics.Tests
 				() => geometry.SetData(new Vertex[] { }, new short[] { 0 }));
 			Assert.Throws<Geometry.InvalidNumberOfIndices>(
 				() =>
-					geometry.SetData(new Vertex[] { new VertexPosition3DColor(Vector.Zero, Color.Red) },
+					geometry.SetData(new Vertex[] { new VertexPosition3DColor(Vector3D.Zero, Color.Red) },
 						new short[] { }));
 		}
 
@@ -46,19 +47,44 @@ namespace DeltaEngine.Graphics.Tests
 			{
 				LoadData(new MemoryStream());
 			}
+
+			public void LoadValidData()
+			{
+				var geometryData = new GeometryData
+				{
+					Format = VertexFormat.Position3DColor,
+					Indices = new short[6]
+				};
+				LoadData(new MemoryStream(BinaryDataExtensions.ToByteArrayWithTypeInformation(geometryData)));
+			}
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void LoadValidData()
+		{
+			var creationData = new GeometryCreationData(VertexFormat.Position3DColor, 1, 1);
+			var geometry = ContentLoader.Create<TestGeometry>(creationData);
+			geometry.LoadValidData();
+			Assert.AreEqual(6, geometry.NumberOfIndices);
 		}
 
 		[Test]
 		public void ShowTriangle()
 		{
-			var geometry = ContentLoader.Create<Geometry>(
-				new GeometryCreationData(VertexFormat.Position3DColor, 3, 3));
-			geometry.SetData(new Vertex[]
+			CreateTriangle(new Vertex[]
 			{
-				new VertexPosition3DColor(new Vector(-3.0f, 0.0f, 0.0f), Color.Red),
-				new VertexPosition3DColor(new Vector(3.0f, 0.0f, 0.0f), Color.Yellow),
-				new VertexPosition3DColor(new Vector(1.5f, 3.0f, 0.0f), Color.Teal)
-			}, new short[] { 0, 1, 2 });
+				new VertexPosition3DColor(new Vector3D(-3.0f, 0.0f, 0.0f), Color.Red),
+				new VertexPosition3DColor(new Vector3D(3.0f, 0.0f, 0.0f), Color.Yellow),
+				new VertexPosition3DColor(new Vector3D(1.5f, 3.0f, 0.0f), Color.Teal)
+			});
+		}
+
+		private static void CreateTriangle(Vertex[] vertices)
+		{
+			var geometry =
+				ContentLoader.Create<Geometry>(new GeometryCreationData(VertexFormat.Position3DColor, 3, 3));
+			new GeometryCreationData(VertexFormat.Position3DColor, 3, 3);
+			geometry.SetData(vertices, new short[] { 0, 1, 2 });
 			new Triangle(geometry, new Material(Shader.Position3DColor, ""));
 		}
 
@@ -89,6 +115,23 @@ namespace DeltaEngine.Graphics.Tests
 						drawing.AddGeometry(triangle.geometry, triangle.material, Matrix.Identity);
 				}
 			}
+		}
+
+		[Test]
+		public void ShowSquare()
+		{
+			CreateTriangle(new Vertex[]
+			{
+				new VertexPosition3DColor(new Vector3D(-3.0f, 3.0f, 0.0f), Color.Red),
+				new VertexPosition3DColor(new Vector3D(-3.0f, -3.0f, 0.0f), Color.Red),
+				new VertexPosition3DColor(new Vector3D(3.0f, -3.0f, 0.0f), Color.Red)
+			});
+			CreateTriangle(new Vertex[]
+			{
+				new VertexPosition3DColor(new Vector3D(3.0f, 3.0f, 0.0f), Color.Red),
+				new VertexPosition3DColor(new Vector3D(-3.0f, 3.0f, 0.0f), Color.Red),
+				new VertexPosition3DColor(new Vector3D(3.0f, -3.0f, 0.0f), Color.Red)
+			});
 		}
 	}
 }

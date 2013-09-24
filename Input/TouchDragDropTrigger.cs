@@ -11,11 +11,11 @@ namespace DeltaEngine.Input
 		public TouchDragDropTrigger(Rectangle startArea)
 		{
 			StartArea = startArea;
-			StartDragPosition = Point.Unused;
+			StartDragPosition = Vector2D.Unused;
 			Start<Touch>();
 		}
 
 		public Rectangle StartArea { get; private set; }
-		public Point StartDragPosition { get; set; }
+		public Vector2D StartDragPosition { get; set; }
 	}
 }

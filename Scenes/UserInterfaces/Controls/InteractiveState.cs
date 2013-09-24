@@ -11,13 +11,13 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		public bool IsInside { get; set; }
 		public bool IsPressed { get; set; }
 		public bool IsSelected { get; set; }
-		public Point RelativePointerPosition { get; set; }
+		public Vector2D RelativePointerPosition { get; set; }
 		public bool CanHaveFocus { get; set; }
 		public bool HasFocus { get; set; }
 		public bool WantsFocus { get; set; }
-		public Point DragStart { get; set; }
-		public Point DragEnd { get; set; }
-		public Point DragDelta
+		public Vector2D DragStart { get; set; }
+		public Vector2D DragEnd { get; set; }
+		public Vector2D DragDelta
 		{
 			get { return DragEnd - DragStart; }
 		}

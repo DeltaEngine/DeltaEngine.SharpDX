@@ -7,7 +7,7 @@ namespace DeltaEngine.Commands
 	/// </summary>
 	public abstract class DragTrigger : PositionTrigger
 	{
-		public Point StartPosition { get; set; }
+		public Vector2D StartPosition { get; set; }
 		public bool DoneDragging { get; set; }
 	}
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using CreepyTowers.Creeps;
+using CreepyTowers.Levels;
+using CreepyTowers.Towers;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
@@ -31,7 +34,7 @@ namespace CreepyTowers.Tests
 			gridProp = Game.CameraAndGrid.Grid.PropertyMatrix;
 			manager.CreateCreep(gridProp[2, 2].MidPoint, Names.CreepCottonMummy, MovementData());
 			manager.CreateTower(gridProp[2, 4].MidPoint, Tower.TowerType.Water,
-				Names.TowerWaterRangedWatersprayHigh);
+				Names.TowerWaterRangedWaterspray);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			AdvanceTimeAndUpdateEntities(2.5f);
 			Assert.AreEqual(85.0f, creepList[0].Get<CreepProperties>().CurrentHp);
@@ -41,7 +44,7 @@ namespace CreepyTowers.Tests
 		{
 			return new MovementInGrid.MovementData
 			{
-				Velocity = new Vector(0.0f, 0.0f, 0.0f),
+				Velocity = new Vector3D(0.0f, 0.0f, 0.0f),
 				StartGridPos = new Tuple<int, int>(11, 8),
 				FinalGridPos = new Tuple<int, int>(11, 18),
 				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(11, 18) }
@@ -57,7 +60,7 @@ namespace CreepyTowers.Tests
 		public void TestImmuneStateDamageOutput(Tower.TowerType towerType, float expectedDamage)
 		{
 			creep.state.SetVulnerabilitiesToNormal();
-			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWatersprayHigh);
+			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWaterspray);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			creepList[0].state.SetVulnerability(towerType, CreepState.VulnerabilityType.Immune);
 			AdvanceTimeAndUpdateEntities(2.4f);
@@ -73,7 +76,7 @@ namespace CreepyTowers.Tests
 		public void TestWeakStateDamageOutput(Tower.TowerType towerType, float expectedDamage)
 		{
 			creep.state.SetVulnerabilitiesToNormal();
-			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWatersprayHigh);
+			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWaterspray);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			creepList[0].state.SetVulnerability(towerType, CreepState.VulnerabilityType.Weak);
 			AdvanceTimeAndUpdateEntities(2.1f);
@@ -89,7 +92,7 @@ namespace CreepyTowers.Tests
 		public void TestResistantStateDamageOutput(Tower.TowerType towerType, float expectedDamage)
 		{
 			creep.state.SetVulnerabilitiesToNormal();
-			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWatersprayHigh);
+			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWaterspray);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			creepList[0].state.SetVulnerability(towerType, CreepState.VulnerabilityType.Resistant);
 			AdvanceTimeAndUpdateEntities(2.1f);
@@ -105,7 +108,7 @@ namespace CreepyTowers.Tests
 		public void TestHardBoiledStateDamageOutput(Tower.TowerType towerType, float expectedDamage)
 		{
 			creep.state.SetVulnerabilitiesToNormal();
-			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWatersprayHigh);
+			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWaterspray);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			creepList[0].state.SetVulnerability(towerType, CreepState.VulnerabilityType.HardBoiled);
 			AdvanceTimeAndUpdateEntities(2.1f);
@@ -121,7 +124,7 @@ namespace CreepyTowers.Tests
 		public void TestVulnerableStateDamageOutput(Tower.TowerType towerType, float expectedDamage)
 		{
 			creep.state.SetVulnerabilitiesToNormal();
-			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWatersprayHigh);
+			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWaterspray);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			creepList[0].state.SetVulnerability(towerType, CreepState.VulnerabilityType.Vulnerable);
 			AdvanceTimeAndUpdateEntities(2.1f);
@@ -134,7 +137,7 @@ namespace CreepyTowers.Tests
 		public void TestNormalStateDamageOutput(Tower.TowerType towerType, float expectedDamage)
 		{
 			creep.state.SetVulnerabilitiesToNormal();
-			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWatersprayHigh);
+			manager.CreateTower(gridProp[2, 3].MidPoint, towerType, Names.TowerWaterRangedWaterspray);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			AdvanceTimeAndUpdateEntities(2.1f);
 			Assert.AreEqual(expectedDamage, creepList[0].Get<CreepProperties>().CurrentHp);
@@ -145,7 +148,7 @@ namespace CreepyTowers.Tests
 		{
 			creep.state.SetVulnerabilitiesToNormal();
 			manager.CreateTower(gridProp[2, 3].MidPoint, Tower.TowerType.Fire,
-				Names.TowerFireCandlehulaHigh);
+				Names.TowerFireCandlehula);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			AdvanceTimeAndUpdateEntities(2.1f);
 			Assert.AreEqual(85.0f, creepList[0].Get<CreepProperties>().CurrentHp);
@@ -161,7 +164,7 @@ namespace CreepyTowers.Tests
 			creep.state.SetVulnerabilitiesToNormal();
 			creep.state.Burn = true;
 			manager.CreateTower(gridProp[2, 3].MidPoint, Tower.TowerType.Blade,
-				Names.TowerFireCandlehulaHigh);
+				Names.TowerFireCandlehula);
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			AdvanceTimeAndUpdateEntities(2.1f);
 			Assert.AreEqual(71.25f, creepList[0].Get<CreepProperties>().CurrentHp);

@@ -20,14 +20,14 @@ namespace DeltaEngine.Input.Mocks
 
 		public override void Dispose() {}
 
-		public override Point GetLeftThumbStick()
+		public override Vector2D GetLeftThumbStick()
 		{
-			return Point.Zero;
+			return Vector2D.Zero;
 		}
 
-		public override Point GetRightThumbStick()
+		public override Vector2D GetRightThumbStick()
 		{
-			return Point.Zero;
+			return Vector2D.Zero;
 		}
 
 		public override float GetLeftTrigger()

@@ -40,13 +40,13 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="DeltaEngine">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Platforms">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.Platforms.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Platforms.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.WindowsSharpDX">
-	  <HintPath>$(DeltaEnginePath)\DeltaEngine.WindowsSharpDX.dll</HintPath>
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.WindowsSharpDX.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
