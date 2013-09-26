@@ -120,5 +120,13 @@ namespace $safeprojectname$.Games
 				return logic.Board.colors;
 			}
 		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
+		}
 	}
 }

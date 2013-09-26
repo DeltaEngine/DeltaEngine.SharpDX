@@ -19,6 +19,8 @@ namespace DeltaEngine.Multimedia
 		private Music currentPlayingMusic;
 		private Video currentPlayingVideo;
 
+		public bool IsPauseable { get { return true; } }
+
 		public void RegisterCurrentMusic(Music music)
 		{
 			if (music != null && currentPlayingMusic != null)

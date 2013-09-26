@@ -10,6 +10,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
 [assembly: Guid("85d84b64-bba7-496a-8599-a86d04139b49")]
-[assembly: AssemblyVersion("0.9.9.3")]
-[assembly: AssemblyFileVersion("0.9.9.3")]
+[assembly: AssemblyVersion("0.9.9.4")]
+[assembly: AssemblyFileVersion("0.9.9.4")]
 [assembly: InternalsVisibleTo("DeltaEngine.Rendering2D.Sprites.Tests")]

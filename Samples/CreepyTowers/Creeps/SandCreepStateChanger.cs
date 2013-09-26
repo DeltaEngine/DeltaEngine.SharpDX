@@ -1,4 +1,5 @@
-﻿using CreepyTowers.Towers;
+﻿using CreepyTowers.Levels;
+using CreepyTowers.Towers;
 using DeltaEngine.Core;
 
 namespace CreepyTowers.Creeps
@@ -41,7 +42,7 @@ namespace CreepyTowers.Creeps
 					return;
 				}
 				creep.IsActive = false;
-				new Creep(creep.Position, Creep.CreepType.Glass, Names.CreepCottonMummy);
+				new Creep(creep.Position, Names.CreepGlass, new CreepProperties()).Add(new MovementInGrid.MovementData());
 			}
 		}
 
@@ -54,7 +55,7 @@ namespace CreepyTowers.Creeps
 			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Resistant);
 			creep.state.SetVulnerability(Tower.TowerType.Ice, CreepState.VulnerabilityType.Immune);
 			creep.state.SetVulnerability(Tower.TowerType.Acid, CreepState.VulnerabilityType.Immune);
-			creep.state.SetVulnerability(Tower.TowerType.Blade, CreepState.VulnerabilityType.HardBoiled);
+			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.HardBoiled);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
@@ -10,12 +11,41 @@ namespace DeltaEngine.Input.Tests
 	public class TouchRotateTriggerTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void RotateRedCircle()
+		public void ShowRedSquare()
 		{
-			new FontText(Font.Default, "Rotate red box with 2 finger touch", Rectangle.One);
-			var ellipse = new FilledRect(new Rectangle(0.1f, 0.1f, 0.2f, 0.1f), Color.Red);
-			//rotation needs some better input
-			new Command(() => ellipse.Center = Vector2D.Half).Add(new TouchRotateTrigger());
+			new FontText(Font.Default, "Pinch screen to show red circle", Rectangle.One);
+			var rect = new FilledRect(new Rectangle(0.1f, 0.1f, 0.1f, 0.1f), Color.Red);
+			var trigger = new TouchRotateTrigger();
+			var touch = Resolve<Touch>();
+			new Command(() =>
+			{
+				rect.Center = touch.GetPosition(0);
+				rect.RotationCenter = rect.Center;
+				rect.Rotation = trigger.Angle;
+			}).Add(trigger);
+		}
+
+		[Test]
+		public void Angle()
+		{
+			var trigger = new TouchRotateTrigger();
+			var touch = (MockTouch)Resolve<Touch>();
+				touch.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.1f));
+			touch.SetTouchState(1, State.Pressed, new Vector2D(0.5f, 0.7f));
+			touch.Update(new[] { trigger });
+			Assert.AreEqual(0f, trigger.Angle);
+			touch.SetTouchState(0, State.Pressing, new Vector2D(0.1f, 0.5f));
+			touch.SetTouchState(1, State.Pressed, new Vector2D(0.7f, 0.5f));
+			touch.Update(new[] { trigger });
+			Assert.AreEqual(1.57079637f, trigger.Angle);
+			touch.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.7f));
+			touch.SetTouchState(1, State.Pressed, new Vector2D(0.5f, 0.1f));
+			touch.Update(new[] { trigger });
+			Assert.AreEqual(3.14159274f, trigger.Angle);
+			touch.SetTouchState(0, State.Pressing, new Vector2D(0.7f, 0.5f));
+			touch.SetTouchState(1, State.Pressed, new Vector2D(0.1f, 0.5f));
+			touch.Update(new[] { trigger });
+			Assert.AreEqual(4.71238899f, trigger.Angle);
 		}
 	}
 }

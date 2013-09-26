@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ContentTypeIdentifier.cs" />
     <Compile Include="InputCommands.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="XmlAttribute.cs" />

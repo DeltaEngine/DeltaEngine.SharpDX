@@ -20,22 +20,33 @@ namespace CreepyTowers.Simple2D
 
 		private static void SetAffectedByIce(Creep2D creep)
 		{
-			StateChanger.MakeCreepSlow(creep);
-			if (creep.state.Wet)
-				StateChanger.MakeCreepFrozen(creep);
-			creep.state.Burst = false;
-			creep.state.Burn = false;
+			if (creep.state.Burst)
+			{
+				creep.state.Fast = false;
+				creep.state.Burst = false;
+			}
+			else
+			{
+				StateChanger.MakeCreepSlow(creep);
+				if (creep.state.Wet)
+					StateChanger.MakeCreepFrozen(creep);
+				creep.state.Burst = false;
+				creep.state.Burn = false;
+				creep.state.Fast = false;
+			}
 		}
 
 		private static void SetAffectedByImpact(Creep2D creep)
 		{
-			StateChanger.MakeCreepSlow(creep);
+			StateChanger.MakeCreepLimitedSlow(creep);
 			if (creep.state.Frozen)
 				StateChanger.CheckChanceForSudden(creep);
 		}
 
 		private static void SetAffectedByWater(Creep2D creep)
 		{
+			if (creep.state.Fast)
+				creep.state.Fast = false;
 			SetClothCreepWetState(creep);
 		}
 
@@ -44,7 +55,7 @@ namespace CreepyTowers.Simple2D
 			StateChanger.MakeCreepWet(creep);
 			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Impact);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Ice);
-			StateChanger.MakeCreepNormalToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepNormalToType(creep, Tower.TowerType.Slice);
 		}
 
 		private static void SetAffectedByAcid(Creep2D creep)
@@ -63,6 +74,7 @@ namespace CreepyTowers.Simple2D
 			else if (creep.state.Frozen)
 			{
 				creep.state.Frozen = false;
+				StateChanger.MakeCreepUnfreezable(creep);
 				SetClothCreepWetState(creep);
 			}
 			else
@@ -76,7 +88,7 @@ namespace CreepyTowers.Simple2D
 		{
 			creep.state.SetVulnerabilitiesToNormal();
 			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Ice);
-			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Impact);
 			StateChanger.MakeCreepVulnerableToType(creep, Tower.TowerType.Acid);
 			StateChanger.MakeCreepVulnerableToType(creep, Tower.TowerType.Fire);

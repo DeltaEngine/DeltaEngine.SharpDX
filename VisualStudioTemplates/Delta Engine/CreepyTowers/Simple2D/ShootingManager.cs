@@ -25,6 +25,9 @@ namespace $safeprojectname$.Simple2D
 				line.IsActive = false;
 
 			lines.Clear();
+			foreach (var creepInList in display.Creeps)
+				creepInList.UpdateStateTimersAndTimeBasedDamage();
+
 			foreach (var tower in towers)
 				if (tower.GetAttackType() == Tower.AttackType.RadiusFull)
 					ShootRadiusShot(tower);
@@ -41,7 +44,6 @@ namespace $safeprojectname$.Simple2D
 
 			foreach (var creep in display.Creeps)
 			{
-				creep.UpdateStateTimersAndTimeBasedDamage();
 				if (!((tower.Position - creep.Position).Length < tower.Range))
 					continue;
 
@@ -50,6 +52,7 @@ namespace $safeprojectname$.Simple2D
 
 				lines.Add(new Line2D(tower.Center, creep.Center, tower.Color));
 				creep.Hitpoints = DamageCalculation(creep, tower);
+				creep.RecalculateHitpointBar();
 				tower.SetOnCooldown();
 			}
 		}
@@ -124,9 +127,9 @@ namespace $safeprojectname$.Simple2D
 			if (creep == null)
 				return;
 
-			creep.UpdateStateTimersAndTimeBasedDamage();
 			lines.Add(new Line2D(tower.Center, creep.Center, tower.Color));
 			creep.Hitpoints = DamageCalculation(creep, tower);
+			creep.RecalculateHitpointBar();
 			tower.SetOnCooldown();
 		}
 
@@ -160,6 +163,7 @@ namespace $safeprojectname$.Simple2D
 			creep.UpdateStateTimersAndTimeBasedDamage();
 			lines.Add(new Line2D(tower.Center, creep.Center, tower.Color));
 			creep.Hitpoints = DamageCalculation(creep, tower);
+			creep.RecalculateHitpointBar();
 			AffectsCreepsInTheRange(tower, creep);
 			tower.SetOnCooldown();
 		}

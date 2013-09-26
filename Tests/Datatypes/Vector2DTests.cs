@@ -6,6 +6,16 @@ namespace DeltaEngine.Tests.Datatypes
 {
 	public class Vector2DTests
 	{
+		[SetUp]
+		public void SetUp()
+		{
+			v1 = new Vector2D(1, 2);
+			v2 = new Vector2D(3, -4);
+		}
+
+		private Vector2D v1;
+		private Vector2D v2;
+
 		[Test]
 		public void Create()
 		{
@@ -30,32 +40,27 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void ChangePoint()
 		{
-			var vector = new Vector2D(1.0f, 1.0f) { X = 2.1f, Y = 2.1f };
-			Assert.AreEqual(2.1f, vector.X);
-			Assert.AreEqual(2.1f, vector.Y);
+			var v = new Vector2D(1.0f, 1.0f) { X = 2.1f, Y = 2.1f };
+			Assert.AreEqual(2.1f, v.X);
+			Assert.AreEqual(2.1f, v.Y);
 		}
 
 		[Test]
 		public void Addition()
 		{
-			var v1 = new Vector2D(1, 2);
-			var v2 = new Vector2D(3, 4);
-			Assert.AreEqual(new Vector2D(4, 6), v1 + v2);
+			Assert.AreEqual(new Vector2D(4, -2), v1 + v2);
 		}
 
 		[Test]
 		public void Subtraction()
 		{
-			var v1 = new Vector2D(1, 2);
-			var v2 = new Vector2D(3, 4);
-			Assert.AreEqual(new Vector2D(-2, -2), v1 - v2);
+			Assert.AreEqual(new Vector2D(-2, 6), v1 - v2);
 		}
 
 		[Test]
 		public void Negation()
 		{
-			var v = new Vector2D(1, 2);
-			Assert.AreEqual(-v, new Vector2D(-1, -2));
+			Assert.AreEqual(-v1, new Vector2D(-1, -2));
 		}
 
 		[Test]
@@ -82,13 +87,18 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void Equals()
 		{
-			var v1 = new Vector2D(1, 2);
-			var v2 = new Vector2D(3, 4);
 			Assert.AreNotEqual(v1, v2);
 			Assert.AreEqual(v1, new Vector2D(1, 2));
 			Assert.IsTrue(v1 == new Vector2D(1, 2));
 			Assert.IsTrue(v1 != v2);
 			Assert.IsTrue(v1.Equals((object)new Vector2D(1, 2)));
+		}
+
+		[Test]
+		public void NearlyEquals()
+		{
+			Assert.IsTrue(v1.IsNearlyEqual(new Vector2D(1.000001f, 1.99999f)));
+			Assert.IsFalse(v1.IsNearlyEqual(new Vector2D(1, 2.1f)));
 		}
 
 		[Test]
@@ -121,9 +131,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void DirectionTo()
 		{
-			var v1 = new Vector2D(1, 2);
-			var v2 = new Vector2D(4, -5);
-			Assert.AreEqual(new Vector2D(3, -7), v1.DirectionTo(v2));
+			Assert.AreEqual(new Vector2D(2, -6), v1.DirectionTo(v2));
 		}
 
 		[Test]
@@ -153,12 +161,10 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void GetHashCodeViaDictionary()
 		{
-			var first = new Vector2D(1, 2);
-			var second = new Vector2D(3, 4);
-			var pointValues = new Dictionary<Vector2D, int> { { first, 1 }, { second, 2 } };
-			Assert.IsTrue(pointValues.ContainsKey(first));
-			Assert.IsTrue(pointValues.ContainsKey(second));
-			Assert.IsFalse(pointValues.ContainsKey(new Vector2D(5, 6)));
+			var vector2DValues = new Dictionary<Vector2D, int> { { v1, 1 }, { v2, 2 } };
+			Assert.IsTrue(vector2DValues.ContainsKey(v1));
+			Assert.IsTrue(vector2DValues.ContainsKey(v2));
+			Assert.IsFalse(vector2DValues.ContainsKey(new Vector2D(5, 6)));
 		}
 
 		[Test]
@@ -210,8 +216,9 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void RotateAround()
 		{
-			Assert.AreEqual(Vector2D.UnitY, Vector2D.UnitX.RotateAround(Vector2D.Zero, 90.0f));
-			Assert.AreEqual(Vector2D.Zero, Vector2D.UnitY.RotateAround(new Vector2D(0.0f, 0.5f), 180.0f));
+			Assert.IsTrue(Vector2D.UnitX.RotateAround(Vector2D.Zero, 90.0f).IsNearlyEqual(Vector2D.UnitY));
+			Assert.IsTrue(
+				Vector2D.UnitY.RotateAround(new Vector2D(0.0f, 0.5f), 180.0f).IsNearlyEqual(Vector2D.Zero));
 		}
 
 		[Test]
@@ -220,7 +227,7 @@ namespace DeltaEngine.Tests.Datatypes
 			var v = Vector2D.UnitX;
 			var rotation = v.RotationTo(Vector2D.Zero);
 			Assert.AreEqual(0, rotation);
-			Assert.AreEqual(Vector2D.UnitY, v.RotateAround(Vector2D.Zero, 90.0f));
+			Assert.IsTrue(v.RotateAround(Vector2D.Zero, 90.0f).IsNearlyEqual(Vector2D.UnitY));
 			rotation = Vector2D.UnitY.RotationTo(Vector2D.Zero);
 			Assert.AreEqual(90, rotation);
 		}
@@ -228,17 +235,17 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void Normalize()
 		{
-			var vector = Vector2D.Normalize(new Vector2D(0.3f, -0.4f));
-			Assert.AreEqual(new Vector2D(0.6f, -0.8f), vector);
+			var v = Vector2D.Normalize(new Vector2D(0.3f, -0.4f));
+			Assert.AreEqual(new Vector2D(0.6f, -0.8f), v);
 		}
 
 		[Test]
 		public void DotProduct()
 		{
-			var v1 = Vector2D.Normalize(new Vector2D(1, 1));
-			var v2 = Vector2D.Normalize(new Vector2D(-1, 1));
-			Assert.AreEqual(0.0f, v1.DotProduct(v2));
-			Assert.AreEqual(0.7071f, v1.DotProduct(Vector2D.UnitY), 0.0001f);
+			var v3 = Vector2D.Normalize(new Vector2D(1, 1));
+			var v4 = Vector2D.Normalize(new Vector2D(-1, 1));
+			Assert.AreEqual(0.0f, v3.DotProduct(v4));
+			Assert.AreEqual(0.7071f, v3.DotProduct(Vector2D.UnitY), 0.0001f);
 		}
 
 		[Test]

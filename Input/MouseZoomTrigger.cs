@@ -4,7 +4,7 @@ namespace DeltaEngine.Input
 {
 	public class MouseZoomTrigger : ZoomTrigger
 	{
-		public MouseZoomTrigger(string parameter = "") { }
+		public MouseZoomTrigger(string unusedButRequiredByDynamicCreation = "") { }
 
 		protected override void StartInputDevice()
 		{

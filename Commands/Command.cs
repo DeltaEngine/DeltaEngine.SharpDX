@@ -11,7 +11,7 @@ namespace DeltaEngine.Commands
 	/// Input Commands are loaded via the InputCommands.xml file, see InputCommands.cs for details.
 	/// You can also create your own commands, which will be executed whenever any trigger is invoked.
 	/// </summary>
-	public class Command : Entity, Updateable, Pauseable
+	public class Command : Entity, Updateable
 	{
 		static Command()
 		{

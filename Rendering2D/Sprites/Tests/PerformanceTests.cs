@@ -32,6 +32,8 @@ namespace DeltaEngine.Rendering2D.Sprites.Tests
 			{
 				Text = "Fps = " + GlobalTime.Current.Fps;
 			}
+
+			public bool IsPauseable { get { return true; } }
 		}
 	}
 }

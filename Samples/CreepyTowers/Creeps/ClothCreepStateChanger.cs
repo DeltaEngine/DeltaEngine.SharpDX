@@ -41,8 +41,8 @@ namespace CreepyTowers.Creeps
 			if (damageType == Tower.TowerType.Impact)
 				if (creep.state.Frozen)
 				{
-					var chanceForShather = Randomizer.Current.Get(0, 100);
-					if (chanceForShather < 10)
+					var chanceForShather = Randomizer.Current.Get(0, 10);
+					if (chanceForShather < 1)
 					{
 						creep.IsActive = false;
 						creep.Shatter();
@@ -85,7 +85,7 @@ namespace CreepyTowers.Creeps
 			creep.state.Frozen = true;
 			creep.state.FrozenTimer = 0;
 			creep.state.Paralysed = true;
-			creep.state.SetVulnerability(Tower.TowerType.Blade, CreepState.VulnerabilityType.Resistant);
+			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.Resistant);
 			creep.state.SetVulnerability(Tower.TowerType.Water, CreepState.VulnerabilityType.Resistant);
 			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Vulnerable);
 			creep.state.SetVulnerability(Tower.TowerType.Fire, CreepState.VulnerabilityType.Immune);
@@ -97,7 +97,7 @@ namespace CreepyTowers.Creeps
 				return;
 			creep.state.SetVulnerabilitiesToNormal();
 			creep.state.SetVulnerability(Tower.TowerType.Ice, CreepState.VulnerabilityType.HardBoiled);
-			creep.state.SetVulnerability(Tower.TowerType.Blade, CreepState.VulnerabilityType.Weak);
+			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.Weak);
 			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Resistant);
 			creep.state.SetVulnerability(Tower.TowerType.Acid, CreepState.VulnerabilityType.Vulnerable);
 			creep.state.SetVulnerability(Tower.TowerType.Fire, CreepState.VulnerabilityType.Vulnerable);

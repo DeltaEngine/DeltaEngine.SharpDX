@@ -56,14 +56,14 @@ namespace CreepyTowers.Simple2D
 			if (!creep.state.Burn)
 				return;
 			ComeBackToNormal(creep);
-			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Ice);
+			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Ice);
 		}
 
 		public static void ChangeStartStatesIfPlasticCreep(Creep2D creep)
 		{
 			creep.state.SetVulnerabilitiesToNormal();
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Impact);
-			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Fire);
 			StateChanger.MakeCreepImmuneToType(creep, Tower.TowerType.Ice);
 			StateChanger.MakeCreepImmuneToType(creep, Tower.TowerType.Water);

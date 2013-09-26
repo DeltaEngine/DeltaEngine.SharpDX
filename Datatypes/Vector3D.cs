@@ -167,14 +167,22 @@ namespace DeltaEngine.Datatypes
 			return v1.X == v2.X && v1.Y == v2.Y && v1.Z == v2.Z;
 		}
 
+		[Pure]
 		public bool Equals(Vector3D other)
 		{
-			return X.IsNearlyEqual(other.X) && Y.IsNearlyEqual(other.Y) && Z.IsNearlyEqual(other.Z);
+			return X == other.X && Y == other.Y && Z == other.Z;
 		}
 
+		[Pure]
 		public override bool Equals(object other)
 		{
 			return other is Vector3D ? Equals((Vector3D)other) : base.Equals(other);
+		}
+
+		[Pure]
+		public bool IsNearlyEqual(Vector3D other)
+		{
+			return X.IsNearlyEqual(other.X) && Y.IsNearlyEqual(other.Y) && Z.IsNearlyEqual(other.Z);
 		}
 
 		public static implicit operator Vector3D(Vector2D vector2D)

@@ -16,9 +16,10 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			Assert.AreEqual(Vector2D.UnitY, screen.TopLeft);
 			Assert.AreEqual(Vector2D.UnitX, screen.BottomRight);
 			Assert.AreEqual(new Rectangle(Vector2D.UnitY, new Size(1, -1)), screen.Viewport);
-			Assert.AreEqual(Vector2D.UnitX, screen.FromPixelSpace(new Vector2D(100, 100)));
-			Assert.AreEqual(new Rectangle(0.1f, 0.9f, 0.8f, 0.8f),
-				screen.FromPixelSpace(new Rectangle(10, 10, 80, 80)));
+			Assert.IsTrue(screen.FromPixelSpace(new Vector2D(100, 100)).IsNearlyEqual(Vector2D.UnitX));
+			Assert.IsTrue(
+				screen.FromPixelSpace(new Rectangle(10, 10, 80, 80)).IsNearlyEqual(new Rectangle(0.1f, 0.9f,
+					0.8f, 0.8f)));
 		}
 
 		private readonly Window window = new MockWindow();

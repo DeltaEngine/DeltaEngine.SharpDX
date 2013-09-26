@@ -69,5 +69,7 @@ namespace DeltaEngine.Rendering3D.Particles
 			public float Value { get; private set; }
 			public float Elapsed { get; internal set; }
 		}
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

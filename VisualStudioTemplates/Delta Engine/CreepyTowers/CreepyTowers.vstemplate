@@ -64,10 +64,8 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="Creep.cs">Creep.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="CreepPropertiesXmlParser.cs">CreepPropertiesXmlParser.cs</ProjectItem>
 			</Folder>
-			<Folder Name="Towers" TargetFolderName="Towers">
-				<ProjectItem ReplaceParameters="true" TargetFileName="FindPossibleTargets.cs">FindPossibleTargets.cs</ProjectItem>
-			</Folder>
 			<Folder Name="" TargetFolderName="">
+				<ProjectItem ReplaceParameters="true" TargetFileName="FindPossibleTargets.cs">FindPossibleTargets.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="InputCommands.cs">InputCommands.cs</ProjectItem>
 			</Folder>
@@ -109,7 +107,7 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="Hud.cs">Hud.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="MainMenu.cs">MainMenu.cs</ProjectItem>
 			</Folder>
-			<Folder Name="Levels" TargetFolderName="Levels">
+			<Folder Name="Creeps" TargetFolderName="Creeps">
 				<ProjectItem ReplaceParameters="true" TargetFileName="MovememtInGrid.cs">MovememtInGrid.cs</ProjectItem>
 			</Folder>
 			<Folder Name="" TargetFolderName="">

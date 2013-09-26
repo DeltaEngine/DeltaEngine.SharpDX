@@ -24,26 +24,34 @@ namespace DeltaEngine.Multimedia
 		}
 
 		protected abstract void PlayNativeVideo(float volume);
+
 		public void Stop()
 		{
 			device.RegisterCurrentVideo(null);
 			StopNativeVideo();
 		}
+
 		protected abstract void StopNativeVideo();
 		public abstract bool IsPlaying();
 		public abstract void Update();
+
+		public bool IsPauseable
+		{
+			get { return true; }
+		}
+
 		public abstract float DurationInSeconds { get; }
 		public abstract float PositionInSeconds { get; }
+
 		protected override void DisposeData()
 		{
 			Stop();
 		}
 
-		//ncrunch: no coverage start
 		public class VideoNotFoundOrAccessible : Exception
 		{
 			public VideoNotFoundOrAccessible(string videoName, Exception innerException)
-				: base(videoName, innerException) { }
+				: base(videoName, innerException) {}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CreepyTowers.Creeps;
 using CreepyTowers.GUI;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -11,7 +12,7 @@ namespace CreepyTowers.Levels
 	/// <summary>
 	/// LevelBathRoom telling the player how to do things in a visual way
 	/// </summary>
-	public class LevelBathRoom : Scene, IDisposable
+	public class LevelBathRoom : Scene
 	{
 		public LevelBathRoom()
 		{
@@ -71,6 +72,14 @@ namespace CreepyTowers.Levels
 			}
 		}
 
+		private void NextDialogue()
+		{
+			if (++bathRoomScene.MessageCount > Messages.BathRoomMessages().Length)
+				SpawnCreep();
+
+			bathRoomScene.NextDialogue();
+		}
+
 		private void SpawnCreep()
 		{
 			if (!manager.Contains<InputCommands>())
@@ -81,7 +90,7 @@ namespace CreepyTowers.Levels
 			var startGridPos = randomWaypointsList[0];
 			var position =
 				Game.CameraAndGrid.Grid.PropertyMatrix[startGridPos.Item1, startGridPos.Item2].MidPoint;
-			manager.CreateCreep(position, Names.CreepCottonMummy,
+			manager.CreateCreep(position, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
 				MovementData(startGridPos, randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
 		}
 
@@ -102,14 +111,6 @@ namespace CreepyTowers.Levels
 			};
 		}
 
-		private void NextDialogue()
-		{
-			if (++bathRoomScene.MessageCount > Messages.BathRoomMessages().Length)
-				SpawnCreep();
-
-			bathRoomScene.NextDialogue();
-		}
-
 		private void LoadLivingRoomLevel()
 		{
 			//gameHud.Dispose();
@@ -117,7 +118,7 @@ namespace CreepyTowers.Levels
 			new LevelLivingRoom();
 		}
 
-		public new void Dispose()
+		protected override void DisposeData()
 		{
 			bathRoomScene.Dispose();
 			bathRoom.Dispose();

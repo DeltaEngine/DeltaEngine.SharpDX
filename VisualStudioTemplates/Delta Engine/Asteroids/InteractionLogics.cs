@@ -102,5 +102,13 @@ namespace $safeprojectname$
 			CheckAsteroidCollisions();
 			CreateNewAsteroidIfNecessary();
 		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
+		}
 	}
 }

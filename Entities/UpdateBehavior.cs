@@ -7,12 +7,14 @@ namespace DeltaEngine.Entities
 	/// </summary>
 	public abstract class UpdateBehavior
 	{
-		protected UpdateBehavior(Priority priority = Priority.Normal)
+		protected UpdateBehavior(Priority priority = Priority.Normal, bool isPauseable = true)
 		{
 			this.priority = priority;
+			this.isPauseable = isPauseable;
 		}
 
 		internal readonly Priority priority;
+		internal readonly bool isPauseable;
 
 		public abstract void Update(IEnumerable<Entity> entities);
 	}

@@ -23,6 +23,7 @@ namespace LogoApp.Tests
 		public void RunAFewTimesAndCloseGame()
 		{
 			new BouncingLogo();
+			AdvanceTimeAndUpdateEntities(1.0f);
 		}
 
 		[Test]

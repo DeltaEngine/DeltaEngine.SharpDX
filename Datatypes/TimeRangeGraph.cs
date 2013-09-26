@@ -105,13 +105,11 @@ namespace DeltaEngine.Datatypes
 
 		public void AddValueAt(float totalPercentage, T value)
 		{
-			if(totalPercentage < 0.0f || totalPercentage > 1.0f)
-				throw  new PercentageOutsideScope();
 			var insertIndex = FindInsertIndex(totalPercentage);
-			if(insertIndex == -1)
+			if (insertIndex == -1)
 				throw new PercentageOutsideScope();
 			ExpandAndAddValue(insertIndex, value);
-			ExpandAndAddPercentage(insertIndex, totalPercentage);			
+			ExpandAndAddPercentage(insertIndex, totalPercentage);
 		}
 
 		private int FindInsertIndex(float insertPercentage)
@@ -135,8 +133,7 @@ namespace DeltaEngine.Datatypes
 				else
 					Percentages[i] = percentageBuffer[i];
 		}
-
-
+		
 		[Pure]
 		public override string ToString()
 		{

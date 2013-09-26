@@ -27,8 +27,9 @@ namespace $safeprojectname$.Simple2D
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Ice);
 			StateChanger.MakeCreepImmuneToType(creep, Tower.TowerType.Acid);
 			StateChanger.MakeCreepImmuneToType(creep, Tower.TowerType.Water);
-			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Fire);
+			StateChanger.MakeCreepVulnerableToType(creep, Tower.TowerType.Impact);
 		}
 	}
 }

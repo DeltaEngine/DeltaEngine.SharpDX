@@ -62,12 +62,12 @@ namespace DeltaEngine.Datatypes
 
 		public static bool operator ==(Size s1, Size s2)
 		{
-			return s1.Equals(s2);
+			return s1.Width == s2.Width && s1.Height == s2.Height;
 		}
 
 		public static bool operator !=(Size s1, Size s2)
 		{
-			return !s1.Equals(s2);
+			return s1.Width != s2.Width || s1.Height != s2.Height;
 		}
 
 		public static Size operator *(Size s1, Size s2)
@@ -110,14 +110,22 @@ namespace DeltaEngine.Datatypes
 			return new Size(s1.Width - s2.Width, s1.Height - s2.Height);
 		}
 
+		[Pure]
 		public bool Equals(Size other)
 		{
-			return Width.IsNearlyEqual(other.Width) && Height.IsNearlyEqual(other.Height);
+			return Width == other.Width && Height == other.Height;
 		}
 
+		[Pure]
 		public override bool Equals(object other)
 		{
 			return other is Size ? Equals((Size)other) : base.Equals(other);
+		}
+
+		[Pure]
+		public bool IsNearlyEqual(Size other)
+		{
+			return Width.IsNearlyEqual(other.Width) && Height.IsNearlyEqual(other.Height);
 		}
 
 		public static explicit operator Size(Vector2D vector2D)
@@ -125,11 +133,13 @@ namespace DeltaEngine.Datatypes
 			return new Size(vector2D.X, vector2D.Y);
 		}
 
+		[Pure]
 		public override int GetHashCode()
 		{
 			return Width.GetHashCode() ^ Height.GetHashCode();
 		}
 
+		[Pure]
 		public override string ToString()
 		{
 			return "{" + Width.ToInvariantString() + ", " + Height.ToInvariantString() + "}";

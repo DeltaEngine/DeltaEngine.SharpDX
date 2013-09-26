@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using $safeprojectname$.Creeps;
 using $safeprojectname$.GUI;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -8,7 +9,7 @@ using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace $safeprojectname$.Levels
 {
-	public class LevelLivingRoom : Scene, IDisposable
+	public class LevelLivingRoom : Scene
 	{
 		public LevelLivingRoom()
 		{
@@ -70,8 +71,8 @@ namespace $safeprojectname$.Levels
 			var startGridPos = randomWaypointsList [0];
 			var position = Game.CameraAndGrid.Grid.PropertyMatrix [startGridPos.Item1, 
 				startGridPos.Item2].MidPoint;
-			manager.CreateCreep(position, Names.CreepCottonMummy, MovementData(startGridPos, 
-				randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
+			manager.CreateCreep(position, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
+				MovementData(startGridPos, randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
 		}
 
 		private static List<Tuple<int, int>> SelectRandomWaypointList(Level.GridData data)
@@ -98,7 +99,7 @@ namespace $safeprojectname$.Levels
 			livingRoomScene.NextDialogue();
 		}
 
-		public new void Dispose()
+		protected override void DisposeData()
 		{
 			livingRoomScene.Dispose();
 			livingRoom.Dispose();

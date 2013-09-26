@@ -13,5 +13,7 @@ namespace DeltaEngine.Mocks
 		}
 
 		public bool WasUpdated { get; set; }
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

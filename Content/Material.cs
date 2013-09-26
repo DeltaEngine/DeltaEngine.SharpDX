@@ -28,6 +28,8 @@ namespace DeltaEngine.Content
 			: base("<GeneratedMaterial:" + shaderName + ":" + imageOrAnimationName + ">")
 		{
 			Initialize(shaderName, imageOrAnimationName, Color.White);
+			if(MetaData == null)
+				MetaData = new ContentMetaData();
 		}
 
 		private void Initialize(string shaderName, string imageOrAnimationName, Color defaultColor)
@@ -62,6 +64,7 @@ namespace DeltaEngine.Content
 			Shader = customShader;
 			DiffuseMap = customDiffuseMap;
 			DefaultColor = Color.White;
+			MetaData = new ContentMetaData();
 		}
 
 		public ImageAnimation Animation

@@ -14,7 +14,6 @@ namespace CreepyTowers.Levels
 			GridScale = gridScale;
 			HalfGridSize = GridSize * 0.5f;
 			CreateGrid();
-			//DrawGrid();
 			AssignGridPositions();
 		}
 
@@ -29,7 +28,7 @@ namespace CreepyTowers.Levels
 
 		public GridProperties[,] PropertyMatrix { get; private set; }
 
-		private void DrawGrid()
+		public void DrawGrid()
 		{
 			axisXy = new Vector2D(-HalfGridSize, -HalfGridSize);
 			for (int i = 0; i <= GridSize; i++, axisXy.X += 1, axisXy.Y += 1)

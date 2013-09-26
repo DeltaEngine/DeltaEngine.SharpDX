@@ -5,9 +5,9 @@ namespace DeltaEngine.Content.Json
 	/// <summary>
 	/// Content data for Newtonsoft Json.
 	/// </summary>
-	//ncrunch: no coverage start
 	public class JsonContent : ContentData
 	{
+		//ncrunch: no coverage start
 		protected JsonContent(string contentName)
 			: base(contentName) {}
 
@@ -24,5 +24,4 @@ namespace DeltaEngine.Content.Json
 
 		protected override void DisposeData() {}
 	}
-	//ncrunch: no coverage end
 }

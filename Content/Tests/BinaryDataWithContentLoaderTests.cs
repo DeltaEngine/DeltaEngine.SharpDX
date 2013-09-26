@@ -23,6 +23,7 @@ namespace DeltaEngine.Content.Tests
 			var content = returnedContentType as MockXmlContentType;
 			Assert.IsNotNull(content);
 			Assert.AreEqual(ContentName, content.Name);
+			content.Dispose();
 			ContentLoader.DisposeIfInitialized();
 		}
 
@@ -48,17 +49,17 @@ namespace DeltaEngine.Content.Tests
 			ContentLoader.Use<MockContentLoader>();
 			var xmlContent = ContentLoader.Load<MockXmlContent>("XmlData");
 			using (var dataWriter = new BinaryWriter(new MemoryStream()))
-				BinaryDataSaver.TrySaveData(xmlContent, typeof(MockXmlContent), dataWriter);
+				BinaryDataSaver.SaveDataType(xmlContent, typeof(MockXmlContent), dataWriter);
 			ContentLoader.DisposeIfInitialized();
 		}
 
 		private class MockXmlContentType : ContentData
 		{
 			protected MockXmlContentType(string contentName)
-				: base(contentName) { }
+				: base(contentName) {}
 
-			protected override void DisposeData() { }
-			protected override void LoadData(Stream fileData) { }
+			protected override void DisposeData() {}
+			protected override void LoadData(Stream fileData) {}
 		}
 	}
 }

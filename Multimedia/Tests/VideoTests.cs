@@ -3,6 +3,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
+using DeltaEngine.Multimedia.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
@@ -12,62 +13,84 @@ namespace DeltaEngine.Multimedia.Tests
 	/// <summary>
 	/// Test video playback. Xna video loading won't work from ReSharper, use Program.cs instead.
 	/// </summary>
-	[Ignore]
 	public class VideoTests : TestWithMocksOrVisually
 	{
+		[SetUp]
+		public void LoadTestVideo()
+		{
+			testVideo = ContentLoader.Load<Video>("DefaultVideo");
+		}
+
+		private Video testVideo;
+
+		[Test]
+		public void ExpectExceptionIfVideoIsNotAvailable()
+		{
+			Assert.Throws<Video.VideoNotFoundOrAccessible>(
+				() => ContentLoader.Load<Video>("NonExistingVideo"));
+		}
+
 		[Test]
 		public void PlayVideo()
 		{
-			ContentLoader.Load<Video>("DefaultVideo").Play();
+			Assert.IsTrue(testVideo.IsPauseable);
+			testVideo.Play();
 		}
 
 		[Test]
 		public void PlayVideoOnClick()
 		{
 			new FontText(Font.Default, "Click to Play", Rectangle.One);
-			var video = ContentLoader.Load<Video>("DefaultVideo");
-			new Command(() => { video.Play(); }).Add(new MouseButtonTrigger());
+			new Command(() => { testVideo.Play(); }).Add(new MouseButtonTrigger());
 		}
 
 		[Test]
 		public void PlayAndStop()
 		{
-			var video = ContentLoader.Load<Video>("DefaultVideo");
-			video.Stop();
-			Assert.IsFalse(video.IsPlaying());
-			video.Play();
-			Assert.IsTrue(video.IsPlaying());
+			testVideo.Stop();
+			Assert.IsFalse(testVideo.IsPlaying());
+			testVideo.Play();
+			Assert.IsTrue(testVideo.IsPlaying());
 		}
 
 		[Test]
 		public void PlayAndStopWithEntitiesRunner()
 		{
-			var video = ContentLoader.Load<Video>("DefaultVideo");
-			Assert.AreEqual(0, EntitiesRunner.Current.NumberOfEntities);
-			video.Stop();
-			Assert.AreEqual(0, EntitiesRunner.Current.NumberOfEntities);
-			video.Play();
-			Assert.AreEqual(1, EntitiesRunner.Current.NumberOfEntities);
-			video.Stop();
-			Assert.AreEqual(0, EntitiesRunner.Current.NumberOfEntities);
+			int startedNumberOfEntities = EntitiesRunner.Current.NumberOfEntities;
+			Assert.AreEqual(startedNumberOfEntities, EntitiesRunner.Current.NumberOfEntities);
+			testVideo.Stop();
+			Assert.AreEqual(startedNumberOfEntities, EntitiesRunner.Current.NumberOfEntities);
+			testVideo.Play();
+			Assert.AreEqual(startedNumberOfEntities + 1, EntitiesRunner.Current.NumberOfEntities);
+			testVideo.Stop();
+			Assert.AreEqual(startedNumberOfEntities, EntitiesRunner.Current.NumberOfEntities);
+		}
+
+		[Test]
+		public void PlayVideoWhileOtherIsPlaying()
+		{
+			var otherTestVideo = ContentLoader.Load<Video>("DefaultVideo");
+			testVideo.Play();
+			Assert.False(MockVideo.VideoStopCalled);
+			otherTestVideo.Play();
+			Assert.False(MockVideo.VideoStopCalled);
 		}
 
 		[Test]
 		public void CheckDurationAndPosition()
 		{
-			var video = ContentLoader.Load<Video>("DefaultVideo");
-			video.Update();
-			Assert.AreEqual(3.791f, video.DurationInSeconds, 0.5f);
-			Assert.AreEqual(1.0f, video.PositionInSeconds);
+			testVideo.Update();
+			Assert.AreEqual(3.791f, testVideo.DurationInSeconds, 0.5f);
+			Assert.AreEqual(1.0f, testVideo.PositionInSeconds);
 		}
 
 		[Test]
 		public void StartAndStopVideo()
 		{
-			var video = ContentLoader.Load<Video>("DefaultVideo");
-			Assert.AreEqual(3.791f, video.DurationInSeconds, 0.5f);
-			new VideoPlayedOneSecondTester(video);
-			video.Play();
+			Assert.AreEqual(3.791f, testVideo.DurationInSeconds, 0.5f);
+			var videoTester = new VideoPlayedOneSecondTester(testVideo);
+			Assert.IsTrue(videoTester.IsPauseable);
+			testVideo.Play();
 		}
 
 		private class VideoPlayedOneSecondTester : Entity, Updateable
@@ -86,6 +109,8 @@ namespace DeltaEngine.Multimedia.Tests
 				video.Stop();
 				Assert.Less(0.99f, video.PositionInSeconds);
 			}
+
+			public bool IsPauseable { get { return true; } }
 		}
 	}
 }

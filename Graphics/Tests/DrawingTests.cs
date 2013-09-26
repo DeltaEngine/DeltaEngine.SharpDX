@@ -91,6 +91,8 @@ namespace DeltaEngine.Graphics.Tests
 				}
 				Set(vertices);
 			}
+
+			public bool IsPauseable { get { return true; } }
 		}
 
 		/// <summary>
@@ -137,6 +139,8 @@ namespace DeltaEngine.Graphics.Tests
 							vertices[line].Position + new Vector2D(random.Get(-30, 30), random.Get(-20, 20)),
 							Color.GetRandomColor());
 			}
+
+			public bool IsPauseable { get { return true; } }
 
 			public class DrawLine : DrawBehavior
 			{

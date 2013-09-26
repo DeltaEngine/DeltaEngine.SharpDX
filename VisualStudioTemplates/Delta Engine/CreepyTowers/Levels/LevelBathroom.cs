@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using $safeprojectname$.Creeps;
 using $safeprojectname$.GUI;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -8,7 +9,7 @@ using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace $safeprojectname$.Levels
 {
-	public class LevelBathRoom : Scene, IDisposable
+	public class LevelBathRoom : Scene
 	{
 		public LevelBathRoom()
 		{
@@ -62,6 +63,14 @@ namespace $safeprojectname$.Levels
 			}
 		}
 
+		private void NextDialogue()
+		{
+			if (++bathRoomScene.MessageCount > Messages.BathRoomMessages().Length)
+				SpawnCreep();
+
+			bathRoomScene.NextDialogue();
+		}
+
 		private void SpawnCreep()
 		{
 			if (!manager.Contains<InputCommands>())
@@ -72,8 +81,8 @@ namespace $safeprojectname$.Levels
 			var startGridPos = randomWaypointsList [0];
 			var position = Game.CameraAndGrid.Grid.PropertyMatrix [startGridPos.Item1, 
 				startGridPos.Item2].MidPoint;
-			manager.CreateCreep(position, Names.CreepCottonMummy, MovementData(startGridPos, 
-				randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
+			manager.CreateCreep(position, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
+				MovementData(startGridPos, randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
 		}
 
 		private static List<Tuple<int, int>> SelectRandomWaypointList(Level.GridData data)
@@ -92,21 +101,13 @@ namespace $safeprojectname$.Levels
 			};
 		}
 
-		private void NextDialogue()
-		{
-			if (++bathRoomScene.MessageCount > Messages.BathRoomMessages().Length)
-				SpawnCreep();
-
-			bathRoomScene.NextDialogue();
-		}
-
 		private void LoadLivingRoomLevel()
 		{
 			Dispose();
 			new LevelLivingRoom();
 		}
 
-		public new void Dispose()
+		protected override void DisposeData()
 		{
 			bathRoomScene.Dispose();
 			bathRoom.Dispose();

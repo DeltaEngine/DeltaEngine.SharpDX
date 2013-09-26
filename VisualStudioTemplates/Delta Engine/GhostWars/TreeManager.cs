@@ -306,5 +306,13 @@ namespace $safeprojectname$
 		{
 			return trees.All(tree => tree.Team == team);
 		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
+		}
 	}
 }

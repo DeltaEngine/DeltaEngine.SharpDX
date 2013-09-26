@@ -8,11 +8,12 @@ namespace $safeprojectname$.Towers
 {
 	public class Tower : Model
 	{
-		public Tower(Vector3D position, TowerType towerType, string name) : base(name, position)
+		public Tower(Vector3D position, string name, TowerProperties towerProperties) : base(name, 
+			position)
 		{
 			Position = position;
 			SetDefaultValues();
-			Add(new TowerProperties());
+			Add(towerProperties);
 		}
 
 		private void SetDefaultValues()
@@ -28,12 +29,12 @@ namespace $safeprojectname$.Towers
 		}
 		public enum TowerType
 		{
-			Acid = 0,
-			Blade = 1,
-			Fire = 2,
-			Ice = 3,
-			Impact = 4,
-			Water = 5
+			Acid,
+			Fire,
+			Ice,
+			Impact,
+			Slice,
+			Water
 		}
 
 		public enum AttackType

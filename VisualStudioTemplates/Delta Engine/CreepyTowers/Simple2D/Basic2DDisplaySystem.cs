@@ -278,7 +278,9 @@ namespace $safeprojectname$.Simple2D
 				if (creep.Hitpoints > 0 && creep.Position != creep.Target)
 					continue;
 
-				gold += creep.GoldReward;
+				if (creep.Position != creep.Target)
+					gold += creep.GoldReward;
+
 				kills++;
 				creep.hitpointBar.IsActive = false;
 				creep.IsActive = false;
@@ -334,6 +336,14 @@ namespace $safeprojectname$.Simple2D
 					return false;
 
 			return true;
+		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
 		}
 	}
 }

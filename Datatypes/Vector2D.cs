@@ -81,6 +81,11 @@ namespace DeltaEngine.Datatypes
 			return new Vector2D(vector.X / scale.Width, vector.Y / scale.Height);
 		}
 
+		public static Vector2D operator -(Vector2D vector)
+		{
+			return new Vector2D(-vector.X, -vector.Y);
+		}
+
 		public static bool operator !=(Vector2D vector1, Vector2D vector2)
 		{
 			return vector1.X != vector2.X || vector1.Y != vector2.Y;
@@ -91,21 +96,22 @@ namespace DeltaEngine.Datatypes
 			return vector1.X == vector2.X && vector1.Y == vector2.Y;
 		}
 
-		public static Vector2D operator -(Vector2D vector)
-		{
-			return new Vector2D(-vector.X, -vector.Y);
-		}
-
 		[Pure]
 		public bool Equals(Vector2D other)
 		{
-			return X.IsNearlyEqual(other.X) && Y.IsNearlyEqual(other.Y);
+			return X == other.X && Y == other.Y;
 		}
 
 		[Pure]
 		public override bool Equals(object other)
 		{
 			return other is Vector2D ? Equals((Vector2D)other) : base.Equals(other);
+		}
+
+		[Pure]
+		public bool IsNearlyEqual(Vector2D other)
+		{
+			return X.IsNearlyEqual(other.X) && Y.IsNearlyEqual(other.Y);
 		}
 
 		public static implicit operator Vector2D(Size size)

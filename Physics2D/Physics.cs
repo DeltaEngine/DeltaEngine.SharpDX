@@ -33,6 +33,7 @@ namespace DeltaEngine.Physics2D
 				Simulate(Time.Delta);
 		}
 
+		public bool IsPauseable { get { return true; } }
 		public bool IsPaused { get; set; }
 		protected abstract void Simulate(float delta);
 

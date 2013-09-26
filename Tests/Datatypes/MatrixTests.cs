@@ -163,7 +163,8 @@ namespace DeltaEngine.Tests.Datatypes
 			matrix = Matrix.CreatePerspective(60.0f, 1.0f, 0.5f, 10.0f);
 			var position = Matrix.TransformHomogeneousCoordinate(Vector3D.One, matrix);
 			var invMatrix = Matrix.Invert(matrix);
-			Assert.AreEqual(Vector3D.One, Matrix.TransformHomogeneousCoordinate(position, invMatrix));
+			Assert.IsTrue(
+				Matrix.TransformHomogeneousCoordinate(position, invMatrix).IsNearlyEqual(Vector3D.One));
 		}
 
 		[Test]
@@ -272,7 +273,7 @@ namespace DeltaEngine.Tests.Datatypes
 			var scale = Matrix.CreateScale(3, 3, 3);
 			var transformation = scale * rotation * translation;
 			var result = translation * (rotation * (scale * position));
-			Assert.AreEqual(result, transformation * position);
+			Assert.IsTrue((transformation * position).IsNearlyEqual(result));
 		}
 	}
 }

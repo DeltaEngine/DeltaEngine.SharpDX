@@ -53,6 +53,7 @@ namespace DeltaEngine.Input
 			TryInvokeTriggerOfType<MousePositionTrigger>(entity, IsMousePositionTriggered);
 			TryInvokeTriggerOfType<MouseTapTrigger>(entity, IsMouseTapTriggered);
 			TryInvokeTriggerOfType<MouseZoomTrigger>(entity, IsMouseZoomTriggered);
+			TryInvokeTriggerOfType<MouseFlickTrigger>(entity, IsMouseFlickTriggered);
 		}
 
 		private static void TryInvokeTriggerOfType<T>(Entity entity, Func<T, bool> triggeredCode)
@@ -76,10 +77,18 @@ namespace DeltaEngine.Input
 			else if (trigger.StartPosition != Vector2D.Unused &&
 				GetButtonState(trigger.Button) != State.Released)
 			{
-				if (trigger.StartPosition.DistanceTo(Position) > PositionEpsilon)
+				var movementDirection = trigger.StartPosition.DirectionTo(Position);
+				if (movementDirection.Length > PositionEpsilon)
 				{
-					trigger.Position = Position;
-					trigger.DoneDragging = GetButtonState(trigger.Button) == State.Releasing;
+					if ((trigger.Direction == DragDirection.Horizontal &&
+						Math.Abs(movementDirection.Y) < AllowedDragDirectionOffset) ||
+						(trigger.Direction == DragDirection.Vertical &&
+							Math.Abs(movementDirection.X) < AllowedDragDirectionOffset) ||
+						trigger.Direction == DragDirection.Free)
+					{
+						trigger.Position = Position;
+						trigger.DoneDragging = GetButtonState(trigger.Button) == State.Releasing;
+					}
 					return true;
 				}
 			}
@@ -92,6 +101,7 @@ namespace DeltaEngine.Input
 		}
 
 		private const float PositionEpsilon = 0.0025f;
+		private const float AllowedDragDirectionOffset = 0.01f;
 
 		private bool IsMouseDragDropTriggered(MouseDragDropTrigger trigger)
 		{
@@ -172,6 +182,28 @@ namespace DeltaEngine.Input
 			else
 				trigger.ZoomAmount = 0;
 			return trigger.ZoomAmount != 0;
+		}
+
+		private bool IsMouseFlickTriggered(MouseFlickTrigger trigger)
+		{
+			if (LeftButton == State.Pressing)
+			{
+				trigger.StartPosition = Position;
+				trigger.PressTime = 0;
+			}
+			else if (trigger.StartPosition != Vector2D.Unused && LeftButton != State.Released)
+			{
+				trigger.PressTime += Time.Delta;
+				if (LeftButton == State.Releasing &&
+					trigger.StartPosition.DistanceTo(Position) > PositionEpsilon)
+					return trigger.PressTime < 0.3f;
+			}
+			else
+			{
+				trigger.StartPosition = Vector2D.Unused;
+				trigger.PressTime = 0;
+			}
+			return false;
 		}
 	}
 }

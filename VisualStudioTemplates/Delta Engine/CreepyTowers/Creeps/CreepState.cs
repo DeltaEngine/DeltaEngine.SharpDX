@@ -1,9 +1,10 @@
+using System;
 using $safeprojectname$.Towers;
 using DeltaEngine.Entities;
 
 namespace $safeprojectname$.Creeps
 {
-	public class CreepState
+	public class CreepState : IEquatable<CreepState>
 	{
 		public CreepState()
 		{
@@ -109,6 +110,18 @@ namespace $safeprojectname$.Creeps
 			set;
 		}
 
+		public bool Unfreezable
+		{
+			get;
+			set;
+		}
+
+		public float UnfreezableTimer
+		{
+			get;
+			set;
+		}
+
 		public bool Fast
 		{
 			get;
@@ -189,6 +202,22 @@ namespace $safeprojectname$.Creeps
 		{
 			timer += Time.Delta;
 			return !(timer > maxTime);
+		}
+
+		public bool Equals(CreepState other)
+		{
+			return Slow == other.Slow && SlowTimer == other.SlowTimer && Delayed == other.Delayed && 
+				DelayedTimer == other.DelayedTimer && Burn == other.Burn && BurnTimer == other.BurnTimer 
+					&& Burst == other.Burst && BurstTimer == other.BurstTimer && Paralysed == 
+						other.Paralysed && ParalysedTimer == other.ParalysedTimer && Frozen == other.Frozen 
+							&& FrozenTimer == other.FrozenTimer && Unfreezable == other.Unfreezable && 
+								UnfreezableTimer == other.UnfreezableTimer && Fast == other.Fast && FastTimer == 
+									other.FastTimer && Enfeeble == other.Enfeeble && EnfeebleTimer == 
+										other.EnfeebleTimer && Melt == other.Melt && MeltTimer == other.MeltTimer && 
+											Rust == other.Rust && RustTimer == other.RustTimer && Wet == other.Wet && 
+												WetTimer == other.WetTimer && Healing == other.Healing && Sudden == 
+													other.Sudden && MaxTimeShort == other.MaxTimeShort && MaxTimeMedium == 
+														other.MaxTimeMedium && MaxTimeLong == other.MaxTimeLong;
 		}
 	}
 }

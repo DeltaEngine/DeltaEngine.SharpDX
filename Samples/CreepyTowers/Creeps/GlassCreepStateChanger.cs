@@ -35,7 +35,7 @@ namespace CreepyTowers.Creeps
 			creep.state.SetVulnerability(Tower.TowerType.Ice, CreepState.VulnerabilityType.Weak);
 			creep.state.SetVulnerability(Tower.TowerType.Acid, CreepState.VulnerabilityType.Immune);
 			creep.state.SetVulnerability(Tower.TowerType.Water, CreepState.VulnerabilityType.Immune);
-			creep.state.SetVulnerability(Tower.TowerType.Blade, CreepState.VulnerabilityType.Resistant);
+			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.Resistant);
 			creep.state.SetVulnerability(Tower.TowerType.Fire, CreepState.VulnerabilityType.Resistant);
 			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Vulnerable);
     }

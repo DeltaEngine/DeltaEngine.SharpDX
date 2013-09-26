@@ -93,7 +93,7 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 		{
 			camera.Rotate(Vector3D.UnitZ, 90.0f);
 			camera.Move(Vector3D.UnitX, 1.0f);
-			Assert.AreEqual(new Vector3D(0.0f, 6.0f, 5.0f), camera.Position);
+			Assert.IsTrue(camera.Position.IsNearlyEqual(new Vector3D(0.0f, 6.0f, 5.0f)));
 		}
 
 		[Test, CloseAfterFirstFrame]

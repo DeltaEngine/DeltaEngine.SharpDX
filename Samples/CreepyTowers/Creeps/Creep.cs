@@ -1,5 +1,4 @@
 ﻿using System;
-using CreepyTowers.Levels;
 using CreepyTowers.Towers;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
@@ -12,19 +11,19 @@ namespace CreepyTowers.Creeps
 	/// <summary>
 	/// Enemy creature, its features determined by the type given to the constructor.
 	/// </summary>
-	public class Creep : Model
+	public class Creep : Model, IDisposable
 	{
-		public Creep(Vector3D position, CreepType creepType, string name)
+		public Creep(Vector3D position, string name, CreepProperties creepProperties)
 			: base(name, position)
 		{
 			Position = position;
 			SetupHealthBar();
 			SetDefaultValues();
-			//Add(new CreepProperties());
+			Add(creepProperties);
 			Start<MovementInGrid>();
 			state = new CreepState();
 			creepStateChanger = new CreepStateChanger();
-			creepStateChanger.SetStartStateOfCreep(creepType, this);
+			creepStateChanger.SetStartStateOfCreep(creepProperties.CreepType, this);
 			calculateDamage = new CalculateDamage();
 		}
 
@@ -89,7 +88,7 @@ namespace CreepyTowers.Creeps
 
 		private void DisplayCreepDieEffect()
 		{
-			//var creep2DPoint = Game.CameraAndGrid.Camera.WorldToScreenPoint(Position);
+			//var creep2DPoint = Game.CameraAndGrid.GameCamera.WorldToScreenPoint(Position);
 			//var drawArea = Rectangle.FromCenter(creep2DPoint, new Size(0.07f));
 			//DyingEffect = new SpriteSheetAnimation("SpriteDyingCloud", drawArea);
 			//DyingEffect.RenderLayer = (int)CreepyTowersRenderLayer.Interface;
@@ -97,10 +96,6 @@ namespace CreepyTowers.Creeps
 		}
 
 		public SpriteSheetAnimation DyingEffect { get; private set; }
-		public CalculateDamage CalculateDamage1
-		{
-			get { return calculateDamage; }
-		}
 
 		public void UpdateHealthBarPositionAndImage()
 		{
@@ -170,14 +165,15 @@ namespace CreepyTowers.Creeps
 			{
 				if (creep == this)
 					continue;
-				
+
 				var distance = ((creep.Position.X - Position.X) * (creep.Position.X - Position.X)) +
 					((creep.Position.Y - Position.Y) * (creep.Position.Y - Position.Y));
-				if (distance <= 4)
-				{
-					var properties = creep.Get<CreepProperties>();
-					properties.CurrentHp -= 40;
-				}
+
+				if (distance > 4)
+					return;
+
+				var properties = creep.Get<CreepProperties>();
+				properties.CurrentHp -= 40;
 			}
 		}
 	}

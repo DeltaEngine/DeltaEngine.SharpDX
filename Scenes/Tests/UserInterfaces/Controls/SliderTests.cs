@@ -134,7 +134,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var position = new Vector2D(0.42f, 0.52f);
 			DragMouse(position);
-			Assert.AreEqual(new Vector2D(0.42f, 0.5f), slider.Pointer.DrawArea.Center);
+			Assert.IsTrue(slider.Pointer.DrawArea.Center.IsNearlyEqual(new Vector2D(0.42f, 0.5f)));
 		}
 
 		private void DragMouse(Vector2D position)

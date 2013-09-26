@@ -20,7 +20,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			SetAppearance(appearance);
 		}
 
-		protected readonly Theme theme;
+		public Theme theme;
 
 		public void SetAppearance(Theme.Appearance appearance)
 		{

@@ -31,6 +31,7 @@ namespace DeltaEngine.Rendering3D.Cameras
 
 		public bool IsMoving { get; set; }	
 		private int currentFrame;
+		public bool IsPauseable { get { return true; } }
 
 		public int CurrentFrame
 		{

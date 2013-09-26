@@ -164,6 +164,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				children[i].Entity2D.RenderLayer = RenderLayer + i + 1;
 		}
 
+		public bool IsPauseable { get { return true; } }
+
 		public InteractiveState State
 		{
 			get { return Get<InteractiveState>(); }

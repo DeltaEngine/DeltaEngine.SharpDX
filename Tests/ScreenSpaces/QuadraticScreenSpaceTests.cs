@@ -20,8 +20,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			Assert.AreEqual(Rectangle.One, ScreenSpace.Current.Viewport);
 			Assert.AreEqual(Vector2D.One, ScreenSpace.Current.FromPixelSpace(new Vector2D(100, 100)));
 			Assert.AreEqual(Vector2D.Half, ScreenSpace.Current.FromPixelSpace(new Vector2D(50, 50)));
-			Assert.AreEqual(new Rectangle(0.1f, 0.1f, 0.8f, 0.8f),
-				ScreenSpace.Current.FromPixelSpace(new Rectangle(10, 10, 80, 80)));
+			Assert.IsTrue(
+				ScreenSpace.Current.FromPixelSpace(new Rectangle(10, 10, 80, 80)).IsNearlyEqual(
+					new Rectangle(0.1f, 0.1f, 0.8f, 0.8f)));
 		}
 
 		private readonly Window window = new MockWindow();
@@ -48,7 +49,7 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			Assert.AreEqual(new Rectangle(0, 0.125f, 1, 0.75f), screen.Viewport);
 			Assert.AreEqual(new Vector2D(1f, 0.875f), screen.FromPixelSpace(new Vector2D(100, 75)));
 			Assert.AreEqual(Vector2D.Half, screen.FromPixelSpace(new Vector2D(50, 37.5f)));
-			Assert.AreEqual(new Size(0.1f, 0.1f), screen.FromPixelSpace(new Size(10, 10)));
+			Assert.IsTrue(screen.FromPixelSpace(new Size(10, 10)).IsNearlyEqual(new Size(0.1f, 0.1f)));
 		}
 
 		[Test]
@@ -61,7 +62,7 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			Assert.AreEqual(new Rectangle(0.125f, 0, 0.75f, 1), screen.Viewport);
 			Assert.AreEqual(new Vector2D(0.875f, 1f), screen.FromPixelSpace(new Vector2D(75, 100)));
 			Assert.AreEqual(Vector2D.Half, screen.FromPixelSpace(new Vector2D(37.5f, 50)));
-			Assert.AreEqual(new Size(0.1f, 0.1f), screen.FromPixelSpace(new Size(10, 10)));
+			Assert.IsTrue(screen.FromPixelSpace(new Size(10, 10)).IsNearlyEqual(new Size(0.1f, 0.1f)));
 		}
 
 		[Test]
@@ -96,8 +97,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			Assert.AreEqual(Vector2D.Zero, screen.ToPixelSpace(new Vector2D(0, 0.125f)));
 			Assert.AreEqual(new Vector2D(50, 37.5f), screen.ToPixelSpace(Vector2D.Half));
 			Assert.AreEqual(new Size(10, 20), screen.ToPixelSpace(new Size(0.1f, 0.2f)));
-			Assert.AreEqual(new Rectangle(20, 7.5f, 60, 60),
-				screen.ToPixelSpace(new Rectangle(0.2f, 0.2f, 0.6f, 0.6f)));
+			Assert.IsTrue(
+				screen.ToPixelSpace(new Rectangle(0.2f, 0.2f, 0.6f, 0.6f)).IsNearlyEqual(new Rectangle(20,
+					7.5f, 60, 60)));
 		}
 
 		[Test]

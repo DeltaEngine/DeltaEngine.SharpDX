@@ -46,7 +46,7 @@ namespace $safeprojectname$.Levels
 			private set;
 		}
 
-		private void DrawGrid()
+		public void DrawGrid()
 		{
 			axisXy = new Vector2D(-HalfGridSize, -HalfGridSize);
 			for (int i = 0; i <= GridSize; i++, axisXy.X += 1, axisXy.Y += 1)

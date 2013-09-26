@@ -3,10 +3,10 @@
 	/// <summary>
 	/// Default source code for the OpenGL shaders
 	/// </summary>
-	 
 	public static class ShaderCodeOpenGL
 	{
-internal const string PositionUvOpenGLVertexCode = @"uniform mat4 ModelViewProjection;
+		internal const string PositionUvOpenGLVertexCode = @"
+uniform mat4 ModelViewProjection;
 attribute vec4 aPosition;
 attribute vec2 aTextureUV;
 varying vec2 vTexcoord;
@@ -16,7 +16,8 @@ void main()
 	gl_Position = ModelViewProjection * aPosition;
 }";
 
-		internal const string PositionUvOpenGLFragmentCode = @"precision mediump float;
+		internal const string PositionUvOpenGLFragmentCode = @"
+precision mediump float;
 uniform sampler2D Texture;
 varying vec2 vTexcoord;
 void main()
@@ -24,7 +25,8 @@ void main()
 	gl_FragColor = texture2D(Texture, vTexcoord);
 }";
 
-		internal const string PositionColorOpenGLVertexCode = @"uniform mat4 ModelViewProjection;
+		internal const string PositionColorOpenGLVertexCode = @"
+uniform mat4 ModelViewProjection;
 attribute vec4 aPosition;
 attribute vec4 aColor;
 varying vec4 diffuseColor;
@@ -34,14 +36,16 @@ void main()
 	diffuseColor = aColor;
 }";
 
-		internal const string PositionColorOpenGLFragmentCode = @"precision mediump float;
+		internal const string PositionColorOpenGLFragmentCode = @"
+precision mediump float;
 varying vec4 diffuseColor;
 void main()
 {
 	gl_FragColor = diffuseColor;
 }";
 
-		internal const string PositionColorUvOpenGLVertexCode = @"uniform mat4 ModelViewProjection;
+		internal const string PositionColorUvOpenGLVertexCode = @"
+uniform mat4 ModelViewProjection;
 attribute vec4 aPosition;
 attribute vec4 aColor;
 attribute vec2 aTextureUV;
@@ -54,7 +58,8 @@ void main()
 	diffuseTexCoord = aTextureUV;
 }";
 
-		internal const string PositionColorUvOpenGLFragmentCode = @"precision mediump float;
+		internal const string PositionColorUvOpenGLFragmentCode = @"
+precision mediump float;
 uniform sampler2D Texture;
 varying vec4 diffuseColor;
 varying vec2 diffuseTexCoord;
@@ -63,7 +68,8 @@ void main()
 	gl_FragColor = texture2D(Texture, diffuseTexCoord) * diffuseColor;
 }";
 
-		internal const string PositionUvLightmapVertexCode = @"uniform mat4 ModelViewProjection;
+		internal const string PositionUvLightmapVertexCode = @"
+uniform mat4 ModelViewProjection;
 attribute vec4 aPosition;
 attribute vec2 aTextureUV;
 attribute vec2 aLightMapUV;
@@ -76,7 +82,8 @@ void main()
 	vLightMapTexCoord = aLightMapUV;
 }";
 
-		internal const string PositionUvLightmapFragmentCode = @"precision mediump float;
+		internal const string PositionUvLightmapFragmentCode = @"
+precision mediump float;
 uniform sampler2D Texture;
 uniform sampler2D Lightmap;
 varying vec2 vDiffuseTexCoord;
@@ -86,7 +93,8 @@ void main()
 	gl_FragColor = texture2D(Texture, vDiffuseTexCoord) * texture2D(Lightmap, vLightMapTexCoord);
 }";
 
-		internal const string ColorSkinnedVertexCode = @"uniform mat4 ModelViewProjection;
+		internal const string ColorSkinnedVertexCode = @"
+uniform mat4 ModelViewProjection;
 uniform mat4 JointTransforms[20]; 
 attribute vec4 aPosition;
 attribute vec4 aColor;
@@ -108,7 +116,8 @@ void main()
 
 		internal const string ColorSkinnedFragmentCode = PositionColorOpenGLFragmentCode;
 
-		internal const string UvSkinnedVertexCode = @"uniform mat4 ModelViewProjection;
+		internal const string UvSkinnedVertexCode = @"
+uniform mat4 ModelViewProjection;
 uniform mat4 JointTransforms[20];
 attribute vec4 aPosition;
 attribute vec2 aTextureUV;
@@ -130,8 +139,8 @@ void main()
 
 		internal const string UvSkinnedFragmentCode = PositionUvOpenGLFragmentCode;
 
-
-		internal const string PositionUvNormalOpenGLVertexCode = @"uniform mat4 ModelViewProjection;
+		public const string PositionUvNormalOpenGLVertexCode = @"
+uniform mat4 ModelViewProjection;
 uniform vec4 viewPosition;
 uniform vec4 lightPosition;
 attribute vec4 aPosition;
@@ -150,7 +159,8 @@ void main()
 	vTexCoord = aTextureUV;	
 }";
 
-		internal const string PositionUvNormalOpenGLFragmentCode = @"precision mediump float;
+		public const string PositionUvNormalOpenGLFragmentCode = @"
+precision mediump float;
 uniform sampler2D Texture;
 varying vec2 vTexCoord;
 varying vec3 vNormal;
@@ -170,6 +180,5 @@ void main()
 	vec4 specular = (pow(clamp(specularDot, 0.0, 1.0), 2.0) * dist) * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	gl_FragColor = texture2D(Texture, vTexCoord);// * diffuse + specular;
 }";
-
 	}
 }

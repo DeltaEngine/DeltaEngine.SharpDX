@@ -1,64 +1,70 @@
-﻿using DeltaEngine.Core;
+﻿using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 
 namespace DeltaEngine.Rendering3D.Cameras
 {
-	/// <summary>
-	/// 3D camera that support setting of position and target.
-	/// </summary>
+	// Can be rotated at a fixed distance from and always looking at a target
 	public class LookAtCamera : Camera
 	{
 		public LookAtCamera(Device device, Window window)
-			: base(device, window) {}
-
-		public Entity3D EntityTarget { get; set; }
-
-		protected override Vector3D GetFinalTargetPosition()
+			: base(device, window)
 		{
-			return (EntityTarget != null) ? EntityTarget.Position : base.GetFinalTargetPosition();
+			new Command(Command.Zoom, Zoom);
 		}
 
-		private void UpdateInternalState()
+		public override Vector3D Target
 		{
-			cameraRotation = new Vector3D(Rotation.X, Rotation.Y.Clamp(MinPitchRotation, MaxPitchRotation),
-				cameraRotation.Z);
-			var rotationY = Matrix.CreateRotationY(cameraRotation.Y);
-			var rotationX = Matrix.CreateRotationX(cameraRotation.X);
-			var rotationMatrix = rotationX * rotationY;
-			var lookVector = new Vector3D(0.0f, 0.0f, Distance);
-			Position = rotationMatrix.TransformNormal(lookVector);
-			Position = Position + Target;
-		}
-
-		public Vector3D Rotation
-		{
-			get { return cameraRotation; }
+			get { return base.Target; }
 			set
 			{
-				cameraRotation = value;
-				UpdateInternalState();
+				base.Target = value;
+				ComputeCameraRotation();
 			}
 		}
 
-		private Vector3D cameraRotation;
-		private const float MinPitchRotation = -90;
-		private const float MaxPitchRotation = 90;
-
-		public float Distance
+		private void ComputeCameraRotation()
 		{
-			get { return (Position - Target).Length; }
+			Vector3D lookVector = GetLookVector();
+			lookVector.Normalize();
+			yawPitchRoll.Y = MathExtensions.Asin(-lookVector.Z);
+			yawPitchRoll.X = -MathExtensions.Atan2(-lookVector.X, -lookVector.Y);
+		}
+
+		private Vector3D GetLookVector()
+		{
+			return Target - Position;
+		}
+
+		private Vector3D yawPitchRoll;
+
+		public Vector3D YawPitchRoll
+		{
+			get { return yawPitchRoll; }
+			set
+			{
+				yawPitchRoll = value;
+				UpdatePosition();
+			}
+		}
+
+		private void UpdatePosition()
+		{
+			Matrix rotationMatrix = Matrix.CreateRotationX(yawPitchRoll.Y) *
+				Matrix.CreateRotationZ(yawPitchRoll.X);
+			float lookDistance = GetLookVector().Length;
+			Position = Target + rotationMatrix.TransformNormal(new Vector3D(0, lookDistance, 0));
 		}
 
 		public void Zoom(float amount)
 		{
-			var lookDirection = Target - Position;
-			var directionLength = lookDirection.Length;
-			if (amount > directionLength)
-				amount = directionLength - MathExtensions.Epsilon;
-			lookDirection /= directionLength;
-			Position = Position + lookDirection * amount;
+			Vector3D lookVector = GetLookVector();
+			float lookDistance = lookVector.Length;
+			if (amount > lookDistance)
+				amount = lookDistance - MathExtensions.Epsilon;
+			Position = Position + lookVector / lookDistance * amount;
 		}
 	}
 }

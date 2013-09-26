@@ -13,8 +13,7 @@ namespace DeltaEngine.Tests.Entities
 		{
 			entities = new MockEntitiesRunner(typeof(MockUpdateBehavior), typeof(IncrementCounter),
 				typeof(DerivedBehavior), typeof(DrawTest), typeof(LowPriorityBehavior),
-				typeof(AddNewUpdateBehaviorTwice), typeof(MockPauseableUpdateBehavior),
-				typeof(MockNonPauseableUpdateBehavior));
+				typeof(AddNewUpdateBehaviorTwice), typeof(MockNonPauseableUpdateBehavior));
 		}
 
 		private MockEntitiesRunner entities;
@@ -331,6 +330,8 @@ namespace DeltaEngine.Tests.Entities
 			{
 				Set(GetOrDefault("") + "[HighPriorityUpdate]");
 			}
+
+			public bool IsPauseable { get { return true; } }
 		}
 
 		private class LowPriorityBehavior : UpdateBehavior
@@ -373,18 +374,10 @@ namespace DeltaEngine.Tests.Entities
 		}
 
 		[Test]
-		public void PauseableRapidEntityPausesWhenAppIsPaused()
-		{
-			VerifyEntityWasUpdated(new MockPauseableRapidEntity(true), () => entities.RunEntities());
-			VerifyEntityWasNotUpdated(new MockPauseableRapidEntity(true),
-				() => entities.RunEntitiesPaused());
-		}
-
-		[Test]
 		public void NonPausableRapidEntityAlwaysRuns()
 		{
-			VerifyEntityWasUpdated(new MockPauseableRapidEntity(false), () => entities.RunEntities());
-			VerifyEntityWasUpdated(new MockPauseableRapidEntity(false),
+			VerifyEntityWasUpdated(new MockNonPauseableRapidEntity(), () => entities.RunEntities());
+			VerifyEntityWasUpdated(new MockNonPauseableRapidEntity(),
 				() => entities.RunEntitiesPaused());
 		}
 
@@ -396,17 +389,10 @@ namespace DeltaEngine.Tests.Entities
 		}
 
 		[Test]
-		public void PauseableEntityPausesWhenAppIsPaused()
-		{
-			VerifyEntityWasUpdated(new MockPauseableEntity(true), () => entities.RunEntities());
-			VerifyEntityWasNotUpdated(new MockPauseableEntity(true), () => entities.RunEntitiesPaused());
-		}
-
-		[Test]
 		public void NonPausableEntityAlwaysRuns()
 		{
-			VerifyEntityWasUpdated(new MockPauseableEntity(false), () => entities.RunEntities());
-			VerifyEntityWasUpdated(new MockPauseableEntity(false), () => entities.RunEntitiesPaused());
+			VerifyEntityWasUpdated(new MockNonPauseableEntity(), () => entities.RunEntities());
+			VerifyEntityWasUpdated(new MockNonPauseableEntity(), () => entities.RunEntitiesPaused());
 		}
 
 		[Test]
@@ -419,24 +405,14 @@ namespace DeltaEngine.Tests.Entities
 		}
 
 		[Test]
-		public void PauseableUpdateBehaviorPausesWhenAppIsPaused()
-		{
-			VerifyEntityWasUpdated(
-				(VerifiableUpdate)new MockEntity().Start<MockPauseableUpdateBehavior>(),
-				() => entities.RunEntities());
-			VerifyEntityWasNotUpdated(
-				(VerifiableUpdate)new MockEntity().Start<MockPauseableUpdateBehavior>(),
-				() => entities.RunEntitiesPaused());
-		}
-
-		[Test]
 		public void NonPauseableUpdateBehaviorAlwaysRuns()
 		{
+			//VerifyEntityWasUpdated(
+			//	(VerifiableUpdate)new MockEntity().Start<MockNonPauseableUpdateBehavior>(),
+			//	() => entities.RunEntities());
+			var entity = new MockEntity().Start<MockNonPauseableUpdateBehavior>();
 			VerifyEntityWasUpdated(
-				(VerifiableUpdate)new MockEntity().Start<MockNonPauseableUpdateBehavior>(),
-				() => entities.RunEntities());
-			VerifyEntityWasUpdated(
-				(VerifiableUpdate)new MockEntity().Start<MockNonPauseableUpdateBehavior>(),
+				(VerifiableUpdate)entity,
 				() => entities.RunEntitiesPaused());
 		}
 	}

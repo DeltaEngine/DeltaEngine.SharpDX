@@ -24,8 +24,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			Assert.AreEqual(Rectangle.One, screen.Viewport);
 			Assert.AreEqual(Vector2D.One, screen.FromPixelSpace(new Vector2D(100, 100)));
 			Assert.AreEqual(Vector2D.Half, screen.FromPixelSpace(new Vector2D(50, 50)));
-			Assert.AreEqual(new Rectangle(0.1f, 0.1f, 0.8f, 0.8f),
-				screen.FromPixelSpace(new Rectangle(10, 10, 80, 80)));
+			Assert.IsTrue(
+				screen.FromPixelSpace(new Rectangle(10, 10, 80, 80)).IsNearlyEqual(new Rectangle(0.1f, 0.1f,
+					0.8f, 0.8f)));
 		}
 
 		[Test]

@@ -21,7 +21,7 @@ namespace DeltaEngine.Graphics
 			Dx9Code = dx9Code;
 			Format = format;
 		}
-
+		 
 		public string VertexCode { get; private set; }
 		public string FragmentCode { get; private set; }
 		public string Dx11Code { get; private set; }

@@ -16,6 +16,7 @@ namespace DeltaEngine.Physics3D
 		}
 
 		public bool IsPaused { get; set; }
+		public bool IsPauseable { get { return true; } }
 		protected abstract void Simulate(float delta);
 
 		protected void AddBody(PhysicsBody body)

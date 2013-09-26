@@ -25,6 +25,7 @@ namespace $safeprojectname$.Simple2D
 			} else if (creep.state.Frozen)
 			{
 				creep.state.Frozen = false;
+				StateChanger.MakeCreepUnfreezable(creep);
 				SetWoodCreepWetState(creep);
 			} else
 			{
@@ -37,7 +38,7 @@ namespace $safeprojectname$.Simple2D
 		{
 			creep.state.SetVulnerabilitiesToNormal();
 			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Impact);
-			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Fire);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Acid);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Ice);
@@ -47,7 +48,7 @@ namespace $safeprojectname$.Simple2D
 		private static void SetWoodCreepWetState(Creep2D creep)
 		{
 			StateChanger.MakeCreepWet(creep);
-			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Impact);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Ice);
 		}
@@ -71,6 +72,7 @@ namespace $safeprojectname$.Simple2D
 
 			creep.state.Burst = false;
 			creep.state.Burn = false;
+			creep.state.Fast = false;
 		}
 	}
 }

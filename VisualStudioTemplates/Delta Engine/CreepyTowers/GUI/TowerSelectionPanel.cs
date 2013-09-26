@@ -102,7 +102,7 @@ namespace $safeprojectname$.GUI
 		private void DrawSliceTowerButton()
 		{
 			var button = CreateInteractiveButton(240.0f, Names.ButtonSliceTower);
-			AddClickEvent(button, Tower.TowerType.Blade, Names.TowerSliceConeKnifeblock);
+			AddClickEvent(button, Tower.TowerType.Slice, Names.TowerSliceConeKnifeblock);
 			Add(button);
 		}
 

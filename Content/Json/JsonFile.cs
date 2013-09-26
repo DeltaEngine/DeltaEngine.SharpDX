@@ -7,11 +7,11 @@ namespace DeltaEngine.Content.Json
 	/// </summary>
 	public class JsonFile
 	{
+		//ncrunch: no coverage start
 		public JsonFile(string filePath)
 		{
 			if (!File.Exists(filePath))
 				throw new FileNotFound(filePath);
-
 			Root = new JsonNode(File.ReadAllText(filePath));
 		}
 

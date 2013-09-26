@@ -38,8 +38,9 @@ namespace DeltaEngine.Tests.Datatypes
 				pointsTimeRange.TrySetAllPercentagesNoOrderChange(
 					new List<float>(new[] { 0.0f, 0.2f, 0.7f, 1.0f })));
 			const float ExpectedInterpolation = 4.0f / 5.0f;
-			Assert.AreEqual(Vector2D.One * ExpectedInterpolation,
-				pointsTimeRange.GetInterpolatedValue(0.6f));
+			Assert.IsTrue(
+				pointsTimeRange.GetInterpolatedValue(0.6f).IsNearlyEqual(Vector2D.One *
+					ExpectedInterpolation));
 			Assert.AreEqual(Vector2D.UnitY, pointsTimeRange.GetInterpolatedValue(1.2f));
 			Assert.AreEqual(Vector2D.UnitX, pointsTimeRange.GetInterpolatedValue(-0.1f));
 		}
@@ -119,6 +120,16 @@ namespace DeltaEngine.Tests.Datatypes
 				() => { colorsTimeRange.AddValueAt(1.2f, Color.Green); });
 			Assert.Throws<TimeRangeGraph<Color>.PercentageOutsideScope>(
 				() => { colorsTimeRange.AddValueAt(-0.2f, Color.Black); });
+		}
+
+		[Test]
+		public void TryingToSetValueWithInvalidIndexHasNotEffect()
+		{
+			var colors = CreateColorsList();
+			var colorsTimeRange = new TimeRangeGraph<Color>(colors);
+			Assert.AreEqual(4, colorsTimeRange.Values.Length);
+			colorsTimeRange.SetValue(100, Color.Green);
+			Assert.AreEqual(4, colorsTimeRange.Values.Length);
 		}
 	}
 }

@@ -27,21 +27,23 @@ namespace CreepyTowers
 
 		private void ChangeSize()
 		{
-			if (Camera.Current == null)
+			if (DeltaEngine.Rendering3D.Cameras.Camera.Current == null)
 				CreateGameCamera();
-			((OrthoCamera)Camera.Current).Size =
+			((OrthoCamera)DeltaEngine.Rendering3D.Cameras.Camera.Current).Size =
 				new Size(ScreenSpace.Current.Viewport.Width * FovSizeFactor,
 					ScreenSpace.Current.Viewport.Height * FovSizeFactor);
 		}
 
 		private void CreateGameCamera()
 		{
-			var camera = Camera.Use<OrthoCamera>();
-			camera.Size = new Size(ScreenSpace.Current.Viewport.Width * FovSizeFactor,
+			GameCamera = Camera.Use<OrthoCamera>();
+			GameCamera.Size = new Size(ScreenSpace.Current.Viewport.Width * FovSizeFactor,
 				ScreenSpace.Current.Viewport.Height * FovSizeFactor);
-			camera.Position = new Vector3D(6.0f, 5.9f, 6.3f);
-			//Camera.Target = new Vector3D(0.6f, 0.0f, 0.07f);
+			GameCamera.Position = new Vector3D(6.0f, 5.9f, 6.3f);
+			//GameCamera.Target = new Vector3D(0.6f, 0.0f, 0.07f);
 		}
+
+		public OrthoCamera GameCamera { get; private set; }
 
 		private void CreateGrid()
 		{

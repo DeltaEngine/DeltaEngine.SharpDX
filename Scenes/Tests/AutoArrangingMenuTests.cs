@@ -109,7 +109,7 @@ namespace DeltaEngine.Scenes.Tests
 			Assert.AreEqual(2, menu.Controls.Count);
 			var button = (Button)menu.Controls[1];
 			Assert.AreEqual(Theme.Default.Button.Material, button.Material);
-			Assert.AreEqual(new Rectangle(0.45f, 0.55f, 0.3f, 0.1f), button.DrawArea);
+			Assert.IsTrue(button.DrawArea.IsNearlyEqual(new Rectangle(0.45f, 0.55f, 0.3f, 0.1f)));
 		}
 
 		[Test, CloseAfterFirstFrame]

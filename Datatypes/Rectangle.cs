@@ -60,6 +60,7 @@ namespace DeltaEngine.Datatypes
 			return FromCorners(leftUpper, rightLower);
 		}
 
+		[Pure]
 		public Rectangle Merge(Rectangle other)
 		{
 			var leftUpper = Vector2D.Zero;
@@ -160,12 +161,14 @@ namespace DeltaEngine.Datatypes
 			get { return Width / Height; }
 		}
 
+		[Pure]
 		public Rectangle Increase(Size size)
 		{
 			return new Rectangle(Left - size.Width / 2, Top - size.Height / 2, Width + size.Width,
 				Height + size.Height);
 		}
 
+		[Pure]
 		public Rectangle Reduce(Size size)
 		{
 			return new Rectangle(Left + size.Width / 2, Top + size.Height / 2, Width - size.Width,
@@ -186,6 +189,7 @@ namespace DeltaEngine.Datatypes
 			return new Vector2D((point.X - Left) / Width, (point.Y - Top) / Height);
 		}
 
+		[Pure]
 		public Rectangle Move(Vector2D translation)
 		{
 			return new Rectangle(Left + translation.X, Top + translation.Y, Width, Height);
@@ -208,23 +212,33 @@ namespace DeltaEngine.Datatypes
 			return obj is Rectangle ? Equals((Rectangle)obj) : base.Equals(obj);
 		}
 
+		[Pure]
 		public bool Equals(Rectangle other)
 		{
 			return TopLeft.Equals(other.TopLeft) && Size.Equals(other.Size);
 		}
 
+		[Pure]
+		public bool IsNearlyEqual(Rectangle other)
+		{
+			return TopLeft.IsNearlyEqual(other.TopLeft) && Size.IsNearlyEqual((other.Size));
+		}
+
+		[Pure]
 		public override int GetHashCode()
 		{
 			// ReSharper disable NonReadonlyFieldInGetHashCode
 			return Left.GetHashCode() ^ Top.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
 		}
 
+		[Pure]
 		public override string ToString()
 		{
 			return Left.ToInvariantString() + " " + Top.ToInvariantString() + " " +
 				Width.ToInvariantString() + " " + Height.ToInvariantString();
 		}
 
+		[Pure]
 		public Vector2D[] GetRotatedRectangleCorners(Vector2D center, float rotation)
 		{
 			return new[]
@@ -234,6 +248,7 @@ namespace DeltaEngine.Datatypes
 			};
 		}
 
+		[Pure]
 		public bool IsColliding(float rotation, Rectangle otherRect, float otherRotation)
 		{
 			var rotatedRect = GetRotatedRectangleCorners(Center, rotation);
@@ -293,6 +308,7 @@ namespace DeltaEngine.Datatypes
 				Math.Min(1.0f, uvInPixels.Height / imagePixelSize.Height));
 		}
 
+		[Pure]
 		public bool IntersectsCircle(Vector2D center, float radius)
 		{
 			Vector2D clampedLocation = Vector2D.Zero;

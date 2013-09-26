@@ -152,7 +152,7 @@ namespace Snake
 
 		private void SnakeCollisionWithChunk(Vector2D trailingVector)
 		{
-			if (Chunk.TopLeft == snakeBody.BodyParts[0].TopLeft)
+			if (Chunk.TopLeft.IsNearlyEqual(snakeBody.BodyParts[0].TopLeft))
 			{
 				Chunk.SpawnAtRandomLocation();
 				GrowSnakeInSize(trailingVector);

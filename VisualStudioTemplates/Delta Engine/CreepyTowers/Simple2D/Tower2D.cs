@@ -78,7 +78,7 @@ namespace $safeprojectname$.Simple2D
 			{
 				case Tower.TowerType.Acid:
 					return Color.Green;
-				case Tower.TowerType.Blade:
+				case Tower.TowerType.Slice:
 					return Color.LightGray;
 				case Tower.TowerType.Fire:
 					return Color.Red;
@@ -162,6 +162,14 @@ namespace $safeprojectname$.Simple2D
 			circleSectorLines [0] = new Line2D(realPosition, realPosition + rightLine * 0.2f, 
 				Color.White);
 			circleSectorLines [1] = new Line2D(realPosition, realPosition + leftLine * 0.2f, Color.White);
+		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
 		}
 	}
 }

@@ -33,10 +33,13 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		{
 			var q = new QuadraticScreenSpace(window);
 			var c = new Camera2DScreenSpace(window);
-			Assert.AreEqual(q.FromPixelSpace(new Vector2D(1, 2)), c.FromPixelSpace(new Vector2D(1, 2)));
-			Assert.AreEqual(q.FromPixelSpace(new Size(-3, 4)), c.FromPixelSpace(new Size(-3, 4)));
-			Assert.AreEqual(q.ToPixelSpace(new Vector2D(2, 6)), c.ToPixelSpace(new Vector2D(2, 6)));
-			Assert.AreEqual(q.ToPixelSpace(new Size(-2, 0)), c.ToPixelSpace(new Size(-2, 0)));
+			Assert.IsTrue(
+				c.FromPixelSpace(new Vector2D(1, 2)).IsNearlyEqual(q.FromPixelSpace(new Vector2D(1, 2))));
+			Assert.IsTrue(
+				c.FromPixelSpace(new Size(-3, 4)).IsNearlyEqual(q.FromPixelSpace(new Size(-3, 4))));
+			Assert.IsTrue(
+				c.ToPixelSpace(new Vector2D(2, 6)).IsNearlyEqual(q.ToPixelSpace(new Vector2D(2, 6))));
+			Assert.IsTrue(c.ToPixelSpace(new Size(-2, 0)).IsNearlyEqual(q.ToPixelSpace(new Size(-2, 0))));
 		}
 
 		[Test]
@@ -73,8 +76,8 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			{
 				LookAt = new Vector2D(0.75f, 0.6f)
 			};
-			Assert.AreEqual(new Vector2D(0.25f, 0.31875f), camera.TopLeft);
-			Assert.AreEqual(new Vector2D(1.25f, 0.88125f), camera.BottomRight);
+			Assert.IsTrue(camera.TopLeft.IsNearlyEqual(new Vector2D(0.25f, 0.31875f)));
+			Assert.IsTrue(camera.BottomRight.IsNearlyEqual(new Vector2D(1.25f, 0.88125f)));
 			Assert.AreEqual(0.31875f, camera.Top, 0.0001f);
 			Assert.AreEqual(0.25f, camera.Left, 0.0001f);
 			Assert.AreEqual(0.88125f, camera.Bottom, 0.0001f);
@@ -106,10 +109,12 @@ namespace DeltaEngine.Tests.ScreenSpaces
 				LookAt = new Vector2D(-0.5f, 0.6f),
 				Zoom = 3.0f
 			};
-			Assert.AreEqual(new Vector2D(1.2f, 3.4f),
-				camera.ToPixelSpace(camera.FromPixelSpace(new Vector2D(1.2f, 3.4f))));
-			Assert.AreEqual(new Vector2D(1.2f, 3.4f),
-				camera.FromPixelSpace(camera.ToPixelSpace(new Vector2D(1.2f, 3.4f))));
+			Assert.IsTrue(
+				camera.ToPixelSpace(camera.FromPixelSpace(new Vector2D(1.2f, 3.4f))).IsNearlyEqual(
+					new Vector2D(1.2f, 3.4f)));
+			Assert.IsTrue(
+				camera.FromPixelSpace(camera.ToPixelSpace(new Vector2D(1.2f, 3.4f))).IsNearlyEqual(
+					new Vector2D(1.2f, 3.4f)));
 		}
 
 		[Test]
@@ -122,8 +127,8 @@ namespace DeltaEngine.Tests.ScreenSpaces
 				Zoom = 2.0f
 			};
 			Assert.AreEqual(quadraticSize.Width * 1.5f, camera.ToPixelSpace(Vector2D.Zero).X);
-			Assert.AreEqual(new Vector2D(1600, 52), camera.ToPixelSpace(Vector2D.Half));
-			Assert.AreEqual(new Vector2D(2240, 692), camera.ToPixelSpace(Vector2D.One));
+			Assert.IsTrue(camera.ToPixelSpace(Vector2D.Half).IsNearlyEqual(new Vector2D(1600, 52)));
+			Assert.IsTrue(camera.ToPixelSpace(Vector2D.One).IsNearlyEqual(new Vector2D(2240, 692)));
 			Assert.AreEqual(quadraticSize, camera.ToPixelSpace(Size.Half));
 		}
 
@@ -131,13 +136,11 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		public void ToPixelSpaceWithRotation()
 		{
 			var quadraticSize = new Size(window.ViewportPixelSize.Width);
-			var camera = new Camera2DScreenSpace(window)
-			{
-				Rotation = 90.0f
-			};
+			var camera = new Camera2DScreenSpace(window) { Rotation = 90.0f };
 			Assert.AreEqual(0.0f, camera.ToPixelSpace(Vector2D.Zero).X);
-			Assert.AreEqual(new Vector2D(-320.0f, 180.0f), camera.ToPixelSpace(Vector2D.Half));
-			Assert.AreEqual(new Vector2D(-640.0f, (320.0f+180.0f)), camera.ToPixelSpace(Vector2D.One));
+			Assert.IsTrue(camera.ToPixelSpace(Vector2D.Half).IsNearlyEqual(new Vector2D(-320.0f, 180.0f)));
+			Assert.IsTrue(
+				camera.ToPixelSpace(Vector2D.One).IsNearlyEqual(new Vector2D(-640.0f, (320.0f + 180.0f))));
 			Assert.AreEqual(quadraticSize, camera.ToPixelSpace(Size.One));
 		}
 
@@ -149,9 +152,11 @@ namespace DeltaEngine.Tests.ScreenSpaces
 				LookAt = new Vector2D(-0.5f, 0.6f),
 				Zoom = 2.0f
 			};
-			Assert.AreEqual(new Vector2D(-0.75f, 0.459375f), camera.FromPixelSpace(Vector2D.Zero));
-			Assert.AreEqual(new Vector2D(-0.25f, 0.740625f),
-				camera.FromPixelSpace((Vector2D)window.ViewportPixelSize));
+			Assert.IsTrue(
+				camera.FromPixelSpace(Vector2D.Zero).IsNearlyEqual(new Vector2D(-0.75f, 0.459375f)));
+			Assert.IsTrue(
+				camera.FromPixelSpace((Vector2D)window.ViewportPixelSize).IsNearlyEqual(new Vector2D(
+					-0.25f, 0.740625f)));
 			Assert.AreEqual(camera.LookAt, camera.FromPixelSpace((Vector2D)window.ViewportPixelSize / 2));
 		}
 	}

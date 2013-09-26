@@ -110,9 +110,7 @@ namespace $safeprojectname$.Simple2D
 			Position += previous * GetVelocity(this, data.Speed) * Time.Delta;
 			CheckIfWeCanRemoveFirstNode(previous);
 			DrawArea = display.CalculateGridScreenDrawArea(Position);
-			hitpointBar.DrawArea = HitpointsRect;
-			hitpointBar.Color = Hitpoints > data.MaxHp / 2 ? Color.Green : Hitpoints > data.MaxHp / 4 ? 
-				Color.Orange : Color.Red;
+			RecalculateHitpointBar();
 		}
 
 		protected Vector2D Direction
@@ -160,6 +158,13 @@ namespace $safeprojectname$.Simple2D
 
 			Position = listOfNodes [0];
 			listOfNodes.Remove(listOfNodes [0]);
+		}
+
+		public void RecalculateHitpointBar()
+		{
+			hitpointBar.DrawArea = HitpointsRect;
+			hitpointBar.Color = Hitpoints > data.MaxHp / 2 ? Color.Green : Hitpoints > data.MaxHp / 4 ? 
+				Color.Orange : Color.Red;
 		}
 
 		public int GoldReward
@@ -210,6 +215,12 @@ namespace $safeprojectname$.Simple2D
 
 			if (state.Wet)
 				UpdateWetState();
+
+			if (state.Slow)
+				UpdateSlowState();
+
+			if (state.Unfreezable)
+				UpdateUnfreezableState();
 		}
 
 		private void UpdateParalyzedState()
@@ -222,19 +233,25 @@ namespace $safeprojectname$.Simple2D
 		{
 			state.FrozenTimer += Time.Delta;
 			state.Frozen = !(state.FrozenTimer > state.MaxTimeShort);
-			if (!state.Frozen)
-				state.Paralysed = false;
+			if (state.Frozen)
+				return;
+
+			state.Paralysed = false;
+			state.Unfreezable = true;
+			state.UnfreezableTimer = 0;
+			state.Wet = true;
+			state.WetTimer = 0;
 		}
 
 		private void UpdateMeltState()
 		{
 			state.MeltTimer += Time.Delta;
 			state.Melt = !(state.MeltTimer > state.MaxTimeShort);
-			if (!state.Melt)
-			{
-				state.Slow = false;
-				state.Enfeeble = false;
-			}
+			if (state.Melt)
+				return;
+
+			state.Slow = false;
+			state.Enfeeble = false;
 		}
 
 		private void UpdateWetState()
@@ -243,6 +260,29 @@ namespace $safeprojectname$.Simple2D
 			state.Wet = !(state.WetTimer > state.MaxTimeShort);
 			if (!state.Wet)
 				state.Slow = false;
+		}
+
+		private void UpdateSlowState()
+		{
+			if (state.SlowTimer == -1)
+				return;
+
+			state.SlowTimer += Time.Delta;
+			state.Slow = !(state.SlowTimer > state.MaxTimeShort);
+		}
+
+		private void UpdateUnfreezableState()
+		{
+			state.UnfreezableTimer += Time.Delta;
+			state.Unfreezable = !(state.UnfreezableTimer > state.MaxTimeMedium);
+		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
 		}
 	}
 }

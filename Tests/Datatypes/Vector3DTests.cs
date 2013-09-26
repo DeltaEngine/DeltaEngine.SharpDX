@@ -8,6 +8,16 @@ namespace DeltaEngine.Tests.Datatypes
 {
 	public class Vector3DTests
 	{
+		[SetUp]
+		public void SetUp()
+		{
+			v1 = new Vector3D(1, 2, -3);
+			v2 = new Vector3D(4, -5, 6);
+		}
+
+		private Vector3D v1;
+		private Vector3D v2;
+
 		[Test]
 		public void Create()
 		{
@@ -75,8 +85,8 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void StaticNormalize()
 		{
-			var vector = new Vector3D(2.0f, 4.0f, -3.0f);
-			var normalized = Vector3D.Normalize(vector);
+			var v = new Vector3D(2.0f, 4.0f, -3.0f);
+			var normalized = Vector3D.Normalize(v);
 			Assert.AreEqual(1.0f, normalized.LengthSquared, MathExtensions.Epsilon);
 			Assert.AreEqual(Vector3D.Zero, Vector3D.Normalize(Vector3D.Zero));
 		}
@@ -84,22 +94,22 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void NormalizeOfAnyVector()
 		{
-			var vector = new Vector3D(1.0f, 2.0f, -3.0f);
-			Assert.AreNotEqual(1.0f, vector.Length);
-			vector.Normalize();
-			Assert.AreEqual(1.0f, vector.LengthSquared, MathExtensions.Epsilon);
-			vector = Vector3D.UnitX;
-			vector.Normalize();
-			Assert.AreEqual(1.0f, vector.Length, MathExtensions.Epsilon);
+			var v = new Vector3D(1.0f, 2.0f, -3.0f);
+			Assert.AreNotEqual(1.0f, v.Length);
+			v.Normalize();
+			Assert.AreEqual(1.0f, v.LengthSquared, MathExtensions.Epsilon);
+			v = Vector3D.UnitX;
+			v.Normalize();
+			Assert.AreEqual(1.0f, v.Length, MathExtensions.Epsilon);
 		}
 
 		[Test]
 		public void NormalizeOfUnitVectorIsNotNecessary()
 		{
-			var vector = Vector3D.UnitX;
-			Assert.AreEqual(1.0f, vector.Length, MathExtensions.Epsilon);
-			vector.Normalize();
-			Assert.AreEqual(1.0f, vector.Length, MathExtensions.Epsilon);
+			var v = Vector3D.UnitX;
+			Assert.AreEqual(1.0f, v.Length, MathExtensions.Epsilon);
+			v.Normalize();
+			Assert.AreEqual(1.0f, v.Length, MathExtensions.Epsilon);
 		}
 
 		[Test]
@@ -114,35 +124,28 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void Addition()
 		{
-			var v1 = new Vector3D(1, 2, 3);
-			var v2 = new Vector3D(3, 4, 5);
-			Assert.AreEqual(new Vector3D(4, 6, 8), v1 + v2);
+			Assert.AreEqual(new Vector3D(5, -3, 3), v1 + v2);
 		}
 
 		[Test]
 		public void Subtraction()
 		{
-			var v1 = new Vector3D(1, 2, 3);
-			var v2 = new Vector3D(3, 4, 5);
-			Assert.AreEqual(new Vector3D(-2, -2, -2), v1 - v2);
+			Assert.AreEqual(new Vector3D(-3, 7, -9), v1 - v2);
 		}
 
 		[Test]
 		public void Negation()
 		{
-			var v = new Vector3D(1, 2, 3);
-			Assert.AreEqual(-v, new Vector3D(-1, -2, -3));
+			Assert.AreEqual(-v1, new Vector3D(-1, -2, 3));
 		}
 
 		[Test]
 		public void Multiplication()
 		{
-			var v = new Vector3D(2, 4, -1);
 			const float Factor = 1.5f;
-			Assert.AreEqual(new Vector3D(3, 6, -1.5f), v * Factor);
-			Assert.AreEqual(new Vector3D(3, 6, -1.5f), Factor * v);
-			var v2 = new Vector3D(2, 2, 2);
-			Assert.AreEqual(new Vector3D(4, 8, -2), v * v2);
+			Assert.AreEqual(new Vector3D(1.5f, 3.0f, -4.5f), v1 * Factor);
+			Assert.AreEqual(new Vector3D(1.5f, 3.0f, -4.5f), Factor * v1);
+			Assert.AreEqual(new Vector3D(4, -10, -18), v1 * v2);
 		}
 
 		[Test]
@@ -170,13 +173,20 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void Equals()
 		{
-			var v1 = new Vector3D(1, 2, 3);
-			var v2 = new Vector3D(3, 4, 5);
+			Assert.AreEqual(v1, new Vector3D(1, 2, -3));
+			Assert.IsTrue(v1 == new Vector3D(1, 2, -3));
+			Assert.IsTrue(v1.Equals((object)new Vector3D(1, 2, -3)));
+			Assert.IsFalse(v1.Equals((object)new Vector3D(1.000001f, 2, -3)));
 			Assert.AreNotEqual(v1, v2);
-			Assert.AreEqual(v1, new Vector3D(1, 2, 3));
-			Assert.IsTrue(v1 == new Vector3D(1, 2, 3));
+			Assert.AreNotEqual(v1, new Vector3D(1.000001f, 2, -3));
 			Assert.IsTrue(v1 != v2);
-			Assert.IsTrue(v1.Equals((object)new Vector3D(1, 2, 3)));
+		}
+
+		[Test]
+		public void NearlyEquals()
+		{
+			Assert.IsTrue(v1.IsNearlyEqual(new Vector3D(1.000001f, 1.99999f, -2.99999f)));
+			Assert.IsFalse(v1.IsNearlyEqual(new Vector3D(1, 2.1f, -3)));
 		}
 
 		[Test]
@@ -191,12 +201,10 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void GetHashCodeViaDictionary()
 		{
-			var first = new Vector3D(1, 2, 3);
-			var second = new Vector3D(3, 4, 5);
-			var pointValues = new Dictionary<Vector3D, int> { { first, 1 }, { second, 2 } };
-			Assert.IsTrue(pointValues.ContainsKey(first));
-			Assert.IsTrue(pointValues.ContainsKey(second));
-			Assert.IsFalse(pointValues.ContainsKey(new Vector3D(5, 6, 7)));
+			var vector3DValues = new Dictionary<Vector3D, int> { { v1, 1 }, { v2, 2 } };
+			Assert.IsTrue(vector3DValues.ContainsKey(v1));
+			Assert.IsTrue(vector3DValues.ContainsKey(v2));
+			Assert.IsFalse(vector3DValues.ContainsKey(new Vector3D(5, 6, 7)));
 		}
 
 		[Test]

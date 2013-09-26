@@ -62,6 +62,8 @@ namespace DeltaEngine.Tests.Entities
 			{
 				Position += Vector2D.One;
 			}
+
+			public bool IsPauseable { get { return true; } }
 		}
 	}
 }

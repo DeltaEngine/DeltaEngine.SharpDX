@@ -245,7 +245,7 @@ namespace DeltaEngine.Tests.Core
 		public void ThrowExceptionOnSavingAnInvalidObject()
 		{
 			Assert.Throws<NullReferenceException>(
-				() => BinaryDataSaver.TrySaveData(null, typeof(object), null));
+				() => BinaryDataSaver.SaveDataType(null, typeof(object), null));
 		}
 
 		[Test]
@@ -254,7 +254,7 @@ namespace DeltaEngine.Tests.Core
 			using (var otherStreamThanMemory = new BufferedStream(new MemoryStream()))
 			using (var dataWriter = new BinaryWriter(otherStreamThanMemory))
 				Assert.Throws<BinaryDataSaver.UnableToSave>(
-					() => BinaryDataSaver.TrySaveData(otherStreamThanMemory, typeof(object), dataWriter));
+					() => BinaryDataSaver.SaveDataType(otherStreamThanMemory, typeof(object), dataWriter));
 		}
 	}
 }

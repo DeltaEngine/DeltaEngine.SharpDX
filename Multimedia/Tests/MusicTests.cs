@@ -83,6 +83,8 @@ namespace DeltaEngine.Multimedia.Tests
 			{
 				Thread.Sleep(timeout);
 			}
+
+			public bool IsPauseable { get { return true; } }
 		}
 
 		[Test, Ignore]
@@ -113,6 +115,8 @@ namespace DeltaEngine.Multimedia.Tests
 				Assert.IsFalse(music.IsPlaying());
 				Assert.Less(0.99f, music.PositionInSeconds);
 			}
+
+			public bool IsPauseable { get { return true; } }
 		}
 
 		[Test, Ignore]

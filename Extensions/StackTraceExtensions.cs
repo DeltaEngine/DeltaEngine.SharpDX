@@ -105,10 +105,10 @@ namespace DeltaEngine.Extensions
 			if (!String.IsNullOrEmpty(unitTestClassFullName))
 				return GetNamespaceNameFromClassName(unitTestClassFullName);
 			//ncrunch: no coverage start (these lines can only be reached from production code)
-			foreach (StackFrame frame in frames.Where(IsTestOrTestSetupMethod))
-				return frame.GetMethod().DeclaringType.Assembly.GetName().Name;
 			foreach (StackFrame frame in frames.Where(frame => frame.GetMethod().Name == "Main"))
 				return GetNamespaceName(frame);
+			foreach (StackFrame frame in frames.Where(IsTestOrTestSetupMethod))
+				return frame.GetMethod().DeclaringType.Assembly.GetName().Name;
 			if (IsRunningAsWindowsService(frames))
 				return GetNamespaceNameForWindowsService(frames.ToList());
 			throw new ExecutingAssemblyOrNamespaceNotFound();		

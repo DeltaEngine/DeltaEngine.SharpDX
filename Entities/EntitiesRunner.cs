@@ -212,8 +212,7 @@ namespace DeltaEngine.Entities
 
 		private void RunEntityRapidUpdateIfNotPaused(RapidUpdateable entity)
 		{
-			var pauseable = entity as Pauseable;
-			if (!isPaused || (pauseable != null && !pauseable.IsPauseable))
+			if (!isPaused || !entity.IsPauseable)
 				entity.RapidUpdate();
 		}
 
@@ -246,8 +245,7 @@ namespace DeltaEngine.Entities
 		private void RunUpdateBehaviorIfNotPaused(UpdateBehavior updateBehavior,
 			IEnumerable<Entity> entities)
 		{
-			var pauseable = updateBehavior as Pauseable;
-			if (isPaused && (pauseable == null || pauseable.IsPauseable))
+			if (isPaused && updateBehavior.isPauseable)
 				return;
 			var filtered = updateBehavior as Filtered;
 			updateBehavior.Update(filtered != null ? entities.Where(filtered.Filter).ToList() : entities);
@@ -255,8 +253,7 @@ namespace DeltaEngine.Entities
 
 		private void RunEntityUpdateIfNotPaused(Updateable entity)
 		{
-			var pauseable = entity as Pauseable;
-			if (!isPaused || (pauseable != null && !pauseable.IsPauseable))
+			if (!isPaused || !entity.IsPauseable)
 				entity.Update();
 		}
 

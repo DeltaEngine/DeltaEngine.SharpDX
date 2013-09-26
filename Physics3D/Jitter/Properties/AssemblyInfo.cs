@@ -8,6 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright � Delta Engine 2013")]
 [assembly: ComVisible(false)]
 [assembly: Guid("c713e3e2-1d0a-41e7-9f2e-a080008c7b96")]
-[assembly: AssemblyVersion("0.9.9.3")]
-[assembly: AssemblyFileVersion("0.9.9.3")]
+[assembly: AssemblyVersion("0.9.9.4")]
+[assembly: AssemblyFileVersion("0.9.9.4")]
 [assembly: InternalsVisibleTo("DeltaEngine.Physics3D.Jitter.Tests")]

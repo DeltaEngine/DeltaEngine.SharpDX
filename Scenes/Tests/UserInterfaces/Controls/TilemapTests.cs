@@ -77,7 +77,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			tilemap.State.DragStart = new Vector2D(0.5f, 0.5f);
 			tilemap.State.DragEnd = new Vector2D(0.7f, 0.9f);
 			tilemap.Update();
-			Assert.AreEqual(tilemap.State.DragDelta, new Vector2D(0.2f, 0.4f));
+			Assert.IsTrue(tilemap.State.DragDelta.IsNearlyEqual(new Vector2D(0.2f, 0.4f)));
 		}
 
 		[Test]

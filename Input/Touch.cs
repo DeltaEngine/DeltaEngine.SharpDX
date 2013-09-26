@@ -17,18 +17,23 @@ namespace DeltaEngine.Input
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
-			if (!IsAvailable)
-				return; //ncrunch: no coverage
-			foreach (Entity entity in entities)
-			{
-				TryInvokeTriggerOfType<TouchPressTrigger>(entity, IsTouchPressTriggered);
-				TryInvokeTriggerOfType<TouchMovementTrigger>(entity, IsTouchMovementTriggered);
-				TryInvokeTriggerOfType<TouchPositionTrigger>(entity, IsTouchPositionTriggered);
-				TryInvokeTriggerOfType<TouchTapTrigger>(entity, IsTouchTapTriggered);
-				TryInvokeTriggerOfType<TouchDragTrigger>(entity, IsTouchDragTriggered);
-				TryInvokeTriggerOfType<TouchDragDropTrigger>(entity, IsTouchDragDropTriggered);
-				TryInvokeTriggerOfType<TouchHoldTrigger>(entity, IsTouchHoldTriggered);
-			}
+			if (IsAvailable)
+				foreach (Entity entity in entities)
+					InvokeTriggersForEntity(entity);
+		}
+
+		private void InvokeTriggersForEntity(Entity entity)
+		{
+			TryInvokeTriggerOfType<TouchPressTrigger>(entity, IsTouchPressTriggered);
+			TryInvokeTriggerOfType<TouchMovementTrigger>(entity, IsTouchMovementTriggered);
+			TryInvokeTriggerOfType<TouchPositionTrigger>(entity, IsTouchPositionTriggered);
+			TryInvokeTriggerOfType<TouchTapTrigger>(entity, IsTouchTapTriggered);
+			TryInvokeTriggerOfType<TouchDragTrigger>(entity, IsTouchDragTriggered);
+			TryInvokeTriggerOfType<TouchDragDropTrigger>(entity, IsTouchDragDropTriggered);
+			TryInvokeTriggerOfType<TouchHoldTrigger>(entity, IsTouchHoldTriggered);
+			TryInvokeTriggerOfType<TouchPinchTrigger>(entity, IsTouchPinchTriggered);
+			TryInvokeTriggerOfType<TouchRotateTrigger>(entity, IsTouchRotateTriggered);
+			TryInvokeTriggerOfType<TouchFlickTrigger>(entity, IsTouchFlickTriggered);
 		}
 
 		private static void TryInvokeTriggerOfType<T>(Entity entity, Func<T, bool> triggeredCode)
@@ -71,6 +76,28 @@ namespace DeltaEngine.Input
 			return isNowReleased && wasJustStartedPressing;
 		}
 
+		private bool IsTouchFlickTriggered(TouchFlickTrigger trigger)
+		{
+			if (GetState(0) == State.Pressing)
+			{
+				trigger.StartPosition = GetPosition(0);
+				trigger.PressTime = 0;
+			}
+			else if (trigger.StartPosition != Vector2D.Unused && GetState(0) != State.Released)
+			{
+				trigger.PressTime += Time.Delta;
+				if (GetState(0) == State.Releasing &&
+					trigger.StartPosition.DistanceTo(GetPosition(0)) > PositionEpsilon)
+					return trigger.PressTime < 0.3f;
+			}
+			else
+			{
+				trigger.StartPosition = Vector2D.Unused;
+				trigger.PressTime = 0;
+			}
+			return false;
+		}
+
 		private bool IsTouchDragTriggered(TouchDragTrigger trigger)
 		{
 			if (GetState(0) == State.Pressing)
@@ -78,10 +105,18 @@ namespace DeltaEngine.Input
 			else if (trigger.StartPosition != Vector2D.Unused &&
 				GetState(0) != State.Released)
 			{
-				if (trigger.StartPosition.DistanceTo(GetPosition(0)) > PositionEpsilon)
+				var movementDirection = trigger.StartPosition.DirectionTo(GetPosition(0));
+				if (movementDirection.Length > PositionEpsilon)
 				{
-					trigger.Position = GetPosition(0);
-					trigger.DoneDragging = GetState(0) == State.Releasing;
+					if ((trigger.Direction == DragDirection.Horizontal &&
+						Math.Abs(movementDirection.Y) < AllowedDragDirectionOffset) ||
+						(trigger.Direction == DragDirection.Vertical &&
+							Math.Abs(movementDirection.X) < AllowedDragDirectionOffset) ||
+						trigger.Direction == DragDirection.Free)
+					{
+						trigger.Position = GetPosition(0);
+						trigger.DoneDragging = GetState(0) == State.Releasing;
+					}
 					return true;
 				}
 			}
@@ -94,6 +129,33 @@ namespace DeltaEngine.Input
 		}
 
 		private const float PositionEpsilon = 0.0025f;
+		private const float AllowedDragDirectionOffset = 0.01f;
+
+		private bool IsTouchPinchTriggered(TouchPinchTrigger trigger)
+		{
+			if (GetState(0) >= State.Pressing && GetState(1) >= State.Pressing)
+			{
+				trigger.Distance = Math.Abs((GetPosition(1) - GetPosition(0)).Length);
+				return true;
+			}
+			trigger.Distance = 0f;
+			return false;
+		}
+
+		private bool IsTouchRotateTriggered(TouchRotateTrigger trigger)
+		{
+			if (GetState(0) >= State.Pressing && GetState(1) >= State.Pressing)
+			{
+				var vector = (GetPosition(1) - GetPosition(0));
+				vector = vector / vector.Length;
+				trigger.Angle = (float)Math.Atan2(vector.X, vector.Y);
+				if (trigger.Angle < 0)
+					trigger.Angle += (float)(2 * Math.PI);
+				return true;
+			}
+			trigger.Angle = 0f;
+			return false;
+		}
 
 		private bool IsTouchDragDropTriggered(TouchDragDropTrigger trigger)
 		{

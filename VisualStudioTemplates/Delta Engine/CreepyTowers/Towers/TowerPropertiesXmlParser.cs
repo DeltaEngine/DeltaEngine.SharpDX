@@ -23,7 +23,7 @@ namespace $safeprojectname$.Towers
 		private void ParseTowerPropertiesXml()
 		{
 			XmlData towerData = ContentLoader.Load<XmlContent>("TowerProperties").Data;
-			foreach (var tower in towerData.GetChild("Towers").GetChildren("Tower"))
+			foreach (var tower in towerData.GetChildren("Tower"))
 				try
 				{
 					var towerProperty = CreateTowerProperties(tower);
@@ -35,20 +35,20 @@ namespace $safeprojectname$.Towers
 				}
 		}
 
-		private static TowerProperties CreateTowerProperties(XmlData creep)
+		private static TowerProperties CreateTowerProperties(XmlData tower)
 		{
 			return new TowerProperties {
-				Name = creep.GetAttributeValue("Name"),
+				Name = tower.GetAttributeValue("Name"),
 				TowerType = (Tower.TowerType)Enum.Parse(typeof(Tower.TowerType), 
-					creep.GetAttributeValue("Type")),
+					tower.GetAttributeValue("Type")),
 				AttackType = (Tower.AttackType)Enum.Parse(typeof(Tower.AttackType), 
-					creep.GetAttributeValue("AttackType")),
-				Range = float.Parse(creep.GetAttributeValue("Range"), CultureInfo.InvariantCulture),
-				AttackFrequency = float.Parse(creep.GetAttributeValue("AttackFrequency"), 
+					tower.GetAttributeValue("AttackType")),
+				Range = float.Parse(tower.GetAttributeValue("Range"), CultureInfo.InvariantCulture),
+				AttackFrequency = float.Parse(tower.GetAttributeValue("AttackFrequency"), 
 					CultureInfo.InvariantCulture),
-				AttackDamage = float.Parse(creep.GetAttributeValue("AttackDamage"), 
+				AttackDamage = float.Parse(tower.GetAttributeValue("AttackDamage"), 
 					CultureInfo.InvariantCulture),
-				Cost = int.Parse(creep.GetAttributeValue("Gold"), CultureInfo.InvariantCulture)
+				Cost = int.Parse(tower.GetAttributeValue("Cost"), CultureInfo.InvariantCulture)
 			};
 		}
 		private class InvalidTowerProperties : Exception

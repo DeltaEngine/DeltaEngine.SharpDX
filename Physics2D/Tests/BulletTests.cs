@@ -12,7 +12,7 @@ namespace DeltaEngine.Physics2D.Tests
 			var bulletImpulse = new Vector2D(0.3f, 0.3f);
 			const int BulletDamage = 10;
 			var bullet = CreateBullet(bulletImpulse, BulletDamage);
-			Assert.AreEqual(bulletImpulse / 1000000f, bullet.PhysicsBody.LinearVelocity);
+			Assert.IsTrue(bullet.PhysicsBody.LinearVelocity.IsNearlyEqual(bulletImpulse / 1000000f));
 			Assert.AreEqual(BulletDamage, bullet.Damage);
 		}
 

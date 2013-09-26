@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using $safeprojectname$.Levels;
-using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 
@@ -75,17 +74,11 @@ namespace $safeprojectname$.Creeps
 				if (timeSinceLastCreep < wave.CreepSpawnInterval)
 					return;
 
-				manager.CreateCreep(Vector3D.One, Names.CreepCottonMummy, MovementData(startPos, 
-					wayPoints));
+				manager.CreateCreep(Vector3D.One, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
+					MovementData(startPos, wayPoints));
 				timeSinceLastCreep = 0.0f;
 			}
 		}
-		private static List<Tuple<int, int>> SelectRandomWaypointList(Level.GridData data)
-		{
-			var randomNo = Randomizer.Current.Get(0, 1);
-			return data.CreepPathsList [randomNo];
-		}
-
 		private static MovementInGrid.MovementData MovementData(Tuple<int, int> startPos, 
 			List<Tuple<int, int>> waypoints)
 		{

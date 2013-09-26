@@ -133,5 +133,13 @@ namespace $safeprojectname$
 			vel.velocity.Y = -0.02f;
 			rect.Bottom = borders.Bottom;
 		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
+		}
 	}
 }

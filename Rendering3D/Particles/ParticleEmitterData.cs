@@ -12,7 +12,7 @@ namespace DeltaEngine.Rendering3D.Particles
 	public class ParticleEmitterData : ContentData
 	{
 		protected ParticleEmitterData(string contentName)
-			: base(contentName) { }
+			: base(contentName) {}
 
 		public ParticleEmitterData()
 			: base("<GeneratedParticleEmitterData>")
@@ -24,7 +24,9 @@ namespace DeltaEngine.Rendering3D.Particles
 			StartPosition = new RangeGraph<Vector3D>(Vector3D.Zero, Vector3D.Zero);
 			StartRotation = new RangeGraph<ValueRange>();
 			RotationSpeed = new RangeGraph<ValueRange>();
-			ParticlesPerSpawn = new RangeGraph<ValueRange>(new ValueRange(1,1), new ValueRange(1,1));
+			EmitterType = "PointEmitter";
+			ParticlesPerSpawn = new RangeGraph<ValueRange>(new ValueRange(1, 1), new ValueRange(1, 1));
+			//BillboardMode = BillboardMode.Standard2D;
 		}
 
 		protected override void DisposeData() { }
@@ -58,6 +60,9 @@ namespace DeltaEngine.Rendering3D.Particles
 			ParticleMaterial = emitterData.ParticleMaterial;
 			ParticlesPerSpawn = emitterData.ParticlesPerSpawn;
 			RotationSpeed = emitterData.RotationSpeed;
+			EmitterType = emitterData.EmitterType;
+			StartPosition = emitterData.StartPosition;
+			//BillboardMode = emitterData.BillboardMode;
 		}
 	}
 }

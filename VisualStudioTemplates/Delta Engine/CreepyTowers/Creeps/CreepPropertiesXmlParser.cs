@@ -24,7 +24,7 @@ namespace $safeprojectname$.Creeps
 		private void ParseCreepPropertiesXml()
 		{
 			XmlData creepData = ContentLoader.Load<XmlContent>("CreepProperties").Data;
-			foreach (var creep in creepData.GetChild("Creeps").GetChildren("Creep"))
+			foreach (var creep in creepData.GetChildren("Creep"))
 				try
 				{
 					var creepsProperties = CreateCreepProperties(creep);
@@ -56,7 +56,7 @@ namespace $safeprojectname$.Creeps
 			var typeDamageModifier = new Dictionary<Tower.TowerType, float>();
 			foreach (var attribute in creep.GetChild("Modifiers").Attributes)
 				typeDamageModifier.Add((Tower.TowerType)Enum.Parse(typeof(Tower.TowerType), 
-					attribute.Name), float.Parse(attribute.Value));
+					attribute.Name), float.Parse(attribute.Value, CultureInfo.InvariantCulture));
 
 			return typeDamageModifier;
 		}

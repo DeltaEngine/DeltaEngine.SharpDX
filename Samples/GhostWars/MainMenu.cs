@@ -86,9 +86,24 @@ namespace GhostWars
 
 		private void AddBackButton()
 		{
-			var buttonRect = new Rectangle(0.8f, 0.2f, 0.19f, 0.0525f);
-			Add(new Sprite("ButtonBackground", buttonRect));
-			Add(new FontText(Font, "Back", buttonRect) { Color = Color.White });
+			Add(backButton = new Sprite("ButtonBackground", GetBackButtonDrawArea()));
+			Add(backButtonText = new FontText(Font, "Back", GetBackButtonDrawArea()) { Color = Color.White });
+			ScreenSpace.Current.ViewportSizeChanged += PositionBackButtonAndText;
+		}
+
+		private Sprite backButton;
+		private FontText backButtonText;
+
+		private static Rectangle GetBackButtonDrawArea()
+		{
+			return new Rectangle(ScreenSpace.Current.Viewport.Right - 0.2f,
+				ScreenSpace.Current.Viewport.Top + 0.01f, 0.19f, 0.0525f);
+		}
+
+		private void PositionBackButtonAndText()
+		{
+			backButton.DrawArea = GetBackButtonDrawArea();
+			backButtonText.DrawArea = GetBackButtonDrawArea();
 		}
 
 		private void OnSingleplayer()
@@ -200,5 +215,7 @@ namespace GhostWars
 		{
 			get { return ContentLoader.Load<Font>("Tahoma30"); }
 		}
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

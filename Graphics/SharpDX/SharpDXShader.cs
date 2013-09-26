@@ -77,6 +77,8 @@ namespace DeltaEngine.Graphics.SharpDX
 					vertexElements[elementIndex++] = GetVertexTextureCoordinate(vertexElement.Offset);
 				else if (vertexElement.ElementType == VertexElementType.LightMapUV)
 					vertexElements[elementIndex++] = GetVertexLightMapUv(vertexElement.Offset);
+				else if (vertexElement.ElementType == VertexElementType.Normal)
+					vertexElements[elementIndex++] = GetVertexNormal3D(vertexElement.Offset);
 			inputLayout = new InputLayout(nativeDevice, vertexShaderBytecode, vertexElements);
 		}
 
@@ -90,6 +92,11 @@ namespace DeltaEngine.Graphics.SharpDX
 		private static InputElement GetVertexPosition3D(int offset)
 		{
 			return new InputElement("SV_POSITION", 0, SharpDXFormat.R32G32B32_Float, offset, 0);
+		}
+
+		private static InputElement GetVertexNormal3D(int offset)
+		{
+			return new InputElement("NORMAL", 0, SharpDXFormat.R32G32B32_Float, offset, 0);
 		}
 
 		private static InputElement GetVertexColor(int offset)

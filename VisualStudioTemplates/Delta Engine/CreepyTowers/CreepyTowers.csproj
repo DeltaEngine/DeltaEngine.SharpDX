@@ -120,7 +120,7 @@
     <Compile Include="CreateCameraAndGrid.cs" />
     <Compile Include="Creeps\Creep.cs" />
     <Compile Include="Creeps\CreepPropertiesXmlParser.cs" />
-    <Compile Include="Towers\FindPossibleTargets.cs" />
+    <Compile Include="FindPossibleTargets.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="InputCommands.cs" />
     <Compile Include="Levels\LevelGrid.cs" />
@@ -145,7 +145,7 @@
     <Compile Include="Levels\GridProperties.cs" />
     <Compile Include="GUI\Hud.cs" />
     <Compile Include="GUI\MainMenu.cs" />
-    <Compile Include="Levels\MovememtInGrid.cs" />
+    <Compile Include="Creeps\MovememtInGrid.cs" />
     <Compile Include="Names.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RemapCoordinates.cs" />

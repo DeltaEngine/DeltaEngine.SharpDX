@@ -13,8 +13,17 @@ namespace DeltaEngine.Core
 	/// </summary>
 	internal static class BinaryDataSaver
 	{
-		internal static void TrySaveData(object data, Type type, BinaryWriter writer)
+		internal static void SaveDataType(object data, Type type, BinaryWriter writer)
 		{
+			topLevelTypeToSave = type;
+			TrySaveData(data, type, writer);
+		}
+
+		private static Type topLevelTypeToSave;
+
+		private static void TrySaveData(object data, Type type, BinaryWriter writer)
+		{
+			topLevelTypeToSave = type;
 			try
 			{
 				SaveData(data, type, writer);
@@ -38,7 +47,7 @@ namespace DeltaEngine.Core
 			if (data is ContentData)
 			{
 				writer.Write((data as ContentData).Name);
-				if (!(data as ContentData).Name.StartsWith("<Generated"))
+				if (topLevelTypeToSave != type && !(data as ContentData).Name.StartsWith("<Generated"))
 					return;
 			}
 			if (data is Entity)
@@ -84,7 +93,8 @@ namespace DeltaEngine.Core
 			SaveArray(behaviorNames, writer);
 		}
 
-		private static void SaveDrawableEntityDrawBehaviors(DrawableEntity drawable, BinaryWriter writer)
+		private static void SaveDrawableEntityDrawBehaviors(DrawableEntity drawable,
+			BinaryWriter writer)
 		{
 			List<DrawBehavior> drawBehaviorTypes = drawable.GetDrawBehaviors();
 			var drawBehaviorNames = new List<string>();
@@ -261,12 +271,10 @@ namespace DeltaEngine.Core
 		{
 			Type firstType = null;
 			foreach (object element in data.Values)
-			{
 				if (firstType == null)
 					firstType = BinaryDataExtensions.GetTypeOrObjectType(element);
 				else if (BinaryDataExtensions.GetTypeOrObjectType(element) != firstType)
 					return false;
-			}
 			return true;
 		}
 
@@ -277,7 +285,7 @@ namespace DeltaEngine.Core
 			Type keyType = null;
 			Type valueType = null;
 			var pair = data.GetEnumerator();
-			while(pair.MoveNext())
+			while (pair.MoveNext())
 			{
 				if (keyType == null)
 				{

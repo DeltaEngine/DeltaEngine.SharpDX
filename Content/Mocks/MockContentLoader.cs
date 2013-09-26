@@ -8,6 +8,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Vertices;
+using DeltaEngine.Multimedia;
 using DeltaEngine.Rendering3D.Particles;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
@@ -265,6 +266,8 @@ namespace DeltaEngine.Content.Mocks
 				return CreateMeshMetaData(contentName);
 			if (contentType == ContentType.Shader)
 				return CreateShaderData(contentName);
+			if (contentType == ContentType.Video)
+				return CreateVideoData(contentName);
 			return new ContentMetaData { Name = contentName, Type = contentType };
 		}
 
@@ -365,8 +368,14 @@ namespace DeltaEngine.Content.Mocks
 
 		private static ContentMetaData CreateShaderData(string contentName)
 		{
-			var metaData = new ContentMetaData { Name = contentName, Type = ContentType.Shader };
-			return metaData;
+			return new ContentMetaData { Name = contentName, Type = ContentType.Shader };
+		}
+
+		private static ContentMetaData CreateVideoData(string contentName)
+		{
+			if (contentName.Contains("No"))
+				throw new Video.VideoNotFoundOrAccessible(contentName, null);
+			return new ContentMetaData { Name = contentName, Type = ContentType.Video };
 		}
 	}
 }

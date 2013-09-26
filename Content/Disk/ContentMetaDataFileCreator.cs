@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 

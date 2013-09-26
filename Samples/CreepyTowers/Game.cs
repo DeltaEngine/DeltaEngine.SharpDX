@@ -15,8 +15,7 @@ namespace CreepyTowers
 			Game.window = window;
 			Game.device = device;
 			Game.window.Title = "Creepy Towers";
-			var viewPortSize = new Size(1920, 1080);
-			Game.window.ViewportPixelSize = viewPortSize;
+			Game.window.ViewportPixelSize = new Size(1920, 1080);
 			//Game.window.SetFullscreen(viewPortSize);
 			MaxZoomedOutFovSize = 6.0f;
 			CameraAndGrid = new CreateCameraAndGrid(MaxZoomedOutFovSize);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CreepyTowers.Creeps;
 using CreepyTowers.GUI;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -11,7 +12,7 @@ namespace CreepyTowers.Levels
 	/// <summary>
 	/// LevelChildsRoom telling the player how to do things in a visual way
 	/// </summary>
-	public class LevelLivingRoom : Scene, IDisposable
+	public class LevelLivingRoom : Scene
 	{
 		public LevelLivingRoom()
 		{
@@ -75,7 +76,7 @@ namespace CreepyTowers.Levels
 			var startGridPos = randomWaypointsList[0];
 			var position =
 				Game.CameraAndGrid.Grid.PropertyMatrix[startGridPos.Item1, startGridPos.Item2].MidPoint;
-			manager.CreateCreep(position, Names.CreepCottonMummy,
+			manager.CreateCreep(position, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
 				MovementData(startGridPos, randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
 		}
 
@@ -104,7 +105,7 @@ namespace CreepyTowers.Levels
 			livingRoomScene.NextDialogue();
 		}
 
-		public new void Dispose()
+		protected override void DisposeData()
 		{
 			livingRoomScene.Dispose();
 			livingRoom.Dispose();

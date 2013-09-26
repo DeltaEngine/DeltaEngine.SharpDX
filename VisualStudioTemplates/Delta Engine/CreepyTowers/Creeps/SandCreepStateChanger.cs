@@ -1,3 +1,4 @@
+using $safeprojectname$.Levels;
 using $safeprojectname$.Towers;
 using DeltaEngine.Core;
 
@@ -43,7 +44,8 @@ namespace $safeprojectname$.Creeps
 					return;
 				}
 				creep.IsActive = false;
-				new Creep(creep.Position, Creep.CreepType.Glass, Names.CreepCottonMummy);
+				new Creep(creep.Position, Names.CreepGlass, new CreepProperties()).Add(new 
+					MovementInGrid.MovementData());
 			}
 		}
 
@@ -57,7 +59,7 @@ namespace $safeprojectname$.Creeps
 			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Resistant);
 			creep.state.SetVulnerability(Tower.TowerType.Ice, CreepState.VulnerabilityType.Immune);
 			creep.state.SetVulnerability(Tower.TowerType.Acid, CreepState.VulnerabilityType.Immune);
-			creep.state.SetVulnerability(Tower.TowerType.Blade, CreepState.VulnerabilityType.HardBoiled);
+			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.HardBoiled);
 		}
 	}
 }

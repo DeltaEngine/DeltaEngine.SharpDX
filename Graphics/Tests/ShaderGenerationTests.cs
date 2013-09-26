@@ -37,8 +37,8 @@ namespace DeltaEngine.Graphics.Tests
 			Create(ShaderCodeOpenGL.UvSkinnedVertexCode, ShaderCodeOpenGL.UvSkinnedFragmentCode, "_",
 				"_", VertexFormat.Position3DUvSkinned, Shader.Position3DUvSkinned);
 			Create(ShaderCodeOpenGL.PositionUvNormalOpenGLVertexCode,
-				ShaderCodeOpenGL.PositionUvNormalOpenGLFragmentCode, ShaderCodeDX11.PositionUvDx11,
-				ShaderCodeDX9.Position3DUvDx9, VertexFormat.Position3DNormalUv, Shader.Position3DNormalUv);				
+				ShaderCodeOpenGL.PositionUvNormalOpenGLFragmentCode, ShaderCodeDX11.PositionNormalUvDx11,
+				ShaderCodeDX9.Position3DNormalUvDx9, VertexFormat.Position3DNormalUv, Shader.Position3DNormalUv);				
 		}
 
 		private static void Create(string vertexCode, string fragmentCode, string dx11Code,

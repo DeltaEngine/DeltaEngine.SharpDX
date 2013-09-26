@@ -8,10 +8,6 @@ namespace $safeprojectname$
 {
 	public class FadeEffect : UpdateBehavior
 	{
-		public FadeEffect() : base(Priority.Low)
-		{
-		}
-
 		public override void Update(IEnumerable<Entity> entities)
 		{
 			foreach (Entity2D sprite in entities)
@@ -26,7 +22,7 @@ namespace $safeprojectname$
 						EffectOver();
 				}
 				sprite.Color = transitionData.Colour.Start.Lerp(transitionData.Colour.End, 
-					transitionData.ElapsedTime);
+					transitionData.ElapsedTime / transitionData.Duration);
 				sprite.Set(transitionData);
 			}
 		}

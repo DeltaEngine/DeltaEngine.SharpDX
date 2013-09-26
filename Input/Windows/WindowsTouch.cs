@@ -52,8 +52,7 @@ namespace DeltaEngine.Input.Windows
 		public override void Update(IEnumerable<Entity> entities)
 		{
 			if (!IsAvailable)
-				return;
-
+				return; //ncrunch: no coverage (can only be reached from Windows Vista or earlier)
 			var newTouches = new List<NativeTouchInput>(hook.nativeTouches.ToArray());
 			touches.UpdateAllTouches(newTouches);
 			hook.nativeTouches.Clear();

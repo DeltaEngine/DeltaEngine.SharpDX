@@ -14,15 +14,15 @@ namespace CreepyTowers
 	{
 		public Manager(float cameraFovSizeFactor)
 		{
-			//ExistantTowers = new List<Tower>();
-			//ExistantCreeps = new List<Creep>();
 			Game.CameraAndGrid.FovSizeFactor = cameraFovSizeFactor;
+			towerPropXmlParser = new TowerPropertiesXmlParser();
+			creepPropXmlParser = new CreepPropertiesXmlParser();
 			Start<FindPossibleTargets>();
 			UpdatePriority = Priority.High;
 		}
 
-		//public List<Tower> ExistantTowers { get; private set; }
-		//public List<Creep> ExistantCreeps { get; private set; }
+		private readonly TowerPropertiesXmlParser towerPropXmlParser;
+		private readonly CreepPropertiesXmlParser creepPropXmlParser;
 
 		public struct PlayerData
 		{
@@ -31,14 +31,15 @@ namespace CreepyTowers
 
 		public Level Level { get; set; }
 
-		public Creep CreateCreep(Vector3D position, string name,
+		public Creep CreateCreep(Vector3D position, string name, Creep.CreepType creepType, 
 			MovementInGrid.MovementData movementData)
 		{
-			var creep = new Creep(position, Creep.CreepType.Cloth, name);
-			creep.Orientation = Quaternion.FromAxisAngle(Vector3D.UnitY, 180.0f);
+			var creep = new Creep(position, name, creepPropXmlParser.CreepPropertiesData[creepType])
+			{
+				Orientation = Quaternion.FromAxisAngle(Vector3D.UnitY, 180.0f)
+			};
 			creep.Add(movementData);
 			creep.UpdateHealthBar += () => UpdateCreepHealthBar(creep);
-			//ExistantCreeps.Add(creep);
 
 			//creep.CreepIsDead += creep.Dispose;
 			return creep;
@@ -94,8 +95,9 @@ namespace CreepyTowers
 
 			playerData.ResourceFinances -= 100;
 			MessageCreditsUpdated(-100);
-			var tower = new Tower(position, towerType, name);
-			//ExistantTowers.Add(tower);
+
+			if (towerPropXmlParser.TowerPropertiesData.ContainsKey(towerType))
+				new Tower(position, name, towerPropXmlParser.TowerPropertiesData[towerType]);
 		}
 
 		public PlayerData playerData;
@@ -118,12 +120,6 @@ namespace CreepyTowers
 
 		public void Dispose()
 		{
-			//foreach (Creep creep in ExistantCreeps)
-			//	creep.Dispose();
-
-			//foreach (Tower tower in ExistantTowers)
-			//	tower.Dispose();
-
 			foreach (Creep creep in EntitiesRunner.Current.GetEntitiesOfType<Creep>())
 				creep.Dispose();
 
@@ -133,9 +129,6 @@ namespace CreepyTowers
 			if (Contains<InputCommands>())
 				Get<InputCommands>().Dispose();
 
-			//ExistantCreeps.Clear();
-			//ExistantTowers.Clear();
-			
 			//IsActive = false;
 		}
 	}

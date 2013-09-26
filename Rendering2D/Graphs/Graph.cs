@@ -266,5 +266,7 @@ namespace DeltaEngine.Rendering2D.Graphs
 		}
 
 		internal const float Border = 0.025f;
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

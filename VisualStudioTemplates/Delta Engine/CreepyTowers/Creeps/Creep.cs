@@ -1,5 +1,4 @@
 using System;
-using $safeprojectname$.Levels;
 using $safeprojectname$.Towers;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
@@ -9,17 +8,19 @@ using DeltaEngine.Rendering3D.Models;
 
 namespace $safeprojectname$.Creeps
 {
-	public class Creep : Model
+	public class Creep : Model, IDisposable
 	{
-		public Creep(Vector3D position, CreepType creepType, string name) : base(name, position)
+		public Creep(Vector3D position, string name, CreepProperties creepProperties) : base(name, 
+			position)
 		{
 			Position = position;
 			SetupHealthBar();
 			SetDefaultValues();
+			Add(creepProperties);
 			Start<MovementInGrid>();
 			state = new CreepState();
 			creepStateChanger = new CreepStateChanger();
-			creepStateChanger.SetStartStateOfCreep(creepType, this);
+			creepStateChanger.SetStartStateOfCreep(creepProperties.CreepType, this);
 			calculateDamage = new CalculateDamage();
 		}
 
@@ -92,14 +93,6 @@ namespace $safeprojectname$.Creeps
 		{
 			get;
 			private set;
-		}
-
-		public CalculateDamage CalculateDamage1
-		{
-			get
-			{
-				return calculateDamage;
-			}
 		}
 
 		public void UpdateHealthBarPositionAndImage()
@@ -182,11 +175,11 @@ namespace $safeprojectname$.Creeps
 
 				var distance = ((creep.Position.X - Position.X) * (creep.Position.X - Position.X)) + 
 					((creep.Position.Y - Position.Y) * (creep.Position.Y - Position.Y));
-				if (distance <= 4)
-				{
-					var properties = creep.Get<CreepProperties>();
-					properties.CurrentHp -= 40;
-				}
+				if (distance > 4)
+					return;
+
+				var properties = creep.Get<CreepProperties>();
+				properties.CurrentHp -= 40;
 			}
 		}
 	}

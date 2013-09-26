@@ -34,7 +34,7 @@ namespace CreepyTowers.Tests.Simple2D
 				new MouseButtonTrigger(MouseButton.Middle));
 			new Command(() => SelectTower(Tower.TowerType.Acid)).Add(new KeyTrigger(Key.D1,
 				State.Pressed));
-			new Command(() => SelectTower(Tower.TowerType.Blade)).Add(new KeyTrigger(Key.D2,
+			new Command(() => SelectTower(Tower.TowerType.Slice)).Add(new KeyTrigger(Key.D2,
 				State.Pressed));
 			new Command(() => SelectTower(Tower.TowerType.Fire)).Add(new KeyTrigger(Key.D3,
 				State.Pressed));

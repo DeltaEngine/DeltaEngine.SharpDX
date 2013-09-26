@@ -324,8 +324,8 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		{
 			var line = new Line2D(new Vector2D(-1.0f, 0.4f), new Vector2D(2.0f, 0.6f), Color.Red);
 			line.Clip(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.5f));
-			Assert.AreEqual(new Vector2D(0.25f, 0.4833f), line.StartPoint);
-			Assert.AreEqual(new Vector2D(0.75f, 0.5167f), line.EndPoint);
+			Assert.IsTrue(line.StartPoint.IsNearlyEqual(new Vector2D(0.25f, 0.4833f)));
+			Assert.IsTrue(line.EndPoint.IsNearlyEqual(new Vector2D(0.75f, 0.5167f)));
 			Assert.AreEqual(Visibility.Show, line.Visibility);
 		}
 

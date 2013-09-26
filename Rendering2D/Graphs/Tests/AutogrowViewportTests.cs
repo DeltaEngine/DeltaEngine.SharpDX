@@ -136,7 +136,7 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			line.AddPoint(new Vector2D(2.0f, -1.0f));
 			line.AddPoint(new Vector2D(-1.0f, -3.0f));
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(new Rectangle(-1.15f, -3.1f, 3.3f, 2.2f), graph.Viewport);
+			Assert.IsTrue(graph.Viewport.IsNearlyEqual(new Rectangle(-1.15f, -3.1f, 3.3f, 2.2f)));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -146,7 +146,7 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			line.AddPoint(new Vector2D(2, -1.0f));
 			line.AddPoint(new Vector2D(1, -1.5f));
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(new Rectangle(-0.1f, -2.575f, 2.2f, 1.65f), graph.Viewport);
+			Assert.IsTrue(graph.Viewport.IsNearlyEqual(new Rectangle(-0.1f, -2.575f, 2.2f, 1.65f)));
 		}
 	}
 }

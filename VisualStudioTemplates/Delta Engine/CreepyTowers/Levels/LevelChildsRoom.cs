@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using $safeprojectname$.Creeps;
 using $safeprojectname$.GUI;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
@@ -96,8 +97,8 @@ namespace $safeprojectname$.Levels
 			var startGridPos = randomWaypointsList [0];
 			var position = Game.CameraAndGrid.Grid.PropertyMatrix [startGridPos.Item1, 
 				startGridPos.Item2].MidPoint;
-			manager.CreateCreep(position, Names.CreepCottonMummy, MovementData(startGridPos, 
-				randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
+			manager.CreateCreep(position, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
+				MovementData(startGridPos, randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
 		}
 
 		private void DisplayAttackIcons()

@@ -33,8 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -44,7 +42,6 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\PositionTrigger.cs" />
     <Compile Include="Commands\Trigger.cs" />
-    <Compile Include="Content\ContentTypeIdentifier.cs" />
     <Compile Include="Core\ConsoleCommandAttribute.cs" />
     <Compile Include="Content\ImageAnimation.cs" />
     <Compile Include="Content\ContentCreationData.cs" />
@@ -57,7 +54,6 @@
     <Compile Include="Datatypes\EulerAngles.cs" />
     <Compile Include="Datatypes\RangeGraph.cs" />
     <Compile Include="Datatypes\TimeRangeGraph.cs" />
-    <Compile Include="Entities\Pauseable.cs" />
     <Compile Include="Extensions\LinearMapExtensions.cs" />
     <Compile Include="Multimedia\Music.cs" />
     <Compile Include="Content\Shader.cs" />

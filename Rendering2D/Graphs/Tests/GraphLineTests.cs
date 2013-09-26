@@ -66,8 +66,8 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			Assert.AreEqual(2, line.points.Count);
 			Assert.AreEqual(1, line.lines.Count);
 			Line2D line2D = line.lines[0];
-			Assert.AreEqual(new Vector2D(0.462f, 0.5f), line2D.StartPoint);
-			Assert.AreEqual(new Vector2D(0.538f, 0.462f), line2D.EndPoint);
+			Assert.IsTrue(line2D.StartPoint.IsNearlyEqual(new Vector2D(0.462f, 0.5f)));
+			Assert.IsTrue(line2D.EndPoint.IsNearlyEqual(new Vector2D(0.538f, 0.462f)));
 			Assert.AreEqual(LineColor, line.Color);
 		}
 
@@ -89,8 +89,8 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			Assert.AreEqual(3, line.points.Count);
 			Assert.AreEqual(2, line.lines.Count);
 			Line2D line2D = line.lines[1];
-			Assert.AreEqual(new Vector2D(0.538f, 0.462f), line2D.StartPoint);
-			Assert.AreEqual(new Vector2D(0.6143f, 0.5f), line2D.EndPoint);
+			Assert.IsTrue(line2D.StartPoint.IsNearlyEqual(new Vector2D(0.538f, 0.462f)));
+			Assert.IsTrue(line2D.EndPoint.IsNearlyEqual(new Vector2D(0.6143f, 0.5f)));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -101,11 +101,11 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			Assert.AreEqual(3, line.points.Count);
 			Assert.AreEqual(2, line.lines.Count);
 			Line2D line0 = line.lines[0];
-			Assert.AreEqual(new Vector2D(0.3857f, 0.5f), line0.StartPoint);
-			Assert.AreEqual(new Vector2D(0.462f, 0.5f), line0.EndPoint);
+			Assert.IsTrue(line0.StartPoint.IsNearlyEqual(new Vector2D(0.3857f, 0.5f)));
+			Assert.IsTrue(line0.EndPoint.IsNearlyEqual(new Vector2D(0.462f, 0.5f)));
 			Line2D line1 = line.lines[1];
-			Assert.AreEqual(new Vector2D(0.462f, 0.5f), line1.StartPoint);
-			Assert.AreEqual(new Vector2D(0.538f, 0.462f), line1.EndPoint);
+			Assert.IsTrue(line1.StartPoint.IsNearlyEqual(new Vector2D(0.462f, 0.5f)));
+			Assert.IsTrue(line1.EndPoint.IsNearlyEqual(new Vector2D(0.538f, 0.462f)));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -116,11 +116,11 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			Assert.AreEqual(3, line.points.Count);
 			Assert.AreEqual(2, line.lines.Count);
 			Line2D line0 = line.lines[0];
-			Assert.AreEqual(new Vector2D(0.462f, 0.5f), line0.StartPoint);
-			Assert.AreEqual(new Vector2D(0.5f, 0.519f), line0.EndPoint);
+			Assert.IsTrue(line0.StartPoint.IsNearlyEqual(new Vector2D(0.462f, 0.5f)));
+			Assert.IsTrue(line0.EndPoint.IsNearlyEqual(new Vector2D(0.5f, 0.519f)));
 			Line2D line1 = line.lines[1];
-			Assert.AreEqual(new Vector2D(0.5f, 0.519f), line1.StartPoint);
-			Assert.AreEqual(new Vector2D(0.538f, 0.462f), line1.EndPoint);
+			Assert.IsTrue(line1.StartPoint.IsNearlyEqual(new Vector2D(0.5f, 0.519f)));
+			Assert.IsTrue(line1.EndPoint.IsNearlyEqual(new Vector2D(0.538f, 0.462f)));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -132,8 +132,8 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			Assert.AreEqual(1, line.lines.Count);
 			Assert.AreEqual(new Vector2D(0.6f, 0.7f), line.points[0]);
 			Assert.AreEqual(new Vector2D(0.8f, 0.4f), line.points[1]);
-			Assert.AreEqual(new Vector2D(0.538f, 0.462f), line.lines[0].StartPoint);
-			Assert.AreEqual(new Vector2D(0.6143f, 0.519f), line.lines[0].EndPoint);
+			Assert.IsTrue(line.lines[0].StartPoint.IsNearlyEqual(new Vector2D(0.538f, 0.462f)));
+			Assert.IsTrue(line.lines[0].EndPoint.IsNearlyEqual(new Vector2D(0.6143f, 0.519f)));
 		}
 
 		private GraphLine CreateLineWithThreePoints()
@@ -154,8 +154,8 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			Assert.AreEqual(1, line.lines.Count);
 			Assert.AreEqual(new Vector2D(0.4f, 0.5f), line.points[0]);
 			Assert.AreEqual(new Vector2D(0.8f, 0.4f), line.points[1]);
-			Assert.AreEqual(new Vector2D(0.462f, 0.5f), line.lines[0].StartPoint);
-			Assert.AreEqual(new Vector2D(0.6143f, 0.519f), line.lines[0].EndPoint);
+			Assert.IsTrue(line.lines[0].StartPoint.IsNearlyEqual(new Vector2D(0.462f, 0.5f)));
+			Assert.IsTrue(line.lines[0].EndPoint.IsNearlyEqual(new Vector2D(0.6143f, 0.519f)));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -165,8 +165,8 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			line.RemoveAt(2);
 			Assert.AreEqual(2, line.points.Count);
 			Assert.AreEqual(1, line.lines.Count);
-			Assert.AreEqual(new Vector2D(0.462f, 0.5f), line.lines[0].StartPoint);
-			Assert.AreEqual(new Vector2D(0.538f, 0.462f), line.lines[0].EndPoint);
+			Assert.IsTrue(line.lines[0].StartPoint.IsNearlyEqual(new Vector2D(0.462f, 0.5f)));
+			Assert.IsTrue(line.lines[0].EndPoint.IsNearlyEqual(new Vector2D(0.538f, 0.462f)));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -197,8 +197,8 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			GraphLine line = CreateLineWithTwoPoints();
 			line.graph.Viewport = Rectangle.FromCenter(0.4f, 0.4f, 0.8f, 0.8f);
 			line.Refresh();
-			Assert.AreEqual(new Vector2D(0.5f, 0.4762f), line.lines[0].StartPoint);
-			Assert.AreEqual(new Vector2D(0.5952f, 0.4286f), line.lines[0].EndPoint);
+			Assert.IsTrue(line.lines[0].StartPoint.IsNearlyEqual(new Vector2D(0.5f, 0.4762f)));
+			Assert.IsTrue(line.lines[0].EndPoint.IsNearlyEqual(new Vector2D(0.5952f, 0.4286f)));
 		}
 
 		[Test, CloseAfterFirstFrame]

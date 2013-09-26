@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering3D.Shapes3D;
 using NUnit.Framework;
@@ -12,7 +13,7 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 		public void PositionToTargetDistance()
 		{
 			var camera = CreateLookAtCamera(Vector3D.UnitZ * 5.0f, Vector3D.Zero);
-			Assert.AreEqual(5.0f, camera.Distance);
+			Assert.AreEqual(5.0f, camera.Position.Length - camera.Target.Length);
 		}
 
 		private static LookAtCamera CreateLookAtCamera(Vector3D position, Vector3D target)
@@ -27,8 +28,8 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 		public void RotateCamera90DegreesYAxis()
 		{
 			var camera = CreateLookAtCamera(Vector3D.UnitZ, Vector3D.Zero);
-			camera.Rotation = new Vector3D(0.0f, 90.0f, 0.0f);
-			Assert.AreEqual(Vector3D.UnitX, camera.Position);
+			camera.YawPitchRoll = new Vector3D(0.0f, 90.0f, 0.0f);
+			Assert.AreEqual(Vector3D.UnitZ, camera.Position);
 			Assert.AreEqual(Vector3D.Zero, camera.Target);
 		}
 
@@ -44,7 +45,7 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 		{
 			var camera = Camera.Use<LookAtCamera>();
 			camera.Position = position;
-			camera.EntityTarget = target;
+			camera.Target = target.Position;
 			return camera;
 		}
 
@@ -80,14 +81,6 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 			Assert.AreEqual(Vector2D.Half, point);
 		}
 
-		[Test]
-		public void RenderGrid()
-		{
-			var camera = CreateLookAtCamera(new Vector3D(0.0f, -5.0f, 5.0f), Vector3D.Zero);
-			new Grid3D(10);
-			new Command(Command.Zoom, camera.Zoom);
-		}
-
 		[Test, CloseAfterFirstFrame]
 		public void CenterOfScreenWithLookAtCameraPointsToTarget()
 		{
@@ -102,6 +95,36 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 			var floor = new Plane(Vector3D.UnitY, target);
 			Ray ray = camera.ScreenPointToRay(Vector2D.Half);
 			Assert.AreEqual(target, floor.Intersect(ray));
+		}
+
+		[Test]
+		public void RenderGrid()
+		{
+			LookAtCamera camera = CreateLookCenterCamera(new Vector3D(0.0f, -5.0f, 5.0f), Vector3D.Zero);
+			new Grid3D(9);
+			Command.Register(Command.Zoom, new MouseZoomTrigger());
+			new Command(Command.Zoom, delegate(float zoomAmount) { camera.Zoom(zoomAmount); });
+			Vector2D lastMovePosition = Vector2D.Zero;
+			new Command(Command.Drag, (startPos, currentPosition, isDragDone) =>
+			{
+				Vector2D moveDifference = currentPosition - lastMovePosition;
+				lastMovePosition = isDragDone ? Vector2D.Zero : currentPosition;
+				if (moveDifference == currentPosition)
+					return;
+				const float RotationSpeed = 100;
+				Vector3D newYawPitchRoll = camera.YawPitchRoll;
+				newYawPitchRoll.X += moveDifference.X * RotationSpeed;
+				newYawPitchRoll.Y += moveDifference.Y * RotationSpeed;
+				camera.YawPitchRoll = newYawPitchRoll;
+			});
+		}
+
+		private static LookAtCamera CreateLookCenterCamera(Vector3D position, Vector3D target)
+		{
+			var camera = Camera.Use<LookAtCamera>();
+			camera.Position = position;
+			camera.Target = target;
+			return camera;
 		}
 	}
 }

@@ -61,11 +61,16 @@ namespace DeltaEngine.Graphics
 
 		public void SetData(Vertex[] setVertices, short[] setIndices)
 		{
-			if (setVertices.Length != NumberOfVertices)
-				throw new InvalidNumberOfVertices(setVertices.Length, NumberOfVertices);
+			SetData(BinaryDataExtensions.ToByteArray(setVertices), setIndices);
+		}
+
+		public void SetData(byte[] verticesData, short[] setIndices)
+		{
+			if (verticesData.Length != (NumberOfVertices * Format.Stride))
+				throw new InvalidNumberOfVertices(verticesData.Length / Format.Stride, NumberOfVertices);
 			if (setIndices.Length != NumberOfIndices)
 				throw new InvalidNumberOfIndices(setIndices.Length, NumberOfIndices);
-			vertices = BinaryDataExtensions.ToByteArray(setVertices);
+			vertices = verticesData;
 			indices = setIndices;
 			SetNativeData(vertices, indices);
 		}

@@ -103,8 +103,8 @@ namespace DeltaEngine.Graphics
 				break;
 			case Position3DNormalUv:
 				Initialize(new ShaderCreationData(ShaderCodeOpenGL.PositionUvNormalOpenGLVertexCode,
-					ShaderCodeOpenGL.PositionUvNormalOpenGLFragmentCode, ShaderCodeDX11.PositionColorUvDx11, 
-					ShaderCodeDX9.Position3DColorUvDx9, VertexFormat.Position3DNormalUv));
+					ShaderCodeOpenGL.PositionUvNormalOpenGLFragmentCode, ShaderCodeDX11.PositionNormalUvDx11, 
+					ShaderCodeDX9.Position3DNormalUvDx9, VertexFormat.Position3DNormalUv));
 				break;
 			}
 			Create();

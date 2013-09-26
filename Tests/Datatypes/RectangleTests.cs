@@ -79,11 +79,22 @@ namespace DeltaEngine.Tests.Datatypes
 			var rect2 = new Rectangle(5, 6, 1, 2);
 			Assert.AreNotEqual(rect1, rect2);
 			Assert.AreEqual(rect1, new Rectangle(3, 4, 1, 2));
+			Assert.AreNotEqual(rect1, new Rectangle(3.00001f, 4, 1, 2));
 			Assert.IsTrue(rect1 == new Rectangle(3, 4, 1, 2));
 			Assert.IsTrue(rect1 != rect2);
 			Assert.IsFalse(rect1.Equals(rect2));
 			Assert.IsTrue(rect1.Equals(rect1));
 			Assert.False(rect1.Equals((object)Rectangle.One));
+		}
+
+		[Test]
+		public void NearlyEquals()
+		{
+			var rect1 = new Rectangle(3, 4, 1, 2);
+			Assert.IsTrue(rect1.IsNearlyEqual(new Rectangle(3.00001f, 4, 1, 2)));
+			Assert.IsTrue(rect1.IsNearlyEqual(new Rectangle(3, 4, 0.99999f, 2)));
+			Assert.IsFalse(rect1.IsNearlyEqual(new Rectangle(3.01f, 4, 1, 2)));
+			Assert.IsFalse(rect1.IsNearlyEqual(new Rectangle(3, 4, 0.999f, 2)));
 		}
 
 		[Test]
@@ -279,9 +290,9 @@ namespace DeltaEngine.Tests.Datatypes
 		public void GetRotatedRectangleCornersWith180DegreesRotation()
 		{
 			var points = new Rectangle(1, 1, 1, 1).GetRotatedRectangleCorners(Vector2D.Zero, 180);
-			Assert.AreEqual(-Vector2D.One, points[0]);
-			Assert.AreEqual(-new Vector2D(2, 1), points[1]);
-			Assert.AreEqual(-new Vector2D(2, 2), points[2]);
+			Assert.IsTrue(points[0].IsNearlyEqual(-Vector2D.One));
+			Assert.IsTrue(points[1].IsNearlyEqual(-new Vector2D(2, 1)));
+			Assert.IsTrue(points[2].IsNearlyEqual(-new Vector2D(2, 2)));
 		}
 
 		[Test]

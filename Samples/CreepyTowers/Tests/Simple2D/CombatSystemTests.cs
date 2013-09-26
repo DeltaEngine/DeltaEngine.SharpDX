@@ -20,7 +20,7 @@ namespace CreepyTowers.Tests.Simple2D
 		[TestCase(Tower.TowerType.Water, 107.5f),
 		 TestCase(Tower.TowerType.Fire, 107.5f),
 		 TestCase(Tower.TowerType.Ice, 107.5f),
-		 TestCase(Tower.TowerType.Blade, 107.5f),
+		 TestCase(Tower.TowerType.Slice, 107.5f),
 		 TestCase(Tower.TowerType.Impact, 107.5f),
 		 TestCase(Tower.TowerType.Acid, 107.0f)]
 		public void TestImmuneStateDamageOutput(Tower.TowerType towerType, float expectedDamage)

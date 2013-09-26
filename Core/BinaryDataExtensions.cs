@@ -66,8 +66,7 @@ namespace DeltaEngine.Core
 				Type[] types = assembly.GetTypes();
 				foreach (Type type in types.Where(type => IsValidBinaryDataType(type)))
 					AddType(type);
-			}
-			//ncrunch: no coverage start
+			} //ncrunch: no coverage start
 			catch (ReflectionTypeLoadException ex)
 			{
 				foreach (var failedLoader in ex.LoaderExceptions)
@@ -76,8 +75,7 @@ namespace DeltaEngine.Core
 			catch (Exception ex)
 			{
 				Logger.Error(ex);
-			}
-			//ncrunch: no coverage end
+			} //ncrunch: no coverage end
 		}
 
 		private static bool IsValidBinaryDataType(Type type)
@@ -143,7 +141,7 @@ namespace DeltaEngine.Core
 				throw new ArgumentNullException("data");
 			writer.Write(GetShortName(data));
 			WriteDataVersionNumber(data, writer);
-			BinaryDataSaver.TrySaveData(data, data.GetType(), writer);
+			BinaryDataSaver.SaveDataType(data, data.GetType(), writer);
 		}
 
 		private static void WriteDataVersionNumber(object data, BinaryWriter writer)
@@ -229,9 +227,9 @@ namespace DeltaEngine.Core
 			{
 				if (data is IList)
 					foreach (object value in data as IList)
-						BinaryDataSaver.TrySaveData(value, value.GetType(), messageWriter);
+						BinaryDataSaver.SaveDataType(value, value.GetType(), messageWriter);
 				else
-					BinaryDataSaver.TrySaveData(data, data.GetType(), messageWriter);
+					BinaryDataSaver.SaveDataType(data, data.GetType(), messageWriter);
 				return messageStream.ToArray();
 			}
 		}
@@ -247,7 +245,7 @@ namespace DeltaEngine.Core
 		{
 			var data = new MemoryStream();
 			var writer = new BinaryWriter(data);
-			BinaryDataSaver.TrySaveData(input, typeof(DataType), writer);
+			BinaryDataSaver.SaveDataType(input, typeof(DataType), writer);
 			return data;
 		}
 

@@ -57,9 +57,20 @@ namespace DeltaEngine.Tests.Datatypes
 			var s2 = new Size(3, 4);
 			Assert.AreNotEqual(s1, s2);
 			Assert.AreEqual(s1, new Size(1, 2));
+			Assert.AreNotEqual(s1, new Size(1, 2.00001f));
 			Assert.AreNotEqual(s1, new Vector2D(1, 2));
 			Assert.IsTrue(s1 == new Size(1, 2));
 			Assert.IsTrue(s1 != s2);
+		}
+
+		[Test]
+		public void NearlyEquals()
+		{
+			var s1 = new Size(1, 2);
+			Assert.IsTrue(s1.IsNearlyEqual(new Size(0.99999f, 2.00001f)));
+			Assert.IsTrue(s1.IsNearlyEqual(new Size(1, 2.00001f)));
+			Assert.IsFalse(s1.IsNearlyEqual(new Size(0.9f, 2.00001f)));
+			Assert.IsFalse(s1.IsNearlyEqual(new Size(1, 2.1f)));
 		}
 
 		[Test]

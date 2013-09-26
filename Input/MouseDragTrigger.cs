@@ -8,17 +8,22 @@ namespace DeltaEngine.Input
 	/// </summary>
 	public class MouseDragTrigger : DragTrigger
 	{
-		public MouseDragTrigger(MouseButton button = MouseButton.Left)
+		public MouseDragTrigger(MouseButton button = MouseButton.Left,
+			DragDirection direction = DragDirection.Free)
 		{
 			Button = button;
+			Direction = direction;
 		}
 
 		public MouseButton Button { get; private set; }
+		public DragDirection Direction { get; private set; }
 
 		public MouseDragTrigger(string button)
 		{
 			var parameters = button.SplitAndTrim(new[] { ' ' });
 			Button = parameters.Length > 0 ? parameters[0].Convert<MouseButton>() : MouseButton.Left;
+			Direction = parameters.Length > 2
+				? parameters[2].Convert<DragDirection>() : DragDirection.Free;
 		}
 
 		protected override void StartInputDevice()

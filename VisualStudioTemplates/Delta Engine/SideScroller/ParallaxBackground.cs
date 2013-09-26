@@ -65,5 +65,12 @@ namespace $safeprojectname$
 				Set(new SpriteCoordinates(uv));
 			}
 		}
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
+		}
 	}
 }

@@ -24,12 +24,22 @@ namespace CreepyTowers.Simple2D
 			creep.state.BurstTimer = 0;
 		}
 
+		public static void MakeCreepUnfreezable(Creep2D creep)
+		{
+			creep.state.Unfreezable = true;
+			creep.state.UnfreezableTimer = 0;
+			creep.state.Frozen = false;
+			creep.state.Paralysed = false;
+		}
+
 		public static void MakeCreepFrozen(Creep2D creep)
 		{
+			if (creep.state.Unfreezable)
+				return;
 			creep.state.Frozen = true;
 			creep.state.FrozenTimer = 0;
 			MakeCreepParalysed(creep);
-			MakeCreepResistantToType(creep, Tower.TowerType.Blade);
+			MakeCreepResistantToType(creep, Tower.TowerType.Slice);
 			creep.state.Wet = false;
 			MakeCreepResistantToType(creep, Tower.TowerType.Water);
 			MakeCreepVulnerableToType(creep, Tower.TowerType.Impact);
@@ -73,7 +83,9 @@ namespace CreepyTowers.Simple2D
 		public static void MakeCreepMelt(Creep2D creep)
 		{
 			MakeCreepEnfeeble(creep);
-			MakeCreepSlow(creep);
+			MakeCreepLimitedSlow(creep);
+			creep.state.Melt = true;
+			creep.state.MeltTimer = 0;
 		}
 
 		public static void MakeCreepEnfeeble(Creep2D creep)
@@ -83,6 +95,12 @@ namespace CreepyTowers.Simple2D
 		}
 
 		public static void MakeCreepSlow(Creep2D creep)
+		{
+			creep.state.Slow = true;
+			creep.state.SlowTimer = -1;
+		}
+
+		public static void MakeCreepLimitedSlow(Creep2D creep)
 		{
 			creep.state.Slow = true;
 			creep.state.SlowTimer = 0;
@@ -103,7 +121,7 @@ namespace CreepyTowers.Simple2D
 
 		public static void MakeCreepWet(Creep2D creep)
 		{
-			MakeCreepSlow(creep);
+			MakeCreepLimitedSlow(creep);
 			if (creep.state.Frozen)
 				return;
 			creep.state.Wet = true;
@@ -128,8 +146,8 @@ namespace CreepyTowers.Simple2D
 			var chanceForShather = Randomizer.Current.Get(0, 100);
 			if (chanceForShather >= 10)
 				return false;
-			creep.IsActive = false;
-			creep.hitpointBar.IsActive = false;
+			creep.Hitpoints = 0;
+			creep.data.CurrentHp = 0;
 			return true;
 		}
 

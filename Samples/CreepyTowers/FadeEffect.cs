@@ -6,39 +6,39 @@ using DeltaEngine.Rendering2D;
 
 namespace CreepyTowers
 {
-  public class FadeEffect : UpdateBehavior
-  {
-    public FadeEffect()
-      : base(Priority.Low) {}
+	public class FadeEffect : UpdateBehavior
+	{
+		//public FadeEffect()
+		//	: base(Priority.Low) {}
 
-    public override void Update(IEnumerable<Entity> entities)
-    {
-      foreach (Entity2D sprite in entities)
-      {
-        sprite.ToggleVisibility(Visibility.Show);
-        var transitionData = sprite.Get<TransitionData>();
-        transitionData.ElapsedTime += Time.Delta;
+		public override void Update(IEnumerable<Entity> entities)
+		{
+			foreach (Entity2D sprite in entities)
+			{
+				sprite.ToggleVisibility(Visibility.Show);
+				var transitionData = sprite.Get<TransitionData>();
+				transitionData.ElapsedTime += Time.Delta;
 
-        if (transitionData.ElapsedTime > transitionData.Duration)
-        {
-          sprite.Stop<FadeEffect>();
-          if (EffectOver != null)
-            EffectOver();
-        }
+				if (transitionData.ElapsedTime > transitionData.Duration)
+				{
+					sprite.Stop<FadeEffect>();
+					if (EffectOver != null)
+						EffectOver();
+				}
 
-        sprite.Color = transitionData.Colour.Start.Lerp(transitionData.Colour.End,
-          transitionData.ElapsedTime);
-        sprite.Set(transitionData);
-      }
-    }
+				sprite.Color = transitionData.Colour.Start.Lerp(transitionData.Colour.End,
+					transitionData.ElapsedTime / transitionData.Duration);
+				sprite.Set(transitionData);
+			}
+		}
 
-    public event Action EffectOver;
+		public event Action EffectOver;
 
-    public struct TransitionData
-    {
-      public RangeGraph<Color> Colour;
-      public float Duration;
-      public float ElapsedTime;
-    }
-  }
+		public struct TransitionData
+		{
+			public RangeGraph<Color> Colour;
+			public float Duration;
+			public float ElapsedTime;
+		}
+	}
 }

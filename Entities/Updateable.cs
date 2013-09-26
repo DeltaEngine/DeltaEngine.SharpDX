@@ -1,12 +1,13 @@
 ﻿namespace DeltaEngine.Entities
 {
 	/// <summary>
-	/// Most entities do not need to be updated, they use default behaviors. This interface adds a
-	/// Update method, which is automatically called (by default 20 times per second) at the given
-	/// UpdatePriority for each active entity. See <see cref="RapidUpdateable"/> for faster updates.
+	/// Adding this interface to an Entity will cause its Update method to get called at, by default,
+	/// 20 times per second, at the given UpdatePriority for each active entity.
+	/// If IsPauseable returns true, when the app is paused Update will not get called.
 	/// </summary>
 	public interface Updateable
 	{
 		void Update();
+		bool IsPauseable { get; }
 	}
 }

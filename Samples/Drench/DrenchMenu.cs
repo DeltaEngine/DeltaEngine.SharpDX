@@ -203,5 +203,7 @@ namespace Drench
 		{
 			boardSize.Text = "Board Size: " + boardWidth + " x " + boardHeight;
 		}
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

@@ -15,9 +15,14 @@ namespace $safeprojectname$
 		public Manager(float cameraFovSizeFactor)
 		{
 			Game.CameraAndGrid.FovSizeFactor = cameraFovSizeFactor;
+			towerPropXmlParser = new TowerPropertiesXmlParser();
+			creepPropXmlParser = new CreepPropertiesXmlParser();
 			Start<FindPossibleTargets>();
 			UpdatePriority = Priority.High;
 		}
+
+		private readonly TowerPropertiesXmlParser towerPropXmlParser;
+		private readonly CreepPropertiesXmlParser creepPropXmlParser;
 		public struct PlayerData
 		{
 			public int ResourceFinances;
@@ -28,11 +33,12 @@ namespace $safeprojectname$
 			set;
 		}
 
-		public Creep CreateCreep(Vector3D position, string name, MovementInGrid.MovementData 
-			movementData)
+		public Creep CreateCreep(Vector3D position, string name, Creep.CreepType creepType, 
+			MovementInGrid.MovementData movementData)
 		{
-			var creep = new Creep(position, Creep.CreepType.Cloth, name);
-			creep.Orientation = Quaternion.FromAxisAngle(Vector3D.UnitY, 180.0f);
+			var creep = new Creep(position, name, creepPropXmlParser.CreepPropertiesData [creepType]) {
+				Orientation = Quaternion.FromAxisAngle(Vector3D.UnitY, 180.0f)
+			};
 			creep.Add(movementData);
 			creep.UpdateHealthBar += () => UpdateCreepHealthBar(creep);
 			return creep;
@@ -86,7 +92,8 @@ namespace $safeprojectname$
 
 			playerData.ResourceFinances -= 100;
 			MessageCreditsUpdated(-100);
-			var tower = new Tower(position, towerType, name);
+			if (towerPropXmlParser.TowerPropertiesData.ContainsKey(towerType))
+				new Tower(position, name, towerPropXmlParser.TowerPropertiesData [towerType]);
 		}
 
 		public PlayerData playerData;

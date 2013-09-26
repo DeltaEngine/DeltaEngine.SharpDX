@@ -24,6 +24,8 @@ namespace CreepyTowers.Simple2D
 			foreach (var line in lines)
 				line.IsActive = false;
 			lines.Clear();
+			foreach (var creepInList in display.Creeps)
+				creepInList.UpdateStateTimersAndTimeBasedDamage();
 			foreach (var tower in towers)
 				if (tower.GetAttackType() == Tower.AttackType.RadiusFull)
 					ShootRadiusShot(tower);
@@ -39,13 +41,13 @@ namespace CreepyTowers.Simple2D
 				return;
 			foreach (var creep in display.Creeps)
 			{
-				creep.UpdateStateTimersAndTimeBasedDamage();
 				if (!((tower.Position - creep.Position).Length < tower.Range))
 					continue;
 				if (IsAWallBetweenTowerAndCreep(tower, creep))
 					continue;
 				lines.Add(new Line2D(tower.Center, creep.Center, tower.Color));
 				creep.Hitpoints = DamageCalculation(creep, tower);
+				creep.RecalculateHitpointBar();
 				tower.SetOnCooldown();
 			}
 		}
@@ -118,9 +120,9 @@ namespace CreepyTowers.Simple2D
 			var creep = SelectCreepToShot(tower);
 			if (creep == null)
 				return;
-			creep.UpdateStateTimersAndTimeBasedDamage();
 			lines.Add(new Line2D(tower.Center, creep.Center, tower.Color));
 			creep.Hitpoints = DamageCalculation(creep, tower);
+			creep.RecalculateHitpointBar();
 			tower.SetOnCooldown();
 		}
 
@@ -150,6 +152,7 @@ namespace CreepyTowers.Simple2D
 			creep.UpdateStateTimersAndTimeBasedDamage();
 			lines.Add(new Line2D(tower.Center, creep.Center, tower.Color));
 			creep.Hitpoints = DamageCalculation(creep, tower);
+			creep.RecalculateHitpointBar();
 			AffectsCreepsInTheRange(tower, creep);
 			tower.SetOnCooldown();
 		}

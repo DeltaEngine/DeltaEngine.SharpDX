@@ -99,7 +99,7 @@ namespace DeltaEngine.Tests.Datatypes
 			var direction = new Vector3D(1, 2, 3);
 			var rotatedViaMatrix = Matrix.FromQuaternion(quaternion) * direction;
 			var rotatedViaQuaternion = quaternion * direction;
-			Assert.AreEqual(rotatedViaMatrix, rotatedViaQuaternion);
+			Assert.IsTrue(rotatedViaQuaternion.IsNearlyEqual(rotatedViaMatrix));
 		}
 
 		[Test]

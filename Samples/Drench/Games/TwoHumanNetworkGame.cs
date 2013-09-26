@@ -107,5 +107,7 @@ namespace Drench.Games
 		{
 			get { return logic.Board.colors; }
 		}
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

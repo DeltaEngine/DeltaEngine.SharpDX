@@ -44,6 +44,10 @@
       <Project>{EE9847E1-9C76-4ACE-B531-D3EA84F7D741}</Project>
       <Name>DeltaEngine.Content.Disk</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
+      <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
+      <Name>DeltaEngine.Content.Xml</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\DeltaEngine.csproj">
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
@@ -154,36 +158,40 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CalculateDamageTests.cs" />
-    <Compile Include="ClothCreepStateChangerTests.cs" />
-    <Compile Include="CreepPropertiesTests.cs" />
-    <Compile Include="CreepStateDamageOutputTests.cs" />
-    <Compile Include="GenerateWavesTests.cs" />
-    <Compile Include="GlassCreepStateChangerTests.cs" />
-    <Compile Include="GroupTests.cs" />
-    <Compile Include="IntroSceneTests.cs" />
-    <Compile Include="LevelChildsRoomTests.cs" />
+    <Compile Include="Creeps\CalculateDamageTests.cs" />
+    <Compile Include="Creeps\ClothCreepStateChangerTests.cs" />
+    <Compile Include="Creeps\CreepPropertiesTests.cs" />
+    <Compile Include="Creeps\CreepStateDamageOutputTests.cs" />
+    <Compile Include="Creeps\GenerateWavesTests.cs" />
+    <Compile Include="Creeps\GlassCreepStateChangerTests.cs" />
+    <Compile Include="Creeps\GroupTests.cs" />
+    <Compile Include="Creeps\MovementInGridTests.cs" />
+    <Compile Include="FindPossibleTargetsTests.cs" />
+    <Compile Include="InputCommandsTests.cs" />
+    <Compile Include="GUI\IntroSceneTests.cs" />
+    <Compile Include="Levels\LevelChildsRoomTests.cs" />
+    <Compile Include="Levels\LevelGridTests.cs" />
+    <Compile Include="Levels\LevelLivingRoomTests.cs" />
     <Compile Include="MessagesTests.cs" />
     <Compile Include="NamesTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RemapCoordinatesTests.cs" />
-    <Compile Include="SandCreepStateChangerTests.cs" />
+    <Compile Include="Creeps\SandCreepStateChangerTests.cs" />
     <Compile Include="Simple2D\CombatSystemTests.cs" />
     <Compile Include="Simple2D\Creep2DTests.cs" />
     <Compile Include="Simple2D\TestWithBasic2DDisplaySystem.cs" />
     <Compile Include="Simple2D\Tower2DTests.cs" />
-    <Compile Include="TowerPropertiesTests.cs" />
-    <Compile Include="WaveTests.cs" />
-    <Compile Include="CreepTests.cs" />
-    <Compile Include="LevelGridXmlParserTests.cs" />
+    <Compile Include="Towers\TowerPropertiesTests.cs" />
+    <Compile Include="Creeps\WaveTests.cs" />
+    <Compile Include="Creeps\CreepTests.cs" />
+    <Compile Include="Levels\LevelGridXmlParserTests.cs" />
     <Compile Include="GameTests.cs" />
-    <Compile Include="LevelTests.cs" />
-    <Compile Include="LevelsBathroomTests.cs" />
+    <Compile Include="Levels\LevelTests.cs" />
+    <Compile Include="Levels\LevelsBathroomTests.cs" />
     <Compile Include="ManagerTests.cs" />
-    <Compile Include="UIXmlParserTests.cs" />
-    <Compile Include="MainMenuTests.cs" />
-    <Compile Include="TowerTests.cs" />
-    <Compile Include="TutorialDialogueTests.cs" />
+    <Compile Include="GUI\UIXmlParserTests.cs" />
+    <Compile Include="GUI\MainMenuTests.cs" />
+    <Compile Include="Towers\TowerTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

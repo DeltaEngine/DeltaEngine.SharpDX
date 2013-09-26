@@ -27,7 +27,7 @@ namespace DeltaEngine.Core
 			{
 				throw new Exception(
 					"Failed to load inner type of '" + typeToCreate + "' (Version " + dataVersion + "). " +
-					"Your data might be outdated '" + subTypeToCreate + "'. Try to delete your local content",
+						"Your data might be outdated '" + subTypeToCreate + "'. Try to delete your local content",
 					ex);
 			} //ncrunch: no coverage end
 			catch (MissingMethodException ex)
@@ -88,10 +88,11 @@ namespace DeltaEngine.Core
 			if (typeof(ContentData).IsAssignableFrom(type))
 			{
 				var contentName = reader.ReadString();
-				if (contentName.Length <= 1)
+				if (String.IsNullOrEmpty(contentName))
 					throw new UnableToLoadContentDataWithoutName();
-				data = ContentLoader.Load(type, contentName);
-				if (!contentName.StartsWith("<Generated"))
+				data = ContentLoader.Load(type,
+					topLevelTypeToCreate == type ? "<GeneratedLoadedContent>" : contentName);
+				if (topLevelTypeToCreate != type && !contentName.StartsWith("<Generated"))
 					return;
 			}
 			if (typeof(Entity).IsAssignableFrom(type))
@@ -124,8 +125,9 @@ namespace DeltaEngine.Core
 		private static Object LoadEntity(Type type, BinaryReader reader)
 		{
 			subTypeToCreate = type;
-			var entity = Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
-				CultureInfo.CurrentCulture) as Entity;
+			var entity =
+				Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
+					CultureInfo.CurrentCulture) as Entity;
 			var createFromComponents = LoadArray(null, typeof(List<object>), reader) as List<object>;
 			entity.FillComponents(createFromComponents);
 			LoadEntityTags(reader, entity);
@@ -149,14 +151,16 @@ namespace DeltaEngine.Core
 				entity.Start(behavior.GetTypeFromShortNameOrFullNameIfNotFound());
 		}
 
-		private static void LoadDrawableEntityDrawBehaviors(BinaryReader reader, DrawableEntity drawable)
+		private static void LoadDrawableEntityDrawBehaviors(BinaryReader reader,
+			DrawableEntity drawable)
 		{
 			var drawBehaviors = LoadArray(null, typeof(List<string>), reader) as List<string>;
 			foreach (string behavior in drawBehaviors)
 				drawable.OnDraw(behavior.GetTypeFromShortNameOrFullNameIfNotFound());
 		}
 
-		internal class UnableToLoadContentDataWithoutName : Exception { }
+		internal class UnableToLoadContentDataWithoutName : Exception {}
+
 		private const BindingFlags PrivateBindingFlags =
 			BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 

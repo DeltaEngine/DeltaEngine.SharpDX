@@ -108,5 +108,7 @@ namespace GhostWars
 		}
 
 		public Action<object, int> TargetReached;
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

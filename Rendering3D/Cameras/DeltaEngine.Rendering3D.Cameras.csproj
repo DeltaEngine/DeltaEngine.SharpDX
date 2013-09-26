@@ -55,7 +55,6 @@
     <Compile Include="FreeCamera.cs" />
     <Compile Include="IsometricCamera.cs" />
     <Compile Include="LookAtCamera.cs" />
-    <Compile Include="LookCenterCamera.cs" />
     <Compile Include="CameraResolver.cs" />
     <Compile Include="OrthoCamera.cs" />
     <Compile Include="PathCamera.cs" />

@@ -92,5 +92,7 @@ namespace Asteroids
 			CheckAsteroidCollisions();
 			CreateNewAsteroidIfNecessary();
 		}
+
+		public bool IsPauseable { get { return true; } }
 	}
 }

@@ -19,5 +19,7 @@ namespace DeltaEngine.Input
 		{
 			Start<Touch>();
 		}
+
+		public float Angle { get; set; }
 	}
 }

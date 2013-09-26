@@ -181,5 +181,13 @@ namespace $safeprojectname$
 			Effects.CreateSparkleEffect(Team, Center + new Vector2D(Randomizer.Current.Get(-0.04f, 
 				0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 8);
 		}
+
+		public bool IsPauseable
+		{
+			get
+			{
+				return true;
+			}
+		}
 	}
 }

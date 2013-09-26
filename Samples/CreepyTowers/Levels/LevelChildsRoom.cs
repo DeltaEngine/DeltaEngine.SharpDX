@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CreepyTowers.Creeps;
 using CreepyTowers.GUI;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
@@ -105,7 +106,7 @@ namespace CreepyTowers.Levels
 			var startGridPos = randomWaypointsList[0];
 			var position =
 				Game.CameraAndGrid.Grid.PropertyMatrix[startGridPos.Item1, startGridPos.Item2].MidPoint;
-			manager.CreateCreep(position, Names.CreepCottonMummy,
+			manager.CreateCreep(position, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
 				MovementData(startGridPos, randomWaypointsList.GetRange(1, randomWaypointsList.Count - 1)));
 		}
 

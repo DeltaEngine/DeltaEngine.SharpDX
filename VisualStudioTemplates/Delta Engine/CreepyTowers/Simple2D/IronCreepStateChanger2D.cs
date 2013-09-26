@@ -19,7 +19,7 @@ namespace $safeprojectname$.Simple2D
 		private static void SetAffectedByFire(Creep2D creep)
 		{
 			StateChanger.MakeCreepMelt(creep);
-			StateChanger.MakeCreepNormalToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepNormalToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepWeakToType(creep, Tower.TowerType.Impact);
 		}
 
@@ -35,7 +35,7 @@ namespace $safeprojectname$.Simple2D
 				return;
 
 			StateChanger.MakeCreepVulnerableToType(creep, Tower.TowerType.Water);
-			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Impact);
 		}
 
@@ -51,7 +51,7 @@ namespace $safeprojectname$.Simple2D
 		{
 			creep.state.SetVulnerabilitiesToNormal();
 			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Impact);
-			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepHardBoiledToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepImmuneToType(creep, Tower.TowerType.Ice);
 			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Water);
 		}

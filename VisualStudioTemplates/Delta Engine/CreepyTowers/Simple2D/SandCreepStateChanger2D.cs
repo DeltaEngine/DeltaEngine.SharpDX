@@ -20,7 +20,7 @@ namespace $safeprojectname$.Simple2D
 
 		private static void SetAffectedByImpact(Creep2D creep)
 		{
-			StateChanger.MakeCreepSlow(creep);
+			StateChanger.MakeCreepLimitedSlow(creep);
 			if (!creep.state.Frozen)
 				return;
 
@@ -43,8 +43,11 @@ namespace $safeprojectname$.Simple2D
 			if (creep.state.Wet)
 				creep.state.Wet = false;
 			else if (creep.state.Frozen)
+			{
+				creep.state.Frozen = false;
+				StateChanger.MakeCreepUnfreezable(creep);
 				StateChanger.MakeCreepWet(creep);
-			else
+			} else
 				TransformInGlassCreep(creep, basic);
 		}
 
@@ -64,7 +67,7 @@ namespace $safeprojectname$.Simple2D
 			creep.state.SetVulnerabilitiesToNormal();
 			StateChanger.MakeCreepImmuneToType(creep, Tower.TowerType.Ice);
 			StateChanger.MakeCreepImmuneToType(creep, Tower.TowerType.Acid);
-			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Blade);
+			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Slice);
 			StateChanger.MakeCreepResistantToType(creep, Tower.TowerType.Impact);
 		}
 	}

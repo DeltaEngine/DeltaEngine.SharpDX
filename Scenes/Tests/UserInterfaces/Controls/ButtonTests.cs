@@ -112,7 +112,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			button.Clicked += () => clicked = true;
 			PressAndReleaseMouse(new Vector2D(0.53f, 0.52f), new Vector2D(0.53f, 0.52f));
 			Assert.IsTrue(clicked);
-			Assert.AreEqual(new Vector2D(0.6f, 0.7f), button.State.RelativePointerPosition);
+			Assert.IsTrue(button.State.RelativePointerPosition.IsNearlyEqual(new Vector2D(0.6f, 0.7f)));
 			Assert.AreEqual(Color.White, button.Color);
 			Assert.IsFalse(button.State.IsPressed);
 		}

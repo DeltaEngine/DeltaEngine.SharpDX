@@ -19,17 +19,6 @@ namespace DeltaEngine.Multimedia.Tests
 		}
 
 		[Test]
-		public void PlayVideoWhileOtherIsPlaying()
-		{
-			var video1 = ContentLoader.Load<Video>("DefaultVideo");
-			var video2 = ContentLoader.Load<Video>("DefaultVideo");
-			video1.Play();
-			Assert.False(MockVideo.VideoStopCalled);
-			video2.Play();
-			Assert.False(MockVideo.VideoStopCalled);
-		}
-
-		[Test]
 		public void RunWithVideoAndMusic()
 		{
 			var video = ContentLoader.Load<Video>("DefaultVideo");

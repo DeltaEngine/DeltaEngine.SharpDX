@@ -86,7 +86,7 @@ namespace Snake.Tests
 		public void CheckTrailingVector()
 		{
 			var snake = new Snake(gridSize, Color.Green);
-			Assert.AreEqual(new Vector2D(0, blockSize), snake.Get<Body>().GetTrailingVector());
+			Assert.IsTrue(snake.Get<Body>().GetTrailingVector().IsNearlyEqual(new Vector2D(0, blockSize)));
 		}
 
 		[Test]

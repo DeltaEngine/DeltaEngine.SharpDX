@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using DeltaEngine.Commands;
 using DeltaEngine.Extensions;
 
@@ -13,9 +10,10 @@ namespace DeltaEngine.Input
 	public class MouseDoubleClickTrigger : PositionTrigger
 	{
 		public MouseDoubleClickTrigger(State state)
-			: this(MouseButton.Left, state) { }
+			: this(MouseButton.Left, state) {}
 
-		public MouseDoubleClickTrigger(MouseButton button = MouseButton.Left, State state = State.Pressing)
+		public MouseDoubleClickTrigger(MouseButton button = MouseButton.Left,
+			State state = State.Pressing)
 		{
 			Button = button;
 			State = state;
@@ -33,7 +31,7 @@ namespace DeltaEngine.Input
 			State = parameters.Length > 1 ? parameters[1].Convert<State>() : State.Pressing;
 		}
 
-		public class CannotCreateMouseButtonTriggerWithoutButton : Exception { }
+		public class CannotCreateMouseButtonTriggerWithoutButton : Exception {}
 
 		protected override void StartInputDevice()
 		{

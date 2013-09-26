@@ -5,8 +5,6 @@
 	/// </summary>
 	public static class ShaderCodeDX11
 	{
-	
-
 		internal const string UvLightmapHlslCode = @"
 struct VertexInputType
 {
@@ -14,14 +12,12 @@ struct VertexInputType
 	float2 texCoord : TEXCOORD0;
 	float2 lightMapUv : TEXCOORD1;
 };
-
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float2 texCoord : TEXCOORD0;
 	float2 lightMapUv : TEXCOORD1;
 };
-
 float4x4 WorldViewProjection;
 
 PixelInputType VsMain(VertexInputType input)
@@ -49,13 +45,11 @@ struct VertexInputType
 	float4 position : SV_POSITION;
 	float2 texCoord : TEXCOORD;
 };
-
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float2 texCoord : TEXCOORD;
 };
-
 float4x4 WorldViewProjection;
 
 PixelInputType VsMain(VertexInputType input)
@@ -80,13 +74,11 @@ struct VertexInputType
 	float4 position : SV_POSITION;
 	float4 color : COLOR;
 };
-
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float4 color : COLOR;
 };
-
 float4x4 WorldViewProjection;
 
 PixelInputType VsMain(VertexInputType input)
@@ -109,14 +101,12 @@ struct VertexInputType
 	float4 color : COLOR;
 	float2 texCoord : TEXCOORD;
 };
-
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float4 color : COLOR;
 	float2 texCoord : TEXCOORD;
 };
-
 float4x4 WorldViewProjection;
 
 PixelInputType VsMain(VertexInputType input)
@@ -134,6 +124,47 @@ SamplerState TextureSamplerState : register(s0);
 float4 PsMain(PixelInputType input) : SV_TARGET
 {
 	return DiffuseTexture.Sample(TextureSamplerState, input.texCoord) * input.color;
+}";
+
+		public const string PositionNormalUvDx11 = @"
+cbuffer cbVSPerFrame
+ {
+	 float4 LightPosition;
+	 float4 ViewPosition; 
+ };
+struct VertexInputType
+{
+	float4 position : SV_POSITION;
+	float4 normal : NORMAL;
+	float2 texCoord : TEXCOORD;
+};
+struct PixelInputType
+{
+	float4 position : SV_POSITION;
+	float4 normal : NORMAL;
+	float2 texCoord : TEXCOORD;
+	float3 lightPos : POSITION1;
+	float3 viewPos : POSITION2;
+};
+float4x4 WorldViewProjection;
+
+PixelInputType VsMain(VertexInputType input)
+{
+	PixelInputType output;
+	output.position = mul(input.position, WorldViewProjection);
+	output.normal = input.normal;
+	output.viewPos = normalize(ViewPosition.xyz - input.position);
+	output.lightPos = LightPosition.xyz - input.position;
+	output.texCoord = input.texCoord;
+	return output;
+}
+
+Texture2D DiffuseTexture : register(t0);
+SamplerState TextureSamplerState : register(s0);
+
+float4 PsMain(PixelInputType input) : SV_TARGET
+{
+	return DiffuseTexture.Sample(TextureSamplerState, input.texCoord);
 }";
 	}
 }
