@@ -61,9 +61,6 @@
     <Reference Include="DeltaEngine.Rendering3D.Particles">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Particles.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering2D.Sprites">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Sprites.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine.Scenes">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Scenes.dll</HintPath>
     </Reference>

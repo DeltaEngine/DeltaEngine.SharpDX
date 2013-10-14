@@ -27,7 +27,7 @@ namespace DeltaEngine.Rendering3D.Tests
 			var entity = new Entity3D(Vector3D.Zero);
 			Assert.AreEqual(Vector3D.Zero, entity.Position);
 			Assert.AreEqual(Quaternion.Identity, entity.Orientation);
-			Assert.AreEqual(Visibility.Show, entity.Visibility);
+			Assert.IsTrue(entity.IsVisible);
 		}
 
 		[Test]
@@ -72,10 +72,37 @@ namespace DeltaEngine.Rendering3D.Tests
 		}
 
 		[Test]
-		public void SetVisibilityProperty()
+		public void SettingPositionWithoutInterpolationSetsLastPositionAlso()
 		{
-			var entity = new Entity3D(Vector3D.Zero) { Visibility = Visibility.Hide };
-			Assert.AreEqual(Visibility.Hide, entity.Visibility);
+			var entity = new MockEntity3D(Vector3D.One);
+			Assert.AreEqual(Vector3D.One, entity.GetLastPosition());
+			entity.SetWithoutInterpolation(Vector3D.UnitX);
+			Assert.AreEqual(Vector3D.UnitX, entity.Position);
+			Assert.AreEqual(Vector3D.UnitX, entity.GetLastPosition());
+		}
+
+		[Test]
+		public void SettingOrientationWithoutInterpolationSetsLastOrientationAlso()
+		{
+			var entity = new MockEntity3D(Vector3D.Zero, Orientation1);
+			Assert.AreEqual(Orientation1, entity.GetLastOrientation());
+			entity.SetWithoutInterpolation(Orientation2);
+			Assert.AreEqual(Orientation2, entity.Orientation);
+			Assert.AreEqual(Orientation2, entity.GetLastOrientation());
+		}
+
+		private static readonly Quaternion Orientation1 = Quaternion.FromAxisAngle(Vector3D.UnitX, 90);
+		private static readonly Quaternion Orientation2 = Quaternion.FromAxisAngle(Vector3D.UnitY, 90);
+
+		[Test]
+		public void SettingFloatWithoutInterpolationSetsLastFloatAlso()
+		{
+			var entity = new MockEntity3D(Vector3D.Zero);
+			entity.Add(90.0f);
+			Assert.AreEqual(90.0f, entity.GetLastTickLerpComponents()[0]);
+			entity.SetWithoutInterpolation(180.0f);
+			Assert.AreEqual(180.0f, entity.Get<float>());
+			Assert.AreEqual(180.0f, entity.GetLastTickLerpComponents()[0]);
 		}
 	}
 }

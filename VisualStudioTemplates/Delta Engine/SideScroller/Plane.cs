@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {

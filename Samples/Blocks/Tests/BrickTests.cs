@@ -19,7 +19,7 @@ namespace Blocks.Tests
 				? Orientation.Landscape : Orientation.Portrait;
 			content = new JewelBlocksContent();
 			var image = content.Load<Image>("Block1");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUv);
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			material = new Material(shader, image);
 		}
 

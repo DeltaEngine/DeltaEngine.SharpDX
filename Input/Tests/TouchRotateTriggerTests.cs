@@ -18,14 +18,16 @@ namespace DeltaEngine.Input.Tests
 			var trigger = new TouchRotateTrigger();
 			var touch = Resolve<Touch>();
 			new Command(() =>
+			//ncrunch: no coverage start
 			{
 				rect.Center = touch.GetPosition(0);
 				rect.RotationCenter = rect.Center;
 				rect.Rotation = trigger.Angle;
 			}).Add(trigger);
+			//ncrunch: no coverage end
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Angle()
 		{
 			var trigger = new TouchRotateTrigger();
@@ -46,6 +48,15 @@ namespace DeltaEngine.Input.Tests
 			touch.SetTouchState(1, State.Pressed, new Vector2D(0.1f, 0.5f));
 			touch.Update(new[] { trigger });
 			Assert.AreEqual(4.71238899f, trigger.Angle);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void Creation()
+		{
+			Assert.DoesNotThrow(() => new TouchRotateTrigger(""));
+			Assert.DoesNotThrow(() => new TouchRotateTrigger(null));
+			Assert.Throws<TouchRotateTrigger.TouchRotateTriggerHasNoParameters>(
+				() => new TouchRotateTrigger("Left"));
 		}
 	}
 }

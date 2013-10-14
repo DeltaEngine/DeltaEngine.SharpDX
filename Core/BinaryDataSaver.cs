@@ -23,7 +23,6 @@ namespace DeltaEngine.Core
 
 		private static void TrySaveData(object data, Type type, BinaryWriter writer)
 		{
-			topLevelTypeToSave = type;
 			try
 			{
 				SaveData(data, type, writer);
@@ -46,9 +45,14 @@ namespace DeltaEngine.Core
 				throw new NullReferenceException();
 			if (data is ContentData)
 			{
-				writer.Write((data as ContentData).Name);
-				if (topLevelTypeToSave != type && !(data as ContentData).Name.StartsWith("<Generated"))
+				var justSaveContentName = topLevelTypeToSave != type &&
+					!(data as ContentData).Name.StartsWith("<Generated");
+				writer.Write(justSaveContentName);
+				if (justSaveContentName)
+				{
+					writer.Write((data as ContentData).Name);
 					return;
+				}
 			}
 			if (data is Entity)
 			{

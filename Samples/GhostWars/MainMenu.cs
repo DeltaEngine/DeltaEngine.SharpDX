@@ -8,8 +8,8 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 
 namespace GhostWars
@@ -29,18 +29,9 @@ namespace GhostWars
 		{
 			Clear();
 			AddMenuBackground();
-			AddMenuOption(OnHowToPlay, GameLogic.MenuHowToPlay, new Vector2D(0.5f, 0.50f));
-			AddMenuOption(OnSingleplayer, GameLogic.MenuSingleplayer, new Vector2D(0.5f, 0.57f));
-			AddMenuOption(OnCredits, GameLogic.MenuCredits, new Vector2D(0.5f, 0.64f));
-		}
-
-
-		private void AddMenuBackground()
-		{
-			Add(new Sprite("MenuBackground", ScreenSpace.Current.Viewport)
-			{
-				RenderLayer = int.MinValue
-			});
+			AddMenuOption(OnHowToPlay, "HowToPlay", new Vector2D(0.5f, 0.50f));
+			AddMenuOption(OnSingleplayer, "SinglePlayer", new Vector2D(0.5f, 0.57f));
+			AddMenuOption(OnCredits, "Credits", new Vector2D(0.5f, 0.64f));
 		}
 
 		private void Clear()
@@ -52,58 +43,65 @@ namespace GhostWars
 			entities.Clear();
 		}
 
+		private readonly List<Entity> entities = new List<Entity>();
+
 		private static void PlayClickSound()
 		{
 			ContentLoader.Load<Sound>("MalletHit").Play();
 		}
 
-		private readonly List<Entity> entities = new List<Entity>();
+		private void AddMenuBackground()
+		{
+			Add(new Sprite("MenuBackground", ScreenSpace.Current.Viewport)
+			{
+				RenderLayer = int.MinValue
+			});
+		}
 
 		private void Add(Entity entity)
 		{
 			entities.Add(entity);
 		}
 
-		private void AddMenuOption(Action clickAction, string buttonText, Vector2D position)
+		private void AddMenuOption(Action clickAction, string buttonName, Vector2D position)
 		{
 			var buttonRect = Rectangle.FromCenter(position, new Size(0.29f, 0.0525f));
-			Add(new Sprite("ButtonBackground", buttonRect));
-			Add(new FontText(Font, buttonText, buttonRect));
+			var button = new Sprite(buttonName + "Default", buttonRect);
+			Add(button);
 			Add(new Command(Command.Click, point =>
 			{
 				if (buttonRect.Contains(point))
 					clickAction();
 			}));
+			Add(new Command(pos => UpdateSpriteImage(button, buttonName, pos))
+				.Add(new MouseMovementTrigger()));
 		}
+
+		private void UpdateSpriteImage(Sprite button, string name,
+			Vector2D position)
+		{
+			if (button.DrawArea.Contains(position) && button.Material.DiffuseMap.Name != name + "Hover")
+				button.Material = new Material(Shader.Position2DColorUV, name + "Hover");
+			else if (!button.DrawArea.Contains(position) &&
+				button.Material.DiffuseMap.Name != name + "Default")
+				button.Material = new Material(Shader.Position2DColorUV, name + "Default");
+			else
+				return;
+			if (Time.Total - lastSwingSound < MinimumDelayBetweenMenuSwingSounds)
+				return;
+			lastSwingSound = Time.Total;
+			ContentLoader.Load<Sound>("MalletSwing").Play(DurationOfMenuSwingSound);
+		}
+
+		private float lastSwingSound;
+		private const float MinimumDelayBetweenMenuSwingSounds = 0.075f;
+		private const float DurationOfMenuSwingSound = 0.24f;
 
 		private void OnHowToPlay()
 		{
 			Clear();
 			Add(new Sprite("GhostWarsHowToPlay", ScreenSpace.Current.Viewport));
-			AddBackButton();
 			Add(new Command(Command.Click, CreateMainMenu));
-		}
-
-		private void AddBackButton()
-		{
-			Add(backButton = new Sprite("ButtonBackground", GetBackButtonDrawArea()));
-			Add(backButtonText = new FontText(Font, "Back", GetBackButtonDrawArea()) { Color = Color.White });
-			ScreenSpace.Current.ViewportSizeChanged += PositionBackButtonAndText;
-		}
-
-		private Sprite backButton;
-		private FontText backButtonText;
-
-		private static Rectangle GetBackButtonDrawArea()
-		{
-			return new Rectangle(ScreenSpace.Current.Viewport.Right - 0.2f,
-				ScreenSpace.Current.Viewport.Top + 0.01f, 0.19f, 0.0525f);
-		}
-
-		private void PositionBackButtonAndText()
-		{
-			backButton.DrawArea = GetBackButtonDrawArea();
-			backButtonText.DrawArea = GetBackButtonDrawArea();
 		}
 
 		private void OnSingleplayer()
@@ -117,7 +115,7 @@ namespace GhostWars
 
 		private void AddLevelSelection(int levelNumber, Rectangle mapDrawArea)
 		{
-			var levelText = new FontText(Font, "Level " + levelNumber,
+			var levelText = new FontText(Font, levelNumber + "",
 				Rectangle.FromCenter(mapDrawArea.Center - new Vector2D(0.0f, 0.115f), new Size(0.2f, 0.1f)));
 			Add(levelText);
 			var map = new Sprite("GhostWarsLevel" + levelNumber, mapDrawArea);
@@ -187,7 +185,6 @@ namespace GhostWars
 		{
 			Clear();
 			Add(new Sprite("CreditsBackground", ScreenSpace.Current.Viewport));
-			AddBackButton();
 			Add(new Command(Command.Click, CreateMainMenu));
 		}
 
@@ -206,8 +203,6 @@ namespace GhostWars
 			lastSwingSound = Time.Total;
 			ContentLoader.Load<Sound>("MalletSwing").Play(0.24f);
 		}
-
-		private float lastSwingSound;
 
 		public static GameState State { get; set; }
 		public static Team PlayerTeam { get; set; }

@@ -25,9 +25,9 @@ namespace DeltaEngine.Tests.Entities
 
 		private class Draw : DrawBehavior
 		{
-			void DrawBehavior.Draw(IEnumerable<DrawableEntity> entities)
+			void DrawBehavior.Draw(List<DrawableEntity> visibleEntities)
 			{
-				foreach (var drawableEntity in entities)
+				foreach (var drawableEntity in visibleEntities)
 					ThrowExceptionsWhenInterpolationElementsAreNotFound(drawableEntity);
 			}
 
@@ -65,11 +65,48 @@ namespace DeltaEngine.Tests.Entities
 
 		private class DrawToCopyArrayListLength : DrawBehavior
 		{
-			void DrawBehavior.Draw(IEnumerable<DrawableEntity> entities)
+			void DrawBehavior.Draw(List<DrawableEntity> visibleEntities)
 			{
-				foreach (var drawableEntity in entities)
+				foreach (var drawableEntity in visibleEntities)
 					drawableEntity.GetInterpolatedArray<MockLerp>(2);
 			}
+		}
+
+		[Test]
+		public void SettingLerpableComponentAddsToLastTickComponents()
+		{
+			var draw = new MockDrawableEntity();
+			draw.Set(1.0f);
+			Assert.AreEqual(1.0f, draw.GetLastTickLerpComponents()[0]);
+		}
+
+		[Test]
+		public void ChangingLerpableComponentLeavesLastTickValueUnchanged()
+		{
+			var draw = new MockDrawableEntity();
+			draw.Set(1.0f);
+			EntitiesRunner.Current.UpdateAndDrawAllEntities(() => { });
+			draw.Set(2.0f);
+			Assert.AreEqual(1.0f, draw.GetLastTickLerpComponents()[0]);
+		}
+
+		[Test]
+		public void SettingWithoutInterpolationANonLerpableComponentDoesNotAffectLastTickLerpComponents()
+		{
+			var draw = new MockDrawableEntity();
+			draw.SetWithoutInterpolation(1);
+			Assert.AreEqual(0, draw.GetLastTickLerpComponents().Count);
+		}
+
+		[Test]
+		public void SettingWithoutInterpolationALerpableComponentChangesLastTickValue()
+		{
+			var draw = new MockDrawableEntity();
+			draw.Set(1.0f);
+			draw.IsActive = true;
+			EntitiesRunner.Current.UpdateAndDrawAllEntities(() => { });
+			draw.SetWithoutInterpolation(2.0f);
+			Assert.AreEqual(2.0f, draw.GetLastTickLerpComponents()[0]);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering3D.Particles;
 
 namespace GhostWars
@@ -12,7 +12,7 @@ namespace GhostWars
 	{
 		public static Sprite CreateArrow(Vector2D start, Vector2D target)
 		{
-			var material = new Material(Shader.Position2DColorUv, "Arrow");
+			var material = new Material(Shader.Position2DColorUV, "Arrow");
 			var newSprite = new Sprite(material, CalculateArrowDrawArea(material, start, target));
 			newSprite.Rotation = target.RotationTo(start);
 			return newSprite;
@@ -29,7 +29,7 @@ namespace GhostWars
 
 		public static ParticleEmitter CreateDeathEffect(Vector2D position)
 		{
-			var material = new Material(Shader.Position2DColorUv, "DeathSkull");
+			var material = new Material(Shader.Position2DColorUV, "DeathSkull");
 			var deathEffect = new ParticleEmitterData
 			{
 				ParticleMaterial = material,
@@ -41,12 +41,12 @@ namespace GhostWars
 				LifeTime = 2f,
 				StartVelocity = new RangeGraph<Vector3D>(Vector2D.Zero, new Vector2D(0.01f, 0.01f))
 			};
-			return new Particle2DEmitter(deathEffect, position);
+			return new ParticleEmitter(deathEffect, position);
 		}
 
 		public static ParticleEmitter CreateHitEffect(Vector2D position)
 		{
-			var material = new Material(Shader.Position2DColorUv, "Hit");
+			var material = new Material(Shader.Position2DColorUV, "Hit");
 			var deathEffect = new ParticleEmitterData
 			{
 				ParticleMaterial = material,
@@ -55,7 +55,7 @@ namespace GhostWars
 				Size = new RangeGraph<Size>(new Size(0.06f), new Size(0.09f)),
 				LifeTime = 0.5f
 			};
-			return new Particle2DEmitter(deathEffect, position);
+			return new ParticleEmitter(deathEffect, position);
 		}
 
 		public static ParticleEmitter CreateSparkleEffect(Team team, Vector2D position, int sparkles)

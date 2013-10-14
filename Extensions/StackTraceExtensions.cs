@@ -27,15 +27,11 @@ namespace DeltaEngine.Extensions
 		private static bool wasStartedFromNCrunch;
 
 		/// <summary>
-		/// Warning: Does not work with the Timeout attribute, will not detect NCrunch anymore
+		/// See http://www.ncrunch.net/documentation/troubleshooting_ncrunch-specific-overrides
 		/// </summary>
 		private static bool IsStartedFromNCrunch()
 		{
-			var stackFrames = new StackTrace().GetFrames();
-			foreach (var frame in stackFrames)
-				if (frame.GetMethod().ReflectedType.FullName.StartsWith("nCrunch.TestExecution."))
-					return true;
-			return false; //ncrunch: no coverage
+			return Environment.GetEnvironmentVariable("NCrunch") == "1";
 		}
 
 		/// <summary>
@@ -66,11 +62,11 @@ namespace DeltaEngine.Extensions
 
 		private static bool IsInTestSetUp(StackFrame frame)
 		{
-			return frame.HasAttribute(SetUpAttribute) ||
-				frame.HasAttribute("NUnit.Framework.TestFixtureSetUpAttribute");
+			return frame.HasAttribute(SetUpAttribute) || frame.HasAttribute(FixtureSetUpAttribute);
 		}
 
 		private const string SetUpAttribute = "NUnit.Framework.SetUpAttribute";
+		private const string FixtureSetUpAttribute = "NUnit.Framework.TestFixtureSetUpAttribute";
 
 		/// <summary>
 		/// Get entry name from stack frame, which is either the namespace name where the main method
@@ -117,8 +113,7 @@ namespace DeltaEngine.Extensions
 		private static bool IsTestOrTestSetupMethod(StackFrame frame)
 		{
 			return IsTestAttribute(frame) || IsInTestSetUp(frame);
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private static string GetNamespaceNameFromClassName(string fullClassName)
 		{
@@ -136,6 +131,13 @@ namespace DeltaEngine.Extensions
 			return classType != null ? classType.Namespace : "";
 		}
 
+		public static string GetClassName(this IEnumerable<StackFrame> frames)
+		{
+			foreach (StackFrame frame in frames.Where(frame => IsTestAttribute(frame)))
+				return frame.GetMethod().DeclaringType.Name;
+			return string.Empty;
+		}
+
 		//ncrunch: no coverage start (these lines can only be reached from production code)
 		private static bool IsRunningAsWindowsService(IEnumerable<StackFrame> frames)
 		{
@@ -148,26 +150,17 @@ namespace DeltaEngine.Extensions
 				frame => frame.GetMethod().Name == "ServiceQueuedMainCallback");
 			return frames[index - 1].GetMethod().DeclaringType.Namespace;
 		}
-		//ncrunch: no coverage end
 
-		public static string GetClassName(this IEnumerable<StackFrame> frames)
-		{
-			foreach (StackFrame frame in frames.Where(frame => IsTestAttribute(frame)))
-				return frame.GetMethod().DeclaringType.Name;
-			return string.Empty;
-		}
-
-		//ncrunch: no coverage start
 		public static string GetApprovalTestName()
 		{
 			var frames = new StackTrace().GetFrames();
 			foreach (var frame in frames)
 			{
 				if (IsTestAttribute(frame) && frame.HasAttribute(ApproveFirstFrameScreenshotAttribute))
-					return frames.GetClassName() + "." + frames.GetTestMethodName(); //ncrunch: no coverage
+					return frames.GetClassName() + "." + frames.GetTestMethodName();
 				if (!String.IsNullOrEmpty(unitTestMethodName) && IsInTestSetUp(frame) &&
 					HasRunningTestAttribute(ApproveFirstFrameScreenshotAttribute))
-					return unitTestClassName + "." + unitTestMethodName; //ncrunch: no coverage
+					return unitTestClassName + "." + unitTestMethodName;
 			}
 			return "";
 		}
@@ -233,7 +226,11 @@ namespace DeltaEngine.Extensions
 
 		public static bool StartedFromProgramMain
 		{
-			get { return new StackTrace().GetFrames().Any(frame => frame.GetMethod().Name == "Main"); }
+			get
+			{
+				return !StartedFromNCrunch &&
+					new StackTrace().GetFrames().Any(frame => frame.GetMethod().Name == "Main");
+			}
 		}
 
 		/// <summary>
@@ -279,7 +276,7 @@ namespace DeltaEngine.Extensions
 				method.DeclaringType.Assembly.GetName().Name.StartsWith("nCrunch");
 		}
 
-		private static readonly string[] MethodNamesToExclude = new[]
+		private static readonly string[] MethodNamesToExclude =
 		{
 			"System.RuntimeMethodHandle", "System.Reflection", "TestDriven", "System.Threading",
 			"System.AppDomain", "System.Activator", "System.Runtime", "Delta.Utilities.Testing",
@@ -298,7 +295,14 @@ namespace DeltaEngine.Extensions
 				{
 					string trimmedLine = line.Trim();
 					var removeFirstWord = line.Substring(trimmedLine.IndexOf(' ')).TrimStart();
-					if (!removeFirstWord.StartsWith(MethodNamesToExclude))
+					bool skipLine = false;
+					foreach (var nameToExclude in MethodNamesToExclude)
+						if (removeFirstWord.StartsWith(nameToExclude))
+						{
+							skipLine = true;
+							break;
+						}
+					if (!skipLine)
 						output += (output.Length > 0 ? "\n" : "") + "   " + trimmedLine;
 				}
 				else

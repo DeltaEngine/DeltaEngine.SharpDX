@@ -82,7 +82,7 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
-		public void RotatingUnitXbyQuaternionMatchesRotatingItByMatrix()
+		public void RotatingUnitXByQuaternionMatchesRotatingItByMatrix()
 		{
 			var quaternion = Quaternion.FromAxisAngle(Vector3D.UnitY, 90.0f);
 			var rotatedViaMatrix = Matrix.FromQuaternion(quaternion) * Vector3D.UnitX;
@@ -91,7 +91,7 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
-		public void RotatingVectorbyQuaternionMatchesRotatingItByMatrix()
+		public void RotatingVectorByQuaternionMatchesRotatingItByMatrix()
 		{
 			var axis = new Vector3D(4, 5, 6);
 			axis.Normalize();
@@ -150,7 +150,7 @@ namespace DeltaEngine.Tests.Datatypes
 
 		private static void VerifyEuler(EulerAngles eulerAngles)
 		{
-			var rotationMatrix = Matrix.CreateRotationZyx(eulerAngles);
+			var rotationMatrix = Matrix.CreateRotationZYX(eulerAngles);
 			var rotationQuaternion = Quaternion.FromRotationMatrix(rotationMatrix);
 			Assert.AreEqual(eulerAngles, rotationQuaternion.ToEuler());
 		}

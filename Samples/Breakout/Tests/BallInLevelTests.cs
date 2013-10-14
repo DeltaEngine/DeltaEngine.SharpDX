@@ -1,10 +1,10 @@
 ﻿using System;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using NUnit.Framework;
 
 namespace Breakout.Tests
@@ -22,10 +22,10 @@ namespace Breakout.Tests
 		{
 			Resolve<BallInLevel>();
 			var level = Resolve<Level>();
-			level.GetBrickAt(0.25f, 0.125f).Visibility = Visibility.Hide;
-			level.GetBrickAt(0.75f, 0.125f).Visibility = Visibility.Hide;
-			level.GetBrickAt(0.25f, 0.375f).Visibility = Visibility.Hide;
-			level.GetBrickAt(0.75f, 0.375f).Visibility = Visibility.Hide;
+			level.GetBrickAt(0.25f, 0.125f).IsVisible = false;
+			level.GetBrickAt(0.75f, 0.125f).IsVisible = false;
+			level.GetBrickAt(0.25f, 0.375f).IsVisible = false;
+			level.GetBrickAt(0.75f, 0.375f).IsVisible = false;
 			/*RunCode = () =>
 			{
 				if (level.BricksLeft == 0)
@@ -38,10 +38,12 @@ namespace Breakout.Tests
 		{
 			Resolve<BallInLevel>();
 			var ball = Resolve<Ball>();
-			Assert.IsTrue(ball.Visibility == Visibility.Show);
+			Assert.IsTrue(ball.IsVisible == true);
 			AdvanceTimeAndUpdateEntities(0.01f);
 			var initialBallPosition = new Vector2D(0.5f, 0.86f);
 			Assert.AreEqual(initialBallPosition, ball.Position);
+			if(resolver.GetType() != typeof(MockResolver))
+				return;
 			Resolve<MockKeyboard>().SetKeyboardState(Key.Space, State.Pressing);
 			AdvanceTimeAndUpdateEntities(1.0f);
 			Assert.AreNotEqual(initialBallPosition, ball.Position);

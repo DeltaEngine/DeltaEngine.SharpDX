@@ -35,7 +35,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse == null)
 				return; //ncrunch: no coverage
-
 			mouse.SetPosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
@@ -114,11 +113,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test, CloseAfterFirstFrame]
 		public void HidingDropdownListHidesEverything()
 		{
-			dropdownList.Visibility = Visibility.Hide;
-			Assert.AreEqual(Visibility.Hide, dropdownList.selectBox.Visibility);
-			Assert.AreEqual(Visibility.Hide, dropdownList.Get<FontText>().Visibility);
+			dropdownList.IsVisible = false;
+			Assert.IsFalse(dropdownList.selectBox.IsVisible);
+			Assert.IsFalse(dropdownList.Get<FontText>().IsVisible);
 			foreach (FontText text in dropdownList.selectBox.texts)
-				Assert.AreEqual(Visibility.Hide, text.Visibility);
+				Assert.IsFalse(text.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -127,7 +126,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; //ncrunch: no coverage
 			Click(new Vector2D(0.5f, 0.31f));
-			Assert.AreEqual(Visibility.Show, dropdownList.selectBox.Visibility);
+			Assert.IsTrue(dropdownList.selectBox.IsVisible);
 		}
 
 		private void Click(Vector2D position)
@@ -148,7 +147,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Click(new Vector2D(0.5f, 0.31f));
 			Click(new Vector2D(0.5f, 0.41f));
 			Assert.AreEqual("value 2", dropdownList.SelectedValue);
-			Assert.AreEqual(Visibility.Hide, dropdownList.selectBox.Visibility);
+			Assert.IsFalse(dropdownList.selectBox.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -156,9 +155,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			dropdownList.selectBox.Visibility = Visibility.Hide;
+			dropdownList.selectBox.IsVisible = false;
 			dropdownList.selectBox.LineClicked(0);
-			Assert.AreEqual(Visibility.Hide, dropdownList.selectBox.Visibility);
+			Assert.IsFalse(dropdownList.selectBox.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -195,9 +194,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; //ncrunch: no coverage
 			Click(new Vector2D(0.5f, 0.31f));
 			dropdownList.IsEnabled = false;
-			Assert.AreEqual(Visibility.Hide, dropdownList.selectBox.Visibility);
+			Assert.IsFalse(dropdownList.selectBox.IsVisible);
 			foreach (FontText text in dropdownList.selectBox.texts)
-				Assert.AreEqual(Visibility.Hide, text.Visibility);
+				Assert.IsFalse(text.IsVisible);
 		}
 
 		[Test]
@@ -219,9 +218,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					dropdownList.DrawArea = Rectangle.FromCenter(center, size);
 				}
 			}
-		}
-
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test]
 		public void RenderDropdownListAttachedToMouse()

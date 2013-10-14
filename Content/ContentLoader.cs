@@ -46,9 +46,8 @@ namespace DeltaEngine.Content
 
 		public static Content Load<Content>(string contentName) where Content : ContentData
 		{
-			if (!IsGeneratedContentName(contentName))
-				if (Path.HasExtension(contentName))
-					throw new ContentNameShouldNotHaveExtension();
+			if (!IsGeneratedContentName(contentName) && Path.HasExtension(contentName))
+				throw new ContentNameShouldNotHaveExtension();
 			return Load(typeof(Content), contentName) as Content;
 		}
 

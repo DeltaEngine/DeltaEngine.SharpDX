@@ -51,13 +51,13 @@ namespace $safeprojectname$
 
 		private void SetUpTheme()
 		{
-			SetBackground("BreakoutMainMenuBackground");
+			SetQuadraticBackground("BreakoutMainMenuBackground");
 			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DColorUv, 
+			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DColorUV, 
 				"BreakoutButtonDefault"));
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DColorUv, 
+			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DColorUV, 
 				"BreakoutButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DColorUv, 
+			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DColorUV, 
 				"BreakoutButtonPressed"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
 		}

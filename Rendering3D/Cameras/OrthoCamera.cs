@@ -7,7 +7,7 @@ namespace DeltaEngine.Rendering3D.Cameras
 	/// <summary>
 	/// Orthogonal 3D camera.
 	/// </summary>
-	public class OrthoCamera : Camera
+	public class OrthoCamera : TargetedCamera
 	{
 		public OrthoCamera(Device device, Window window)
 			: base(device, window) {}

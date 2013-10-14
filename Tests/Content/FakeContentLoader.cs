@@ -13,16 +13,16 @@ namespace DeltaEngine.Tests.Content
 		public override ContentMetaData GetMetaData(string contentName,
 			Type contentClassType = null)
 		{
-			HasValidContentAndMakeSureItIsLoaded();
 			var metaData = new ContentMetaData { Type = ContentType.Xml };
 			if (contentName.Contains("WrongPath"))
 				metaData.LocalFilePath = "No.xml";
 			return metaData;
 		}
 
+		// ncrunch: no coverage start
 		protected override bool HasValidContentAndMakeSureItIsLoaded()
 		{
-			return ContentMetaDataFilePath == null;
+			return true;
 		}
 	}
 }

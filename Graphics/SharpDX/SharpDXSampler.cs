@@ -1,5 +1,5 @@
 ﻿using SharpDX.Direct3D11;
-using DxDevice = SharpDX.Direct3D11.Device;
+using DXDevice = SharpDX.Direct3D11.Device;
 
 namespace DeltaEngine.Graphics.SharpDX
 {
@@ -8,13 +8,17 @@ namespace DeltaEngine.Graphics.SharpDX
 	/// </summary>
 	public class SharpDXSampler : SamplerState
 	{
-		public SharpDXSampler(DxDevice nativeDevice, Filter filter)
-			: base(nativeDevice, BuildFilterDescription(filter)) {}
+		public SharpDXSampler(DXDevice nativeDevice, Filter filter, TextureAddressMode textureAddressMode)
+			: base(nativeDevice, BuildFilterDescription(filter, textureAddressMode)) {}
 
-		protected static SamplerStateDescription BuildFilterDescription(Filter filter)
+		protected static SamplerStateDescription BuildFilterDescription(Filter filter,
+			TextureAddressMode textureAddressMode)
 		{
 			var samplerDescriptor = SamplerStateDescription.Default();
 			samplerDescriptor.Filter = filter;
+			samplerDescriptor.AddressU = textureAddressMode;
+			samplerDescriptor.AddressV = textureAddressMode;
+			samplerDescriptor.AddressW = textureAddressMode;
 			return samplerDescriptor;
 		}
 	}

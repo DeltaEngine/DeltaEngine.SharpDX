@@ -13,7 +13,17 @@ namespace DeltaEngine.Input.Tests
 		public void PressLeftMouseButtonToCloseWindow()
 		{
 			new FontText(Font.Default, "Double Click Mouse Button to close window", Rectangle.One);
-			new Command(() => Resolve<Window>().CloseAfterFrame()).Add(new MouseDoubleClickTrigger());
+			new Command(() => Resolve<Window>().CloseAfterFrame()).Add(
+				new MouseDoubleClickTrigger(State.Pressing));
+		}
+
+		[Test]
+		public void CreateTriggerWithNoButtonThrowsAnException()
+		{
+			new FontText(Font.Default, "Double Click Mouse Button to close window", Rectangle.One);
+			Assert.Throws<MouseDoubleClickTrigger.CannotCreateMouseButtonTriggerWithoutButton>(
+				() =>
+					new Command(() => Resolve<Window>().CloseAfterFrame()).Add(new MouseDoubleClickTrigger("")));
 		}
 	}
 }

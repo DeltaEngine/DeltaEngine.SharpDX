@@ -29,13 +29,26 @@ namespace DeltaEngine.Multimedia.Tests
 		}
 
 		[Test]
+		public void PlayMusicLoop()
+		{
+			var music = ContentLoader.Load<Music>("DefaultMusic");
+			music.Loop = true;
+			music.Play();
+		}
+
+		[Test]
 		public void TestIfPLayingMusic()
 		{
 			var music = ContentLoader.Load<Music>("DefaultMusic");
 			music.Play();
 			Assert.IsTrue(music.IsPlaying());
-			Assert.AreEqual(4.13f, music.DurationInSeconds);
-			Assert.AreEqual(1.0f, music.PositionInSeconds);
+			AssertBetween(4.10f, 4.15f, music.DurationInSeconds);
+		}
+
+		private static void AssertBetween(float min, float max, float value)
+		{
+			Assert.GreaterOrEqual(value, min);
+			Assert.LessOrEqual(value, max);
 		}
 
 		[Test, Ignore]
@@ -91,8 +104,7 @@ namespace DeltaEngine.Multimedia.Tests
 		public void StartAndStopMusic()
 		{
 			var music = ContentLoader.Load<Music>("DefaultMusic");
-			Assert.Less(4.12f, music.DurationInSeconds);
-			Assert.Greater(4.14f, music.DurationInSeconds);
+			AssertBetween(4.10f, 4.15f, music.DurationInSeconds);
 			new MusicPlayedOneSecondTester(music);
 			music.Play();
 			Assert.IsTrue(music.IsPlaying());

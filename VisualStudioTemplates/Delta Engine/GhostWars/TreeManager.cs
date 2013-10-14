@@ -8,9 +8,9 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
@@ -26,7 +26,7 @@ namespace $safeprojectname$
 				0.25f), new Size(0.2f))) {
 				RenderLayer = 5
 			};
-			new Sprite(new Material(Shader.Position2DUv, "Logo"), new Rectangle(0.02f, 0.205f, 0.15f, 
+			new Sprite(new Material(Shader.Position2DUV, "Logo"), new Rectangle(0.02f, 0.205f, 0.15f, 
 				0.15f)) {
 				RenderLayer = -15
 			};
@@ -60,7 +60,7 @@ namespace $safeprojectname$
 		private void CreateArrowSelectionAndBars()
 		{
 			arrow = Effects.CreateArrow(Vector2D.Unused, Vector2D.Unused);
-			selection = new Sprite(new Material(Shader.Position2DColorUv, "SelectionCircle"), 
+			selection = new Sprite(new Material(Shader.Position2DColorUV, "SelectionCircle"), 
 				Rectangle.Zero);
 			bars = new[] {
 				new FilledRect(barsArea, Team.HumanYellow.ToColor()) {
@@ -130,7 +130,7 @@ namespace $safeprojectname$
 				return;
 
 			var targetTree = FindNearestTree(startTree, end);
-			arrow.Visibility = Visibility.Hide;
+			arrow.IsVisible = false;
 			if (startTree.Team != MainMenu.PlayerTeam || targetTree == startTree || MainMenu.State != 
 				GameState.Game || startTree.Center.DistanceTo(end) < 0.05f)
 				return;
@@ -138,7 +138,7 @@ namespace $safeprojectname$
 			arrow.IsActive = false;
 			arrow = Effects.CreateArrow(startTree.Center, targetTree.Center);
 			arrow.Color = startTree.Team.ToColor();
-			arrow.Visibility = dragDone ? Visibility.Hide : Visibility.Show;
+			arrow.IsVisible = dragDone ? false : true;
 			if ((dragDone && Time.Total - lastWaveSend > TimeBetweenWaves || !dragDone && 
 				Time.CheckEvery(TimeBetweenWaves)) && startTree.NumberOfGhosts >= 1)
 			{
@@ -239,7 +239,7 @@ namespace $safeprojectname$
 		{
 			statusText.Text = "";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUv, "YouWin"), Vector2D.Half) {
+			new Sprite(new Material(Shader.Position2DUV, "YouWin"), Vector2D.Half) {
 				RenderLayer = 4000
 			};
 		}
@@ -248,7 +248,7 @@ namespace $safeprojectname$
 		{
 			statusText.Text = "You Lost!";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUv, "GameOver"), Vector2D.Half) {
+			new Sprite(new Material(Shader.Position2DUV, "GameOver"), Vector2D.Half) {
 				RenderLayer = 4000
 			};
 		}

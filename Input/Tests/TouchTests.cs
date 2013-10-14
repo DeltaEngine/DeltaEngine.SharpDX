@@ -19,6 +19,7 @@ namespace DeltaEngine.Input.Tests
 			new Command(() => TranslateOnTouch(ellipse)).Add(new TouchPressTrigger(State.Pressed));
 		}
 
+		//ncrunch: no coverage start
 		private void TranslateOnTouch(Entity2D ellipse)
 		{
 			Vector2D position = Resolve<Touch>().GetPosition(0);
@@ -27,6 +28,7 @@ namespace DeltaEngine.Input.Tests
 			drawArea.Top = position.Y;
 			ellipse.DrawArea = drawArea;
 		}
+		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void TestPositionAndState()

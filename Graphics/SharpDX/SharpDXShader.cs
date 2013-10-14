@@ -42,11 +42,12 @@ namespace DeltaEngine.Graphics.SharpDX
 			CreatePixelShader();
 			CreateVertexDeclaration();
 			CreateMatrixBuffer();
+			CreateSamplerStates();
 		}
 
 		private void CreateVertexShader()
 		{
-			var compiledShader = ShaderBytecode.Compile(Dx11Code, "VsMain", "vs_4_0");
+			var compiledShader = ShaderBytecode.Compile(DX11Code, "VsMain", "vs_4_0");
 			vertexShaderBytecode = compiledShader.Bytecode;
 			vertexShader = new VertexShader(nativeDevice, compiledShader.Bytecode);
 		}
@@ -56,7 +57,7 @@ namespace DeltaEngine.Graphics.SharpDX
 
 		private void CreatePixelShader()
 		{
-			var compiledShader = ShaderBytecode.Compile(Dx11Code, "PsMain", "ps_4_0");
+			var compiledShader = ShaderBytecode.Compile(DX11Code, "PsMain", "ps_4_0");
 			pixelShader = new PixelShader(nativeDevice, compiledShader.Bytecode);
 		}
 
@@ -76,7 +77,7 @@ namespace DeltaEngine.Graphics.SharpDX
 				else if (vertexElement.ElementType == VertexElementType.TextureUV)
 					vertexElements[elementIndex++] = GetVertexTextureCoordinate(vertexElement.Offset);
 				else if (vertexElement.ElementType == VertexElementType.LightMapUV)
-					vertexElements[elementIndex++] = GetVertexLightMapUv(vertexElement.Offset);
+					vertexElements[elementIndex++] = GetVertexLightMapUV(vertexElement.Offset);
 				else if (vertexElement.ElementType == VertexElementType.Normal)
 					vertexElements[elementIndex++] = GetVertexNormal3D(vertexElement.Offset);
 			inputLayout = new InputLayout(nativeDevice, vertexShaderBytecode, vertexElements);
@@ -109,7 +110,7 @@ namespace DeltaEngine.Graphics.SharpDX
 			return new InputElement("TEXCOORD", 0, SharpDXFormat.R32G32_Float, offset, 0);
 		}
 
-		private static InputElement GetVertexLightMapUv(int offset)
+		private static InputElement GetVertexLightMapUV(int offset)
 		{
 			return new InputElement("TEXCOORD", 1, SharpDXFormat.R32G32_Float, offset, 0);
 		}
@@ -120,6 +121,23 @@ namespace DeltaEngine.Graphics.SharpDX
 		}
 
 		private Buffer matrixBuffer;
+
+		private void CreateSamplerStates()
+		{
+			linearClampSamplerState =
+				new SharpDXSampler(nativeDevice, Filter.MinMagMipLinear, TextureAddressMode.Clamp);
+			linearWrapSamplerState =
+				new SharpDXSampler(nativeDevice, Filter.MinMagMipLinear, TextureAddressMode.Wrap);
+			pointClampSamplerState =
+				new SharpDXSampler(nativeDevice, Filter.MinMagMipPoint, TextureAddressMode.Clamp);
+			pointWrapSamplerState =
+				new SharpDXSampler(nativeDevice, Filter.MinMagMipPoint, TextureAddressMode.Wrap);
+		}
+
+		private SamplerState linearClampSamplerState;
+		private SamplerState linearWrapSamplerState;
+		private SamplerState pointClampSamplerState;
+		private SamplerState pointWrapSamplerState;
 
 		public override void Bind()
 		{
@@ -149,25 +167,16 @@ namespace DeltaEngine.Graphics.SharpDX
 		public override void SetDiffuseTexture(Image image)
 		{
 			context.PixelShader.SetShaderResource(0, (image as SharpDXImage).NativeResourceView);
-			var sampler = image.DisableLinearFiltering ? GetPointSamplerLazy() : GetLinearSamplerLazy();
+			var sampler = GetSamplerState(!image.DisableLinearFiltering, image.AllowTiling);
 			context.PixelShader.SetSampler(0, sampler);
 		}
 
-		public SamplerState GetLinearSamplerLazy()
+		public SamplerState GetSamplerState(bool linearFiltering, bool tiling)
 		{
-			return linearSampler ??
-				(linearSampler = new SharpDXSampler(nativeDevice, Filter.MinMagMipLinear));
+			return linearFiltering
+				? (tiling ? linearWrapSamplerState : linearClampSamplerState)
+				: (tiling ? pointWrapSamplerState : pointClampSamplerState);
 		}
-
-		private SamplerState linearSampler;
-
-		public SamplerState GetPointSamplerLazy()
-		{
-			return pointSampler ??
-				(pointSampler = new SharpDXSampler(nativeDevice, Filter.MinMagMipPoint));
-		}
-
-		private SamplerState pointSampler;
 
 		public override void SetLightmapTexture(Image texture)
 		{

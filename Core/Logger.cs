@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Core
@@ -24,11 +23,16 @@ namespace DeltaEngine.Core
 
 		private void RegisterToAllThreads()
 		{
-			if (CurrentLoggersInAllThreads.Any(logger => logger.GetType() == GetType()))
-				if (GetType().Name.StartsWith("Console"))
-					RemoveConsoleLoggerFromPreviousFailingTest();
-				else
-					throw new LoggerWasAlreadyAttached();
+			var thisType = GetType();
+			foreach (Logger logger in CurrentLoggersInAllThreads)
+				if (logger.GetType() == thisType)
+				{
+					if (thisType.Name.StartsWith("Console"))
+						RemoveConsoleLoggerFromPreviousFailingTest();
+					else
+						throw new LoggerWasAlreadyAttached();
+					break;
+				}
 			CurrentLoggersInAllThreads.Add(this);
 		}
 
@@ -37,7 +41,7 @@ namespace DeltaEngine.Core
 			foreach (Logger logger in CurrentLoggersInAllThreads)
 				if (logger.GetType() == GetType())
 				{
-					RegisteredLoggers.Current.Remove(logger);
+					CurrentLoggersInAllThreads.Remove(logger);
 					break;
 				}
 		}
@@ -46,11 +50,16 @@ namespace DeltaEngine.Core
 		{
 			if (!RegisteredLoggers.HasCurrent)
 				RegisteredLoggers.Use(new List<Logger>());
-			if (RegisteredLoggers.Current.Any(logger => logger.GetType() == GetType()))
-				if (GetType().Name.StartsWith("Mock"))
-					RemoveMockLoggerFromPreviousFailingTest();
-				else
-					throw new LoggerWasAlreadyAttached();
+			var thisType = GetType();
+			foreach (Logger logger in RegisteredLoggers.Current)
+				if (logger.GetType() == thisType)
+				{
+					if (thisType.Name.StartsWith("Mock"))
+						RemoveMockLoggerFromPreviousFailingTest();
+					else
+						throw new LoggerWasAlreadyAttached();
+					break;
+				}
 			RegisteredLoggers.Current.Add(this);
 		}
 

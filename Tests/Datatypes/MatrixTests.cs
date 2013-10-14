@@ -1,5 +1,6 @@
 ﻿using System;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Datatypes
@@ -35,6 +36,14 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void CreateFromString()
+		{
+			var textMatrix = new Matrix("0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15");
+			for (int i = 0; i < 16; i++)
+				Assert.AreEqual(textMatrix[i], matrix[i]);
+		}
+
+		[Test]
 		public void CheckRightVector()
 		{
 			Assert.AreEqual(new Vector3D(0, 1, 2), matrix.Right);
@@ -50,6 +59,27 @@ namespace DeltaEngine.Tests.Datatypes
 		public void CheckForwardVector()
 		{
 			Assert.AreEqual(new Vector3D(8, 9, 10), matrix.Forward);
+		}
+
+		[Test]
+		public void SetRightVector()
+		{
+			matrix.Right = new Vector3D(1, 10, 20);
+			Assert.AreEqual(new Vector3D(1, 10, 20), matrix.Right);
+		}
+
+		[Test]
+		public void SetUpVector()
+		{
+			matrix.Up = new Vector3D(3, 20, 30);
+			Assert.AreEqual(new Vector3D(3, 20, 30), matrix.Up);
+		}
+
+		[Test]
+		public void setForwardVector()
+		{
+			matrix.Forward = new Vector3D(9, 26, 44);
+			Assert.AreEqual(new Vector3D(9, 26, 44), matrix.Forward);
 		}
 
 		[Test]
@@ -94,10 +124,10 @@ namespace DeltaEngine.Tests.Datatypes
 			var matrix2 = new Matrix(0, 0, -1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1);
 			var matrix3 = new Matrix(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 			var matrix4 = matrix1 * (matrix2 * matrix3);
-			Assert.IsTrue(matrix1.IsNearlyEqual(Matrix.CreateRotationZyx(90, 0, 0)));
-			Assert.IsTrue(matrix2.IsNearlyEqual(Matrix.CreateRotationZyx(0, 90, 0)));
-			Assert.IsTrue(matrix3.IsNearlyEqual(Matrix.CreateRotationZyx(0, 0, 90)));
-			Assert.IsTrue(matrix4.IsNearlyEqual(Matrix.CreateRotationZyx(90, 90, 90)));
+			Assert.IsTrue(matrix1.IsNearlyEqual(Matrix.CreateRotationZYX(90, 0, 0)));
+			Assert.IsTrue(matrix2.IsNearlyEqual(Matrix.CreateRotationZYX(0, 90, 0)));
+			Assert.IsTrue(matrix3.IsNearlyEqual(Matrix.CreateRotationZYX(0, 0, 90)));
+			Assert.IsTrue(matrix4.IsNearlyEqual(Matrix.CreateRotationZYX(90, 90, 90)));
 		}
 
 		[Test]
@@ -175,6 +205,16 @@ namespace DeltaEngine.Tests.Datatypes
 			var expected = new Matrix(0.2f, 0.0f, 0.0f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f,
 				0.0f, -1.0f, 1.0f, 0.0f, 1.0f);
 			Assert.AreEqual(expected, matrix);
+		}
+
+		[Test]
+		public void CreateOrtographicProjectionMatrixwithNearAndFarPlanes()
+		{
+			var size = new Size(10, 5);
+			matrix = Matrix.CreateOrthoProjection(size, 0.1f, 10.0f);
+			var expected = new Matrix(0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.4f, 0.0f, 0.0f, 0.0f, 0.0f, -0.202f,
+				0.0f, 0.0f, 0.0f, -1.0202f, 1.0f);
+			Assert.IsTrue(expected.IsNearlyEqual(matrix));
 		}
 
 		[Test]
@@ -258,6 +298,15 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void LoadFromString()
+		{
+			const string MatrixString = "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15";
+			var loadedMatrix = new Matrix(MatrixString);
+			for (int i = 0; i < 16; i++)
+				Assert.AreEqual(i, loadedMatrix.GetValues[i]);
+		}
+
+		[Test]
 		public void CalculateHashCode()
 		{
 			Assert.AreEqual(204607600, matrix.GetHashCode());
@@ -269,11 +318,30 @@ namespace DeltaEngine.Tests.Datatypes
 		{
 			var position = new Vector3D(3, 5, 2);
 			var translation = Matrix.CreateTranslation(2, 0, 5);
-			var rotation = Matrix.CreateRotationZyx(0, 90, 0);
+			var rotation = Matrix.CreateRotationZYX(0, 90, 0);
 			var scale = Matrix.CreateScale(3, 3, 3);
 			var transformation = scale * rotation * translation;
 			var result = translation * (rotation * (scale * position));
 			Assert.IsTrue((transformation * position).IsNearlyEqual(result));
+		}
+
+		[Test]
+		public void CreateFromAxisAngle()
+		{
+			var invTwoSqr = MathExtensions.InvSqrt(2);
+			var matrix2 = new Matrix(invTwoSqr, 0, -invTwoSqr, 0, 0, 1, 0, 0, invTwoSqr, 0, invTwoSqr, 
+				0, 0, 0, 0, 1);
+			var axis = new Vector3D(0, 1, 0);
+			const float Angle = 45.0f;
+			Assert.AreEqual(Matrix.Identity, Matrix.FromAxisAngle(axis, 0.0f));
+			Assert.AreEqual(matrix2, Matrix.FromAxisAngle(axis, Angle));
+		}
+
+		[Test]
+		public void CreateFrustrum()
+		{
+			var matrixSimetric = new Matrix(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, -1, 1);
+			Assert.AreEqual(matrixSimetric, Matrix.Frustum(-1, 1, -1, 1, 0, 100.0f));			
 		}
 	}
 }

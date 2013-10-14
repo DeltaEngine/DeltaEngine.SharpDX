@@ -12,7 +12,7 @@ namespace DeltaEngine.Input.Mocks
 		public MockMouse()
 		{
 			IsAvailable = true;
-			Position = Vector2D.Half;
+			Position = nextPosition = Vector2D.Half;
 		}
 
 		public override bool IsAvailable { get; protected set; }
@@ -22,6 +22,7 @@ namespace DeltaEngine.Input.Mocks
 		public override void SetPosition(Vector2D position)
 		{
 			nextPosition = position;
+			Position = position;
 		}
 
 		private Vector2D nextPosition;
@@ -54,6 +55,20 @@ namespace DeltaEngine.Input.Mocks
 		{
 			Position = nextPosition;
 			base.Update(entities);
+			LeftButton = GetUpdatedPressingAndReleasingState(LeftButton);
+			RightButton = GetUpdatedPressingAndReleasingState(RightButton);
+			MiddleButton = GetUpdatedPressingAndReleasingState(MiddleButton);
+			X1Button = GetUpdatedPressingAndReleasingState(X1Button);
+			X2Button = GetUpdatedPressingAndReleasingState(X2Button);
+		}
+
+		private static State GetUpdatedPressingAndReleasingState(State buttonState)
+		{
+			if (buttonState == State.Pressing)
+				return State.Pressed;
+			if (buttonState == State.Releasing)
+				return State.Released;
+			return buttonState;
 		}
 	}
 }

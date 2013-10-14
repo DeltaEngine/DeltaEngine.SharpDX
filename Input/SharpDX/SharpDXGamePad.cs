@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using SharpDX.XInput;
 
@@ -12,10 +10,7 @@ namespace DeltaEngine.Input.SharpDX
 	/// </summary>
 	public class SharpDXGamePad : GamePad
 	{
-		public SharpDXGamePad()
-			: this(GamePadNumber.Any) {}
-
-		public SharpDXGamePad(GamePadNumber number)
+		public SharpDXGamePad(GamePadNumber number = GamePadNumber.Any)
 			: base(number)
 		{
 			controller = new Controller(GetUserIndexFromNumber());
@@ -30,12 +25,21 @@ namespace DeltaEngine.Input.SharpDX
 		private UserIndex GetUserIndexFromNumber()
 		{
 			if (Number == GamePadNumber.Any)
-				return UserIndex.Any;
+				return GetAnyController();
 			if (Number == GamePadNumber.Two)
 				return UserIndex.Two;
 			if (Number == GamePadNumber.Three)
 				return UserIndex.Three;
 			return Number == GamePadNumber.Four ? UserIndex.Four : UserIndex.One;
+		}
+
+		private static UserIndex GetAnyController()
+		{
+			if (new Controller(UserIndex.Two).IsConnected)
+				return UserIndex.Two;
+			if (new Controller(UserIndex.Three).IsConnected)
+				return UserIndex.Three;
+			return new Controller(UserIndex.Three).IsConnected ? UserIndex.Four : UserIndex.One;
 		}
 
 		public override void Dispose()
@@ -195,15 +199,10 @@ namespace DeltaEngine.Input.SharpDX
 			return states[(int)button];
 		}
 
-		public override void Update(IEnumerable<Entity> entities)
+		protected override void UpdateGamePadStates()
 		{
-			UpdateGamePadStates();
-			base.Update(entities);
-		}
-
-		private void UpdateGamePadStates()
-		{
-			global::SharpDX.XInput.State state = controller.GetState();
+			global::SharpDX.XInput.State state;
+			controller.GetState(out state);
 			UpdateThumbSticks(state);
 			leftTrigger = NormalizeByteToFloat(state.Gamepad.LeftTrigger);
 			rightTrigger = NormalizeByteToFloat(state.Gamepad.RightTrigger);

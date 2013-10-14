@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using DeltaEngine.Commands;
 using DeltaEngine.Core;
 
@@ -18,6 +17,11 @@ namespace DeltaEngine.Content.Xml
 			get { return Name == "DefaultCommands"; }
 		}
 
+		/// <summary>
+		/// Creates a simple DefaultCommands.xml file in memory and passes it to Command.Register. Trigger
+		/// types cannot be created directly here because we have no dependency to DeltaEngine.Input here.
+		/// For better performance with MockResolver the same code is duplicated there, just much faster.
+		/// </summary>
 		protected override void CreateDefault()
 		{
 			var exit = new XmlData("Command");
@@ -29,40 +33,77 @@ namespace DeltaEngine.Content.Xml
 			click.AddChild("TouchPressTrigger", "");
 			click.AddChild("GamePadButtonTrigger", "A");
 			Command.Register(Command.Click, ParseTriggers(click));
+			var middleClick = new XmlData("Command");
+			middleClick.AddChild("MouseButtonTrigger", "Middle");
+			Command.Register(Command.MiddleClick, ParseTriggers(middleClick));
+			var rightClick = new XmlData("Command");
+			rightClick.AddChild("MouseButtonTrigger", "Right");
+			Command.Register(Command.RightClick, ParseTriggers(rightClick));
+			var moveLeft = new XmlData("Command");
+			moveLeft.AddChild("KeyTrigger", "CursorLeft Pressed");
+			Command.Register(Command.MoveRight, ParseTriggers(moveLeft));
+			var moveRight = new XmlData("Command");
+			moveRight.AddChild("KeyTrigger", "CursorRight Pressed");
+			Command.Register(Command.MoveLeft, ParseTriggers(moveRight));
+			var moveUp = new XmlData("Command");
+			moveUp.AddChild("KeyTrigger", "CursorUp Pressed");
+			Command.Register(Command.MoveUp, ParseTriggers(moveUp));
+			var moveDown = new XmlData("Command");
+			moveDown.AddChild("KeyTrigger", "CursorDown Pressed");
+			Command.Register(Command.MoveDown, ParseTriggers(moveDown));
+			var moveDirectly = new XmlData("Command");
+			moveDirectly.AddChild("KeyTrigger", "CursorLeft Pressed");
+			moveDirectly.AddChild("KeyTrigger", "CursorRight Pressed");
+			moveDirectly.AddChild("KeyTrigger", "CursorUp Pressed");
+			moveDirectly.AddChild("KeyTrigger", "CursorDown Pressed");
+			Command.Register(Command.MoveDirectly, ParseTriggers(moveDirectly));
+			var rotateDirectly = new XmlData("Command");
+			rotateDirectly.AddChild("MouseMovementTrigger", "");
+			Command.Register(Command.RotateDirectly, ParseTriggers(rotateDirectly));
+			var back = new XmlData("Command");
+			back.AddChild("KeyTrigger", "Backspace Pressed");
+			Command.Register(Command.Back, ParseTriggers(back));
+			var drag = new XmlData("Command");
+			drag.AddChild("MouseDragTrigger", "Left");
+			Command.Register(Command.Drag, ParseTriggers(drag));
+			var flick = new XmlData("Command");
+			flick.AddChild("TouchFlickTrigger", "");
+			Command.Register(Command.Flick, ParseTriggers(flick));
+			var pinch = new XmlData("Command");
+			pinch.AddChild("TouchPinchTrigger", "");
+			Command.Register(Command.Pinch, ParseTriggers(pinch));
+			var hold = new XmlData("Command");
+			hold.AddChild("TouchHoldTrigger", "");
+			Command.Register(Command.Hold, ParseTriggers(hold));
+			var doubleClick = new XmlData("Command");
+			doubleClick.AddChild("MouseDoubleClickTrigger", "Left");
+			Command.Register(Command.DoubleClick, ParseTriggers(doubleClick));
+			var rotate = new XmlData("Command");
+			rotate.AddChild("TouchRotateTrigger", "");
+			Command.Register(Command.Rotate, ParseTriggers(rotate));
+			var zoom = new XmlData("Command");
+			zoom.AddChild("MouseZoomTrigger", "");
+			Command.Register(Command.Zoom, ParseTriggers(zoom));
 		}
 
 		protected override void LoadData(Stream fileData)
 		{
 			base.LoadData(fileData);
 			foreach (var child in Data.Children)
-				Command.Register(child.GetAttributeValue("Name"), ParseTriggers(child));
+				Command.Register(child.GetAttributeValue("Name"), ParseTriggers(child));//ncrunch: no coverage
 		}
 
-		private static Trigger[] ParseTriggers(XmlData command)
+		protected static Trigger[] ParseTriggers(XmlData command)
 		{
 			var triggers = new Trigger[command.Children.Count];
 			for (int index = 0; index < command.Children.Count; index++)
 			{
-				var triggerNode = command.Children[index];
-				var triggerType = triggerNode.Name.GetTypeFromShortNameOrFullNameIfNotFound();
-				if (triggerType == null)
-					throw new UnableToCreateTriggerTypeIsUnknown(triggerNode.Name); //ncrunch: no coverage
-				try
-				{
-					triggers[index] = Activator.CreateInstance(triggerType, triggerNode.Value) as Trigger;
-				}
-				catch (Exception e)
-				{	
-					Logger.Error(e);
-				}
+				var trigger = command.Children[index];
+				var triggerType = trigger.Name.GetTypeFromShortNameOrFullNameIfNotFound();
+				triggers[index] = 
+					Trigger.GenerateTriggerFromType(triggerType, trigger.Name, trigger.Value) as Trigger;
 			}
 			return triggers;
 		}
-
-		private class UnableToCreateTriggerTypeIsUnknown : Exception
-		{  //ncrunch: no coverage start
-			public UnableToCreateTriggerTypeIsUnknown(string name)
-				: base(name) {}
-		}  //ncrunch: no coverage end
 	}
 }

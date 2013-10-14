@@ -1,5 +1,8 @@
-﻿using DeltaEngine.Commands;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering3D.Shapes3D;
@@ -9,11 +12,11 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 {
 	public class LookAtCameraTests : TestWithMocksOrVisually
 	{
-		[Test, CloseAfterFirstFrame]
-		public void PositionToTargetDistance()
+		[Test]
+		public void RenderGrid()
 		{
-			var camera = CreateLookAtCamera(Vector3D.UnitZ * 5.0f, Vector3D.Zero);
-			Assert.AreEqual(5.0f, camera.Position.Length - camera.Target.Length);
+			CreateLookAtCamera(new Vector3D(0.0f, -5.0f, 5.0f), Vector3D.Zero);
+			new Grid3D(9);
 		}
 
 		private static LookAtCamera CreateLookAtCamera(Vector3D position, Vector3D target)
@@ -25,11 +28,19 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void RotateCamera90DegreesYAxis()
+		public void PositionToTargetDistance()
 		{
-			var camera = CreateLookAtCamera(Vector3D.UnitZ, Vector3D.Zero);
-			camera.YawPitchRoll = new Vector3D(0.0f, 90.0f, 0.0f);
-			Assert.AreEqual(Vector3D.UnitZ, camera.Position);
+			var camera = CreateLookAtCamera(Vector3D.UnitZ * 5.0f, Vector3D.Zero);
+			Assert.AreEqual(5.0f, camera.Position.Length - camera.Target.Length);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void RotateCamera90DegreesAroundZAxis()
+		{
+			var camera = CreateLookAtCamera(Vector3D.UnitY, Vector3D.Zero);
+			Assert.AreEqual(Vector3D.Zero, camera.YawPitchRoll);
+			camera.YawPitchRoll = new Vector3D(90.0f, 0.0f, 0.0f);
+			Assert.IsTrue(camera.Position.IsNearlyEqual(-Vector3D.UnitX));
 			Assert.AreEqual(Vector3D.Zero, camera.Target);
 		}
 
@@ -43,10 +54,7 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 
 		private static LookAtCamera CreateLookAtCamera(Vector3D position, Entity3D target)
 		{
-			var camera = Camera.Use<LookAtCamera>();
-			camera.Position = position;
-			camera.Target = target.Position;
-			return camera;
+			return CreateLookAtCamera(position, target.Position);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -70,7 +78,7 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 		{
 			var camera = CreateLookAtCamera(Vector3D.UnitX * 3.0f, Vector3D.Zero);
 			camera.Zoom(100.0f);
-			Assert.AreEqual(Vector3D.Zero, camera.Position);
+			Assert.IsTrue(camera.Position.IsNearlyEqual(Vector3D.Zero));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -94,37 +102,47 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 			var camera = CreateLookAtCamera(position, target);
 			var floor = new Plane(Vector3D.UnitY, target);
 			Ray ray = camera.ScreenPointToRay(Vector2D.Half);
-			Assert.AreEqual(target, floor.Intersect(ray));
+			Assert.IsTrue(target.IsNearlyEqual(floor.Intersect(ray).Value));
 		}
 
 		[Test]
-		public void RenderGrid()
+		public void ActivateShakeEffect()
 		{
-			LookAtCamera camera = CreateLookCenterCamera(new Vector3D(0.0f, -5.0f, 5.0f), Vector3D.Zero);
-			new Grid3D(9);
-			Command.Register(Command.Zoom, new MouseZoomTrigger());
-			new Command(Command.Zoom, delegate(float zoomAmount) { camera.Zoom(zoomAmount); });
-			Vector2D lastMovePosition = Vector2D.Zero;
-			new Command(Command.Drag, (startPos, currentPosition, isDragDone) =>
-			{
-				Vector2D moveDifference = currentPosition - lastMovePosition;
-				lastMovePosition = isDragDone ? Vector2D.Zero : currentPosition;
-				if (moveDifference == currentPosition)
-					return;
-				const float RotationSpeed = 100;
-				Vector3D newYawPitchRoll = camera.YawPitchRoll;
-				newYawPitchRoll.X += moveDifference.X * RotationSpeed;
-				newYawPitchRoll.Y += moveDifference.Y * RotationSpeed;
-				camera.YawPitchRoll = newYawPitchRoll;
-			});
+			var camera = CreateLookAtCamera(new Vector3D(0.0f, -5.0f, 5.0f), Vector3D.Zero);
+			new Grid3D(10);
+			camera.Start<CameraShakingUpdater>();
+			new Command(() =>
+			{ CameraShakingUpdater.isShaking = true; }).Add(new KeyTrigger(Key.Space));
 		}
 
-		private static LookAtCamera CreateLookCenterCamera(Vector3D position, Vector3D target)
+		public class CameraShakingUpdater : UpdateBehavior
 		{
-			var camera = Camera.Use<LookAtCamera>();
-			camera.Position = position;
-			camera.Target = target;
-			return camera;
+			public override void Update(IEnumerable<Entity> entities)
+			{
+				time += Time.Delta;
+				if (time > 0.5f)
+				{
+					isShaking = false;
+					time = 0.0f;
+				}
+				if (!isShaking)
+					return;
+				foreach (var entity in entities.OfType<Camera>())
+					MoveCameraPosition(entity);
+				goToLeft = !goToLeft;
+			}
+
+			private float time;
+			public static bool isShaking;
+			private bool goToLeft;
+
+			private void MoveCameraPosition(Camera entity)
+			{
+				var delta = goToLeft ? -0.1f * Vector3D.UnitX : 0.1f * Vector3D.UnitX;
+				entity.Position += delta;
+				if (entity is LookAtCamera)
+					((LookAtCamera)entity).Target += delta;
+			}
 		}
 	}
 }

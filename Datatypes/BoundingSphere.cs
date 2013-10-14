@@ -3,12 +3,13 @@
 namespace DeltaEngine.Datatypes
 {
 	/// <summary>
-	/// Contains a center position in 3D and the radius. Allows quick collision and intersection tests.
+	/// Contains the center position in 3D and radius. Allows quick collision and intersection tests.
 	/// </summary>
 	[DebuggerDisplay("BoundingSphere(Center={Center}, Radius={Radius})")]
-	public class BoundingSphere
+	public struct BoundingSphere
 	{
 		public BoundingSphere(Vector3D center, float radius)
+			: this()
 		{
 			Center = center;
 			Radius = radius;
@@ -16,5 +17,11 @@ namespace DeltaEngine.Datatypes
 
 		public Vector3D Center { get; set; }
 		public float Radius { get; set; }
+
+		public bool IsColliding(BoundingSphere other)
+		{
+			float combinedRadii = Radius + other.Radius;
+			return Center.DistanceSquared(other.Center) < combinedRadii * combinedRadii;
+		}
 	}
 }

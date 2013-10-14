@@ -8,9 +8,9 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Rendering2D.Sprites;
 
 namespace GhostWars
 {
@@ -23,7 +23,7 @@ namespace GhostWars
 				MainMenu.State = GameState.Game;
 			statusText = new FontText(MainMenu.Font, "",
 				Rectangle.FromCenter(new Vector2D(0.5f, 0.25f), new Size(0.2f))) { RenderLayer = 5 };
-			new Sprite(new Material(Shader.Position2DUv, "Logo"),
+			new Sprite(new Material(Shader.Position2DUV, "Logo"),
 				new Rectangle(0.02f, 0.205f, 0.15f, 0.15f)) { RenderLayer = -15 };
 			CreateArrowSelectionAndBars();
 			OnClickSelectTree();
@@ -53,7 +53,7 @@ namespace GhostWars
 		private void CreateArrowSelectionAndBars()
 		{
 			arrow = Effects.CreateArrow(Vector2D.Unused, Vector2D.Unused);
-			selection = new Sprite(new Material(Shader.Position2DColorUv, "SelectionCircle"),
+			selection = new Sprite(new Material(Shader.Position2DColorUV, "SelectionCircle"),
 				Rectangle.Zero);
 			bars = new[]
 			{
@@ -112,14 +112,14 @@ namespace GhostWars
 			if (start.DistanceTo(startTree.DrawArea.Center) > 0.04f)
 				return;
 			var targetTree = FindNearestTree(startTree, end);
-			arrow.Visibility = Visibility.Hide;
+			arrow.IsVisible = false;
 			if (startTree.Team != MainMenu.PlayerTeam || targetTree == startTree ||
 				MainMenu.State != GameState.Game || startTree.Center.DistanceTo(end) < 0.05f)
 				return;
 			arrow.IsActive = false;
 			arrow = Effects.CreateArrow(startTree.Center, targetTree.Center);
 			arrow.Color = startTree.Team.ToColor();
-			arrow.Visibility = dragDone ? Visibility.Hide : Visibility.Show;
+			arrow.IsVisible = dragDone ? false : true;
 			if ((dragDone && Time.Total - lastWaveSend > TimeBetweenWaves ||
 				!dragDone && Time.CheckEvery(TimeBetweenWaves)) && startTree.NumberOfGhosts >= 1)
 			{
@@ -213,14 +213,14 @@ namespace GhostWars
 		{
 			statusText.Text = "";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUv, "YouWin"), Vector2D.Half) { RenderLayer = 4000 };
+			new Sprite(new Material(Shader.Position2DUV, "YouWin"), Vector2D.Half) { RenderLayer = 4000 };
 		}
 
 		private void HandleLostSituation()
 		{
 			statusText.Text = "You Lost!";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUv, "GameOver"), Vector2D.Half) { RenderLayer = 4000 };
+			new Sprite(new Material(Shader.Position2DUV, "GameOver"), Vector2D.Half) { RenderLayer = 4000 };
 		}
 
 		private void HandleAi(Tree tree)

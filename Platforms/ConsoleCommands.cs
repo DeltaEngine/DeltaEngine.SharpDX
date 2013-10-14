@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -9,28 +10,35 @@ using DeltaEngine.Extensions;
 namespace DeltaEngine.Platforms
 {
 	/// <summary>
-	/// Evaluates command strings and executes delegates.
+	/// Evaluates command strings and executes methods at run time on demand (triggers, console).
 	/// </summary>
 	public class ConsoleCommands
 	{
-		internal ConsoleCommands(ConsoleCommandResolver resolver)
-		{
-			this.resolver = resolver;
-			ThreadStaticConsoleCommands.Use(this);
-		}
-
-		private readonly ConsoleCommandResolver resolver;
-		private static readonly ThreadStatic<ConsoleCommands> ThreadStaticConsoleCommands =
-			new ThreadStatic<ConsoleCommands>();
-
 		public static ConsoleCommands Current
 		{
-			get { return ThreadStaticConsoleCommands.Current; }	
+			get
+			{
+				if (threadStaticConsoleCommands == null)
+					threadStaticConsoleCommands = new ThreadStatic<ConsoleCommands>();
+				if (threadStaticConsoleCommands.HasCurrent)
+					return threadStaticConsoleCommands.Current;
+				var console = new ConsoleCommands();
+				threadStaticConsoleCommands.Use(console);
+				return console;
+			}	
 		}
 
-		public void RegisterCommandsFromTypes(IEnumerable<Type> types)
+		internal static ConsoleCommandResolver resolver;
+		private static ThreadStatic<ConsoleCommands> threadStaticConsoleCommands;
+
+		private ConsoleCommands()
 		{
-			foreach (Type type in types)
+			RegisterCommandsFromTypes();
+		}
+
+		private void RegisterCommandsFromTypes()
+		{
+			foreach (Type type in new List<Type>(resolver.RegisteredTypes))
 			{
 				var allMethods = 
 					type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
@@ -70,9 +78,8 @@ namespace DeltaEngine.Platforms
 
 		private static Delegate CreateDelegate(MethodInfo method, object target)
 		{
-			Type delegateType = Expression.GetDelegateType(
-					method.GetParameters().Select(p => p.ParameterType).Concat(new[] { method.ReturnType }).
-								ToArray());
+			Type delegateType = Expression.GetDelegateType(method.GetParameters().Select(
+				p => p.ParameterType).Concat(new[] { method.ReturnType }).ToArray());
 			return Delegate.CreateDelegate(delegateType, target, method);
 		}
 
@@ -81,9 +88,8 @@ namespace DeltaEngine.Platforms
 			var commandAndParameters = new List<string>(command.SplitAndTrim(' '));
 			if (commandAndParameters.Count == 0)
 				return "";
-			var method = delegates.FirstOrDefault(d =>
-						GetMethodName(d.Method).Equals(commandAndParameters[0],
-						StringComparison.OrdinalIgnoreCase));
+			var method = delegates.FirstOrDefault(d => GetMethodName(d.Method).Equals(commandAndParameters[0],
+				StringComparison.OrdinalIgnoreCase));
 			if (method == null)
 				return "Error: Unknown console command '" + commandAndParameters[0] + "'";
 			commandAndParameters.RemoveAt(0);
@@ -116,24 +122,25 @@ namespace DeltaEngine.Platforms
 
 		private static string TryInvokeDelegate(Delegate method, params object[] parameters)
 		{
-			var result = Convert.ToString(method.DynamicInvoke(parameters));
+			var result = Convert.ToString(method.DynamicInvoke(parameters), CultureInfo.InvariantCulture);
 			return string.IsNullOrWhiteSpace(result) ? "Command executed" : "Result: '" + result + "'";
 		}
 
 		private static string ExecuteMethodWithParameters(List<string> commandParameters,
 			Delegate method, ParameterInfo[] parameter)
 		{
-			var paramObjLst = new List<object>();
+			var paramList = new List<object>();
 			for (int i = 0; i < parameter.Length; i++)
 				try
 				{
-					paramObjLst.Add(Convert.ChangeType(commandParameters[i], parameter[i].ParameterType));
+					paramList.Add(Convert.ChangeType(commandParameters[i], parameter[i].ParameterType,
+						CultureInfo.InvariantCulture));
 				}
 				catch (Exception ex)
 				{
 					return "Error: Can't process parameter no. " + (i + 1) + ": '" + ex.Message + "'";
 				}
-			return InvokeDelegate(method, paramObjLst.ToArray());
+			return InvokeDelegate(method, paramList.ToArray());
 		}
 
 		public List<string> GetAutoCompletionList(string input)
@@ -143,9 +150,8 @@ namespace DeltaEngine.Platforms
 
 		private IEnumerable<MethodInfo> GetMatchingDelegates(string input)
 		{
-			return 
-				delegates.Select(x => x.Method).Where(m => GetMethodName(m).StartsWith(input, true, null)).
-									ToList();
+			return delegates.Select(x => x.Method).
+				Where(m => GetMethodName(m).StartsWith(input, true, null)).ToList();
 		}
 
 		private static string GetDescription(MethodInfo info)
@@ -155,7 +161,6 @@ namespace DeltaEngine.Platforms
 			// ReSharper disable PossibleMultipleEnumeration
 			if (parameters.Any())
 				description += " " + parameters.Aggregate((x, y) => x + " " + y);
-			// ReSharper restore PossibleMultipleEnumeration
 			return description;
 		}
 
@@ -163,18 +168,14 @@ namespace DeltaEngine.Platforms
 		{
 			IEnumerable<MethodInfo> matchingDelegates = GetMatchingDelegates(input);
 			IEnumerable<string> names = matchingDelegates.Select(x => GetMethodName(x));
-			// ReSharper disable PossibleMultipleEnumeration
 			return !names.Any() ? input : GetShortestString(names);
-			// ReSharper restore PossibleMultipleEnumeration
 		}
 
 		private static string GetShortestString(IEnumerable<string> names)
 		{
-			// ReSharper disable PossibleMultipleEnumeration
 			string shortestString = names.First(x => x.Length == names.Select(y => y.Length).Min());
 			while (!names.All(s => s.StartsWith(shortestString)))
 				shortestString = shortestString.Substring(0, shortestString.Length - 1);
-			// ReSharper restore PossibleMultipleEnumeration
 			return shortestString;
 		}
 	}

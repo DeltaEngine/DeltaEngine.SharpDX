@@ -33,6 +33,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -42,6 +44,7 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\PositionTrigger.cs" />
     <Compile Include="Commands\Trigger.cs" />
+    <Compile Include="Content\UVCalculator.cs" />
     <Compile Include="Core\ConsoleCommandAttribute.cs" />
     <Compile Include="Content\ImageAnimation.cs" />
     <Compile Include="Content\ContentCreationData.cs" />
@@ -50,8 +53,10 @@
     <Compile Include="Content\Material.cs" />
     <Compile Include="Content\SpriteSheetAnimationCreationData.cs" />
     <Compile Include="Core\RenderSize.cs" />
+    <Compile Include="Datatypes\AtlasRegion.cs" />
     <Compile Include="Datatypes\BaseRangeGraph.cs" />
     <Compile Include="Datatypes\EulerAngles.cs" />
+    <Compile Include="Datatypes\FlipMode.cs" />
     <Compile Include="Datatypes\RangeGraph.cs" />
     <Compile Include="Datatypes\TimeRangeGraph.cs" />
     <Compile Include="Extensions\LinearMapExtensions.cs" />
@@ -79,7 +84,6 @@
     <Compile Include="Entities\Updateable.cs" />
     <Compile Include="Entities\Filtered.cs" />
     <Compile Include="Entities\UpdateDrawState.cs" />
-    <Compile Include="Entities\Visibility.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\AssemblyStarter.cs" />

@@ -21,20 +21,25 @@ namespace DeltaEngine.Platforms
 		{
 			var assemblies = TryLoadAllUnloadedAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 			foreach (Assembly assembly in assemblies)
-				if (!AssemblyExtensions.IsPlatformAssembly(assembly.GetName().Name))
-				{
-					Type[] assemblyTypes = TryToGetAssemblyTypes(assembly);
-					if (assemblyTypes == null)
-						continue; //ncrunch: no coverage
-					RegisterAllTypesInAssembly<ContentDataType>(assemblyTypes, false);
-					RegisterAllTypesInAssembly<UpdateType>(assemblyTypes, true);
-					RegisterAllTypesInAssembly<DrawType>(assemblyTypes, true);
-					resolver.RegisterAllTypesInAssembly(assemblyTypes);
-				}
+			{
+				var name = assembly.GetName().Name;
+				if (AssemblyExtensions.IsPlatformAssembly(name) || !assembly.IsAllowed())
+					continue;
+				Type[] assemblyTypes = TryToGetAssemblyTypes(assembly);
+				if (assemblyTypes == null)
+					continue; //ncrunch: no coverage
+				RegisterAllTypesInAssembly<ContentDataType>(assemblyTypes, false);
+				RegisterAllTypesInAssembly<UpdateType>(assemblyTypes, true);
+				RegisterAllTypesInAssembly<DrawType>(assemblyTypes, true);
+				resolver.RegisterAllTypesInAssembly(assemblyTypes);
+			}
 		}
 
 		private static IEnumerable<Assembly> TryLoadAllUnloadedAssemblies(Assembly[] loadedAssemblies)
 		{
+			if (StackTraceExtensions.StartedFromNCrunch)
+				return loadedAssemblies;
+			//ncrunch: no coverage start
 			var assemblies = new List<Assembly>(loadedAssemblies);
 			var dllFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
 			foreach (var filePath in dllFiles)
@@ -59,17 +64,20 @@ namespace DeltaEngine.Platforms
 		private static void LoadDependentAssemblies(Assembly assembly, List<Assembly> assemblies)
 		{
 			foreach (var dependency in assembly.GetReferencedAssemblies())
-				if (!IsConflictiveDependency(dependency) && dependency.IsAllowed() && !dependency.Name.EndsWith(".Mocks") &&
+				if (!IsConflictingDependency(dependency) && dependency.IsAllowed() &&
+					!dependency.Name.EndsWith(".Mocks") &&
 					assemblies.All(loaded => dependency.Name != loaded.GetName().Name))
 					assemblies.Add(Assembly.Load(dependency));
 		}
 
-		//Needed in Windows 8.1 Pro Preview since Windows.Storage (referenced by Windows.Foundation) cannot be loaded
-		private static bool IsConflictiveDependency(AssemblyName dependency)
+		/// <summary>
+		/// Needed in Windows 8.1 since Windows.Storage (referenced by Windows.Foundation) cannot be loaded.
+		/// </summary>
+		private static bool IsConflictingDependency(AssemblyName dependency)
 		{
-			var conflictiveDependencies = new[] { "Windows.Storage" };
-			return conflictiveDependencies.Any(conflictiveDependency => conflictiveDependency == dependency.Name);
+			return dependency.Name == "Windows.Storage";
 		}
+		//ncrunch: no coverage end
 
 		private static Type[] TryToGetAssemblyTypes(Assembly assembly)
 		{
@@ -87,8 +95,7 @@ namespace DeltaEngine.Platforms
 						errorText += "\n\n" + error;
 				Logger.Warning("Failed to load types from " + assembly.GetName().Name + ": " + errorText);
 				return null;
-			}
-			//ncrunch: no coverage end
+			} //ncrunch: no coverage end
 		}
 
 		private void RegisterAllTypesInAssembly<T>(Type[] assemblyTypes, bool registerAsSingleton)
@@ -102,7 +109,7 @@ namespace DeltaEngine.Platforms
 		}
 
 		/// <summary>
-		/// Allows to ignore most types. IsAbstract will also check if the class is static
+		/// Allows to ignore most types. IsAbstract will also check if the class is static.
 		/// </summary>
 		public static bool IsTypeResolveable(Type type)
 		{
@@ -110,20 +117,11 @@ namespace DeltaEngine.Platforms
 				typeof(Exception).IsAssignableFrom(type) || type == typeof(Action) ||
 				type == typeof(Action<>) || typeof(MulticastDelegate).IsAssignableFrom(type))
 				return false;
-			if (IsGeneratedType(type) || IsGenericType(type) || type.Name.StartsWith("Mock") ||
-				type.Name == "Program")
+			var typeName = type.Name;
+			if (typeName == "Program" || typeName.StartsWith("<") || typeName.Contains("`1") ||
+				typeName.StartsWith("#") || typeName.StartsWith("Mock") || typeName.EndsWith("Tests"))
 				return false;
 			return !IgnoreForResolverAttribute.IsTypeIgnored(type);
-		}
-
-		private static bool IsGeneratedType(Type type)
-		{
-			return type.FullName.StartsWith("<") || type.Name.StartsWith("<>");
-		}
-
-		private static bool IsGenericType(Type type)
-		{
-			return type.FullName.Contains("`1");
 		}
 	}
 }

@@ -4,7 +4,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace GhostWars
 {
@@ -18,7 +18,7 @@ namespace GhostWars
 			this.start = start;
 			this.target = target;
 			sprites = new Sprite[waveSize];
-			var ghostMaterial = new Material(Shader.Position2DColorUv, "Ghost") { DefaultColor = color };
+			var ghostMaterial = new Material(Shader.Position2DColorUV, "Ghost") { DefaultColor = color };
 			for (int num = 0; num < waveSize; num++)
 				sprites[num] = CreateSpriteWithOrientation(ghostMaterial);
 			UpdatePriority = Priority.Low;
@@ -34,7 +34,7 @@ namespace GhostWars
 			if (GameLogic.GhostSize != 1.0f)
 				newSprite.Size *= GameLogic.GhostSize;
 			if (start.X > target.X)
-				newSprite.Coordinates = new Sprite.SpriteCoordinates(Rectangle.One, FlipMode.Horizontal);
+				newSprite.FlipMode = FlipMode.Horizontal;
 			return newSprite;
 		}
 

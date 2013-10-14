@@ -21,20 +21,22 @@ namespace DeltaEngine.Rendering2D.Fonts
 		}
 
 		private const string DefaultFontName = "Verdana12";
-		//ncrunch: no coverage start
-		protected override bool AllowCreationIfContentNotFound
-		{
-			get { return true; }
-		}
-		//ncrunch: no coverage end
+
 		protected override void LoadData(Stream fileData)
 		{
 			base.LoadData(fileData);
 			InitializeDescriptionAndMaterial();
 		}
 
+		protected override void DisposeData() { }
+
 		//ncrunch: no coverage start
-		private void InitializeDescriptionAndMaterial()
+		protected override bool AllowCreationIfContentNotFound
+		{
+			get { return true; }
+		}
+
+		protected void InitializeDescriptionAndMaterial()
 		{
 			if (Data == null || Data.Children.Count == 0)
 			{
@@ -42,7 +44,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 				return;
 			}
 			Description = new FontDescription(Data);
-			Material = new Material(Shader.Position2DColorUv, Description.FontMapName);
+			Material = new Material(Shader.Position2DColorUV, Description.FontMapName);
 			WasLoadedOk = true;
 		}
 
@@ -62,9 +64,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 			Data = ContentLoader.Load<Font>(DefaultFontName).Data;
 			InitializeDescriptionAndMaterial();
 		}
-		//ncrunch: no coverage end
-		public class DefaultFontContentNotFound : Exception {}
 
-		protected override void DisposeData() {}
+		public class DefaultFontContentNotFound : Exception {}
 	}
 }

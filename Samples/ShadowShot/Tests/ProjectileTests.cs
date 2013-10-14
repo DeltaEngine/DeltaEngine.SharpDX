@@ -14,7 +14,7 @@ namespace ShadowShot.Tests
 		public void SetUp()
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(500, 500);
-			projectile = new Projectile(new Material(Shader.Position2DColorUv, "projectile"),
+			projectile = new Projectile(new Material(Shader.Position2DColorUV, "projectile"),
 				Vector2D.Half, Resolve<ScreenSpace>().Viewport);
 		}
 

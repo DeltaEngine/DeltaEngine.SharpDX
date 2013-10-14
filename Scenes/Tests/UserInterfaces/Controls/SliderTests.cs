@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using DeltaEngine.Commands;
-using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
@@ -123,7 +122,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test, CloseAfterFirstFrame]
 		public void ValidatePointerSize()
 		{
-			var pointer = new Material(Shader.Position2DColorUv, "DefaultSlider");
+			var pointer = Theme.Default.SliderPointer.Material;
 			var width = pointer.MaterialRenderSize.AspectRatio * 0.1f;
 			var pointerSize = new Size(width, 0.1f);
 			Assert.AreEqual(pointerSize, slider.Pointer.DrawArea.Size);

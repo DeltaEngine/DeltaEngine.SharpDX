@@ -65,9 +65,9 @@ namespace DeltaEngine.Rendering2D.Shapes
 			private readonly VertexPosition2DColor[] vertices = new VertexPosition2DColor[4];
 			private static readonly short[] Indices = new short[] { 0, 1, 2, 0, 2, 3 };
 
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
-				foreach (var entity in entities.OfType<GradientFilledRect>())
+				foreach (var entity in visibleEntities.OfType<GradientFilledRect>())
 					AddToBatch(entity);
 			}
 		}

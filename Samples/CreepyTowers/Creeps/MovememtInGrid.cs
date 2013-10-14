@@ -11,29 +11,23 @@ namespace CreepyTowers.Creeps
 		{
 			foreach (Creep creep in entities)
 			{
-				if(creep.Contains<MovementData>())
-					movementData = creep.Get<MovementData>();
-				
+				if (!creep.Contains<MovementData>())
+					return;
+				movementData = creep.Get<MovementData>();
 				wayPoints = movementData.Waypoints;
-				var grid = Game.CameraAndGrid.Grid;
-				
+				var grid = creep.Grid;
 				if (wayPoints.Count == 0)
 					return;
-
 				movementData.FinalGridPos = wayPoints[0];
 				var destination =
 					grid.PropertyMatrix[movementData.FinalGridPos.Item1, movementData.FinalGridPos.Item2].
 						MidPoint;
-
 				if (movementData.StartGridPos.Item2 == movementData.FinalGridPos.Item2)
 					MoveCreepAlongXAxis(creep, destination, GetVelocity(creep, movementData.Velocity.X));
-
 				else if (movementData.StartGridPos.Item1 == movementData.FinalGridPos.Item1)
 					MoveCreepAlongYAxis(creep, destination, GetVelocity(creep, movementData.Velocity.Y));
-
 				if (movementData.StartGridPos.Equals(movementData.FinalGridPos) && wayPoints.Count > 0)
 					wayPoints.RemoveAt(0);
-
 				if (creep.Position ==
 					grid.PropertyMatrix[movementData.FinalGridPos.Item1, movementData.FinalGridPos.Item2].
 						MidPoint && wayPoints.Count < 1)
@@ -50,7 +44,6 @@ namespace CreepyTowers.Creeps
 			var distToMovePerFrame = Vector3D.Normalize(dir).X * velocity * Time.Delta;
 			creep.Position = new Vector3D(creep.Position.X + distToMovePerFrame, creep.Position.Y,
 				creep.Position.Z);
-
 			creep.UpdateHealthBarPositionAndImage();
 			CheckIfCreepReachedFinalStop(creep, finalStop);
 		}
@@ -71,9 +64,8 @@ namespace CreepyTowers.Creeps
 		private void CheckIfCreepReachedFinalStop(Creep creep, Vector3D finalStop)
 		{
 			var dist = (finalStop - creep.Position).Length;
-			if (dist > Game.CameraAndGrid.Grid.GridScale * 0.25)
+			if (dist > creep.Grid.GridScale * 0.25)
 				return;
-
 			movementData.StartGridPos = movementData.FinalGridPos;
 			creep.Position = finalStop;
 		}
@@ -84,7 +76,6 @@ namespace CreepyTowers.Creeps
 			var distToMovePerFrame = Vector3D.Normalize(dir).Y * velocity * Time.Delta;
 			creep.Position = new Vector3D(creep.Position.X, creep.Position.Y + distToMovePerFrame,
 				creep.Position.Z);
-
 			creep.UpdateHealthBarPositionAndImage();
 			CheckIfCreepReachedFinalStop(creep, finalStop);
 		}

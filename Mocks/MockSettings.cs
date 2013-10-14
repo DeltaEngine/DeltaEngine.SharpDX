@@ -28,5 +28,15 @@ namespace DeltaEngine.Mocks
 			else
 				values.Add(key, StringExtensions.ToInvariantString(value));
 		}
+
+		public void SetAsCurrent()
+		{
+			Settings.Current = this;
+		}
+
+		public void Change()
+		{
+			wasChanged = true;
+		}
 	}
 }

@@ -8,16 +8,18 @@ namespace $safeprojectname$.Creeps
 	{
 		public CreepState()
 		{
+			VulnerabilityState = new VulnerabilityType[numberOfTowerTypes];
 			SetVulnerabilitiesToNormal();
 		}
 
+		private readonly int numberOfTowerTypes = Enum.GetNames(typeof(TowerType)).Length;
+		public readonly VulnerabilityType[] VulnerabilityState;
+
 		public void SetVulnerabilitiesToNormal()
 		{
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < numberOfTowerTypes; i++)
 				VulnerabilityState [i] = VulnerabilityType.Normal;
 		}
-
-		public VulnerabilityType[] VulnerabilityState = new VulnerabilityType[6];
 		public enum VulnerabilityType
 		{
 			Vulnerable,
@@ -28,12 +30,12 @@ namespace $safeprojectname$.Creeps
 			HardBoiled,
 			Immune
 		}
-		public VulnerabilityType GetVulnerability(Tower.TowerType type)
+		public VulnerabilityType GetVulnerability(TowerType type)
 		{
 			return VulnerabilityState [(int)type];
 		}
 
-		public void SetVulnerability(Tower.TowerType towerType, VulnerabilityType type)
+		public void SetVulnerability(TowerType towerType, VulnerabilityType type)
 		{
 			VulnerabilityState [(int)towerType] = type;
 		}
@@ -198,10 +200,9 @@ namespace $safeprojectname$.Creeps
 		public float MaxTimeMedium = 5;
 		public float MaxTimeLong = 10;
 
-		public bool UpdateSlowState(float timer, float maxTime)
+		public bool RecachedMaxTime(float timer, float maxTime)
 		{
-			timer += Time.Delta;
-			return !(timer > maxTime);
+			return timer + Time.Delta <= maxTime;
 		}
 
 		public bool Equals(CreepState other)

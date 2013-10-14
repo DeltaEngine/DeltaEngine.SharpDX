@@ -6,16 +6,18 @@ using DeltaEngine.Rendering2D.Shapes;
 namespace DeltaEngine.Rendering2D.Graphs
 {
 	/// <summary>
-	/// Renders a graph with one or more lines at a given scale.
-	/// Various logic can be turned on and off including autogrowing, autopruning and 
-	/// rendering axes and percentiles.
+	/// Renders a graph with one or more lines at a given scale. Various logic can be turned on and
+	/// off including autogrowing, auto-pruning and rendering axes and percentiles.
 	/// </summary>
 	public class Graph : FilledRect, Updateable
 	{
 		public Graph(Rectangle drawArea)
 			: base(drawArea, HalfBlack) {}
 
-		internal static readonly Color HalfBlack = new Color(0, 0, 0, 0.75f);
+		internal static Color HalfBlack
+		{
+			get { return new Color(0, 0, 0, 0.75f); }
+		}
 
 		public void Update()
 		{
@@ -34,30 +36,23 @@ namespace DeltaEngine.Rendering2D.Graphs
 		}
 
 		private readonly RenderKey renderKey = new RenderKey();
-		private readonly RenderAxes renderAxes = new RenderAxes { Visibility = Visibility.Hide };
+		private readonly RenderAxes renderAxes = new RenderAxes { IsVisible = false };
 		internal readonly List<GraphLine> Lines = new List<GraphLine>();
 
 		private readonly RenderPercentiles renderPercentiles = new RenderPercentiles
 		{
-			Visibility = Visibility.Hide
+			IsVisible = false
 		};
 
 		private readonly RenderPercentileLabels renderPercentileLabels = new RenderPercentileLabels
 		{
-			Visibility = Visibility.Hide
+			IsVisible = false
 		};
 
-		public override Visibility Visibility
+		public override void ToggleVisibility()
 		{
-			get
-			{
-				return base.Visibility;
-			}
-			set
-			{
-				base.Visibility = value;
-				RefreshAll();
-			}
+			base.ToggleVisibility();
+			RefreshAll();
 		}
 
 		public GraphLine CreateLine(string key, Color color)
@@ -84,56 +79,56 @@ namespace DeltaEngine.Rendering2D.Graphs
 
 		public bool IsAutogrowing { get; set; }
 		private readonly AutogrowViewport autogrowViewport = new AutogrowViewport();
-		
+
 		internal void RefreshKey()
 		{
 			renderKey.Refresh(this);
 		}
 
-		public Visibility AxesVisibility
+		public bool AxesIsVisible
 		{
-			get { return renderAxes.Visibility; }
+			get { return renderAxes.IsVisible; }
 			set
 			{
-				if (renderAxes.Visibility == value)
+				if (renderAxes.IsVisible == value)
 					return;
-				renderAxes.Visibility = value;
+				renderAxes.IsVisible = value;
 				renderAxes.Refresh(this);
 			}
 		}
 
-		public Visibility PercentilesVisibility
+		public bool PercentilesIsVisible
 		{
-			get { return renderPercentiles.Visibility; }
+			get { return renderPercentiles.IsVisible; }
 			set
 			{
-				if (renderPercentiles.Visibility == value)
+				if (renderPercentiles.IsVisible == value)
 					return;
-				renderPercentiles.Visibility = value;
+				renderPercentiles.IsVisible = value;
 				renderPercentiles.Refresh(this);
 			}
 		}
 
-		public Visibility PercentileLabelsVisibility
+		public bool PercentileLabelsIsVisible
 		{
-			get { return renderPercentileLabels.Visibility; }
+			get { return renderPercentileLabels.IsVisible; }
 			set
 			{
-				if (renderPercentileLabels.Visibility == value)
+				if (renderPercentileLabels.IsVisible == value)
 					return;
-				renderPercentileLabels.Visibility = value;
+				renderPercentileLabels.IsVisible = value;
 				renderPercentileLabels.Refresh(this);
 			}
 		}
 
-		public Visibility KeyVisibility
+		public bool KeyVisibility
 		{
-			get { return renderKey.Visibility; }
+			get { return renderKey.IsVisible; }
 			set
 			{
-				if (renderKey.Visibility == value)
+				if (renderKey.IsVisible == value)
 					return;
-				renderKey.Visibility = value;
+				renderKey.IsVisible = value;
 				renderKey.Refresh(this);
 			}
 		}
@@ -267,6 +262,9 @@ namespace DeltaEngine.Rendering2D.Graphs
 
 		internal const float Border = 0.025f;
 
-		public bool IsPauseable { get { return true; } }
+		public bool IsPauseable
+		{
+			get { return true; }
+		}
 	}
 }

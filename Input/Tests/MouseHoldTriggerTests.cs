@@ -73,16 +73,16 @@ namespace DeltaEngine.Input.Tests
 			AdvanceTimeAndUpdateEntities();
 		}
 
-		[Test, CloseAfterFirstFrame]
-		public void HoldMouseInsideHoldArea()
+		[Test]
+		public void HoldMouseHovering()
 		{
-			Vector2D mousePosition = -Vector2D.One;
-			new Command(position => { mousePosition = position; }).Add(
-				new MouseHoldTrigger(Rectangle.HalfCentered));
-			SetMouseState(State.Pressing, Vector2D.Half);
-			SetMouseState(State.Pressed, Vector2D.Half);
+			var drawArea = new Rectangle(0.25f, 0.25f, 0.5f, 0.25f);
+			new FilledRect(drawArea, Color.Blue);
+			var trigger = new MouseHoldTrigger(drawArea);
+			trigger.Position = new Vector2D(0.3f, 0.3f);
+			Assert.IsFalse(trigger.IsHovering());
 			AdvanceTimeAndUpdateEntities(1.05f);
-			Assert.AreEqual(Vector2D.Half, mousePosition);
+			Assert.IsFalse(trigger.IsHovering());
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -96,6 +96,19 @@ namespace DeltaEngine.Input.Tests
 			AdvanceTimeAndUpdateEntities(0.5f);
 			SetMouseState(State.Pressed, new Vector2D(0.6f, 0.6f));
 			AdvanceTimeAndUpdateEntities(0.5f);
+			Assert.AreEqual(Vector2D.Half, mousePosition);
+		}
+
+		//ncrunch: no coverage start
+		[Test, CloseAfterFirstFrame, Category("Slow")]
+		public void HoldMouseInsideHoldArea()
+		{
+			Vector2D mousePosition = -Vector2D.One;
+			new Command(position => { mousePosition = position; }).Add(
+				new MouseHoldTrigger(Rectangle.HalfCentered));
+			SetMouseState(State.Pressing, Vector2D.Half);
+			SetMouseState(State.Pressed, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities(1.05f);
 			Assert.AreEqual(Vector2D.Half, mousePosition);
 		}
 	}

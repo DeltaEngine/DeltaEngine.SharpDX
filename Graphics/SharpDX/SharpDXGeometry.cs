@@ -1,9 +1,9 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
-using DxDevice = SharpDX.Direct3D11.Device;
+using DXDevice = SharpDX.Direct3D11.Device;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
-using DxFormat = SharpDX.DXGI.Format;
+using DXFormat = SharpDX.DXGI.Format;
 
 namespace DeltaEngine.Graphics.SharpDX
 {
@@ -32,7 +32,7 @@ namespace DeltaEngine.Graphics.SharpDX
 		}
 
 		private SharpDXDevice sharpDXDevice;
-		private DxDevice nativeDevice;
+		private DXDevice nativeDevice;
 		private DeviceContext deviceContext;
 
 		protected override void SetNativeData(byte[] vertexData, short[] indices)
@@ -67,7 +67,7 @@ namespace DeltaEngine.Graphics.SharpDX
 			sharpDXDevice.Set3DRasterizerState();
 			deviceContext.InputAssembler.SetVertexBuffers(0,
 				new VertexBufferBinding(vertexBuffer, Format.Stride, 0));
-			deviceContext.InputAssembler.SetIndexBuffer(indexBuffer, DxFormat.R16_UInt, 0);
+			deviceContext.InputAssembler.SetIndexBuffer(indexBuffer, DXFormat.R16_UInt, 0);
 			deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 			deviceContext.DrawIndexed(NumberOfIndices, 0, 0);
 		}

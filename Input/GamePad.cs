@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 
@@ -25,17 +26,18 @@ namespace DeltaEngine.Input
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
-			if (IsAvailable)
-				foreach (Entity entity in entities)
-				{
-					var button = entity as GamePadButtonTrigger;
-					if (button != null)
-						button.WasInvoked = GetButtonState(button.Button) == button.State;
-					var stick = entity as GamePadAnalogTrigger;
-					if (stick != null)
-						stick.WasInvoked = IsGamePadStickTriggered(stick);
-				}
+			if (!IsAvailable)
+				return;
+			UpdateGamePadStates();
+			foreach (var button in entities.OfType<GamePadButtonTrigger>())
+				if (GetButtonState(button.Button) == button.State)
+					button.Invoke();
+			foreach (var stick in entities.OfType<GamePadAnalogTrigger>())
+				if (IsGamePadStickTriggered(stick))
+					stick.Invoke();
 		}
+
+		protected abstract void UpdateGamePadStates();
 
 		private bool IsGamePadStickTriggered(GamePadAnalogTrigger trigger)
 		{

@@ -63,9 +63,9 @@ namespace DeltaEngine.Tests.Entities
 
 		private class SortByRenderLayer : DrawBehavior
 		{
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
-				foreach (var entity in entities)
+				foreach (var entity in visibleEntities)
 					SortedResult.Add(entity);
 			}
 		}
@@ -94,9 +94,9 @@ namespace DeltaEngine.Tests.Entities
 
 		private class AnotherSortByRenderLayer : DrawBehavior
 		{
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
-				foreach (var entity in entities)
+				foreach (var entity in visibleEntities)
 					SortedResult.Add(entity);
 			}
 		}

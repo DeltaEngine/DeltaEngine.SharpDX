@@ -6,19 +6,24 @@ namespace DeltaEngine.Input.Windows
 	/// <summary>
 	/// Native keyboard implementation using a windows hook.
 	/// </summary>
-	public sealed class WindowsKeyboard : Keyboard
+	public class WindowsKeyboard : Keyboard
 	{
 		public WindowsKeyboard()
 		{
 			hook = new WindowsHook(WindowsHook.KeyboardHookId, HandleProcMessage);
 			pressedKeys = new List<Key>();
 			releasedKeys = new List<Key>();
-			IsAvailable = true;
+			InitializeIsAvailable();
 		}
 
 		private readonly WindowsHook hook;
-		private readonly List<Key> pressedKeys;
-		private readonly List<Key> releasedKeys;
+		protected readonly List<Key> pressedKeys;
+		protected readonly List<Key> releasedKeys;
+
+		private void InitializeIsAvailable()
+		{
+			IsAvailable = true;
+		}
 
 		protected override void UpdateKeyStates()
 		{
@@ -49,7 +54,7 @@ namespace DeltaEngine.Input.Windows
 				return State.Releasing;
 			return previousState == State.Releasing ? State.Released : previousState;
 		}
-
+		// ncrunch: no coverage start
 		private void HandleProcMessage(IntPtr wParam, IntPtr lParam, int msg)
 		{
 			var keyCode = (Key)wParam.ToInt32();
@@ -63,7 +68,7 @@ namespace DeltaEngine.Input.Windows
 		{
 			return ((uint)(lParam & 0x80000000) >> 0xFF) != 1;
 		}
-
+		// ncrunch: no coverage end
 		public override void Dispose()
 		{
 			hook.Dispose();

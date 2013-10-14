@@ -4,8 +4,8 @@ using SharpDX.DXGI;
 using SharpDX.Direct2D1;
 using SharpDX.Direct3D11;
 using D2dFactory = SharpDX.Direct2D1.Factory;
-using DxDevice = SharpDX.Direct3D11.Device;
-using DxSwapChain = SharpDX.DXGI.SwapChain;
+using DXDevice = SharpDX.Direct3D11.Device;
+using DXSwapChain = SharpDX.DXGI.SwapChain;
 using CreationFlags = SharpDX.Direct3D11.DeviceCreationFlags;
 using DeltaRect = DeltaEngine.Datatypes.Rectangle;
 using FillMode = SharpDX.Direct3D11.FillMode;
@@ -61,7 +61,7 @@ namespace DeltaEngine.Graphics.SharpDX
 			};
 		}
 
-		public RasterizerState Get2DRasterizerState(DxDevice device)
+		public RasterizerState Get2DRasterizerState(DXDevice device)
 		{
 			return rasterizerState2D ??
 				(rasterizerState2D = new RasterizerState(device, GetRasterizer(CullMode.Back)));
@@ -87,7 +87,7 @@ namespace DeltaEngine.Graphics.SharpDX
 			return rasterizerDescription;
 		}
 
-		public RasterizerState Get3DRasterizerState(DxDevice device)
+		public RasterizerState Get3DRasterizerState(DXDevice device)
 		{
 			return rasterizerState3D ??
 				(rasterizerState3D = new RasterizerState(device, GetRasterizer(CullMode.Front)));

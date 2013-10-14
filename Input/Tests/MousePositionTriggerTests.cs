@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
@@ -32,6 +33,16 @@ namespace DeltaEngine.Input.Tests
 			Assert.AreEqual(State.Pressed, trigger.State);
 			Assert.Throws<MousePositionTrigger.CannotCreateMousePositionTriggerWithoutKey>(
 				() => new MousePositionTrigger(""));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CheckMouseAndTriggerPosition()
+		{
+			var mouse = Resolve<MockMouse>();
+			var trigger = new MousePositionTrigger(MouseButton.Right, State.Pressed);
+			trigger.Position = Vector2D.Zero;
+			mouse.SetPosition(trigger.Position);
+			Assert.AreEqual(mouse.Position, trigger.Position);
 		}
 	}
 }

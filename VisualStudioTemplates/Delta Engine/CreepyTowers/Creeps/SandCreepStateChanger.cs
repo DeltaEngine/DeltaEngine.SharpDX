@@ -1,65 +1,75 @@
 using $safeprojectname$.Levels;
 using $safeprojectname$.Towers;
-using DeltaEngine.Core;
+using DeltaEngine.GameLogic;
 
 namespace $safeprojectname$.Creeps
 {
 	public class SandCreepStateChanger
 	{
-		public static void ChangeStatesIfSandCreep(Tower.TowerType damageType, Creep creep, 
-			CreepProperties properties)
+		public static void ChangeStatesIfSandCreep(TowerType damageType, Creep creep)
 		{
-			if (properties.CreepType != Creep.CreepType.Sand)
-				return;
-
-			if (damageType == Tower.TowerType.Impact || damageType == Tower.TowerType.Water)
-			{
-				creep.state.Slow = true;
-				creep.state.SlowTimer = 0;
-			}
-			if (damageType == Tower.TowerType.Water)
-				creep.state.Wet = true;
-
-			if (damageType == Tower.TowerType.Ice)
-				if (creep.state.Wet)
-			{
-				creep.state.Frozen = true;
-				creep.state.Wet = false;
-			}
-			if (damageType == Tower.TowerType.Impact)
-				if (creep.state.Frozen)
-			{
-				var chanceForShather = Randomizer.Current.Get(0, 100);
-				if (chanceForShather < 10)
-				{
-					creep.IsActive = false;
-					creep.Shatter();
-				}
-			}
-			if (damageType == Tower.TowerType.Fire)
-			{
-				if (creep.state.Wet)
-				{
-					creep.state.Wet = false;
-					return;
-				}
-				creep.IsActive = false;
-				new Creep(creep.Position, Names.CreepGlass, new CreepProperties()).Add(new 
-					MovementInGrid.MovementData());
-			}
+			if (damageType == TowerType.Impact)
+				SetAffectedByImpact(creep);
+			else if (damageType == TowerType.Water)
+				SetAffectedByWater(creep);
+			else if (damageType == TowerType.Ice)
+				SetAffectedByIce(creep);
+			else if (damageType == TowerType.Fire)
+				SetAffectedByFire(creep);
 		}
 
-		public static void ChangeStartStatesIfSandCreep(Creep.CreepType creepType, Creep creep)
+		private static void SetAffectedByImpact(Creep creep)
 		{
-			if (creepType != Creep.CreepType.Sand)
+			StateChanger.MakeCreepLimitedSlow(creep);
+			if (!creep.state.Frozen)
 				return;
 
+			StateChanger.CheckChanceForSudden(creep);
+		}
+
+		private static void SetAffectedByWater(Creep creep)
+		{
+			StateChanger.MakeCreepWet(creep);
+		}
+
+		private static void SetAffectedByIce(Creep creep)
+		{
+			if (creep.state.Wet)
+				StateChanger.MakeCreepFrozen(creep);
+		}
+
+		private static void SetAffectedByFire(Creep creep)
+		{
+			if (creep.state.Wet)
+				creep.state.Wet = false;
+			else if (creep.state.Frozen)
+			{
+				creep.state.Frozen = false;
+				StateChanger.MakeCreepUnfreezable(creep);
+				StateChanger.MakeCreepWet(creep);
+			} else
+				TransformInGlassCreep(creep);
+		}
+
+		private static void TransformInGlassCreep(Creep creep)
+		{
+			var percentage = creep.CurrentHp / creep.Data.MaxHp;
+			if (!(Level.Current is GameLevelRoom))
+				return;
+
+			var level = Level.Current as GameLevelRoom;
+			var newCreep = level.SpawnCreep(CreepType.Glass);
+			newCreep.CurrentHp *= percentage;
+			level.RemoveCreep(creep);
+		}
+
+		public static void ChangeStartStatesIfSandCreep(Creep creep)
+		{
 			creep.state.SetVulnerabilitiesToNormal();
-			creep.state.SetVulnerability(Tower.TowerType.Water, CreepState.VulnerabilityType.Weak);
-			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Resistant);
-			creep.state.SetVulnerability(Tower.TowerType.Ice, CreepState.VulnerabilityType.Immune);
-			creep.state.SetVulnerability(Tower.TowerType.Acid, CreepState.VulnerabilityType.Immune);
-			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.HardBoiled);
+			StateChanger.MakeCreepImmuneToType(creep, TowerType.Ice);
+			StateChanger.MakeCreepImmuneToType(creep, TowerType.Acid);
+			StateChanger.MakeCreepResistantToType(creep, TowerType.Slice);
+			StateChanger.MakeCreepResistantToType(creep, TowerType.Impact);
 		}
 	}
 }

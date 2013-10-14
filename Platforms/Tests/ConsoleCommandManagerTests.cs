@@ -25,8 +25,8 @@ namespace DeltaEngine.Platforms.Tests
 		[Test]
 		public void ExecuteCommand()
 		{
-			string result = consoleCommands.ExecuteCommand("AddFloats 1 2");
-			Assert.AreEqual("Result: '3'", result);
+			Assert.AreEqual("Result: '3'", consoleCommands.ExecuteCommand("AddInts 1 2"));
+			Assert.AreEqual("Result: '3.5'", consoleCommands.ExecuteCommand("AddFloats 1.2 2.3"));
 		}
 
 		[Test]

@@ -1,7 +1,7 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 using NUnit.Framework;
 
 namespace Blocks.Tests
@@ -49,7 +49,7 @@ namespace Blocks.Tests
 		[Test]
 		public void LoadContentWithNoPrefixSet()
 		{
-			var material = new Material(Shader.Position2DColorUv, "DeltaEngineLogo");
+			var material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
 			Assert.AreEqual(new Size(128), material.DiffuseMap.PixelSize);
 			new Sprite(material, new Rectangle(0.45f, 0.45f, 0.1f, 0.1f));
 		}
@@ -58,10 +58,10 @@ namespace Blocks.Tests
 		public void LoadContentWithPrefixSet()
 		{
 			var content = new JewelBlocksContent { Prefix = "Mod1_" };
-			var material = new Material(Shader.Position2DColorUv, "DeltaEngineLogo");
+			var material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
 			new Sprite(material, new Rectangle(0.3f, 0.45f, 0.1f, 0.1f));
 			content.Prefix = "Mod2_";
-			material = new Material(Shader.Position2DColorUv, "DeltaEngineLogo");
+			material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
 			new Sprite(material, new Rectangle(0.6f, 0.45f, 0.1f, 0.1f));
 		}
 

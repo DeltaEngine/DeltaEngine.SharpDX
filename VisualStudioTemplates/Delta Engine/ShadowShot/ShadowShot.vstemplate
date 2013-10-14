@@ -9,13 +9,12 @@
 		<CreateNewFolder>true</CreateNewFolder>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<DefaultName>ShadowShot</DefaultName>
-		<Icon>DeltaEngineIcon.ico</Icon>
+		<Icon>ShadowShotIcon.ico</Icon>
 	</TemplateData>
 	<TemplateContent>
 		<Project File="ShadowShot.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="true" TargetFileName="app.config">app.config</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="packages.config">packages.config</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="ShadowShotIcon.ico">ShadowShotIcon.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Asteroid.cs">Asteroid.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Constants.cs">Constants.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>

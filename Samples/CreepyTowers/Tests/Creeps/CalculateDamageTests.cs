@@ -1,92 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using CreepyTowers.Creeps;
-using CreepyTowers.Levels;
+﻿using CreepyTowers.Creeps;
 using CreepyTowers.Towers;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests.Creeps
 {
+//TODO: fix all Creep constructor calls
 	public class CalculateDamageTests : TestWithMocksOrVisually
 	{
 		[SetUp]
 		public void Initialize()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
-			movementData = new MovementInGrid.MovementData
-			{
-				Velocity = new Vector3D(0.0f, 0.0f, 0.0f),
-				StartGridPos = new Tuple<int, int>(4, 0),
-				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(1, 0) }
-			};
-
-			damageCalculator = new CalculateDamage();
+			new Game(Resolve<Window>());
 		}
-
-		private MovementInGrid.MovementData movementData;
-		private CalculateDamage damageCalculator;
 
 		[Test]
 		public void CheckResistanceBasedOnImmuneType()
 		{
-			var creep = new Creep(Vector3D.Zero, Names.CreepGlass, new CreepProperties {CreepType = Creep.CreepType.Glass});
-			creep.Add(movementData);
-			var resistance = damageCalculator.CalculateResistanceBasedOnStates(Tower.TowerType.Acid,
-				creep);
+			var creep = new Creep(CreepType.Glass, Vector3D.Zero, 0);
+			var resistance = creep.CalculateResistanceBasedOnStates(TowerType.Acid);
 			Assert.AreEqual(0.1f, resistance);
 		}
 
 		[Test]
 		public void CheckResistanceBasedOnVulnerableType()
 		{
-			var creep = new Creep(Vector3D.Zero, Names.CreepGlass, new CreepProperties { CreepType = Creep.CreepType.Glass });
-			creep.Add(movementData);
-			var resistance = damageCalculator.CalculateResistanceBasedOnStates(Tower.TowerType.Impact,
-				creep);
+			var creep = new Creep(CreepType.Glass, Vector3D.Zero, 0);
+			var resistance = creep.CalculateResistanceBasedOnStates(TowerType.Impact);
 			Assert.AreEqual(3.0f, resistance);
 		}
 
 		[Test]
 		public void CheckResistanceBasedOnResistantType()
 		{
-			var creep = new Creep(Vector3D.Zero, Names.CreepsSandSandy, new CreepProperties { CreepType = Creep.CreepType.Sand });
-			creep.Add(movementData);
-			var resistance = damageCalculator.CalculateResistanceBasedOnStates(Tower.TowerType.Impact,
-				creep);
+			var creep = new Creep(CreepType.Sand, Vector3D.Zero, 0);
+			var resistance = creep.CalculateResistanceBasedOnStates(TowerType.Impact);
 			Assert.AreEqual(0.5f, resistance);
 		}
 
 		[Test]
 		public void CheckResistanceBasedOnHardboiledType()
 		{
-			var creep = new Creep(Vector3D.Zero, Names.CreepCottonMummy, new CreepProperties { CreepType = Creep.CreepType.Cloth });
-			creep.Add(movementData);
-			var resistance = damageCalculator.CalculateResistanceBasedOnStates(Tower.TowerType.Ice,
-				creep);
+			var creep = new Creep(CreepType.Cloth, Vector3D.Zero, 0);
+			var resistance = creep.CalculateResistanceBasedOnStates(TowerType.Ice);
 			Assert.AreEqual(0.25f, resistance);
 		}
 
 		[Test]
 		public void CheckResistanceBasedOnWeakType()
 		{
-			var creep = new Creep(Vector3D.Zero, Names.CreepCottonMummy, new CreepProperties { CreepType = Creep.CreepType.Cloth });
-			creep.Add(movementData);
-			var resistance = damageCalculator.CalculateResistanceBasedOnStates(Tower.TowerType.Slice,
-				creep);
+			var creep = new Creep(CreepType.Cloth, Vector3D.Zero, 0);
+			var resistance = creep.CalculateResistanceBasedOnStates(TowerType.Slice);
 			Assert.AreEqual(2.0f, resistance);
 		}
 
 		[Test]
 		public void CheckResistanceBasedOnNormalDamageType()
 		{
-			var creep = new Creep(Vector3D.Zero, Names.CreepCottonMummy, new CreepProperties { CreepType = Creep.CreepType.Cloth });
-			creep.Add(movementData);
-			var resistance = damageCalculator.CalculateResistanceBasedOnStates(Tower.TowerType.Water,
-				creep);
+			var creep = new Creep(CreepType.Cloth, Vector3D.Zero, 0);
+			var resistance = creep.CalculateResistanceBasedOnStates(TowerType.Water);
 			Assert.AreEqual(1.0f, resistance);
 		}
 	}

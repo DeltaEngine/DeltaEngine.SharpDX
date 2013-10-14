@@ -12,7 +12,7 @@ namespace $safeprojectname$
 		{
 			foreach (Entity2D sprite in entities)
 			{
-				sprite.ToggleVisibility(Visibility.Show);
+				sprite.IsVisible = true;
 				var transitionData = sprite.Get<TransitionData>();
 				transitionData.ElapsedTime += Time.Delta;
 				if (transitionData.ElapsedTime > transitionData.Duration)

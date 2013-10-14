@@ -67,6 +67,10 @@
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
+      <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
+      <Name>DeltaEngine.Scenes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DeltaEngine.Input.csproj">
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
@@ -86,6 +90,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommandTests.cs" />
+    <Compile Include="TouchDualDragTriggerTests.cs" />
     <Compile Include="MouseFlickTriggerTests.cs" />
     <Compile Include="MouseZoomTriggerTests.cs" />
     <Compile Include="TouchPinchTriggerTests.cs" />

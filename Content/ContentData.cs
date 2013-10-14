@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Content
 {
@@ -17,12 +18,13 @@ namespace DeltaEngine.Content
 			if (string.IsNullOrEmpty(contentName))
 				throw new ContentNameMissing();
 #if DEBUG
-			if (!contentName.StartsWith("<Generated"))
+			//ncrunch: no coverage start
+			if (!StackTraceExtensions.StartedFromNCrunch && !contentName.StartsWith("<Generated"))
 			{
 				StackFrame[] frames = new StackTrace().GetFrames();
 				if (frames != null && frames.All(f => f.GetMethod().DeclaringType != typeof(ContentLoader)))
 					throw new MustBeCalledFromContentLoader();
-			}
+			} //ncrunch: no coverage end
 #endif
 			Name = contentName;
 		}
@@ -53,7 +55,7 @@ namespace DeltaEngine.Content
 		protected abstract void DisposeData();
 
 		internal void InternalLoad(Func<ContentData, Stream> getContentDataStream)
-		 {
+		{
 			if (!GetType().FullName.Contains(MetaData.Type.ToString()))
 				throw new DoesNotMatchMetaDataType(this);
 			using (var stream = getContentDataStream(this))

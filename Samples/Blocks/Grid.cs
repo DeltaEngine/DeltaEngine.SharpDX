@@ -5,7 +5,6 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Physics2D;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Rendering3D.Particles;
 
 namespace Blocks
@@ -112,7 +111,7 @@ namespace Blocks
 		{
 			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
 			var image = content.Load<Image>(filename + "_Top");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUv);
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image);
 			AddFallingBrick(brick, material);
 		}
@@ -121,7 +120,7 @@ namespace Blocks
 		{
 			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
 			var image = content.Load<Image>(filename + "_Bottom");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUv);
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image);
 			AddFallingBrick(brick, material);
 		}
@@ -158,9 +157,9 @@ namespace Blocks
 		{
 			zoomBrickData.ParticleMaterial = brick.Material;
 			zoomBrickData.Size = new RangeGraph<Size>(brick.Size, brick.Size * 2);
-			var zoomBrickEmitter = new Particle2DEmitter(zoomBrickData, brick.Center);
+			var zoomBrickEmitter = new ParticleEmitter(zoomBrickData, brick.Center);
 			zoomBrickEmitter.RenderLayer = 16;
-			zoomBrickEmitter.SpawnBurst(1, true);
+			zoomBrickEmitter.SpawnAndDispose();
 		}
 
 		public bool IsValidPosition(Block block)

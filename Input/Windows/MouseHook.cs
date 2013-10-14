@@ -23,7 +23,7 @@ namespace DeltaEngine.Input.Windows
 		{
 			if (previousState == State.Released && currentlyPressed[(int)button] == false &&
 				wasReleasedThisFrame[(int)button])
-				return State.Pressing;
+				return State.Pressing; //ncrunch: no coverage
 
 			wasReleasedThisFrame[(int)button] = false;
 			return previousState.UpdateOnNativePressing(currentlyPressed[(int)button]);
@@ -32,6 +32,7 @@ namespace DeltaEngine.Input.Windows
 		private readonly bool[] currentlyPressed = new bool[MouseButton.Left.GetCount()];
 		private readonly bool[] wasReleasedThisFrame = new bool[MouseButton.Left.GetCount()];
 
+		//ncrunch: no coverage start
 		private void HandleMouseMessage(IntPtr wParam, IntPtr lParam, int msg)
 		{
 			var data = new int[6];
@@ -57,6 +58,7 @@ namespace DeltaEngine.Input.Windows
 			if (isPressed == false)
 				wasReleasedThisFrame[(int)button] = true;
 		}
+		//ncrunch: no coverage end
 
 		internal static bool IsPressed(int wParam)
 		{

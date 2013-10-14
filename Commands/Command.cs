@@ -148,7 +148,7 @@ namespace DeltaEngine.Commands
 
 		public void Update()
 		{
-			Trigger invokedTrigger = triggers.Find(t => t.WasInvoked);
+			Trigger invokedTrigger = triggers.Find(t => t.WasInvokedThisTick);
 			if (invokedTrigger == null)
 				return;
 			var positionTrigger = invokedTrigger as PositionTrigger;

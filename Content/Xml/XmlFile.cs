@@ -22,6 +22,11 @@ namespace DeltaEngine.Content.Xml
 				Root = new XmlData(XDocument.Load(s).Root);
 		}
 
+		public XmlFile(Stream fileStream)
+		{
+			Root = new XmlData(XDocument.Load(fileStream).Root);
+		}
+
 		public void Save(string filePath)
 		{
 			using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write,

@@ -18,11 +18,21 @@ namespace DeltaEngine.Input.Windows
 
 		private readonly Window window;
 
+		// ncrunch: no coverage start
 		public void SetCursorPosition(Vector2D position)
 		{
 			var newScreenPosition = ToSysPoint(ToScreenPositionFromScreenSpace(position));
 			NativeMethods.SetCursorPos(newScreenPosition.X, newScreenPosition.Y);
 		}
+
+		public Vector2D GetCursorPosition()
+		{
+			var newPosition = new SysPoint();
+			NativeMethods.GetCursorPos(ref newPosition);
+			var screenspace = FromScreenPositionToScreenSpace(FromSysPoint(newPosition));
+			return new Vector2D((float)Math.Round(screenspace.X, 3), (float)Math.Round(screenspace.Y, 3));
+		}
+		// ncrunch: no coverage end
 
 		private static SysPoint ToSysPoint(Vector2D position)
 		{
@@ -43,14 +53,6 @@ namespace DeltaEngine.Input.Windows
 		private static Vector2D FromSysPoint(SysPoint position)
 		{
 			return new Vector2D(position.X, position.Y);
-		}
-
-		public Vector2D GetCursorPosition()
-		{
-			var newPosition = new SysPoint();
-			NativeMethods.GetCursorPos(ref newPosition);
-			var screenspace = FromScreenPositionToScreenSpace(FromSysPoint(newPosition));
-			return new Vector2D((float)Math.Round(screenspace.X, 3), (float)Math.Round(screenspace.Y, 3));
 		}
 
 		internal Vector2D FromScreenPositionToScreenSpace(Vector2D position)

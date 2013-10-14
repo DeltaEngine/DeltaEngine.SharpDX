@@ -36,13 +36,13 @@
     <Reference Include="AsfMojo">
       <HintPath>..\..\packages\AsfMojo.1.2.0.0\lib\AsfMojo.dll</HintPath>
     </Reference>
+    <Reference Include="NAudio">
+      <HintPath>..\..\packages\NAudio.1.6\lib\net20\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="NVorbis">
       <HintPath>..\..\packages\NVorbis.0.7.2\lib\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="ToyMp3">
-      <HintPath>..\..\packages\ToyMp3.1.0.0.0\lib\NET40\ToyMp3.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DeltaEngine.csproj">

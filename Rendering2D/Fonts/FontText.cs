@@ -107,10 +107,10 @@ namespace DeltaEngine.Rendering2D.Fonts
 
 			private readonly Drawing drawing;
 
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
 				drawFontCount = 0;
-				foreach (var entity in entities)
+				foreach (var entity in visibleEntities)
 					AddToBatch((FontText)entity);
 				for (int i = 0; i < drawFontCount; i++)
 					drawing.Add(drawnFontTexts[i].material, drawnFontTexts[i].vertices,

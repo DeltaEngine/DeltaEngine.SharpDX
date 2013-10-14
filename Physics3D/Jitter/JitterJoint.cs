@@ -9,7 +9,7 @@ using Jitter.LinearMath;
 namespace DeltaEngine.Physics3D.Jitter
 {
 	/// <summary>
-	/// Jitter joint implementation
+	/// Jitter joint implementation supporting all JointTypes
 	/// </summary>
 	internal class JitterJoint : PhysicsJoint
 	{

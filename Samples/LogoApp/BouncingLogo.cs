@@ -4,7 +4,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Multimedia;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace LogoApp
 {
@@ -14,7 +14,7 @@ namespace LogoApp
 	public class BouncingLogo : Sprite
 	{
 		public BouncingLogo()
-			: base(new Material(Shader.Position2DColorUv, "DeltaEngineLogo"), Vector2D.Half)
+			: base(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"), Vector2D.Half)
 		{
 			Color = Color.GetRandomColor();
 			Add(new SimplePhysics.Data

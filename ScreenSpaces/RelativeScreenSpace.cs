@@ -20,6 +20,7 @@ namespace DeltaEngine.ScreenSpaces
 		{
 			base.Update(newViewportSize);
 			pixelToRelativeScale = 1.0f / viewportPixelSize;
+			RaiseViewportSizeChanged();
 		}
 
 		public override Vector2D ToPixelSpace(Vector2D currentScreenSpacePosition)

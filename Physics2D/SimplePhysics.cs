@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Physics2D
@@ -22,7 +21,7 @@ namespace DeltaEngine.Physics2D
       public float Duration { get; set; }
       public float RotationSpeed { get; set; }
       public Vector2D Velocity { get; set; }
-      public Vector2D UvVelocity { get; set; }
+      public Vector2D UVVelocity { get; set; }
       public Vector2D Gravity { get; set; }
       public Action Bounced { get; set; }
     }
@@ -92,21 +91,20 @@ namespace DeltaEngine.Physics2D
       }
     }
 
-    public class MoveUv : UpdateBehavior
+    public class MoveUV : UpdateBehavior
     {
-      public MoveUv()
+      public MoveUV()
         : base(Priority.First) {}
 
       public override void Update(IEnumerable<Entity> entities)
       {
         foreach (Sprite sprite in entities)
-          UpdatePhysics(sprite, sprite.Get<Data>().UvVelocity);
+          UpdatePhysics(sprite, sprite.Get<Data>().UVVelocity);
       }
 
       private static void UpdatePhysics(Sprite sprite, Vector2D velocity)
       {
-        sprite.Coordinates =
-          new Sprite.SpriteCoordinates(sprite.Coordinates.UV.Move(velocity * Time.Delta));
+        sprite.UV = sprite.UV.Move(velocity * Time.Delta);
       }
     }
   }

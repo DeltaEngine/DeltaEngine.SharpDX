@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using DeltaEngine.Commands;
+using System.Text;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -27,12 +26,9 @@ namespace DeltaEngine.Content.Mocks
 				stream = new XmlFile(new XmlData("Root").AddChild(new XmlData("Hi"))).ToMemoryStream();
 			else if (content.MetaData.Type == ContentType.Xml && content.Name.Equals("Texts"))
 				stream = new XmlFile(new XmlData("Texts").AddChild(GoLocalizationNode)).ToMemoryStream();
-			else if (content.MetaData.Type == ContentType.InputCommand &&
-				content.Name.Equals("DefaultCommands"))
-				stream = CreateInputCommandXml().ToMemoryStream();
-			else if (content.Name.Equals("Verdana12") || content.Name.Equals("Tahoma30"))
+			else if (content.Name.Contains("Verdana12") || content.Name.Contains("Tahoma30"))
 				stream = CreateFontXml().ToMemoryStream();
-			else if (content.Name.Equals("TestParticle"))
+			else if (content.MetaData.Type == ContentType.ParticleEmitter)
 				stream = SaveTestParticle();
 			else if (content.MetaData.Type == ContentType.Shader)
 				stream = SaveShader(content.Name);
@@ -60,92 +56,6 @@ namespace DeltaEngine.Content.Mocks
 				keyNode.AddAttribute("es", "¡vamos!");
 				return keyNode;
 			}
-		}
-
-		private static XmlFile CreateInputCommandXml()
-		{
-			var inputSettings = new XmlData("InputSettings");
-			AddToInputCommandXml(inputSettings, Command.Exit, new MockCommand("KeyTrigger", "Escape"));
-			AddToInputCommandsXml(inputSettings, Command.Click,
-				new List<MockCommand>
-				{
-					new MockCommand("KeyTrigger", "Space"),
-					new MockCommand("MouseButtonTrigger", "Left"),
-					new MockCommand("TouchPressTrigger", ""),
-					new MockCommand("GamePadButtonTrigger", "A")
-				});
-			AddToInputCommandXml(inputSettings, Command.MiddleClick,
-				new MockCommand("MouseButtonTrigger", "Middle"));
-			AddToInputCommandXml(inputSettings, Command.RightClick,
-				new MockCommand("MouseButtonTrigger", "Right"));
-			AddToInputCommandsXml(inputSettings, Command.MoveLeft,
-				new List<MockCommand>
-				{
-					new MockCommand("KeyTrigger", "CursorLeft Pressed"),
-					new MockCommand("KeyTrigger", "A"),
-					new MockCommand("GamePadAnalogTrigger", "LeftThumbStick")
-				});
-			AddToInputCommandsXml(inputSettings, Command.MoveRight,
-				new List<MockCommand>
-				{
-					new MockCommand("KeyTrigger", "CursorRight Pressed"),
-					new MockCommand("KeyTrigger", "D"),
-					new MockCommand("GamePadAnalogTrigger", "RightThumbStick")
-				});
-			AddToInputCommandXml(inputSettings, Command.MoveUp,
-				new MockCommand("KeyTrigger", "CursorUp Pressed"));
-			AddToInputCommandXml(inputSettings, Command.MoveDown,
-				new MockCommand("KeyTrigger", "CursorDown Pressed"));
-			AddToInputCommandsXml(inputSettings, Command.MoveDirectly,
-				new List<MockCommand>
-				{
-					new MockCommand("MousePositionTrigger", "Left"),
-					new MockCommand("TouchPressTrigger", "")
-				});
-			AddToInputCommandXml(inputSettings, Command.RotateDirectly,
-				new MockCommand("GamePadAnalogTrigger", "RightThumbStick"));
-			AddToInputCommandXml(inputSettings, Command.Back,
-				new MockCommand("KeyTrigger", "Backspace Pressed"));
-			AddToInputCommandXml(inputSettings, Command.Drag,
-				new MockCommand("MouseDragTrigger", "Left Pressed"));
-			AddToInputCommandXml(inputSettings, Command.Flick, new MockCommand("TouchFlickTrigger", ""));
-			AddToInputCommandXml(inputSettings, Command.Pinch, new MockCommand("TouchPinchTrigger", ""));
-			AddToInputCommandXml(inputSettings, Command.Hold, new MockCommand("TouchHoldTrigger", ""));
-			AddToInputCommandXml(inputSettings, Command.DoubleClick,
-				new MockCommand("MouseDoubleClickTrigger", "Left"));
-			AddToInputCommandXml(inputSettings, Command.Rotate,
-				new MockCommand("TouchRotateTrigger", ""));
-			AddToInputCommandXml(inputSettings, Command.Zoom, new MockCommand("MouseZoomTrigger", ""));
-			return new XmlFile(inputSettings);
-		}
-
-		private struct MockCommand
-		{
-			public MockCommand(string trigger, string command)
-			{
-				Trigger = trigger;
-				Command = command;
-			}
-
-			public readonly string Trigger;
-			public readonly string Command;
-		}
-
-		private static void AddToInputCommandXml(XmlData inputSettings, string commandName,
-			MockCommand command)
-		{
-			var entry = new XmlData("Command").AddAttribute("Name", commandName);
-			entry.AddChild(command.Trigger, command.Command);
-			inputSettings.AddChild(entry);
-		}
-
-		private static void AddToInputCommandsXml(XmlData inputSettings, string commandName,
-			IEnumerable<MockCommand> commands)
-		{
-			var entry = new XmlData("Command").AddAttribute("Name", commandName);
-			foreach (var command in commands)
-				entry.AddChild(command.Trigger, command.Command);
-			inputSettings.AddChild(entry);
 		}
 
 		private static XmlFile CreateFontXml()
@@ -184,21 +94,25 @@ namespace DeltaEngine.Content.Mocks
 
 		private static MemoryStream SaveTestParticle()
 		{
-			var emptyParticleEffect = new ParticleEmitterData();
-			var shader = Load<Shader>(Shader.Position2DColorUv);
-			emptyParticleEffect.ParticleMaterial = new Material(shader,
+			var particleEmitterData = new ParticleEmitterData();
+			var shader = Load<Shader>(Shader.Position2DColorUV);
+			particleEmitterData.ParticleMaterial = new Material(shader,
 				Create<Image>(new ImageCreationData(new Size(8, 8))));
-			emptyParticleEffect.Size = new RangeGraph<Size>(new Size(0.1f, 0.1f), new Size(0.1f, 0.1f));
-			var data = BinaryDataExtensions.SaveToMemoryStream(emptyParticleEffect);
+			particleEmitterData.Size = new RangeGraph<Size>(new Size(0.1f, 0.1f));
+			particleEmitterData.MaximumNumberOfParticles = 256;
+			particleEmitterData.LifeTime = 5.0f;
+			particleEmitterData.SpawnInterval = 0.1f;
+			particleEmitterData.Color = new RangeGraph<Color>(Color.Red, Color.Green);
+			var data = BinaryDataExtensions.SaveToMemoryStream(particleEmitterData);
 			data.Seek(0, SeekOrigin.Begin);
 			return data;
 		}
 
 		private static MemoryStream SaveShader(string contentName)
 		{
-			var shader = new ShaderCreationData(ShaderCodeOpenGL.PositionUvOpenGLVertexCode,
-				ShaderCodeOpenGL.PositionUvOpenGLFragmentCode, ShaderCodeDX11.PositionUvDx11,
-				ShaderCodeDX9.Position2DUvDx9, GetVertexFormatFromDefaultNames(contentName));
+			var shader = new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
+				ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
+				ShaderCodeDX9.Position2DUVDX9, GetVertexFormatFromDefaultNames(contentName));
 			var data = BinaryDataExtensions.SaveToMemoryStream(shader);
 			data.Seek(0, SeekOrigin.Begin);
 			return data;
@@ -206,17 +120,17 @@ namespace DeltaEngine.Content.Mocks
 
 		private static VertexFormat GetVertexFormatFromDefaultNames(string contentName)
 		{
-			var format = VertexFormat.Position2DColorUv;
-			if (contentName == Shader.Position2DUv)
-				format = VertexFormat.Position2DUv;
+			var format = VertexFormat.Position2DColorUV;
+			if (contentName == Shader.Position2DUV)
+				format = VertexFormat.Position2DUV;
 			if (contentName == Shader.Position2DColor)
 				format = VertexFormat.Position2DColor;
 			if (contentName == Shader.Position3DColor)
 				format = VertexFormat.Position3DColor;
-			if (contentName == Shader.Position3DUv)
-				format = VertexFormat.Position3DUv;
-			if (contentName == Shader.Position3DColorUv)
-				format = VertexFormat.Position3DColorUv;
+			if (contentName == Shader.Position3DUV)
+				format = VertexFormat.Position3DUV;
+			if (contentName == Shader.Position3DColorUV)
+				format = VertexFormat.Position3DColorUV;
 			return format;
 		}
 
@@ -247,7 +161,7 @@ namespace DeltaEngine.Content.Mocks
 
 		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
-			if (contentName.StartsWith("Unavailable"))
+			if (IsNoMetaDataAllowed(contentName, contentClassType))
 				return null;
 			ContentType contentType = ConvertClassTypeToContentType(contentClassType);
 			if (contentType == ContentType.Material)
@@ -271,23 +185,48 @@ namespace DeltaEngine.Content.Mocks
 			return new ContentMetaData { Name = contentName, Type = contentType };
 		}
 
+		private static bool IsNoMetaDataAllowed(string contentName, Type classOfContent)
+		{
+			return contentName == "DefaultCommands" || contentName.StartsWith("Unavailable") ||
+				contentName.StartsWith("NoData") ||
+				(classOfContent != null && classOfContent.Name.StartsWith("NoData"));
+		}
+
 		private static ContentType ConvertClassTypeToContentType(Type contentClassType)
 		{
 			if (contentClassType == null)
 				return ContentType.Xml;
 			var typeName = contentClassType.Name;
-			foreach (var contentType in EnumExtensions.GetEnumValues<ContentType>())
-				if (contentType != ContentType.Image && contentType != ContentType.Mesh &&
-					typeName.Contains(contentType.ToString()))
-					return contentType;
+			if (typeName.Contains("ImageAnimation"))
+				return ContentType.ImageAnimation;
 			if (typeName.Contains("Image") || typeName.Contains("Texture"))
 				return ContentType.Image;
-			if (typeName.Contains("ModelData"))
-				return ContentType.Model;
+			if (typeName.Contains("Sound"))
+				return ContentType.Sound;
+			if (typeName.Contains("Font"))
+				return ContentType.Font;
+			if (typeName.Contains("Xml"))
+				return ContentType.Xml;
+			if (typeName.Contains("InputCommands"))
+				return ContentType.InputCommand;
+			if (typeName.Contains("Material"))
+				return ContentType.Material;
+			if (typeName.Contains("Music"))
+				return ContentType.Music;
+			if (typeName.Contains("Video"))
+				return ContentType.Video;
+			if (typeName.Contains("MeshAnimation"))
+				return ContentType.MeshAnimation; // ncrunch: no coverage (slow test)
 			if (typeName.Contains("Mesh"))
 				return ContentType.Mesh;
 			if (typeName.Contains("Geometry"))
 				return ContentType.Geometry;
+			if (typeName.Contains("ModelData"))
+				return ContentType.Model;
+			foreach (var contentType in EnumExtensions.GetEnumValues<ContentType>())
+				if (contentType != ContentType.Image && contentType != ContentType.Mesh &&
+					typeName.Contains(contentType.ToString()))
+					return contentType;
 			return ContentType.Xml;
 		}
 
@@ -310,7 +249,7 @@ namespace DeltaEngine.Content.Mocks
 		private static void AddShaderNameToMetaData(ContentMetaData metaData)
 		{
 			metaData.Values.Add("ShaderName",
-				metaData.Name.EndsWith("2D") ? "Position2DUv" : "Position3DUv");
+				metaData.Name.EndsWith("2D") ? "Position2DUV" : "Position3DUV");
 		}
 
 		private static ContentMetaData CreateSpriteSheetAnimationMetaData(string name)
@@ -352,7 +291,7 @@ namespace DeltaEngine.Content.Mocks
 			var metaData = new ContentMetaData { Name = contentName, Type = ContentType.Model };
 			if (contentName == "InvalidModel")
 				return metaData;
-			metaData.Values.Add("MeshNames", "MockModel");
+			metaData.Values.Add("MeshNames", "Mock" + contentName);
 			return metaData;
 		}
 
@@ -362,7 +301,9 @@ namespace DeltaEngine.Content.Mocks
 			metaData.Values.Add("GeometryName", "MockGeometry");
 			metaData.Values.Add("MaterialName", "MockMaterial");
 			if (contentName.Contains("Animation"))
-				metaData.Values.Add("AnimationName", "MockAnimation");
+				metaData.Values.Add("AnimationName", "MockAnimation"); // ncrunch: no coverage (slow test)
+			if (contentName.Contains("CustomTransform"))
+				metaData.Values.Add("LocalTransform", "2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 1, 3, 5, 1");
 			return metaData;
 		}
 
@@ -376,6 +317,11 @@ namespace DeltaEngine.Content.Mocks
 			if (contentName.Contains("No"))
 				throw new Video.VideoNotFoundOrAccessible(contentName, null);
 			return new ContentMetaData { Name = contentName, Type = ContentType.Video };
+		}
+
+		public string GetContentMetaDataFilePath()
+		{
+			return ContentMetaDataFilePath;
 		}
 	}
 }

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -19,11 +19,13 @@ namespace DeltaEngine.Scenes.Tests
 		public void SetUp()
 		{
 			scene = new Scene();
-			material = new Material(Shader.Position2DColorUv, "DeltaEngineLogo");
+			material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			window = Resolve<Window>();
 		}
 
 		private Scene scene;
 		private Material material;
+		private Window window;
 
 		[Test, CloseAfterFirstFrame]
 		public void LoadSceneWithoutAnyControls()
@@ -51,6 +53,15 @@ namespace DeltaEngine.Scenes.Tests
 			scene.Add(control);
 			Assert.AreEqual(1, scene.Controls.Count);
 			Assert.AreEqual(control, scene.Controls[0]);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void AddingListOfControl()
+		{
+			Assert.AreEqual(0, scene.Controls.Count);
+			var controls = new List<EmptyControl> { new EmptyControl(), new EmptyControl() };
+			scene.Add(controls);
+			Assert.AreEqual(2, scene.Controls.Count);
 		}
 
 		private class EmptyControl : Entity2D
@@ -215,12 +226,12 @@ namespace DeltaEngine.Scenes.Tests
 		public void ChangeBackgroundImage()
 		{
 			Assert.AreEqual(0, scene.Controls.Count);
-			var background = new Material(Shader.Position2DColorUv, "SimpleMainMenuBackground");
-			scene.SetBackground(background);
+			var background = new Material(Shader.Position2DColorUV, "SimpleMainMenuBackground");
+			scene.SetQuadraticBackground(background);
 			Assert.AreEqual(1, scene.Controls.Count);
 			Assert.AreEqual(background, ((Sprite)scene.Controls[0]).Material);
-			var logo = new Material(Shader.Position2DColorUv, "DeltaEngineLogo");
-			scene.SetBackground(logo);
+			var logo = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			scene.SetQuadraticBackground(logo);
 			Assert.AreEqual(1, scene.Controls.Count);
 			Assert.AreEqual(logo, ((Sprite)scene.Controls[0]).Material);
 		}
@@ -228,10 +239,45 @@ namespace DeltaEngine.Scenes.Tests
 		[Test]
 		public void BackgroundImageChangesWhenButtonClicked()
 		{
-			scene.SetBackground("SimpleSubMenuBackground");
+			scene.SetQuadraticBackground("SimpleSubMenuBackground");
 			var button = CreateButton();
-			button.Clicked += () => scene.SetBackground("SimpleMainMenuBackground");
+			button.Clicked += () => scene.SetQuadraticBackground("SimpleMainMenuBackground");
 			scene.Add(button);
+		}
+
+		[Test]
+		public void SetQuadraticBackgroundOnSquareWindow()
+		{
+			window.ViewportPixelSize = new Size(512, 512);
+			scene.SetQuadraticBackground("CheckerboardImage512x512");
+		}
+
+		[Test]
+		public void SetQuadraticBackgroundOnLandscapeWindow()
+		{
+			window.ViewportPixelSize = new Size(512, 288);
+			scene.SetQuadraticBackground("CheckerboardImage512x512");
+		}
+
+		[Test]
+		public void SetQuadraticBackgroundOnPortraitWindow()
+		{
+			window.ViewportPixelSize = new Size(288, 512);
+			scene.SetQuadraticBackground("CheckerboardImage512x512");
+		}
+
+		[Test]
+		public void SetLandscapeViewportBackgroundOnLandscapeWindow()
+		{
+			window.ViewportPixelSize = new Size(512, 288);
+			scene.SetViewportBackground("CheckerboardImage512x288");
+		}
+
+		[Test]
+		public void SetPortraitViewportBackgroundOnPortraitWindow()
+		{
+			window.ViewportPixelSize = new Size(288, 512);
+			scene.SetViewportBackground("CheckerboardImage288x512");
 		}
 	}
 }

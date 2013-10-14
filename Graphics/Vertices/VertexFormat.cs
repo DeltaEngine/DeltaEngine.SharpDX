@@ -87,7 +87,7 @@ namespace DeltaEngine.Graphics.Vertices
 			return "VertexFormat: " + Elements.ToText() + ", Stride=" + Stride;
 		}
 
-		public static readonly VertexFormat Position2DUv =
+		public static readonly VertexFormat Position2DUV =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position2D),
@@ -101,7 +101,7 @@ namespace DeltaEngine.Graphics.Vertices
 				new VertexElement(VertexElementType.Color)
 			});
 
-		public static readonly VertexFormat Position2DColorUv =
+		public static readonly VertexFormat Position2DColorUV =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position2D),
@@ -109,7 +109,7 @@ namespace DeltaEngine.Graphics.Vertices
 				new VertexElement(VertexElementType.TextureUV)
 			});
 
-		public static readonly VertexFormat Position3DUv =
+		public static readonly VertexFormat Position3DUV =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position3D),
@@ -123,7 +123,7 @@ namespace DeltaEngine.Graphics.Vertices
 				new VertexElement(VertexElementType.Color)
 			});
 
-		public static readonly VertexFormat Position3DColorUv =
+		public static readonly VertexFormat Position3DColorUV =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position3D),
@@ -131,15 +131,16 @@ namespace DeltaEngine.Graphics.Vertices
 				new VertexElement(VertexElementType.TextureUV)
 			});
 
-		public static readonly VertexFormat Position3DTexturedLightmap =
+		public static readonly VertexFormat Position3DNormalUVLightmap =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position3D),
+				new VertexElement(VertexElementType.Normal),
 				new VertexElement(VertexElementType.TextureUV),
 				new VertexElement(VertexElementType.LightMapUV)
 			});
 		
-		public static readonly VertexFormat Position3DNormalUv =
+		public static readonly VertexFormat Position3DNormalUV =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position3D),
@@ -164,7 +165,7 @@ namespace DeltaEngine.Graphics.Vertices
 				new VertexElement(VertexElementType.SkinWeights)
 			});
 
-		public static readonly VertexFormat Position3DUvSkinned =
+		public static readonly VertexFormat Position3DUVSkinned =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position3D),

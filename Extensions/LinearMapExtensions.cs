@@ -111,11 +111,11 @@ namespace DeltaEngine.Extensions
 			float cx = MathExtensions.Cos(x), sx = MathExtensions.Sin(x);
 			float cy = MathExtensions.Cos(y), sy = MathExtensions.Sin(y);
 			float cz = MathExtensions.Cos(z), sz = MathExtensions.Sin(z);
-			return new Matrix(new[] { 
+			return new Matrix(
 				cy * cz, cy * sz, -sy, 0.0f,
 				sx * sy * cz + cx * -sz, sx * sy * sz + cx * cz, sx * cy, 0.0f,
 				cx * sy * cz + sx * sz, cx * sy * sz + -sx * cz, cx * cy, 0.0f,
-				0.0f, 0.0f, 0.0f, 1.0f});
+				0.0f, 0.0f, 0.0f, 1.0f);
 		}
 
 		public static Matrix InvertMatrix(Matrix matrix)

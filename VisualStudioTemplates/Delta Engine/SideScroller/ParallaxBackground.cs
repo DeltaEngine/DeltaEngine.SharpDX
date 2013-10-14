@@ -1,7 +1,7 @@
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
@@ -11,9 +11,8 @@ namespace $safeprojectname$
 		{
 			layers = new BackgroundLayer[numberOfLayers];
 			for (int i = 0; i < numberOfLayers; i++)
-			{
 				layers [i] = new BackgroundLayer(layerImageNames [i], scrollFactors [i]);
-			}
+
 			RenderLayer = 0;
 		}
 
@@ -53,16 +52,14 @@ namespace $safeprojectname$
 
 			private static Material CreateMaterial(string imageName)
 			{
-				return new Material(Shader.Position2DUv, imageName);
+				return new Material(Shader.Position2DUV, imageName);
 			}
 
 			private readonly float speedFactor;
 
 			internal void ScrollByBaseSpeed(float baseSpeed)
 			{
-				var uv = Get<SpriteCoordinates>().UV;
-				uv.Left = uv.Left + baseSpeed * speedFactor * Time.Delta;
-				Set(new SpriteCoordinates(uv));
+				UV = UV.Move(baseSpeed * speedFactor * Time.Delta, 0.0f);
 			}
 		}
 		public bool IsPauseable

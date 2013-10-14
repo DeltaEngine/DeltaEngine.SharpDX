@@ -13,8 +13,8 @@ using DeltaEngine.ScreenSpaces;
 namespace DeltaEngine.Scenes.UserInterfaces.Terminal
 {
 	/// <summary>
-	/// Displays a console consisting of a command line, a number of history lines above it,
-	/// and autocompletion information below it.
+	/// Displays a console consisting of a command line, a number of history lines above it, and
+	/// autocompletion information below it.
 	/// </summary>
 	public class Console : FilledRect, KeyboardControllable
 	{

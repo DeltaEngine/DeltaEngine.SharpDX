@@ -58,6 +58,7 @@
     <Compile Include="CameraResolver.cs" />
     <Compile Include="OrthoCamera.cs" />
     <Compile Include="PathCamera.cs" />
+    <Compile Include="TargetedCamera.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

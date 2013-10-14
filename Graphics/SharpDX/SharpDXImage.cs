@@ -28,6 +28,12 @@ namespace DeltaEngine.Graphics.SharpDX
 
 		private readonly SharpDXDevice device;
 
+		protected override void SetSamplerStateAndTryToLoadImage(Stream fileData)
+		{
+			TryLoadImage(fileData);
+			SetSamplerState();
+		}
+
 		protected override void LoadImage(Stream fileData)
 		{
 			NativeTexture =
@@ -89,7 +95,6 @@ namespace DeltaEngine.Graphics.SharpDX
 		{
 			if (NativeTexture != null)
 				NativeTexture.Dispose();
-
 			if (NativeResourceView != null)
 				NativeResourceView.Dispose();
 		}

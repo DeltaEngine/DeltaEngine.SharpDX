@@ -13,7 +13,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	public class Interact : UpdateBehavior
 	{
 		public Interact()
-			: base(Priority.High)
+			: base(Priority.High, false)
 		{
 			new Command(point => leftClick = point).Add(new MouseButtonTrigger()).Add(
 				new TouchPressTrigger());
@@ -38,7 +38,6 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
-			// ReSharper disable PossibleMultipleEnumeration
 			if (dragStart == Vector2D.Unused)
 				ResetDrag(entities);
 			if (DidATriggerFireThisFrame())
@@ -69,7 +68,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		private void UpdateStateOfControls(IEnumerable<Entity> entities)
 		{
 			foreach (Control control in entities.OfType<Control>().Where(
-					control => control.IsEnabled && control.Visibility == Visibility.Show))
+				control => control.IsEnabled && control.IsVisible))
 				UpdateState(control, control.State);
 		}
 
@@ -126,7 +125,6 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private static void ProcessShiftOfFocus(IEnumerable<Entity> entities)
 		{
-			// ReSharper disable PossibleMultipleEnumeration
 			var entityWhichWantsFocus =
 				entities.FirstOrDefault(entity => entity.Get<InteractiveState>().WantsFocus);
 			if (entityWhichWantsFocus == null)
@@ -137,7 +135,6 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				state.HasFocus = false;
 			}
 			entityWhichWantsFocus.Get<InteractiveState>().HasFocus = true;
-			// ReSharper restore PossibleMultipleEnumeration
 		}
 
 		private void Reset()

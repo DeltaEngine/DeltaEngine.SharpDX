@@ -15,7 +15,7 @@ namespace DeltaEngine.Platforms
 		{
 			filePath = Path.Combine(AssemblyExtensions.GetMyDocumentsAppFolder(), SettingsFilename);
 			if (File.Exists(filePath))
-				data = new XmlFile(filePath).Root;
+				data = new XmlFile(filePath).Root; //ncrunch: no coverage
 			else
 			{
 				data = new XmlData("Settings");
@@ -26,17 +26,15 @@ namespace DeltaEngine.Platforms
 		private readonly string filePath;
 		private XmlData data;
 
-		//ncrunch: no coverage start
 		private void LoadDefaultSettings()
 		{
 			var dataChangedBeforeLoading = data;
 			data = ContentLoader.Load<XmlContent>("DefaultSettings").Data;
 			if (dataChangedBeforeLoading != null)
 				foreach (var child in dataChangedBeforeLoading.Children)
-					SetValue(child.Name, child.Value);
+					SetValue(child.Name, child.Value); //ncrunch: no coverage
 			wasChanged = true;
 		}
-		//ncrunch: no coverage end
 
 		public override void Save()
 		{

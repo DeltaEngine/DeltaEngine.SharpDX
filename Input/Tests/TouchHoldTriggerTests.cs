@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
@@ -9,6 +10,17 @@ namespace DeltaEngine.Input.Tests
 {
 	public class TouchHoldTriggerTests : TestWithMocksOrVisually
 	{
+		[SetUp]
+		public void SetUp()
+		{
+			touch = Resolve<Touch>() as MockTouch;
+			if (touch != null)
+				touch.SetTouchState(0, State.Released, Vector2D.Zero);
+			AdvanceTimeAndUpdateEntities();
+		}
+
+		private MockTouch touch;
+
 		[Test]
 		public void HoldOnRectangle()
 		{
@@ -35,6 +47,25 @@ namespace DeltaEngine.Input.Tests
 			Assert.IsFalse(trigger.IsHovering());
 			trigger.Elapsed = 1f;
 			Assert.IsFalse(trigger.IsHovering());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void PessingInTheSamePositionWillMakeTriggerHover()
+		{
+			var trigger = new TouchHoldTrigger(Rectangle.One, 0.0001f);
+			new Command(() => { }).Add(trigger);
+			SetTouchState(State.Pressing, Vector2D.Half);
+			SetTouchState(State.Pressed, Vector2D.Half);
+			SetTouchState(State.Releasing, Vector2D.Half);
+			Assert.IsTrue(trigger.IsHovering());
+		}
+
+		private void SetTouchState(State state, Vector2D position)
+		{
+			if (touch == null)
+				return; //ncrunch: no coverage
+			touch.SetTouchState(0, state, position);
+			AdvanceTimeAndUpdateEntities();
 		}
 	}
 }

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using CreepyTowers.Creeps;
-using CreepyTowers.Levels;
+﻿using CreepyTowers.Creeps;
 using CreepyTowers.Towers;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 using Randomizer = DeltaEngine.Core.Randomizer;
@@ -15,57 +11,33 @@ namespace CreepyTowers.Tests.Creeps
 	public class ClothCreepStateChangerTests : TestWithMocksOrVisually
 	{
 		[SetUp]
-		public void Initialize()
+		public void CreateClothCreep()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
-			creepProp = new CreepProperties
-			{
-				Name = Names.CreepCottonMummy,
-				CreepType = Creep.CreepType.Cloth,
-				CurrentHp = 100.0f,
-				MaxHp = 200.0f,
-				GoldReward = 100,
-				Resistance = 3.0f,
-				Speed = 3.0f
-			};
-			creep = GetTestCreep();
-			creep.Add(new MovementInGrid.MovementData
-			{
-				Velocity = new Vector3D(0.0f, 0.0f, 0.0f),
-				StartGridPos = new Tuple<int, int>(4, 0),
-				Waypoints = new List<Tuple<int, int>> { new Tuple<int, int>(1, 0) }
-			});
+			creep = new Creep(CreepType.Cloth, Vector3D.Zero, 0);
 		}
 
-		private static Creep GetTestCreep()
-		{
-			return new Creep(Vector3D.Zero, Names.CreepCottonMummy, new CreepProperties());
-		}
-
-		private CreepProperties creepProp;
 		private Creep creep;
 
 		[Test]
 		public void NonClothCreepsShouldBeIgnored()
 		{
-			creepProp.CreepType = Creep.CreepType.Glass;
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Acid, creep, creepProp);
-			var referenceCreep = GetTestCreep();
-			Assert.AreEqual(referenceCreep.state, creep.state);
+			var glassCreep = new Creep(CreepType.Glass, Vector3D.Zero, 0);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Acid, glassCreep);
+			Assert.AreEqual(creep.state.Wet, glassCreep.state.Wet);
 		}
 
 		[Test]
 		public void CheckForIceTowerEffect()
 		{
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Ice, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Ice, creep);
 			Assert.IsTrue(creep.state.Slow);
-			Assert.AreEqual(0, creep.state.SlowTimer);
+			Assert.AreEqual(-1, creep.state.SlowTimer);
 		}
 
 		[Test]
 		public void CheckForImpactTowerEffect()
 		{
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Impact, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Impact, creep);
 			Assert.IsTrue(creep.state.Slow);
 			Assert.AreEqual(0, creep.state.SlowTimer);
 		}
@@ -73,7 +45,7 @@ namespace CreepyTowers.Tests.Creeps
 		[Test]
 		public void ChecForkWaterTowerEffect()
 		{
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Water, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Water, creep);
 			Assert.IsTrue(creep.state.Slow);
 			Assert.AreEqual(0, creep.state.SlowTimer);
 		}
@@ -81,7 +53,7 @@ namespace CreepyTowers.Tests.Creeps
 		[Test]
 		public void CheckForAcidTowerEffect()
 		{
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Acid, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Acid, creep);
 			Assert.IsTrue(creep.state.Enfeeble);
 			Assert.AreEqual(0, creep.state.EnfeebleTimer);
 		}
@@ -89,7 +61,7 @@ namespace CreepyTowers.Tests.Creeps
 		[Test]
 		public void CheckForFireTowerOnDryClothCreep()
 		{
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Fire, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Fire, creep);
 			Assert.IsTrue(creep.state.Burst);
 			Assert.AreEqual(0, creep.state.BurstTimer);
 		}
@@ -98,92 +70,104 @@ namespace CreepyTowers.Tests.Creeps
 		public void CheckForFireTowerWetClothCreep()
 		{
 			creep.state.Wet = true;
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Fire, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Fire, creep);
 			Assert.IsFalse(creep.state.Wet);
-			Assert.AreEqual(CreepState.VulnerabilityType.Resistant, creep.state.GetVulnerability(Tower.TowerType.Impact));
-			Assert.AreEqual(CreepState.VulnerabilityType.HardBoiled, creep.state.GetVulnerability(Tower.TowerType.Ice));
-			Assert.AreEqual(CreepState.VulnerabilityType.Weak, creep.state.GetVulnerability(Tower.TowerType.Slice));
-			Assert.AreEqual(CreepState.VulnerabilityType.Vulnerable, creep.state.GetVulnerability(Tower.TowerType.Acid));
-			Assert.AreEqual(CreepState.VulnerabilityType.Vulnerable, creep.state.GetVulnerability(Tower.TowerType.Fire));
+			Assert.AreEqual(CreepState.VulnerabilityType.HardBoiled,
+				creep.state.GetVulnerability(TowerType.Impact));
+			Assert.AreEqual(CreepState.VulnerabilityType.HardBoiled,
+				creep.state.GetVulnerability(TowerType.Ice));
+			Assert.AreEqual(CreepState.VulnerabilityType.Weak,
+				creep.state.GetVulnerability(TowerType.Slice));
+			Assert.AreEqual(CreepState.VulnerabilityType.Vulnerable,
+				creep.state.GetVulnerability(TowerType.Acid));
+			Assert.AreEqual(CreepState.VulnerabilityType.Vulnerable,
+				creep.state.GetVulnerability(TowerType.Fire));
 		}
 
 		[Test]
 		public void CheckForFireTowerOnFrozenClothCreep()
 		{
 			creep.state.Frozen = true;
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Fire, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Fire, creep);
 			Assert.IsFalse(creep.state.Frozen);
 			Assert.IsFalse(creep.state.Burst);
 			Assert.IsFalse(creep.state.Burn);
 			Assert.IsTrue(creep.state.Wet);
 			Assert.AreEqual(0, creep.state.WetTimer);
-			Assert.AreEqual(CreepState.VulnerabilityType.Resistant, creep.state.GetVulnerability(Tower.TowerType.Fire));
-			Assert.AreEqual(CreepState.VulnerabilityType.HardBoiled, creep.state.GetVulnerability(Tower.TowerType.Impact));
-			Assert.AreEqual(CreepState.VulnerabilityType.Weak, creep.state.GetVulnerability(Tower.TowerType.Ice));
+			Assert.AreEqual(CreepState.VulnerabilityType.Resistant,
+				creep.state.GetVulnerability(TowerType.Fire));
+			Assert.AreEqual(CreepState.VulnerabilityType.HardBoiled,
+				creep.state.GetVulnerability(TowerType.Impact));
+			Assert.AreEqual(CreepState.VulnerabilityType.Weak,
+				creep.state.GetVulnerability(TowerType.Ice));
 		}
 
 		[Test]
 		public void CheckForWaterTowerOnFrozenClothCreep()
 		{
 			creep.state.Frozen = true;
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Water, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Water, creep);
 			Assert.IsTrue(creep.state.Frozen);
 		}
-		
 
 		[Test]
 		public void CheckForImpactTowerOnFrozenClothCreep()
 		{
 			Randomizer.Use(new FixedRandom(new[] { 0f }));
 			creep.state.Frozen = true;
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Impact, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Impact, creep);
 			Assert.IsTrue(creep.state.Frozen);
+		}
+
+		[Test]
+		public void CheckForIceTowerOnFrozenClothCreep()
+		{
+			creep.state.Frozen = true;
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Ice, creep);
 		}
 
 		[Test]
 		public void CheckForWaterTowerOnDryClothCreep()
 		{
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Water, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Water, creep);
 			Assert.IsFalse(creep.state.Frozen);
 			Assert.IsFalse(creep.state.Burst);
 			Assert.IsFalse(creep.state.Burn);
 			Assert.IsTrue(creep.state.Wet);
 			Assert.AreEqual(0, creep.state.WetTimer);
-			Assert.AreEqual(CreepState.VulnerabilityType.Resistant, creep.state.GetVulnerability(Tower.TowerType.Fire));
-			Assert.AreEqual(CreepState.VulnerabilityType.HardBoiled, creep.state.GetVulnerability(Tower.TowerType.Impact));
-			Assert.AreEqual(CreepState.VulnerabilityType.Weak, creep.state.GetVulnerability(Tower.TowerType.Ice));
+			Assert.AreEqual(CreepState.VulnerabilityType.Resistant,
+				creep.state.GetVulnerability(TowerType.Fire));
+			Assert.AreEqual(CreepState.VulnerabilityType.HardBoiled,
+				creep.state.GetVulnerability(TowerType.Impact));
+			Assert.AreEqual(CreepState.VulnerabilityType.Weak,
+				creep.state.GetVulnerability(TowerType.Ice));
 		}
 
 		[Test]
 		public void CheckForIceTowerOnWetClothCreep()
 		{
 			creep.state.Wet = true;
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Ice, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Ice, creep);
 			Assert.IsTrue(creep.state.Frozen);
 			Assert.IsTrue(creep.state.Paralysed);
 			Assert.AreEqual(0, creep.state.FrozenTimer);
-			Assert.AreEqual(CreepState.VulnerabilityType.Resistant, creep.state.GetVulnerability(Tower.TowerType.Slice));
-			Assert.AreEqual(CreepState.VulnerabilityType.Resistant, creep.state.GetVulnerability(Tower.TowerType.Water));
-			Assert.AreEqual(CreepState.VulnerabilityType.Vulnerable, creep.state.GetVulnerability(Tower.TowerType.Impact));
-			Assert.AreEqual(CreepState.VulnerabilityType.Immune, creep.state.GetVulnerability(Tower.TowerType.Fire));
+			Assert.AreEqual(CreepState.VulnerabilityType.Resistant,
+				creep.state.GetVulnerability(TowerType.Slice));
+			Assert.AreEqual(CreepState.VulnerabilityType.Resistant,
+				creep.state.GetVulnerability(TowerType.Water));
+			Assert.AreEqual(CreepState.VulnerabilityType.Vulnerable,
+				creep.state.GetVulnerability(TowerType.Impact));
+			Assert.AreEqual(CreepState.VulnerabilityType.Immune,
+				creep.state.GetVulnerability(TowerType.Fire));
 		}
-
 
 		[Test]
 		public void CheckForIceTowerOnDryClothCreep()
 		{
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Ice, creep, creepProp);
+			ClothCreepStateChanger.ChangeStatesIfClothCreep(TowerType.Ice, creep);
 			Assert.IsFalse(creep.state.Wet);
 			Assert.IsFalse(creep.state.Burst);
 			Assert.IsFalse(creep.state.Burn);
-		}
-
-
-		[Test]
-		public void CheckForImpactTowerOnFrozentClothCreep()
-		{
-			creep.state.Frozen = true;
-			ClothCreepStateChanger.ChangeStatesIfClothCreep(Tower.TowerType.Ice, creep, creepProp);
 		}
 	}
 }

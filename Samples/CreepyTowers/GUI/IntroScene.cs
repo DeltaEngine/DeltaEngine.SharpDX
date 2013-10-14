@@ -1,151 +1,108 @@
-﻿using System.Collections.Generic;
-using CreepyTowers.Levels;
+﻿using CreepyTowers.Content;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Multimedia;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using DeltaEngine.ScreenSpaces;
 
 namespace CreepyTowers.GUI
 {
-	public class IntroScene : Scene
+	public class IntroScene : Menu
 	{
 		public IntroScene()
 		{
 			count = 0;
-			introImageList = new List<Sprite>();
+			introSprites = new Sprite[5];
 			InitializeIntroScene();
 			InitializeImagesAndSetVisibility();
 		}
 
 		private int count;
-		private readonly List<Sprite> introImageList;
+		private readonly Sprite[] introSprites;
 
 		private void InitializeIntroScene()
 		{
-			remap = new RemapCoordinates();
-			xmlParser = new UIXmlParser();
-			xmlParser.ParseXml(Names.XmlIntroScene, "IntroMenu");
+			scene = ContentLoader.Load<Scene>(UI.SceneIntroMenu.ToString());
 			CreateIntroScene();
 		}
 
-		private RemapCoordinates remap;
-		private UIXmlParser xmlParser;
-
 		private void CreateIntroScene()
 		{
-			foreach (var uiObject in xmlParser.UiObjectList)
+			foreach (Control control in scene.Controls)
 			{
-				var imageSize = remap.RemapCoordinateSpaces(uiObject.ObjectSize);
-				var centerPos = remap.RemapCoordinateSpaces(uiObject.Position);
-				var drawArea = Rectangle.FromCenter(centerPos, imageSize);
-				CreateScene(uiObject, drawArea);
+				if (control.ContainsTag(Content.GUI.IntroButtonFlipLeft.ToString()))
+					control.IsVisible = false;
+				AttachButtonEvents(control);
 			}
 		}
 
-		private void CreateScene(UIObject uiObject, Rectangle drawArea)
+		private void AttachButtonEvents(Control control)
 		{
-			var button = new InteractiveButton(CreateTheme(uiObject.Name), drawArea)
-			{
-				RenderLayer = (int)CreepyTowersRenderLayer.Dialogues + 1
-			};
-			button.AddTag(uiObject.Name);
-
-			if (button.ContainsTag(Names.ButtonIntroFlipRight))
-				forwardButton = button;
-
-			if (button.ContainsTag(Names.ButtonIntroFlipLeft))
-			{
-				backButton = button;
-				backButton.ToggleVisibility(Visibility.Hide);
-			}
-
-			Add(button);
-			AttachButtonEvents(uiObject.Name, button);
+			var tags = control.GetTags();
+			foreach (var tag in tags)
+				if (tag.Contains(Content.GUI.IntroButtonFlipRight.ToString()))
+					control.Clicked += MoveIntroSceneForward;
+				else if (tag.Contains(Content.GUI.IntroButtonFlipLeft.ToString()))
+				{
+					control.Clicked += MoveIntroSceneBackward;
+					backButton = control;
+				}
+				else if (tag.Contains(Content.GUI.IntroButtonSkip.ToString()))
+				{
+					control.Clicked += StartTutorial;
+					forwardButton = control;
+				}
 		}
 
-		private InteractiveButton forwardButton;
-		private InteractiveButton backButton;
-
-		private static Theme CreateTheme(string buttonImageName)
-		{
-			var appearance = new Theme.Appearance(buttonImageName);
-			return new Theme
-			{
-				Button = appearance,
-				ButtonDisabled = new Theme.Appearance(buttonImageName, Color.Gray),
-				ButtonMouseover = appearance,
-				ButtonPressed = appearance
-			};
-		}
-
-		private void AttachButtonEvents(string buttonName, InteractiveButton button)
-		{
-			switch (buttonName)
-			{
-			case Names.ButtonIntroFlipRight:
-				button.Clicked += MoveIntroSceneForward;
-				break;
-
-			case Names.ButtonIntroFlipLeft:
-				button.Clicked += MoveIntroSceneBackward;
-				break;
-
-			case Names.ButtonIntroSkip:
-				button.Clicked += StartTutorial;
-				break;
-			}
-		}
+		private Control backButton;
+		private Control forwardButton;
 
 		private void InitializeImagesAndSetVisibility()
 		{
-			firstImage =
-				new Sprite(new Material(Shader.Position2DColorUv, Names.ComicStripsStoryboardPanel1),
+			introSprites[0] =
+				new Sprite(
+					new Material(Shader.Position2DColorUV, ComicStrips.ComicStripsStoryboardPanel1.ToString()),
 					ScreenSpace.Current.Viewport);
-			secondImage =
-				new Sprite(new Material(Shader.Position2DColorUv, Names.ComicStripsStoryboardPanel2),
+			introSprites[1] =
+				new Sprite(
+					new Material(Shader.Position2DColorUV, ComicStrips.ComicStripsStoryboardPanel2.ToString()),
 					ScreenSpace.Current.Viewport);
-			secondImage.ToggleVisibility(Visibility.Hide);
-			thirdImage =
-				new Sprite(new Material(Shader.Position2DColorUv, Names.ComicStripsStoryboardPanel3),
+			introSprites[1].IsVisible = false;
+			introSprites[2] =
+				new Sprite(
+					new Material(Shader.Position2DColorUV, ComicStrips.ComicStripsStoryboardPanel3.ToString()),
 					ScreenSpace.Current.Viewport);
-			thirdImage.ToggleVisibility(Visibility.Hide);
-			fourthImage =
-				new Sprite(new Material(Shader.Position2DColorUv, Names.ComicStripsStoryboardPanel4),
+			introSprites[2].IsVisible = false;
+			introSprites[3] =
+				new Sprite(
+					new Material(Shader.Position2DColorUV, ComicStrips.ComicStripsStoryboardPanel4.ToString()),
 					ScreenSpace.Current.Viewport);
-			fourthImage.ToggleVisibility(Visibility.Hide);
-			fifthImage =
-				new Sprite(new Material(Shader.Position2DColorUv, Names.ComicStripsStoryboardPanel5),
+			introSprites[3].IsVisible = false;
+			introSprites[4] =
+				new Sprite(
+					new Material(Shader.Position2DColorUV, ComicStrips.ComicStripsStoryboardPanel5.ToString()),
 					ScreenSpace.Current.Viewport);
-			fifthImage.ToggleVisibility(Visibility.Hide);
-
-			introImageList.Add(firstImage);
-			introImageList.Add(secondImage);
-			introImageList.Add(thirdImage);
-			introImageList.Add(fourthImage);
-			introImageList.Add(fifthImage);
+			introSprites[4].IsVisible = false;
 		}
-
-		private Sprite firstImage;
-		private Sprite secondImage;
-		private Sprite thirdImage;
-		private Sprite fourthImage;
-		private Sprite fifthImage;
 
 		private void MoveIntroSceneForward()
 		{
-			if (count == introImageList.Count)
-			{
-				new MainMenu();
-				return;
-			}
-
+			PlayClickedSound();
+			if (count == introSprites.Length - 1)
+				StartTutorial();
 			FadeOut();
 			count++;
 			EntitiesRunner.Current.GetUpdateBehavior<FadeEffect>().EffectOver += FadeIn;
 			ToggleButtonStatesMovingForward();
+		}
+
+		private static void PlayClickedSound()
+		{
+			var clickSound = ContentLoader.Load<Sound>(Sounds.PressButton.ToString());
+			clickSound.Play();
 		}
 
 		private void FadeOut()
@@ -155,11 +112,11 @@ namespace CreepyTowers.GUI
 
 		private void ShowFadeEffect(Color startColor, Color endColor)
 		{
-			var image = introImageList[count];
-
+			if (count == introSprites.Length)
+				return;
+			var image = introSprites[count];
 			if (image.Contains<FadeEffect.TransitionData>())
 				image.Remove<FadeEffect.TransitionData>();
-
 			image.Add(new FadeEffect.TransitionData
 			{
 				Colour = new RangeGraph<Color>(startColor, endColor),
@@ -171,24 +128,22 @@ namespace CreepyTowers.GUI
 
 		private void FadeIn()
 		{
-			if (count < introImageList.Count - 1)
-				introImageList[count + 1].ToggleVisibility(Visibility.Hide);
+			if (count < introSprites.Length - 1)
+				introSprites[count + 1].IsVisible = false;
 			ShowFadeEffect(Color.TransparentBlack, Color.White);
 		}
 
 		private void ToggleButtonStatesMovingForward()
 		{
-			if (count > 0 && count < introImageList.Count - 1)
-				backButton.ToggleVisibility(Visibility.Show);
-			else
-				forwardButton.ToggleVisibility(Visibility.Hide);
+			if (count > 0 && count < introSprites.Length - 1)
+				backButton.IsVisible = true;
 		}
 
 		private void MoveIntroSceneBackward()
 		{
+			PlayClickedSound();
 			if (count == 0)
 				return;
-
 			FadeOut();
 			count--;
 			EntitiesRunner.Current.GetUpdateBehavior<FadeEffect>().EffectOver += FadeIn;
@@ -197,32 +152,32 @@ namespace CreepyTowers.GUI
 
 		private void ToggleButtonStatesMovingBackwards()
 		{
-			if (count == introImageList.Count - 2)
+			if (count == introSprites.Length - 2)
 			{
-				forwardButton.ToggleVisibility(Visibility.Show);
-				backButton.ToggleVisibility(Visibility.Show);
+				forwardButton.IsVisible = true;
+				backButton.IsVisible = true;
 			}
 			else if (count == 0)
 			{
-				forwardButton.ToggleVisibility(Visibility.Show);
-				backButton.ToggleVisibility(Visibility.Hide);
+				forwardButton.IsVisible = true;
+				backButton.IsVisible = false;
 			}
 		}
 
 		private void StartTutorial()
 		{
+			PlayClickedSound();
 			Dispose();
-			ChildsRoom = new LevelChildsRoom();
+			//ChildsRoom = new LevelChildsRoom();
 		}
 
-		public LevelChildsRoom ChildsRoom { get; private set; }
+		//public LevelChildsRoom ChildsRoom { get; private set; }
 
-		protected override void DisposeData()
+		protected void Dispose()
 		{
-			foreach (Sprite sprite in introImageList)
+			foreach (Sprite sprite in introSprites)
 				sprite.IsActive = false;
-
-			Clear();
+			scene.Dispose();
 		}
 	}
 }

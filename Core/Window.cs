@@ -9,7 +9,7 @@ namespace DeltaEngine.Core
 	public interface Window
 	{
 		string Title { get; set; }
-		bool Visibility { get; }
+		bool IsVisible { get; }
 		object Handle { get; }
 		Size ViewportPixelSize { get; set; }
 		Orientation Orientation { get; }

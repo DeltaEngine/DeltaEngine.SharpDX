@@ -31,7 +31,7 @@ namespace DeltaEngine.Content
 			UVs = new List<Rectangle>();
 			for (int y = 0; y < Image.PixelSize.Height / SubImageSize.Height; y++)
 				for (int x = 0; x < Image.PixelSize.Width / SubImageSize.Width; x++)
-					UVs.Add(Rectangle.BuildUvRectangle(CalculatePixelRect(x, y), Image.PixelSize));
+					UVs.Add(Rectangle.BuildUVRectangle(CalculatePixelRect(x, y), Image.PixelSize));
 		}
 
 		public List<Rectangle> UVs { get; private set; }

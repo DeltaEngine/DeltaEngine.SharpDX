@@ -3,14 +3,14 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Multimedia;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Rendering2D.Sprites;
 
 namespace $safeprojectname$
 {
 	public class Tree : Sprite, Updateable
 	{
-		public Tree(Vector2D position, Team team) : base(new Material(Shader.Position2DColorUv, 
+		public Tree(Vector2D position, Team team) : base(new Material(Shader.Position2DColorUV, 
 			TreeImageName[0]), position)
 		{
 			Level = 1;
@@ -88,7 +88,7 @@ namespace $safeprojectname$
 
 		private void UpdateImage()
 		{
-			Material = new Material(Shader.Position2DColorUv, TreeImageName [Level - 1]);
+			Material = new Material(Shader.Position2DColorUV, TreeImageName [Level - 1]);
 			Color = Team.ToColor();
 			DrawArea = Rectangle.FromCenter(Center, GameLogic.TreeSize * Material.DiffuseMap.PixelSize 
 				/ 1920.0f);

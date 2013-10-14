@@ -39,14 +39,14 @@ namespace DeltaEngine.Graphics.Tests
 			public TestGeometry(GeometryCreationData creationData)
 				: base(creationData) {}
 
-			public override void Draw() {}
+			public override void Draw() {} //ncrunch: no coverage
 			protected override void SetNativeData(byte[] vertexData, short[] indices) {}
 			protected override void DisposeData() {}
 
 			public void LoadInvalidData()
 			{
 				LoadData(new MemoryStream());
-			}
+			} //ncrunch: no coverage
 
 			public void LoadValidData()
 			{
@@ -109,9 +109,9 @@ namespace DeltaEngine.Graphics.Tests
 
 				private readonly Drawing drawing;
 
-				public void Draw(IEnumerable<DrawableEntity> entities)
+				public void Draw(List<DrawableEntity> visibleEntities)
 				{
-					foreach (var triangle in entities.OfType<Triangle>())
+					foreach (var triangle in visibleEntities.OfType<Triangle>())
 						drawing.AddGeometry(triangle.geometry, triangle.material, Matrix.Identity);
 				}
 			}

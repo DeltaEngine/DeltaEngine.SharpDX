@@ -20,7 +20,7 @@ namespace DeltaEngine.Graphics.Vertices
 		public Color Color;
 		public Vector2D UV;
 
-		public static readonly int SizeInBytes = VertexFormat.Position2DColorUv.Stride;
+		public static readonly int SizeInBytes = VertexFormat.Position2DColorUV.Stride;
 
 		public VertexPosition2DColorUV Lerp(VertexPosition2DColorUV other, float interpolation)
 		{
@@ -30,7 +30,7 @@ namespace DeltaEngine.Graphics.Vertices
 
 		public VertexFormat Format
 		{
-			get { return VertexFormat.Position2DColorUv; }
+			get { return VertexFormat.Position2DColorUV; }
 		}
 	}
 }

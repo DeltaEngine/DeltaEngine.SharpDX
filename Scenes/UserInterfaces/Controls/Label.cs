@@ -22,16 +22,24 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			: this(theme, theme.Label, drawArea)
 		{
 			Text = text;
+			PreviousText = Text;
 		}
 
 		public string Text
 		{
 			get { return fontText.Text; }
-			set { fontText.Text = value; }
+			set
+			{
+				if (fontText.Text == value)
+					return;
+				PreviousText = fontText.Text;
+				fontText.Text = value; 
+			}
 		}
 
 		protected readonly FontText fontText;
-
+		public string PreviousText { get; private set; }
+		
 		internal Label(Theme theme, Theme.Appearance appearance, Rectangle drawArea)
 			: base(theme, appearance, drawArea)
 		{

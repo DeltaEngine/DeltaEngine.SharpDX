@@ -10,7 +10,7 @@ namespace DeltaEngine.Content.Mocks
 	/// </summary>
 	public class MockSound : Sound
 	{
-		protected MockSound(string contentName, Settings settings)
+		public MockSound(string contentName, Settings settings)
 			: base(contentName, settings) { }
 
 		protected override void LoadData(Stream fileData) { }

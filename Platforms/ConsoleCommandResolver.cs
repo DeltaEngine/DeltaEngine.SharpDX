@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DeltaEngine.Platforms
 {
@@ -8,7 +9,13 @@ namespace DeltaEngine.Platforms
 		{
 			this.resolver = resolver;
 		}
+
 		private readonly Resolver resolver;
+
+		public IEnumerable<Type> RegisteredTypes
+		{
+			get { return resolver.RegisteredTypes; }
+		}
 
 		public object Resolve(Type type)
 		{

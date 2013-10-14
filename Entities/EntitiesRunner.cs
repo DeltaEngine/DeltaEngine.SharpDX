@@ -31,8 +31,7 @@ namespace DeltaEngine.Entities
 		private readonly BehaviorResolver behaviorResolver;
 		protected float UpdateTimeStep { get; set; }
 		private float RapidUpdateTimeStep { get; set; }
-		private readonly PrioritizedEntities[] prioritizedEntities =
-			new PrioritizedEntities[Priority.First.GetCount()];
+		private readonly PrioritizedEntities[] prioritizedEntities = new PrioritizedEntities[5];
 
 		/// <summary>
 		/// Changes how many times UpdateBehaviors and Updateables are called each second. By default
@@ -85,10 +84,10 @@ namespace DeltaEngine.Entities
 			if (drawable == null)
 				return;
 			flatDrawableEntities.Remove(drawable);
-			CheckRenderlayerListToDeleteEntity(drawable);
+			CheckRenderLayerListToDeleteEntity(drawable);
 		}
 
-		private void CheckRenderlayerListToDeleteEntity(DrawableEntity entity)
+		private void CheckRenderLayerListToDeleteEntity(DrawableEntity entity)
 		{
 			for (int index = 0; index < negativeSortedDrawEntities.Count; index++)
 				RemoveEntityIfInList(entity, negativeSortedDrawEntities[index]);
@@ -105,6 +104,19 @@ namespace DeltaEngine.Entities
 			foreach (var behavior in entity.drawBehaviors)
 				if (sortedBehavior.behaviors.Keys.Contains(behavior))
 					sortedBehavior.behaviors[behavior].Remove(entity);
+		}
+
+		internal void AddVisible(DrawableEntity entity)
+		{
+			foreach (var behavior in entity.drawBehaviors)
+				AddToDrawBehaviorList(entity, behavior);
+			flatDrawableEntities.Add(entity);
+		}
+
+		internal void RemoveVisible(DrawableEntity entity)
+		{
+			CheckRenderLayerListToDeleteEntity(entity);
+			flatDrawableEntities.Remove(entity);
 		}
 
 		internal void AddTag(Entity entity, string tag)
@@ -206,14 +218,12 @@ namespace DeltaEngine.Entities
 			if (Time.Delta == 0)
 				return;
 			foreach (var priority in prioritizedEntities)
-				foreach (var entity in priority.entities.OfType<RapidUpdateable>())
-					RunEntityRapidUpdateIfNotPaused(entity);
-		}
-
-		private void RunEntityRapidUpdateIfNotPaused(RapidUpdateable entity)
-		{
-			if (!isPaused || !entity.IsPauseable)
-				entity.RapidUpdate();
+				foreach (var entity in priority.entities)
+				{
+					var rapidEntity = entity as RapidUpdateable;
+					if (rapidEntity != null && (!isPaused || !rapidEntity.IsPauseable))
+						rapidEntity.RapidUpdate();
+				}
 		}
 
 		private void RunUpdateTick()
@@ -227,10 +237,15 @@ namespace DeltaEngine.Entities
 				entity.InvokeNextUpdateStarted();
 			foreach (var priority in prioritizedEntities)
 			{
-				foreach (var pair in priority.behaviors.Where(pair => pair.Value.Count > 0))
-					RunUpdateBehaviorIfNotPaused(pair.Key, pair.Value);
-				foreach (var entity in priority.entities.OfType<Updateable>())
-					RunEntityUpdateIfNotPaused(entity);
+				foreach (var pair in priority.behaviors)
+					if (pair.Value.Count > 0)
+						RunUpdateBehaviorIfNotPaused(pair.Key, pair.Value);
+				foreach (Entity entity in priority.entities)
+				{
+					var updateableEntity = entity as Updateable;
+					if (updateableEntity != null)
+						RunEntityUpdateIfNotPaused(updateableEntity);
+				}
 				if (priority.delayedNewBehaviorsWhileUpdating.Count <= 0)
 					continue;
 				foreach (var pair in priority.delayedNewBehaviorsWhileUpdating)
@@ -243,7 +258,7 @@ namespace DeltaEngine.Entities
 		}
 
 		private void RunUpdateBehaviorIfNotPaused(UpdateBehavior updateBehavior,
-			IEnumerable<Entity> entities)
+			ICollection<Entity> entities)
 		{
 			if (isPaused && updateBehavior.isPauseable)
 				return;
@@ -262,17 +277,20 @@ namespace DeltaEngine.Entities
 			CurrentDrawInterpolation = updateTimeAccumulator / UpdateTimeStep;
 			foreach (var drawBehaviorEntities in negativeSortedDrawEntities)
 			{
-				foreach (var pair in drawBehaviorEntities.behaviors.Where(pair => pair.Value.Count > 0))
-					pair.Key.Draw(pair.Value.Where(entity => entity.Visibility == Visibility.Show));
+				foreach (var pair in drawBehaviorEntities.behaviors)
+					if (pair.Value.Count > 0)
+						pair.Key.Draw(pair.Value);
 				drawEverythingInCurrentLayer();
 			}
-			foreach (var pair in unsortedDrawEntities.Where(pair => pair.Value.Count > 0))
-				pair.Key.Draw(pair.Value.Where(entity => entity.Visibility == Visibility.Show));
+			foreach (var pair in unsortedDrawEntities)
+				if (pair.Value.Count > 0)
+					pair.Key.Draw(pair.Value);
 			drawEverythingInCurrentLayer();
 			foreach (var drawBehaviorEntities in positiveSortedDrawEntities)
 			{
-				foreach (var pair in drawBehaviorEntities.behaviors.Where(pair => pair.Value.Count > 0))
-					pair.Key.Draw(pair.Value.Where(entity => entity.Visibility == Visibility.Show));
+				foreach (var pair in drawBehaviorEntities.behaviors)
+					if (pair.Value.Count > 0)
+						pair.Key.Draw(pair.Value);
 				drawEverythingInCurrentLayer();
 			}
 		}
@@ -300,11 +318,11 @@ namespace DeltaEngine.Entities
 		internal UpdateBehavior GetUpdateBehavior(Type behaviorType)
 		{
 			foreach (var priority in prioritizedEntities)
-				foreach (var behavior in
-					priority.delayedNewBehaviorsWhileUpdating.Keys.Where(b => b.GetType() == behaviorType))
+				foreach (var behavior in priority.delayedNewBehaviorsWhileUpdating.Keys.Where(
+					behaviorType.IsInstanceOfType))
 					return behavior;
 			foreach (var priority in prioritizedEntities)
-				foreach (var behavior in priority.behaviors.Keys.Where(b => b.GetType() == behaviorType))
+				foreach (var behavior in priority.behaviors.Keys.Where(behaviorType.IsInstanceOfType))
 					return behavior;
 			var newBehavior = behaviorResolver.ResolveUpdateBehavior(behaviorType);
 			if (newBehavior == null)
@@ -327,7 +345,7 @@ namespace DeltaEngine.Entities
 		public T GetDrawBehavior<T>() where T : class, DrawBehavior
 		{
 			return (T)GetDrawBehavior(typeof(T));
-		}
+		} // ncrunch: no coverage
 
 		internal object GetDrawBehavior(Type drawBehaviorType)
 		{
@@ -382,7 +400,7 @@ namespace DeltaEngine.Entities
 					return layer;
 				if (layer.RenderLayer > renderLayer)
 					break;
-			}
+			} // ncrunch: no coverage
 			var newList = new SortedDrawBehaviors(renderLayer);
 			sortedList.Insert(index, newList);
 			return newList;

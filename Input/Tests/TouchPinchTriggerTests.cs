@@ -18,13 +18,15 @@ namespace DeltaEngine.Input.Tests
 			var trigger = new TouchPinchTrigger();
 			var touch = Resolve<Touch>();
 			new Command(() =>
+			//ncrunch: no coverage start
 			{
 				ellipse.Center = touch.GetPosition(0);
 				ellipse.Size = new Size(trigger.Distance * 0.5f);
 			}).Add(trigger);
+			//ncrunch: no coverage end
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void PinchDistance()
 		{
 			var trigger = new TouchPinchTrigger();
@@ -33,6 +35,15 @@ namespace DeltaEngine.Input.Tests
 			touch.SetTouchState(1, State.Pressed, new Vector2D(0.3f, 0.7f));
 			touch.Update(new[] { trigger });
 			Assert.AreEqual(0.608276188f, trigger.Distance);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void Creation()
+		{
+			Assert.DoesNotThrow(() => new TouchPinchTrigger(""));
+			Assert.DoesNotThrow(() => new TouchPinchTrigger(null));
+			Assert.Throws<TouchPinchTrigger.TouchPinchTriggerHasNoParameters>(
+				() => new TouchPinchTrigger("Left"));
 		}
 	}
 }

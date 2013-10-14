@@ -10,22 +10,28 @@ namespace DeltaEngine.Datatypes
 	/// <summary>
 	/// 4x4 Matrix from 16 floats, access happens via indexer, optimizations done in BuildService.
 	/// </summary>
-	[DebuggerDisplay(
-		"Matrix(Right={Right},\nUp={Up},\nForward={Forward},\nTranslation={Translation})")]
+	[DebuggerDisplay("Matrix(Right={Right},\nUp={Up},\nForward={Forward},\nTranslation={Translation})")]
 	public struct Matrix : IEquatable<Matrix>
 	{
 		public Matrix(params float[] values)
 			: this()
 		{
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < MaxPossibleValues; i++)
 				this[i] = values[i];
 		}
+
+		private const int MaxPossibleValues = 16;
+
+		public Matrix(string matrixString)
+			: this(matrixString.SplitIntoFloats(ValueStringSeparator)) {}
+
+		private const string ValueStringSeparator = ", ";
 
 		public float this[int index]
 		{
 			get
 			{
-				if (index >= 0 && index < 16)
+				if (index >= 0 && index < MaxPossibleValues)
 					return GetValues[index];
 				throw new IndexOutOfRangeException();
 			}
@@ -45,22 +51,38 @@ namespace DeltaEngine.Datatypes
 
 		private void SetValue(int index, float value)
 		{
-			if (index == 0) m11 = value;
-			else if (index == 1) m12 = value;
-			else if (index == 2) m13 = value;
-			else if (index == 3) m14 = value;
-			else if (index == 4) m21 = value;
-			else if (index == 5) m22 = value;
-			else if (index == 6) m23 = value;
-			else if (index == 7) m24 = value;
-			else if (index == 8) m31 = value;
-			else if (index == 9) m32 = value;
-			else if (index == 10) m33 = value;
-			else if (index == 11) m34 = value;
-			else if (index == 12) m41 = value;
-			else if (index == 13) m42 = value;
-			else if (index == 14) m43 = value;
-			else if (index == 15) m44 = value;
+			if (index == 0)
+				m11 = value;
+			else if (index == 1)
+				m12 = value;
+			else if (index == 2)
+				m13 = value;
+			else if (index == 3)
+				m14 = value;
+			else if (index == 4)
+				m21 = value;
+			else if (index == 5)
+				m22 = value;
+			else if (index == 6)
+				m23 = value;
+			else if (index == 7)
+				m24 = value;
+			else if (index == 8)
+				m31 = value;
+			else if (index == 9)
+				m32 = value;
+			else if (index == 10)
+				m33 = value;
+			else if (index == 11)
+				m34 = value;
+			else if (index == 12)
+				m41 = value;
+			else if (index == 13)
+				m42 = value;
+			else if (index == 14)
+				m43 = value;
+			else if (index == 15)
+				m44 = value;
 		}
 
 		public Vector3D Right
@@ -114,12 +136,12 @@ namespace DeltaEngine.Datatypes
 			return new Matrix(scaleX, 0, 0, 0, 0, scaleY, 0, 0, 0, 0, scaleZ, 0, 0, 0, 0, 1);
 		}
 
-		public static Matrix CreateRotationZyx(EulerAngles eulerAngles)
+		public static Matrix CreateRotationZYX(EulerAngles eulerAngles)
 		{
-			return CreateRotationZyx(eulerAngles.Pitch, eulerAngles.Yaw, eulerAngles.Roll);
+			return CreateRotationZYX(eulerAngles.Pitch, eulerAngles.Yaw, eulerAngles.Roll);
 		}
 
-		public static Matrix CreateRotationZyx(float x, float y, float z)
+		public static Matrix CreateRotationZYX(float x, float y, float z)
 		{
 			return LinearMapExtensions.CreateRotationAboutZThenYThenX(x, y, z);
 		}
@@ -218,6 +240,26 @@ namespace DeltaEngine.Datatypes
 				0.0f, 0.0f, 0.0f, 1.0f);
 		}
 
+		public static Matrix FromAxisAngle(Vector3D axis, float angle)
+		{			
+			var quaternion = Quaternion.FromAxisAngle(axis, angle);
+			return FromQuaternion(quaternion);
+		}
+
+		public static Matrix Frustum(float left, float right, float bottom, float top, float near, float far)
+		{
+			float width = right - left;
+			float height = top - bottom;
+			float depth = far - near;
+			float n = near * 2;
+
+			return new Matrix(			 
+				n / width, 0, (right + left) / width, 0,
+				0, n / height, (top + bottom) / height, 0,
+				0, 0, -(far + near) / depth, -(n * far) / depth,
+				0, 0, -1, 1);
+		}
+
 		/// <summary>
 		/// More details how to calculate Matrix Determinants: http://en.wikipedia.org/wiki/Determinant
 		/// </summary>
@@ -244,7 +286,7 @@ namespace DeltaEngine.Datatypes
 
 		public bool Equals(Matrix other)
 		{
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < MaxPossibleValues; i++)
 				if (!this[i].IsNearlyEqual(other[i]))
 					return false;
 			return true;
@@ -257,7 +299,7 @@ namespace DeltaEngine.Datatypes
 
 		public bool IsNearlyEqual(Matrix matrix)
 		{
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < MaxPossibleValues; i++)
 				if (!this[i].IsNearlyEqual(matrix[i]))
 					return false;
 			return true;
@@ -275,20 +317,20 @@ namespace DeltaEngine.Datatypes
 
 		public static Vector3D operator *(Matrix matrix, Vector3D vector)
 		{
-			return
-				new Vector3D(
-					vector.X * matrix.m11 + vector.Y * matrix.m21 + vector.Z * matrix.m31 + matrix.m41,
-					vector.X * matrix.m12 + vector.Y * matrix.m22 + vector.Z * matrix.m32 + matrix.m42,
-					vector.X * matrix.m13 + vector.Y * matrix.m23 + vector.Z * matrix.m33 + matrix.m43);
+			return new Vector3D(
+				vector.X * matrix.m11 + vector.Y * matrix.m21 + vector.Z * matrix.m31 + matrix.m41,
+				vector.X * matrix.m12 + vector.Y * matrix.m22 + vector.Z * matrix.m32 + matrix.m42,
+				vector.X * matrix.m13 + vector.Y * matrix.m23 + vector.Z * matrix.m33 + matrix.m43);
 		}
 
 		public static Matrix operator *(Matrix matrix1, Matrix matrix2)
 		{
-			var result = new float[16];
-			for (int i = 0; i < 4; i++)
-				for (int j = 0; j < 4; j++)
-					for (int k = 0; k < 4; k++)
-						result[i * 4 + j] += matrix1[i * 4 + k] * matrix2[k * 4 + j];
+			var result = new float[MaxPossibleValues];
+			const int Dimension = 4;
+			for (int i = 0; i < Dimension; i++)
+				for (int j = 0; j < Dimension; j++)
+					for (int k = 0; k < Dimension; k++)
+						result[i * Dimension + j] += matrix1[i * Dimension + k] * matrix2[k * Dimension + j];
 			return new Matrix(result);
 		}
 
@@ -304,7 +346,7 @@ namespace DeltaEngine.Datatypes
 
 		public override string ToString()
 		{
-			return string.Join(", ", GetValues);
+			return string.Join(ValueStringSeparator, GetValues);
 		}
 	}
 }

@@ -7,9 +7,9 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Input.Windows.Tests
 {
+	[Category("Slow")]
 	internal class WindowsMouseTests : TestWithMocksOrVisually
 	{
-		// ncrunch: no coverage start
 		[SetUp]
 		public void CreateWindowsMouseExplicitly()
 		{
@@ -19,7 +19,13 @@ namespace DeltaEngine.Input.Windows.Tests
 
 		private WindowsMouse mouse;
 
-		[Test, Ignore] // This moves the mouse every time NCrunch runs!
+		[TearDown]
+		public void DisposingMouse()
+		{
+			mouse.Dispose();
+		}
+
+		[Test]
 		public void SetPositionAndUpdateTrigger()
 		{
 			var setPoint = new Vector2D(0.8f, 0.4f);
@@ -28,12 +34,6 @@ namespace DeltaEngine.Input.Windows.Tests
 			mouse.Update(new List<Entity>(new[] { moveTrigger }));
 			Assert.AreEqual(setPoint.X, moveTrigger.LastPosition.X, 0.1f);
 			Assert.AreEqual(setPoint.Y, moveTrigger.LastPosition.Y, 0.1f);
-		}
-
-		[TearDown]
-		public void DisposingMouse()
-		{
-			mouse.Dispose();
 		}
 	}
 }

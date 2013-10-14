@@ -7,7 +7,7 @@ namespace DeltaEngine.Multimedia.Mocks
 	/// </summary>
 	public class MockVideo : Video
 	{
-		protected MockVideo(string contentName, SoundDevice soundDevice)
+		public MockVideo(string contentName, SoundDevice soundDevice)
 			: base(contentName, soundDevice) {}
 
 		protected override void LoadData(Stream fileData) {}

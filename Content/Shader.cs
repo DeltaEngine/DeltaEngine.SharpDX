@@ -21,15 +21,15 @@ namespace DeltaEngine.Content
 		public abstract void Bind();
 		public abstract void BindVertexDeclaration();
 
-		public const string Position2DUv = "Position2DUv";
-		public const string Position2DColorUv = "Position2DColorUv";
+		public const string Position2DUV = "Position2DUV";
+		public const string Position2DColorUV = "Position2DColorUV";
 		public const string Position2DColor = "Position2DColor";
-		public const string Position3DUv = "Position3DUv";
-		public const string Position3DColorUv = "Position3DColorUv";
+		public const string Position3DUV = "Position3DUV";
+		public const string Position3DColorUV = "Position3DColorUV";
 		public const string Position3DColor = "Position3DColor";
-		public const string Position3DNormalUv = "Position3DNormalUv";
-		public const string Position3DTexturedLightmap = "Position3DTexturedLightmap";
+		public const string Position3DNormalUV = "Position3DNormalUV";
+		public const string Position3DNormalUVLightmap = "Position3DNormalUVLightmap";
 		public const string Position3DColorSkinned = "Position3DColorSkinned";
-		public const string Position3DUvSkinned = "Position3DUvSkinned";
+		public const string Position3DUVSkinned = "Position3DUVSkinned";
 	}
 }

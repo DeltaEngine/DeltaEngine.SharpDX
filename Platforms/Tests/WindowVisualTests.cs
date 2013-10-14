@@ -14,7 +14,7 @@ namespace DeltaEngine.Platforms.Tests
 		public void CreateWindow()
 		{
 			window = Resolve<Window>();
-			Assert.IsTrue(window.Visibility);
+			Assert.IsTrue(window.IsVisible);
 		}
 
 		private Window window;

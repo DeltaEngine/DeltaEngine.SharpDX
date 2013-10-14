@@ -1,26 +1,27 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Core;
-using DeltaEngine.Graphics;
+
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests
 {
+//TODO: should not be done manually, load from content file
 	public class InputCommandsTests : TestWithMocksOrVisually
 	{
-
 		[SetUp]
 		public void Initialize()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
+			new Game(Resolve<Window>());
 			manager = new Manager(6.0f);
-			inactiveButtonsTagList = new List<string> { Names.ButtonFireTower, Names.ButtonIceTower };
-			input = new InputCommands(manager, inactiveButtonsTagList);
+			inactiveButtonsTagList = new List<string> { Content.GUI.ButtonFireTower.ToString(),
+				Content.GUI.ButtonIceTower.ToString() };
+			input = new InGameCommands(manager, inactiveButtonsTagList);
 		}
 
 		private Manager manager;
 		private List<string> inactiveButtonsTagList;
-		private InputCommands input;
+		private InGameCommands input;
 
 		[Test]
 		public void DiposingInputCommandsHidesTowerPanel()

@@ -3,17 +3,17 @@ using DeltaEngine.Commands;
 
 namespace DeltaEngine.Input
 {
-	internal class TouchRotateTrigger : DragTrigger
+	public class TouchRotateTrigger : DragTrigger
 	{
 		public TouchRotateTrigger() {}
 
 		public TouchRotateTrigger(string empty)
 		{
 			if (!String.IsNullOrEmpty(empty))
-				throw new TouchMovementTriggerHasNoParameters();
+				throw new TouchRotateTriggerHasNoParameters();
 		}
 
-		public class TouchMovementTriggerHasNoParameters : Exception {}
+		public class TouchRotateTriggerHasNoParameters : Exception {}
 
 		protected override void StartInputDevice()
 		{

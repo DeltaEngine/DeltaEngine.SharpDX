@@ -1,7 +1,4 @@
-﻿using DeltaEngine.Content;
-using DeltaEngine.Content.Disk;
-
-namespace DeltaEngine.Graphics.Tests
+﻿namespace DeltaEngine.Graphics.Tests
 {
 	public class Program
 	{
@@ -9,7 +6,7 @@ namespace DeltaEngine.Graphics.Tests
 		{
 			var tests = new DeviceTests();
 			tests.InitializeResolver();
-			ContentLoader.Use<DiskContentLoader>();
+			//ContentLoader.Use<DiskContentLoader>();
 			tests.DrawRedBackground();
 			//new DrawingTests().DrawRedLine();
 			//new DrawingTests().DrawVertices();

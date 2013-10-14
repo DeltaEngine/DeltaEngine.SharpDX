@@ -11,11 +11,12 @@ namespace $safeprojectname$.Creeps
 		{
 			foreach (Creep creep in entities)
 			{
-				if (creep.Contains<MovementData>())
-					movementData = creep.Get<MovementData>();
+				if (!creep.Contains<MovementData>())
+					return;
 
+				movementData = creep.Get<MovementData>();
 				wayPoints = movementData.Waypoints;
-				var grid = Game.CameraAndGrid.Grid;
+				var grid = creep.Grid;
 				if (wayPoints.Count == 0)
 					return;
 
@@ -69,7 +70,7 @@ namespace $safeprojectname$.Creeps
 		private void CheckIfCreepReachedFinalStop(Creep creep, Vector3D finalStop)
 		{
 			var dist = (finalStop - creep.Position).Length;
-			if (dist > Game.CameraAndGrid.Grid.GridScale * 0.25)
+			if (dist > creep.Grid.GridScale * 0.25)
 				return;
 
 			movementData.StartGridPos = movementData.FinalGridPos;

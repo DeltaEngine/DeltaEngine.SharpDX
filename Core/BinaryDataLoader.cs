@@ -21,7 +21,7 @@ namespace DeltaEngine.Core
 		{
 			try
 			{
-				return CreateAndLoadTopLevelType(typeToCreate, reader, dataVersion);
+				return CreateAndLoadTopLevelType(typeToCreate, reader);
 			}
 			catch (TypeLoadException ex) //ncrunch: no coverage start
 			{
@@ -43,8 +43,7 @@ namespace DeltaEngine.Core
 			}
 		}
 
-		private static object CreateAndLoadTopLevelType(Type typeToCreate, BinaryReader reader,
-			Version dataVersion)
+		private static object CreateAndLoadTopLevelType(Type typeToCreate, BinaryReader reader)
 		{
 			topLevelTypeToCreate = typeToCreate;
 			nestingDepth = 0;
@@ -78,7 +77,7 @@ namespace DeltaEngine.Core
 		private static object GetDefault(Type type)
 		{
 			if (type.IsArray || type == typeof(Type) || type.Name == "RuntimeType" ||
-				typeof(ContentData).IsAssignableFrom(type) || typeof(Entity).IsAssignableFrom(type))
+					typeof(ContentData).IsAssignableFrom(type) || typeof(Entity).IsAssignableFrom(type))
 				return null;
 			return type == typeof(string) ? "" : Activator.CreateInstance(type, true);
 		}
@@ -87,13 +86,16 @@ namespace DeltaEngine.Core
 		{
 			if (typeof(ContentData).IsAssignableFrom(type))
 			{
-				var contentName = reader.ReadString();
-				if (String.IsNullOrEmpty(contentName))
-					throw new UnableToLoadContentDataWithoutName();
-				data = ContentLoader.Load(type,
-					topLevelTypeToCreate == type ? "<GeneratedLoadedContent>" : contentName);
-				if (topLevelTypeToCreate != type && !contentName.StartsWith("<Generated"))
+				var justLoadFromContent = reader.ReadBoolean();
+				if (justLoadFromContent)
+				{
+					var contentName = reader.ReadString();
+					if (String.IsNullOrEmpty(contentName))
+						throw new UnableToLoadContentDataWithoutName();
+					data = ContentLoader.Load(type, contentName);
 					return;
+				}
+				data = ContentLoader.Load(type, "<GeneratedLoadedContent>");
 			}
 			if (typeof(Entity).IsAssignableFrom(type))
 			{
@@ -129,7 +131,7 @@ namespace DeltaEngine.Core
 				Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
 					CultureInfo.CurrentCulture) as Entity;
 			var createFromComponents = LoadArray(null, typeof(List<object>), reader) as List<object>;
-			entity.FillComponents(createFromComponents);
+			entity.SetComponents(createFromComponents);
 			LoadEntityTags(reader, entity);
 			LoadEntityBehaviors(reader, entity);
 			if (typeof(DrawableEntity).IsAssignableFrom(type))

@@ -17,12 +17,12 @@ namespace SideScroller
 
 		private void CreateMenuTheme()
 		{
-			SetBackground("SidescrollerMainMenuBackground");
+			SetQuadraticBackground("SidescrollerMainMenuBackground");
 			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUv, "SidescrollerButtonDefault"));
+			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUV, "SidescrollerButtonDefault"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUv, "SidescrollerButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUv, "SidescrollerButtonPressed"));
+			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUV, "SidescrollerButtonHover"));
+			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUV, "SidescrollerButtonPressed"));
 		}
 
 		private Theme menuTheme;

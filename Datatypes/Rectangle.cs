@@ -195,6 +195,12 @@ namespace DeltaEngine.Datatypes
 			return new Rectangle(Left + translation.X, Top + translation.Y, Width, Height);
 		}
 
+		[Pure]
+		public Rectangle Move(float translationX, float translationY)
+		{
+			return new Rectangle(Left + translationX, Top + translationY, Width, Height);
+		}
+
 		public static bool operator ==(Rectangle rect1, Rectangle rect2)
 		{
 			return rect1.Top == rect2.Top && rect1.Left == rect2.Left && rect1.Width == rect2.Width &&
@@ -300,7 +306,7 @@ namespace DeltaEngine.Datatypes
 		/// <summary>
 		/// Build UV rectangle for a given uv pixel rect and imagePixelSize. Used for FontData.
 		/// </summary>
-		public static Rectangle BuildUvRectangle(Rectangle uvInPixels, Size imagePixelSize)
+		public static Rectangle BuildUVRectangle(Rectangle uvInPixels, Size imagePixelSize)
 		{
 			return new Rectangle(uvInPixels.Left / imagePixelSize.Width,
 				uvInPixels.Top / imagePixelSize.Height,

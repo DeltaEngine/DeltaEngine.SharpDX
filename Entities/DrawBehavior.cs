@@ -7,6 +7,6 @@ namespace DeltaEngine.Entities
 	/// </summary>
 	public interface DrawBehavior
 	{
-		void Draw(IEnumerable<DrawableEntity> entities);
+		void Draw(List<DrawableEntity> visibleEntities);
 	}
 }

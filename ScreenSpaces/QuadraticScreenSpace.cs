@@ -62,6 +62,7 @@ namespace DeltaEngine.ScreenSpaces
 		{
 			base.Update(newViewportSize);
 			CalculateScalesAndOffsets();
+			RaiseViewportSizeChanged();
 		}
 
 		public override Vector2D FromPixelSpace(Vector2D pixelPosition)

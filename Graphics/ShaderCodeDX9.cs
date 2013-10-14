@@ -5,7 +5,7 @@
 	/// </summary>
 	public static class ShaderCodeDX9
 	{
-		internal const string Position3DColorDx9 =  @"
+		public const string Position3DColorDX9 =  @"
 float4x4 WorldViewProjection;
 struct VS_OUTPUT
 {
@@ -26,7 +26,7 @@ float4 PS( VS_OUTPUT input ) : COLOR0
 	return input.Color;  
 }";
 
-		internal const string Position3DColorUvDx9 = @"
+		public const string Position3DColorUVDX9 = @"
 float4x4 WorldViewProjection;
 struct VS_OUTPUT  
 {  
@@ -50,7 +50,7 @@ float4 PS( VS_OUTPUT input ) : COLOR0
 	return tex2D(DiffuseTexture, input.TextureUV) * input.Color;  
 }";
 
-		internal const string Position3DUvDx9 = @"
+		public const string Position3DUVDX9 = @"
 float4x4 WorldViewProjection;
 struct VS_OUTPUT  
 {  
@@ -72,7 +72,7 @@ float4 PS( VS_OUTPUT input ) : COLOR0
 	return tex2D(DiffuseTexture, input.TextureUV);  
 }";
 
-		internal const string Position2DColorDx9 = @"
+		public const string Position2DColorDX9 = @"
 float4x4 WorldViewProjection;
 struct VS_OUTPUT  
 {  
@@ -93,7 +93,7 @@ float4 PS( VS_OUTPUT input ) : COLOR0
 	return input.Color;  
 }";
 
-		internal const string Position2DColorUvDx9 = @"
+		public const string Position2DColorUVDX9 = @"
 float4x4 WorldViewProjection;  struct VS_OUTPUT  
 {  
 	float4 Pos       : POSITION;
@@ -116,7 +116,7 @@ float4 PS( VS_OUTPUT input ) : COLOR0
 	return tex2D(DiffuseTexture, input.TextureUV) * input.Color;  
 }";
 
-		internal const string Position2DUvDx9 = @"
+		public const string Position2DUVDX9 = @"
 float4x4 WorldViewProjection;  
 struct VS_OUTPUT  
 {  
@@ -138,7 +138,7 @@ float4 PS( VS_OUTPUT input ) : COLOR0
 	return tex2D(DiffuseTexture, input.TextureUV);  
 }";
 
-		internal const string Dx9Position3DLightMap = @"
+		public const string DX9Position3DLightMap = @"
 float4x4 WorldViewProjection;  
 struct VS_OUTPUT  
 {  
@@ -163,7 +163,7 @@ float4 PS( VS_OUTPUT input ) : COLOR0
 	return tex2D(DiffuseTexture, input.TextureUV) * tex2D(LightmapTexture, input.LightMapUV); 
 }";
 
-		public const string Position3DNormalUvDx9 = @"
+		public const string Position3DNormalUVDX9 = @"
 float4x4 WorldViewProjection;
 float4 ViewPosition;
 float4 LightPosition;

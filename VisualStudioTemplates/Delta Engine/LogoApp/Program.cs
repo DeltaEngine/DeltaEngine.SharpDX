@@ -6,7 +6,7 @@ namespace $safeprojectname$
 	{
 		public Program()
 		{
-			for (int num = 0; num < 15; num++)
+			for (int num = 0; num < 16; num++)
 				new BouncingLogo();
 		}
 

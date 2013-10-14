@@ -1,52 +1,50 @@
 ﻿using System.Collections.Generic;
+using CreepyTowers.Content;
 using CreepyTowers.Creeps;
 using CreepyTowers.Towers;
+using DeltaEngine.Content;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests.Creeps
 {
+	//TODO: this is pretty useless, test the actual loading, not just setting and getting values!
 	/// <summary>
 	/// Tests for parsing of the CreepProperties.xml
 	/// </summary>
 	public class CreepPropertiesTests : TestWithMocksOrVisually
 	{
-		[SetUp]
-		public void CreepProperties()
-		{
-			creepProp = new CreepProperties
-			{
-				Name = Names.CreepCottonMummy,
-				MaxHp = 100,
-				CurrentHp = 50,
-				Speed = 2.0f,
-				Resistance = 0.5f,
-				CreepType = Creep.CreepType.Cloth,
-				GoldReward = 20,
-				TypeDamageModifier =
-					new Dictionary<Tower.TowerType, float>
-					{
-						{ Tower.TowerType.Acid, 1.0f },
-						{ Tower.TowerType.Fire, 3.0f }
-					}
-			};
-		}
-
-		private CreepProperties creepProp;
-
 		[Test, CloseAfterFirstFrame]
-		public void CheckCreepProperties()
+		public void CreepDataShouldBeAsCreated()
 		{
-			Assert.AreEqual(Names.CreepCottonMummy, creepProp.Name);
+			CreepData creepProp = CreateCreepData();
+			Assert.AreEqual(CreepModels.CreepCottonMummyHigh.ToString(), creepProp.Name);
 			Assert.AreEqual(100, creepProp.MaxHp);
-			Assert.AreEqual(50, creepProp.CurrentHp);
 			Assert.AreEqual(2.0f, creepProp.Speed);
 			Assert.AreEqual(0.5f, creepProp.Resistance);
-			Assert.AreEqual(Creep.CreepType.Cloth, creepProp.CreepType);
+			Assert.AreEqual(CreepType.Cloth, creepProp.Type);
 			Assert.AreEqual(20, creepProp.GoldReward);
 			Assert.AreEqual(2, creepProp.TypeDamageModifier.Count);
-			Assert.AreEqual(1.0f, creepProp.TypeDamageModifier[Tower.TowerType.Acid]);
-			Assert.AreEqual(3.0f, creepProp.TypeDamageModifier[Tower.TowerType.Fire]);
+			Assert.AreEqual(1.0f, creepProp.TypeDamageModifier[TowerType.Acid]);
+			Assert.AreEqual(3.0f, creepProp.TypeDamageModifier[TowerType.Fire]);
+		}
+
+		private static CreepData CreateCreepData()
+		{
+			var creepName = CreepModels.CreepCottonMummyHigh.ToString();
+			var typeDamageModifier = new Dictionary<TowerType, float>();
+			typeDamageModifier.Add(TowerType.Acid, 1.0f);
+			typeDamageModifier.Add(TowerType.Fire, 3.0f);
+			return new CreepData(CreepType.Cloth, creepName, 100, 2.0f, 0.5f, 20, typeDamageModifier);
+		}
+
+		//ncrunch: no coverage start
+		[Test, Category("Slow"), CloseAfterFirstFrame]
+		public void LoadCreepPropertiesXmlContentAndCheckNames()
+		{
+			var creepProperties = ContentLoader.Load<CreepPropertiesXml>("CreepProperties");
+			Assert.IsTrue(creepProperties.Get(CreepType.Paper).Name.Contains("Paper"));
+			Assert.IsTrue(creepProperties.Get(CreepType.Glass).Name.Contains("Glass"));
 		}
 	}
 }

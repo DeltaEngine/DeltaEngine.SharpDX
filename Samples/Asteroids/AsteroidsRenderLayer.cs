@@ -2,10 +2,10 @@
 {
 	public enum AsteroidsRenderLayer
 	{
-		Background,
-		Rockets,
-		Player,
-		Asteroids,
-		UserInterface
+		Background = 0,
+		Rockets = 1,
+		Player = 3,
+		Asteroids = 5,
+		UserInterface = 6
 	}
 }

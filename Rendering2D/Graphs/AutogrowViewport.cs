@@ -3,8 +3,7 @@
 namespace DeltaEngine.Rendering2D.Graphs
 {
 	/// <summary>
-	/// Automatically grows a graph so that all points are visible.
-	/// (It won't shrink a graph back down when points are removed though.)
+	/// Automatically grows a graph so that all points are visible; won't shrink when removing points.
 	/// </summary>
 	internal class AutogrowViewport
 	{

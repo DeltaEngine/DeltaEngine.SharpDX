@@ -32,7 +32,7 @@
 		/// </summary>
 		ImageAnimation = 5,
 		/// <summary>
-		/// Uses Secondery Image Size to use one spritesheet for an animation.
+		/// Uses Secondary Image Size to use one spritesheet for an animation.
 		/// </summary>
 		SpriteSheetAnimation = 6,
 		/// <summary>

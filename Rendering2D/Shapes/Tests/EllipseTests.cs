@@ -8,9 +8,9 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 	public class EllipseTests : TestWithMocksOrVisually
 	{
 		[Test, ApproveFirstFrameScreenshot]
-		public void RenderRedEllipse()
+		public void RenderRedTransparentEllipse()
 		{
-			new Ellipse(Vector2D.Half, 0.4f, 0.2f, Color.Red);
+			new Ellipse(Vector2D.Half, 0.4f, 0.2f, new Color(1.0f, 0.0f, 0.0f, 0.5f));
 		}
 
 		[Test, ApproveFirstFrameScreenshot]

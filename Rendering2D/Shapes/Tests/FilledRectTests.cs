@@ -37,22 +37,18 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			//ncrunch: no coverage start
 			public override void Update(IEnumerable<Entity> entities)
 			{
-				// ReSharper disable PossibleMultipleEnumeration
 				var copyOfEntities = new List<Entity>(entities);
 				foreach (Entity2D entity1 in entities)
 					foreach (Entity2D entity2 in copyOfEntities)
 						if (entity1 != entity2)
 							UpdateColorIfColliding(entity1, entity2);
-				// ReSharper restore PossibleMultipleEnumeration
 			}
 
 			private static void UpdateColorIfColliding(Entity2D entity1, Entity2D entity2)
 			{
 				entity1.Color = entity1.DrawArea.IsColliding(entity1.Rotation, entity2.DrawArea,
 					entity2.Rotation) ? Color.Yellow : Color.Red;
-			}
-
-			//ncrunch: no coverage end
+			} //ncrunch: no coverage end
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -87,11 +83,11 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		}
 
 		//ncrunch: no coverage start
+		// (only executed when triggering the command)
 		private static void ChangeVisibility(FilledRect rect)
 		{
-			rect.Visibility = rect.Visibility == Visibility.Show ? Visibility.Hide : Visibility.Show;
+			rect.IsVisible = !rect.IsVisible;
 		}
-
 		//ncrunch: no coverage end
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -119,9 +115,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 					rect.Rotation += 10 * Time.Delta;
 				}
 			}
-		}
-
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test]
 		public void RenderSpinningRectangleAttachedToMouse()
@@ -140,14 +134,12 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 				foreach (FilledRect rect in entities)
 					rect.Rotation += 5 * Time.Delta;
 			}
-		}
-
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void RenderingHiddenRectangleDoesNotThrowException()
 		{
-			new FilledRect(Rectangle.One, Color.Red) { Visibility = Visibility.Hide };
+			new FilledRect(Rectangle.One, Color.Red) { IsVisible = false };
 			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
 		}
 	}

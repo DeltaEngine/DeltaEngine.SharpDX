@@ -27,8 +27,14 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 			new FilledRect(CenterDot, Color.Red) { RenderLayer = -1 };
 		}
 
-		private static readonly Rectangle Center = Rectangle.FromCenter(0.5f, 0.5f, 0.2f, 0.2f);
-		private static readonly Rectangle CenterDot = Rectangle.FromCenter(0.5f, 0.5f, 0.01f, 0.01f);
+		private static Rectangle Center
+		{
+			get { return Rectangle.FromCenter(0.5f, 0.5f, 0.2f, 0.2f); }
+		}
+		private static Rectangle CenterDot
+		{
+			get { return Rectangle.FromCenter(0.5f, 0.5f, 0.01f, 0.01f); }
+		}
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void TextShouldSayChangedText()
@@ -102,20 +108,29 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 			{
 				VerticalAlignment = VerticalAlignment.Bottom
 			};
-			new FontText(Font.Default, "Left", Left)
-			{
-				HorizontalAlignment = HorizontalAlignment.Left
-			};
+			new FontText(Font.Default, "Left", Left) { HorizontalAlignment = HorizontalAlignment.Left };
 			new FontText(Font.Default, "Right", Right)
 			{
 				HorizontalAlignment = HorizontalAlignment.Right
 			};
 		}
 
-		private static readonly Rectangle Top = new Rectangle(0.5f, 0.4f, 0.0f, 0.0f);
-		private static readonly Rectangle Bottom = new Rectangle(0.5f, 0.6f, 0.0f, 0.0f);
-		private static readonly Rectangle Left = new Rectangle(0.4f, 0.5f, 0.0f, 0.0f);
-		private static readonly Rectangle Right = new Rectangle(0.6f, 0.5f, 0.0f, 0.0f);
+		private static Rectangle Top
+		{
+			get { return new Rectangle(0.5f, 0.4f, 0.0f, 0.0f); }
+		}
+		private static Rectangle Bottom
+		{
+			get { return new Rectangle(0.5f, 0.6f, 0.0f, 0.0f); }
+		}
+		private static Rectangle Left
+		{
+			get { return new Rectangle(0.4f, 0.5f, 0.0f, 0.0f); }
+		}
+		private static Rectangle Right
+		{
+			get { return new Rectangle(0.6f, 0.5f, 0.0f, 0.0f); }
+		}
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void AlignToCorners()
@@ -142,23 +157,37 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 			};
 		}
 
-		private static readonly Rectangle TopLeft = new Rectangle(0.4f, 0.4f, 0.0f, 0.0f);
-		private static readonly Rectangle TopRight = new Rectangle(0.6f, 0.4f, 0.0f, 0.0f);
-		private static readonly Rectangle BottomLeft = new Rectangle(0.4f, 0.6f, 0.0f, 0.0f);
-		private static readonly Rectangle BottomRight = new Rectangle(0.6f, 0.6f, 0.0f, 0.0f);
+		private static Rectangle TopLeft
+		{
+			get { return new Rectangle(0.4f, 0.4f, 0.0f, 0.0f); }
+		}
+		private static Rectangle TopRight
+		{
+			get { return new Rectangle(0.6f, 0.4f, 0.0f, 0.0f); }
+		}
+		private static Rectangle BottomLeft
+		{
+			get { return new Rectangle(0.4f, 0.6f, 0.0f, 0.0f); }
+		}
+		private static Rectangle BottomRight
+		{
+			get { return new Rectangle(0.6f, 0.6f, 0.0f, 0.0f); }
+		}
 
 		[Test, CloseAfterFirstFrame]
 		public void RenderingHiddenFontTextDoesNotThrowException()
 		{
-			new FontText(Font.Default, "Hi", Rectangle.One) { Visibility = Visibility.Hide };
+			new FontText(Font.Default, "Hi", Rectangle.One) { IsVisible = false };
 			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
 		}
 
+		//ncrunch: no coverage start
 		[Test, Ignore]
 		public void UsingNonExistentFontUsesDefault()
 		{
 			new FontText(ContentLoader.Load<Font>("Missing"), "DefaultFont", Rectangle.One);
 		}
+		//ncrunch: no coverage end
 
 		[Test]
 		public void CounterWithSpriteFontText()

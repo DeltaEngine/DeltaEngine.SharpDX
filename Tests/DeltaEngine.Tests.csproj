@@ -47,6 +47,18 @@
       <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
       <Name>DeltaEngine.Mocks</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Multimedia\Mocks\DeltaEngine.Multimedia.Mocks.csproj">
+      <Project>{BC9EE416-ABEC-4B61-801D-EBB5C699CB5D}</Project>
+      <Name>DeltaEngine.Multimedia.Mocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platforms\DeltaEngine.Platforms.csproj">
+      <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
+      <Name>DeltaEngine.Platforms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
+      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
+      <Name>DeltaEngine.TestWithSharpDX</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -77,7 +89,7 @@
     <Compile Include="Extensions\ChangeableListTests.cs" />
     <Compile Include="Extensions\UniqueListTests.cs" />
     <Compile Include="Core\SettingsTests.cs" />
-    <Compile Include="LoggerTests.cs" />
+    <Compile Include="Core\LoggerTests.cs" />
     <Compile Include="Core\GlobalTimeTests.cs" />
     <Compile Include="Datatypes\ColorTests.cs" />
     <Compile Include="Datatypes\MatrixTests.cs" />
@@ -108,7 +120,7 @@
     <Compile Include="ScreenSpaces\PixelScreenSpaceTests.cs" />
     <Compile Include="ScreenSpaces\QuadraticScreenSpaceTests.cs" />
     <Compile Include="ScreenSpaces\RelativeScreenSpaceTests.cs" />
-    <Compile Include="WindowTests.cs" />
+    <Compile Include="Core\WindowTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

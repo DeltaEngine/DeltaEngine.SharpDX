@@ -5,14 +5,12 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Sprites;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
 	/// <summary>
-	/// The basis for most UI controls that can respond to mouse or touch input.
-	/// Although it is a Sprite it defaults to a transparent material as a Control can just 
-	/// simply be a container (eg. Tilemap)
+	/// The basis for most UI controls that can respond to mouse or touch input. Although it is a Sprite
+	/// it defaults to a transparent material as a Control. Can also be used as a container (e.g. Panel)
 	/// </summary>
 	public class Control : Sprite, Updateable
 	{
@@ -29,7 +27,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		{
 			var background = ContentLoader.Create<Image>(new ImageCreationData(Size.One));
 			background.Fill(new[] { Color.TransparentBlack });
-			return new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUv), background);
+			return new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUV), background);
 		}
 
 		protected void AddChild(Entity2D entity)
@@ -50,14 +48,14 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				Control = control as Control;
 				WasEnabled = true;
 				WasActive = true;
-				SavedVisibility = Visibility.Show;
+				WasVisible = true;
 			}
 
 			public Entity2D Entity2D { get; private set; }
 			public Control Control { get; private set; }
 			public bool WasEnabled { get; set; }
 			public bool WasActive { get; set; }
-			public Visibility SavedVisibility { get; set; }
+			public bool WasVisible { get; set; }
 		}
 
 		protected void RemoveChild(Entity2D entity)
@@ -128,33 +126,27 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			}
 		}
 
-		public override Visibility Visibility
+		public override void ToggleVisibility()
 		{
-			get { return base.Visibility; }
-			set
-			{
-				if (base.Visibility == value)
-					return;
-				base.Visibility = value;
-				if (value == Visibility.Show)
-					ShowChildControls();
-				else
-					HideChildControls();
-			}
+			base.ToggleVisibility();
+			if (IsVisible)
+				ShowChildControls();
+			else
+				HideChildControls();
 		}
 
 		private void ShowChildControls()
 		{
 			foreach (Child child in children)
-				child.Entity2D.Visibility = child.SavedVisibility;
+				child.Entity2D.IsVisible = child.WasVisible;
 		}
 
 		private void HideChildControls()
 		{
 			foreach (Child child in children)
 			{
-				child.SavedVisibility = child.Entity2D.Visibility;
-				child.Entity2D.Visibility = Visibility.Hide;
+				child.WasVisible = child.Entity2D.IsVisible;
+				child.Entity2D.IsVisible = false;
 			}
 		}
 
@@ -164,7 +156,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				children[i].Entity2D.RenderLayer = RenderLayer + i + 1;
 		}
 
-		public bool IsPauseable { get { return true; } }
+		public bool IsPauseable { get { return false; } }
 
 		public InteractiveState State
 		{

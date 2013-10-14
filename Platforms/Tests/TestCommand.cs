@@ -24,10 +24,5 @@ namespace DeltaEngine.Platforms.Tests
 		}
 
 		public class TestException : Exception {}
-
-		public float NoAttribute()
-		{
-			return 0;
-		}
 	}
 }

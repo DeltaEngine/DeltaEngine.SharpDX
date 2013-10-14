@@ -171,9 +171,9 @@ namespace DeltaEngine.Tests.Entities
 			entityWithTags.Start<MockUpdateBehavior>().Start<CreateEntityStartAndStopBehavior>();
 			var data = BinaryDataExtensions.SaveToMemoryStream(entityWithTags);
 			var loadedEntity = data.CreateFromMemoryStream() as Entity;
-			Assert.AreEqual(96, data.ToArray().Length);
 			Assert.AreEqual(0, loadedEntity.NumberOfComponents);
 			Assert.AreEqual(2, loadedEntity.GetActiveBehaviors().Count);
+			Assert.AreEqual(96, data.ToArray().Length);
 			Assert.AreEqual("MockUpdateBehavior",
 				loadedEntity.GetActiveBehaviors()[0].GetShortNameOrFullNameIfNotFound());
 			Assert.AreEqual("CreateEntityStartAndStopBehavior",
@@ -192,7 +192,7 @@ namespace DeltaEngine.Tests.Entities
 		[Test]
 		public void SettingComponentToNullThrowsException()
 		{
-			Assert.Throws<ArgumentNullException>(() => entityWithTags.Set<string>(null));
+			Assert.Throws<ArgumentNullException>(() => entityWithTags.Set(null));
 		}
 
 		[Test]
@@ -314,44 +314,37 @@ namespace DeltaEngine.Tests.Entities
 		[Test]
 		public void TogglingVisibilityOnHiddenDrawableEntityShowsIt()
 		{
-			var drawable = new DrawableEntity { Visibility = Visibility.Hide };
+			var drawable = new DrawableEntity { IsVisible = false };
 			drawable.ToggleVisibility();
-			Assert.AreEqual(Visibility.Show, drawable.Visibility);
+			Assert.IsTrue(drawable.IsVisible);
 		}
 
 		[Test]
 		public void TogglingVisibilityOnShownDrawableEntityHidesIt()
 		{
-			var drawable = new DrawableEntity { Visibility = Visibility.Show };
-			drawable.ToggleVisibility();
-			Assert.AreEqual(Visibility.Hide, drawable.Visibility);
-		}
-
-		[Test]
-		public void ToggleVisibilityAsSetVisibility()
-		{
 			var drawable = new DrawableEntity();
-			drawable.ToggleVisibility(Visibility.Hide);
-			Assert.AreEqual(Visibility.Hide, drawable.Visibility);
-			drawable.ToggleVisibility(Visibility.Show);
-			Assert.AreEqual(Visibility.Show, drawable.Visibility);
+			drawable.ToggleVisibility();
+			Assert.IsFalse(drawable.IsVisible);
 		}
 
 		[Test]
 		public void CreateFromComponents()
 		{
 			var drawable = new DrawableEntity();
-			drawable.FillComponents(new List<object> { 5, Visibility.Hide });
+			drawable.SetComponents(new List<object> { 5, false });
 			Assert.AreEqual(5, drawable.Get<int>());
-			Assert.AreEqual(Visibility.Hide, drawable.Visibility);
+			Assert.IsFalse(drawable.IsVisible);
 		}
 
 		[Test]
-		public void CreatingFromComponentsThrowsExceptionIfComponentAlreadyAddedByConstructor()
+		public void GetComponentsForEntityDebugger()
 		{
 			var entityWithComponent = new MockEntityWithStringComponent();
-			Assert.Throws<Entity.ComponentOfTheSameTypeAddedMoreThanOnce>(
-				() => entityWithComponent.FillComponents(new List<object> { "Goodbye" }));
+			entityWithComponent.Add(entityWithTags);
+			List<object> components = entityWithComponent.GetComponentsForViewing();
+			Assert.AreEqual(2, components.Count);
+			Assert.AreEqual("Hello", components[0]);
+			Assert.AreEqual(entityWithTags, components[1]);
 		}
 
 		private sealed class MockEntityWithStringComponent : MockEntity

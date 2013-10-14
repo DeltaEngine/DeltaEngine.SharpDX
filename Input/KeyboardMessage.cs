@@ -5,7 +5,7 @@
 	/// </summary>
 	public class KeyboardMessage
 	{
-		protected KeyboardMessage() {}
+		public KeyboardMessage() {}
 
 		public KeyboardMessage(Key[] pressedKeys)
 		{

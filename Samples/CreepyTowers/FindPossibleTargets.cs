@@ -11,33 +11,23 @@ namespace CreepyTowers
 		{
 			listOfCreeps = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			listOfTowers = EntitiesRunner.Current.GetEntitiesOfType<Tower>();
-
 			foreach (Manager manager in entities)
 			{
 				if(listOfCreeps.Count < 1 || listOfTowers.Count < 1)
 					return;
-
 				foreach (Tower tower in listOfTowers)
 				{
 					if (listOfCreeps.Count < 1)
 						return;
-
-					tower.RemoveFireLine();
 					var closestCreep = FindClosestCreepToAttack(tower);
 					tower.FireAtCreep(closestCreep);
-
 					if (closestCreep == null)
 						continue;
-
 					closestCreep.CreepIsDead += closestCreep.Dispose;
-					var currentManager = manager;
-					closestCreep.UpdateHealthBar += () => currentManager.UpdateCreepHealthBar(closestCreep);
+					closestCreep.UpdateHealthBar += () => closestCreep.RecalculateHitpointBar();
 				}
-
 				foreach (Creep creep in listOfCreeps)
-				{
 					creep.UpdateStateTimersAndTimeBasedDamage();
-				}
 			}
 		}
 
@@ -54,11 +44,9 @@ namespace CreepyTowers
 				if (distVec.Length <= dist)
 					closestCreep = creep;
 			}
-
-			if (tower.Get<TowerProperties>().Range <
+			if (tower.Get<TowerData>().Range <
 				DistanceBetweenClosestCreepAndTower(closestCreep, tower))
 				closestCreep = null;
-
 			return closestCreep;
 		}
 

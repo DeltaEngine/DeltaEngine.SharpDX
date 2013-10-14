@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D.Shapes;
 
 namespace DeltaEngine.Rendering2D.Graphs
 {
 	/// <summary>
-	/// Horizontal lines at fixed intervals - eg. if there were five percentiles there'd be 
+	/// Horizontal lines at fixed intervals - eg. if there were five percentiles there's be 
 	/// six lines at 0%, 20%, 40%, 60%, 80% and 100% of the maximum value.
 	/// </summary>
 	internal class RenderPercentiles
@@ -14,17 +13,17 @@ namespace DeltaEngine.Rendering2D.Graphs
 		public void Refresh(Graph graph)
 		{
 			ClearOldPercentiles();
-			if (graph.Visibility == Visibility.Show && Visibility == Visibility.Show)
+			if (graph.IsVisible && IsVisible)
 				CreateNewPercentiles(graph);
 		}
 
-		public Visibility Visibility { get; set; }
+		public bool IsVisible { get; set; }
 
 		private void ClearOldPercentiles()
 		{
 			foreach (Line2D percentile in Percentiles)
 			{
-				percentile.Visibility = Visibility.Hide;
+				percentile.IsVisible = false;
 				line2DPool.Add(percentile);
 			}
 			Percentiles.Clear();
@@ -48,7 +47,7 @@ namespace DeltaEngine.Rendering2D.Graphs
 			percentile.EndPoint = GetPercentileEndPoint(graph, index);
 			percentile.Color = PercentileColor;
 			percentile.RenderLayer = graph.RenderLayer + RenderLayerOffset;
-			percentile.Visibility = Visibility.Show;
+			percentile.IsVisible = true;
 			Percentiles.Add(percentile);
 		}
 
@@ -72,10 +71,10 @@ namespace DeltaEngine.Rendering2D.Graphs
 		{
 			float borderWidth = graph.DrawArea.Width * Graph.Border;
 			float startX = graph.DrawArea.Left + borderWidth;
-			return new Vector2D(startX, GetPercentileYCoord(graph, index));
+			return new Vector2D(startX, GetPercentileYCoordinate(graph, index));
 		}
 
-		private float GetPercentileYCoord(Entity2D graph, int index)
+		private float GetPercentileYCoordinate(Entity2D graph, int index)
 		{
 			float borderHeight = graph.DrawArea.Height * Graph.Border;
 			float interval = (graph.DrawArea.Height - 2 * borderHeight) / NumberOfPercentiles;
@@ -87,7 +86,7 @@ namespace DeltaEngine.Rendering2D.Graphs
 		{
 			float borderWidth = graph.DrawArea.Width * Graph.Border;
 			float endX = graph.DrawArea.Right - borderWidth;
-			return new Vector2D(endX, GetPercentileYCoord(graph, index));
+			return new Vector2D(endX, GetPercentileYCoordinate(graph, index));
 		}
 	}
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using DeltaEngine.Mocks;
 using DeltaEngine.Content.Mocks;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Mocks;
 using NUnit.Framework;
 
 namespace DeltaEngine.Content.Tests
@@ -53,6 +53,13 @@ namespace DeltaEngine.Content.Tests
 		public void CheckForContentOnStartup()
 		{
 			Assert.IsTrue(ContentLoader.HasValidContentForStartup());
+		}
+
+		[Test]
+		public void ValidPath()
+		{
+			var contentLoader = new MockContentLoader();
+			Assert.AreEqual("Content\\ContentMetaData.xml", contentLoader.GetContentMetaDataFilePath());
 		}
 
 		[Test]
@@ -147,13 +154,6 @@ namespace DeltaEngine.Content.Tests
 		}
 
 		[Test]
-		public void ExceptionOnInstancingFromOutsideContentLoader()
-		{
-			Assert.Throws<ContentData.MustBeCalledFromContentLoader>(
-				() => new MockXmlContent("VectorText"));
-		}
-
-		[Test]
 		public void ThrowExceptionIfContentNameDoesNotMatchToContentType()
 		{
 			Assert.Throws<ContentLoader.CachedResourceExistsButIsOfTheWrongType>(
@@ -172,7 +172,7 @@ namespace DeltaEngine.Content.Tests
 		}
 
 		[Test]
-		public void LoadContentViaCreationData()
+		public void LoadAnimationContentViaCreationData()
 		{
 			var image = ContentLoader.Load<MockImage>("MockImage");
 			var animationData = new SpriteSheetAnimationCreationData(image, 1.0f, new Size(1, 1));
@@ -187,6 +187,14 @@ namespace DeltaEngine.Content.Tests
 		{
 			Assert.Throws<ContentLoader.ContentNotFound>(
 				() => ContentLoader.Load<MockXmlContent>("UnavailableXmlContent"));
+		}
+
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
+		public void ExceptionOnInstancingFromOutsideContentLoader()
+		{
+			Assert.Throws<ContentData.MustBeCalledFromContentLoader>(
+				() => new MockXmlContent("VectorText"));
 		}
 	}
 }

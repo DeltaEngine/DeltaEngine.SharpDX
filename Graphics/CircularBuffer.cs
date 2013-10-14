@@ -113,7 +113,7 @@ namespace DeltaEngine.Graphics
 
 		public const int TotalMaximumVerticesLimit = 65536;
 
-		private class TooManyVerticesForCircularBuffer : Exception
+		public class TooManyVerticesForCircularBuffer : Exception
 		{
 			public TooManyVerticesForCircularBuffer(int newVerticesCount)
 				: base("Vertices " + newVerticesCount + ", Maximum: " + TotalMaximumVerticesLimit) {}
@@ -176,8 +176,6 @@ namespace DeltaEngine.Graphics
 			do
 				maxNumberOfIndices *= 2;
 			while (maxNumberOfIndices < newIndicesNeeded);
-			if (maxNumberOfVertices > TotalMaximumVerticesLimit)
-				maxNumberOfVertices = TotalMaximumVerticesLimit;
 			if (maxNumberOfIndices > maxNumberOfVertices * 3)
 				maxNumberOfIndices = maxNumberOfVertices * 3;
 			Initialize();

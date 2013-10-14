@@ -3,8 +3,8 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -47,7 +47,7 @@ namespace $safeprojectname$
 
 		private void AddBackground()
 		{
-			Background = new Sprite(new Material(Shader.Position2DColorUv, "starfield"), Rectangle.One);
+			Background = new Sprite(new Material(Shader.Position2DColorUV, "starfield"), Rectangle.One);
 			Background.RenderLayer = (int)Constants.RenderLayer.Background;
 		}
 
@@ -60,7 +60,7 @@ namespace $safeprojectname$
 		private void SetupShip()
 		{
 			Rectangle viewport = ScreenSpace.Current.Viewport;
-			Ship = new PlayerShip(new Material(Shader.Position2DColorUv, "player"), 
+			Ship = new PlayerShip(new Material(Shader.Position2DColorUV, "player"), 
 				Rectangle.FromCenter(viewport.Right / 2, viewport.Bottom * 0.93f, 0.04f, 0.04f), viewport);
 		}
 
@@ -72,7 +72,7 @@ namespace $safeprojectname$
 
 		private void SetupController()
 		{
-			Controller = new GameController(Ship, new Material(Shader.Position2DColorUv, "asteroid"), 
+			Controller = new GameController(Ship, new Material(Shader.Position2DColorUV, "asteroid"), 
 				objectSize, screenSpace);
 			Controller.ShipCollidedWithAsteroid += RestartGame;
 		}

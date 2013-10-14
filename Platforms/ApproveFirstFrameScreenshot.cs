@@ -17,7 +17,7 @@ namespace DeltaEngine.Platforms
 		//ncrunch: no coverage start
 		protected ApproveFirstFrameScreenshot()
 		{
-			if (StackTraceExtensions.IsUnitTest() && !StackTraceExtensions.StartedFromNCrunch)
+			if (!StackTraceExtensions.StartedFromNCrunch && StackTraceExtensions.IsUnitTest())
 				CheckApprovalImageAfterFirstFrame();
 		}
 

@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Core;
-using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 
 namespace CreepyTowers
@@ -11,7 +10,7 @@ namespace CreepyTowers
 	{
 		public Program()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
+			new Game(Resolve<Window>());
 		}
 
 		public static void Main()

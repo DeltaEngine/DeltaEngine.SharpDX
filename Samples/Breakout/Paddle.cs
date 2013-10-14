@@ -5,7 +5,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace Breakout
 {
@@ -15,7 +15,7 @@ namespace Breakout
 	public class Paddle : Sprite
 	{
 		public Paddle()
-			: base(new Material(Shader.Position2DColorUv, "Paddle"), Rectangle.One)
+			: base(new Material(Shader.Position2DColorUV, "Paddle"), Rectangle.One)
 		{
 			RegisterInputCommands();
 			Start<RunPaddle>();

@@ -37,6 +37,8 @@ namespace DeltaEngine.Graphics.Tests
 		public void SetFullscreenCallsDevicesOnFullscreenChanged()
 		{
 			var device = Resolve<Device>() as MockDevice;
+			if (device == null)
+				return; //ncrunch: no coverage
 			Assert.IsFalse(device.OnFullscreenChangedCalled);
 			var window = Resolve<Window>();
 			window.SetFullscreen(Size.One);
@@ -50,6 +52,7 @@ namespace DeltaEngine.Graphics.Tests
 			window.BackgroundColor = Color.Red;
 			bool fullscreen = false;
 			var screenSize = GetScreenSize();
+			//ncrunch: no coverage start
 			new Command(() =>
 			{
 				if (fullscreen)
@@ -58,6 +61,7 @@ namespace DeltaEngine.Graphics.Tests
 					window.SetFullscreen(screenSize);
 				fullscreen = !fullscreen;
 			}).Add(new KeyTrigger(Key.Space));
+			//ncrunch: no coverage end
 		}
 
 		private static Size GetScreenSize()
@@ -74,6 +78,8 @@ namespace DeltaEngine.Graphics.Tests
 		public void OnSet3DModeActionIsCalledWhenSetting3DMode()
 		{
 			var device = Resolve<Device>() as MockDevice;
+			if (device == null)
+				return; //ncrunch: no coverage
 			Assert.IsFalse(device.OnSet3DModeCalled);
 			device.Set3DMode();
 			Assert.IsTrue(device.OnSet3DModeCalled);

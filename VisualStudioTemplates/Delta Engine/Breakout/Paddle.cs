@@ -5,13 +5,13 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
 	public class Paddle : Sprite
 	{
-		public Paddle() : base(new Material(Shader.Position2DColorUv, "Paddle"), Rectangle.One)
+		public Paddle() : base(new Material(Shader.Position2DColorUV, "Paddle"), Rectangle.One)
 		{
 			RegisterInputCommands();
 			Start<RunPaddle>();

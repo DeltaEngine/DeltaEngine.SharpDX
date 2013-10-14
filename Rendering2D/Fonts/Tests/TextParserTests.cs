@@ -1,8 +1,6 @@
 ﻿using System;
 using DeltaEngine.Content;
-using DeltaEngine.Content.Xml;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
 
 namespace DeltaEngine.Rendering2D.Fonts.Tests
@@ -12,7 +10,7 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		[SetUp, CloseAfterFirstFrame]
 		public void GetTextParser()
 		{
-			var fontData = new FontDescription(ContentLoader.Load<XmlContent>("Verdana12").Data);
+			var fontData = new FontDescription(ContentLoader.Load<Font>("Verdana12").Data);
 			parser = new TextParser(fontData.GlyphDictionary, ' ');
 		}
 
@@ -30,7 +28,6 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 			string spaces = "";
 			for (int i = 0; i < numberOfSpaces; i++)
 				spaces += " ";
-
 			return spaces;
 		}
 

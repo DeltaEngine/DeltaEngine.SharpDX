@@ -17,11 +17,11 @@ namespace Blocks
 
 		private void CreateMenuTheme()
 		{
-			SetBackground("BlocksMainMenuBackground");
+			SetQuadraticBackground("BlocksMainMenuBackground");
 			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUv, "BlocksButtonDefault"));
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUv, "BlocksButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUv, "BlocksButtonPressed"));
+			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUV, "BlocksButtonDefault"));
+			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUV, "BlocksButtonHover"));
+			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUV, "BlocksButtonPressed"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
 		}
 

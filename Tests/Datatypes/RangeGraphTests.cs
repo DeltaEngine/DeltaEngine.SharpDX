@@ -4,8 +4,49 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Datatypes
 {
-	class RangeGraphTests
+	internal class RangeGraphTests
 	{
+		[Test]
+		public void SingleConstructor()
+		{
+			var rangeGraph = new RangeGraph<Vector2D>(Vector2D.UnitX);
+			Assert.AreEqual(Vector2D.UnitX, rangeGraph.Start);
+			Assert.AreEqual(Vector2D.UnitX, rangeGraph.End);
+		}
+
+		[Test]
+		public void MinMaxConstructor()
+		{
+			var rangeGraph = new RangeGraph<Vector2D>(Vector2D.UnitX, Vector2D.UnitY);
+			Assert.AreEqual(Vector2D.UnitX, rangeGraph.Start);
+			Assert.AreEqual(Vector2D.UnitY, rangeGraph.End);
+		}
+
+		[Test]
+		public void RangeConstructor()
+		{
+			var colors = new List<Color> { Color.Red, Color.Orange, Color.Yellow };
+			var rangeGraph = new RangeGraph<Color>(colors);
+			Assert.AreEqual(colors[0], rangeGraph.Start);
+			Assert.AreEqual(colors[2], rangeGraph.End);
+		}
+
+		[Test]
+		public void SetStart()
+		{
+			var rangeGraph = new RangeGraph<Vector2D>(Vector2D.UnitX, Vector2D.UnitY);
+			rangeGraph.Start = Vector2D.One;
+			Assert.AreEqual(Vector2D.One, rangeGraph.Start);
+		}
+
+		[Test]
+		public void SetEnd()
+		{
+			var rangeGraph = new RangeGraph<Vector2D>(Vector2D.UnitX, Vector2D.UnitY);
+			rangeGraph.End = Vector2D.One;
+			Assert.AreEqual(Vector2D.One, rangeGraph.End);
+		}
+
 		[Test]
 		public void GraphOfRanges()
 		{
@@ -18,6 +59,17 @@ namespace DeltaEngine.Tests.Datatypes
 			rangesGraph.AddValueAfter(0, ranges[1]);
 			Assert.AreEqual(ranges, rangesGraph.Values);
 			Assert.IsTrue(rangesGraph.ToString().StartsWith("{"));
+		}
+
+		[Test]
+		public void GetTrivialInterpolation()
+		{
+			var points =
+				new List<Vector2D>(new[] { Vector2D.One });
+			var graph = new RangeGraph<Vector2D>(points);
+			var interpolatedPointMiddle = graph.GetInterpolatedValue(0.3f);
+			var expectedPointMiddle = Vector2D.One;
+			Assert.AreEqual(expectedPointMiddle, interpolatedPointMiddle);
 		}
 
 		[Test]
@@ -41,7 +93,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void InsertValueBeforeIndexRightOfMax()
 		{
-			var colors = new[]{ Color.Red, Color.Orange, Color.Yellow};
+			var colors = new[] { Color.Red, Color.Orange, Color.Yellow };
 			var colorGraph = new RangeGraph<Color>(colors[0], colors[1]);
 			colorGraph.AddValueBefore(5, colors[2]);
 			Assert.AreEqual(colors, colorGraph.Values);
@@ -50,18 +102,10 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void InsertValueAfterIndexLeftOfMin()
 		{
-			var colors = new[] {Color.LightBlue, Color.Cyan, Color.Green};
+			var colors = new[] { Color.LightBlue, Color.Cyan, Color.Green };
 			var colorGraph = new RangeGraph<Color>(colors[1], colors[2]);
 			colorGraph.AddValueAfter(-7, colors[0]);
 			Assert.AreEqual(colors, colorGraph.Values);
-		}
-
-		[Test]
-		public void ValuesArrayWillNeverBeNull()
-		{
-			var graph = new RangeGraph<Vector2D>();
-			Assert.DoesNotThrow(() => { var start = graph.Start; });
-			Assert.DoesNotThrow(() => { var end = graph.End; });
 		}
 
 		[Test]
@@ -78,7 +122,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void SettingValueRightOfAllIndicesExpands()
 		{
-			var rectangles = new[] { Rectangle.One, Rectangle.Zero, Rectangle.One};
+			var rectangles = new[] { Rectangle.One, Rectangle.Zero, Rectangle.One };
 			var rectGraph = new RangeGraph<Rectangle>(rectangles[0], rectangles[1]);
 			rectGraph.SetValue(3, rectangles[2]);
 			Assert.AreEqual(new[] { Rectangle.One, Rectangle.Zero, Rectangle.One }, rectGraph.Values);

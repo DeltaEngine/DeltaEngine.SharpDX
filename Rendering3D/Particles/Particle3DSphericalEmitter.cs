@@ -3,7 +3,7 @@ using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Rendering3D.Particles
 {
-	public class Particle3DSphericalEmitter : Particle3DEmitter
+	public class Particle3DSphericalEmitter : ParticleEmitter
 	{
 		public Particle3DSphericalEmitter(ParticleEmitterData data, Vector3D center, float radius)
 			: base(data, center)
@@ -13,10 +13,10 @@ namespace DeltaEngine.Rendering3D.Particles
 
 		private readonly float radius;
 
-		protected override Vector3D GetParticleSpawnPosition()
+		protected override Vector3D GetParticleSpawnPosition3D()
 		{
-			var direction = new Vector3D(Randomizer.Current.Get(-1.0f, 1.0f),
-				Randomizer.Current.Get(-1.0f, 1.0f), Randomizer.Current.Get(-1.0f, 1.0f));
+			var direction = new Vector3D(Randomizer.Current.Get(-1.0f),
+				Randomizer.Current.Get(-1.0f), Randomizer.Current.Get(-1.0f));
 			direction.Normalize();
 			direction *= radius;
 			return Position + direction;

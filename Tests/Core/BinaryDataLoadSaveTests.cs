@@ -256,5 +256,47 @@ namespace DeltaEngine.Tests.Core
 				Assert.Throws<BinaryDataSaver.UnableToSave>(
 					() => BinaryDataSaver.SaveDataType(otherStreamThanMemory, typeof(object), dataWriter));
 		}
+
+		[Test]
+		public void SaveAndLoadRange()
+		{
+			var range = new Range<Vector2D>(Vector2D.Zero, new Vector2D(3.0f, 3.0f));
+			var data = BinaryDataExtensions.SaveDataIntoMemoryStream(range);
+			var output =
+				BinaryDataExtensions.LoadDataWithKnownTypeFromMemoryStream<Range<Vector2D>>(data);
+			Assert.AreEqual(range.Start, output.Start);
+			Assert.AreEqual(range.End, output.End);
+		}
+
+		[Test]
+		public void SaveGenericTypeOnlySavesTheGenericTypeNameAndTheArgument()
+		{
+			var range = new Range<Vector2D>(Vector2D.Zero, new Vector2D(3.0f, 3.0f));
+			var data = BinaryDataExtensions.SaveToMemoryStream(range);
+			int rangeNameLength = "Range".Length + 1;
+			int vector2DNameLength = "Vector2D".Length + 1;
+			const int VersionLength = 4;
+			int vector2DLength = Vector2D.SizeInBytes;
+			Assert.AreEqual(rangeNameLength + vector2DNameLength + VersionLength + vector2DLength * 2,
+				data.Length);
+		}
+
+		[Test]
+		public void SaveRangeGraph()
+		{
+			var range = new RangeGraph<Vector2D>(Vector2D.Zero, new Vector2D(3.0f, 3.0f));
+			var data = BinaryDataExtensions.SaveToMemoryStream(range);
+			Assert.AreEqual(68, data.Length);
+		}
+
+		[Test]
+		public void SaveAndLoadGenericType()
+		{
+			var range = new Range<Vector2D>(Vector2D.Zero, new Vector2D(3.0f, 3.0f));
+			var data = BinaryDataExtensions.SaveToMemoryStream(range);
+			var loadedRange = data.CreateFromMemoryStream() as Range<Vector2D>;
+			Assert.AreEqual(range.Start, loadedRange.Start);
+			Assert.AreEqual(range.End, loadedRange.End);
+		}
 	}
 }

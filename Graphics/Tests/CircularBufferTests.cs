@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using DeltaEngine.Content;
+﻿using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Graphics.Mocks;
 using DeltaEngine.Graphics.Vertices;
-using DeltaEngine.Mocks;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -15,18 +13,18 @@ namespace DeltaEngine.Graphics.Tests
 		public void CreateBuffer()
 		{
 			buffer2D = new MockCircularBuffer(Resolve<Device>(),
-				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUv), BlendMode.Normal,
+				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUV), BlendMode.Normal,
 				VerticesMode.Triangles);
 			buffer3D = new MockCircularBuffer(Resolve<Device>(),
-				ContentLoader.Load<ShaderWithFormat>(Shader.Position3DUv), BlendMode.Normal,
+				ContentLoader.Load<ShaderWithFormat>(Shader.Position3DUV), BlendMode.Normal,
 				VerticesMode.Triangles);
-			image = ContentLoader.Load<MockImage>("DeltaEngineLogo");
+			image = ContentLoader.Load<Image>("DeltaEngineLogo");
 			Assert.IsTrue(buffer2D.IsCreated);
 		}
 
 		private MockCircularBuffer buffer2D;
 		private MockCircularBuffer buffer3D;
-		private MockImage image;
+		private Image image;
 
 		private readonly int vertexSize = VertexPosition3DColor.SizeInBytes;
 
@@ -81,6 +79,22 @@ namespace DeltaEngine.Graphics.Tests
 		private const int IncrementCount = 4;
 
 		[Test]
+		public void ExpectExceptionIfTryingToAddTooManyVertices()
+		{
+			const int NumberOfTooMuchVertices = CircularBuffer.TotalMaximumVerticesLimit + 1;
+			var dummyVertices = new VertexPosition2DUV[1];
+			Assert.Throws<CircularBuffer.TooManyVerticesForCircularBuffer>(
+				() => buffer2D.Add(null, dummyVertices, new short[1], NumberOfTooMuchVertices, 1));
+		}
+
+		[Test]
+		public void ForceLimitMaxNumberOfIndicesIfUsingTooMany()
+		{
+			buffer2D.Add(null, new VertexPosition2DUV[1], new short[1], 1,
+				CircularBuffer.TotalMaximumVerticesLimit);
+		}
+
+		[Test]
 		public void DrawAndReset()
 		{
 			const int VerticesCount = 32;
@@ -119,6 +133,19 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.IsFalse(buffer2D.HasDrawn);
 			buffer2D.Add(null, vertices, indices);
 			Assert.IsTrue(buffer2D.HasDrawn);
+		}
+
+		[Test]
+		public void Make3DBufferResize()
+		{
+			const int VerticesCount = 12288;
+			const int IndicesCount = 16384;
+			var vertices = new VertexPosition3DUV[VerticesCount];
+			var indices = new short[IndicesCount];
+			buffer3D.Add(null, vertices, indices);
+			Assert.IsFalse(buffer3D.HasDrawn);
+			buffer3D.Add(null, vertices, indices);
+			Assert.IsTrue(buffer3D.HasDrawn);
 		}
 
 		[Test]
@@ -162,7 +189,7 @@ namespace DeltaEngine.Graphics.Tests
 		public void LinesBufferShouldNotUseIndexBuffer()
 		{
 			var linesBuffer = new MockCircularBuffer(Resolve<Device>(),
-				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUv), BlendMode.Normal,
+				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUV), BlendMode.Normal,
 				VerticesMode.Lines);
 			Assert.IsFalse(linesBuffer.UsesIndexBuffer);
 		}
@@ -184,16 +211,6 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
-		public void CircularBufferCannotHandleMoreThan65536Vertices()
-		{
-			Assert.AreEqual(1024, buffer3D.MaxNumberOfVertices);
-			var vertices = new VertexPosition3DUV[65536];
-			buffer3D.Add(image, vertices);
-			buffer3D.Add(image, vertices);
-			Assert.AreEqual(65536, buffer3D.MaxNumberOfVertices);
-		}
-
-		[Test]
 		public void IndicesAreNotChangedWhenPassedAsArgument()
 		{
 			var vertices = new VertexPosition2DUV[4];
@@ -201,7 +218,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(quadIndices, buffer2D.CachedIndices);
 		}
 
-		private readonly short[] quadIndices = new short[] { 0, 1, 2, 0, 2, 3 };
+		private readonly short[] quadIndices = { 0, 1, 2, 0, 2, 3 };
 
 		[Test]
 		public void IndicesAreComputedWhenNotPassedAsArgument()
@@ -220,6 +237,17 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(quadIndices, buffer2D.CachedIndices);
 			buffer2D.Add(image, vertices, quadIndices);
 			Assert.AreEqual(remappedIndices, buffer2D.CachedIndices);
+		}
+
+		// ncrunch: no coverage start
+		[Test, Category("Slow")]
+		public void CircularBufferCannotHandleMoreThan65536Vertices()
+		{
+			Assert.AreEqual(1024, buffer3D.MaxNumberOfVertices);
+			var vertices = new VertexPosition3DUV[65536];
+			buffer3D.Add(image, vertices);
+			buffer3D.Add(image, vertices);
+			Assert.AreEqual(65536, buffer3D.MaxNumberOfVertices);
 		}
 	}
 }

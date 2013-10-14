@@ -227,5 +227,90 @@ namespace DeltaEngine.Tests.Datatypes
 			var matrix = new Matrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1);
 			Assert.AreEqual(new Vector3D(2, 4, 0), new Vector3D(1, 2, 3).TransformNormal(matrix));
 		}
+
+		[Test]
+		public void Distance()
+		{
+			var vector = new Vector3D(3, 4, 2);
+			Assert.AreEqual(0, vector.Distance(vector));
+			Assert.AreEqual(3, new Vector3D(1, 2, 3).Distance(vector));
+			Assert.AreEqual(9, new Vector3D(1, 2, 3).DistanceSquared(vector));
+		}
+
+		[Test]
+		public void GetVector2D()
+		{
+			var vector = new Vector3D(3, 4, 2);
+			Assert.AreEqual(new Vector2D(3, 4), vector.GetVector2D());
+		}
+
+		[Test]
+		public void TransformTranspose()
+		{
+			var matrix = new Matrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1);
+			Assert.AreEqual(new Vector3D(2, 4, 0), new Vector3D(1, 2, 3).TransformTranspose(matrix));
+		}
+
+		[Test]
+		public void RotateAround()
+		{
+			var v = new Vector3D(1, 1, 1);
+			Assert.AreEqual(new Vector3D(1, 1, 1), v.RotateAround(new Vector3D(1, 0, 0), 0));
+			Assert.IsTrue(new Vector3D(-1, 1, 1).IsNearlyEqual(v.RotateAround(Vector3D.UnitZ, 90)));
+		}
+
+		[Test]
+		public void Reflect()
+		{
+			var v = new Vector3D(1, 1, 1);
+			Assert.AreEqual(v, v.Reflect(new Vector3D(0, 0, 0)));
+			Assert.AreEqual(new Vector3D(1, -1, 1), v.Reflect(new Vector3D(0, 1, 0)));
+		}
+
+		[Test]
+		public void IntersectNormal()
+		{
+			var oneNormal = Vector3D.Normalize(Vector3D.One);
+			var v = new Vector3D(1, 2, 3);
+			Assert.IsTrue(new Vector3D(2, 2, 2).IsNearlyEqual(v.IntersectNormal(oneNormal)));
+		}
+
+		[Test]
+		public void IntersectRay()
+		{
+			var rayOrigin = new Vector3D(1, 1, 1);
+			var rayDirection = new Vector3D(-1, -1, -1);
+			var v = new Vector3D(1, 2, 3);
+			Assert.AreEqual(new Vector3D(4, 4, 4), v.IntersectRay(rayOrigin, rayDirection));
+		}
+
+		[Test]
+		public void IntersectPlane()
+		{
+			var planeNormal = new Vector3D(0, 0, 1);
+			var v = new Vector3D(1, 2, 3);
+			Assert.AreEqual(new Vector3D(1, 2, 0), v.IntersectPlane(planeNormal));
+		}
+
+		[Test]
+		public void AngleWithVector()
+		{
+			var v = new Vector3D(1, 1, 1);
+			Assert.AreEqual(0.0f, v.Angle(v));
+			Assert.IsTrue(MathExtensions.IsNearlyEqual(180.0f, v.Angle(new Vector3D(-1,-1,-1)), 0.1f));			
+		}
+
+		[Test]
+		public void Hermite()
+		{
+			var v1 = new Vector3D(0, 0, 0);
+			var t1 = new Vector3D(0, 1, 0);
+			var v2 = new Vector3D(1, 1, 0);
+			var t2 = new Vector3D(1, 0, 0);
+			Assert.AreEqual(new Vector3D(0, 0, 0), Vector3D.Hermite(v1, t1, v2, t2, 0.0f));
+			Assert.AreEqual(new Vector3D(1, 1, 0), Vector3D.Hermite(v1, t1, v2, t2, 1.0f));
+			Assert.AreEqual(new Vector3D(0.703125f, 0.890625f, 0), Vector3D.Hermite(v1, t1, v2, t2, 0.75f));
+			Assert.AreEqual(new Vector3D(0.109375f, 0.296875f, 0), Vector3D.Hermite(v1, t1, v2, t2, 0.25f));
+		}
 	}
 }

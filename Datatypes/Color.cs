@@ -91,16 +91,19 @@ namespace DeltaEngine.Datatypes
 		public float RedValue
 		{
 			get { return R / 255.0f; }
+			set { R = (byte)(value.Clamp(0.0f, 1.0f) * 255); }
 		}
 
 		public float GreenValue
 		{
 			get { return G / 255.0f; }
+			set { G = (byte)(value.Clamp(0.0f, 1.0f) * 255); }
 		}
 
 		public float BlueValue
 		{
 			get { return B / 255.0f; }
+			set { B = (byte)(value.Clamp(0.0f, 1.0f) * 255); }
 		}
 
 		public float AlphaValue

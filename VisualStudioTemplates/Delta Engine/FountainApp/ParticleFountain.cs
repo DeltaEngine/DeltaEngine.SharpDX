@@ -11,7 +11,7 @@ namespace $safeprojectname$
 	{
 		public ParticleFountain(Vector2D position)
 		{
-			new Particle2DEmitter(EmitterData, position);
+			new ParticleEmitter(EmitterData, position);
 			CreateCommands();
 		}
 
@@ -26,7 +26,7 @@ namespace $safeprojectname$
 					LifeTime = 1.0f,
 					MaximumNumberOfParticles = 512,
 					Size = new RangeGraph<Size>(new Size(0.01f), new Size(0.015f)),
-					ParticleMaterial = new Material(Shader.Position2DColorUv, "Particle"),
+					ParticleMaterial = new Material(Shader.Position2DColorUV, "Particle"),
 					SpawnInterval = 0.01f,
 					Color = new RangeGraph<Color>(Color.Red, Color.Orange),
 				};

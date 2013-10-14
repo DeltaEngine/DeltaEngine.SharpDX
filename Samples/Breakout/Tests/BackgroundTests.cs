@@ -10,7 +10,7 @@ namespace Breakout.Tests
 		public void Draw()
 		{
 			var background = Resolve<Background>();
-			Assert.IsTrue(background.Visibility == Visibility.Show);
+			Assert.IsTrue(background.IsVisible == true);
 		}
 	}
 }

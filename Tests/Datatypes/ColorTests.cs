@@ -120,13 +120,27 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void GetColorComponentsAsFloats()
 		{
-			var color = new Color(1.0f, 0.0f, 0.5f);
-			Assert.AreEqual(1.0f, color.RedValue);
-			Assert.AreEqual(0.0f, color.GreenValue);
+			var color = new Color(0.2f, 0.4f, 0.5f, 0.6f);
+			Assert.AreEqual(0.2f, color.RedValue);
+			Assert.AreEqual(0.4f, color.GreenValue);
 			Assert.AreEqual(0.498039216f, color.BlueValue);
-			Assert.AreEqual(1.0f, color.AlphaValue);
-			color.AlphaValue = 0.0f;
-			Assert.AreEqual(0.0f, color.AlphaValue);
+			Assert.AreEqual(0.6f, color.AlphaValue);
+		}
+
+		[Test]
+		public void SetColorComponentsWithFloats()
+		{
+			var color = new Color
+			{
+				RedValue = 0.2f,
+				GreenValue = 0.4f,
+				BlueValue = 0.5f,
+				AlphaValue = 0.6f
+			};
+			Assert.AreEqual(0.2f, color.RedValue);
+			Assert.AreEqual(0.4f, color.GreenValue);
+			Assert.AreEqual(0.498039216f, color.BlueValue);
+			Assert.AreEqual(0.6f, color.AlphaValue);
 		}
 
 		[Test]

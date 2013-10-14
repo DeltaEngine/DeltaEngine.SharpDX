@@ -15,15 +15,15 @@ namespace Asteroids.Tests
 
 		private PlayerShip playerShip;
 
-		[Test]
-		public void Accelarate()
+		[Test, CloseAfterFirstFrame]
+		public void Accelerate()
 		{
 			Vector2D originalVelocity = playerShip.Get<Velocity2D>().velocity;
 			playerShip.ShipAccelerate();
 			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D>().velocity);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void TurnChangesAngleCorrectly()
 		{
 			float originalAngle = playerShip.Rotation;
@@ -34,27 +34,33 @@ namespace Asteroids.Tests
 			Assert.Greater(playerShip.Rotation, originalAngle);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void FireRocket()
 		{
 			bool firedRocket = false;
 			playerShip.ProjectileFired += () => { firedRocket = true; };
 			playerShip.IsFiring = true;
-			AdvanceTimeAndUpdateEntities(1 / 0.003f);
+			AdvanceTimeAndUpdateEntities(2);
 			Assert.IsTrue(firedRocket);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void HittingBordersTopLeft()
 		{
 			playerShip.Set(new Rectangle(ScreenSpace.Current.TopLeft - new Vector2D(0.1f, 0.1f), 
 				new Size(.05f)));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void HittingBordersBottomRight()
 		{
 			playerShip.Set(new Rectangle(ScreenSpace.Current.BottomRight, new Size(.05f)));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CreatedEntityIsPauseable()
+		{
+			Assert.IsTrue(playerShip.IsPauseable);
 		}
 	}
 }

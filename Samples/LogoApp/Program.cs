@@ -1,5 +1,5 @@
 ﻿using DeltaEngine.Platforms;
-
+// ncrunch: no coverage start
 namespace LogoApp
 {
 	/// <summary>
@@ -9,7 +9,7 @@ namespace LogoApp
 	{
 		public Program()
 		{
-			for (int num = 0; num < 15; num++)
+			for (int num = 0; num < 16; num++)
 				new BouncingLogo();
 		}
 

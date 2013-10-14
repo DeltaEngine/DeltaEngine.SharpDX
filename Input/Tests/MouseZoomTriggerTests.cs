@@ -26,11 +26,21 @@ namespace DeltaEngine.Input.Tests
 		}
 
 		[Test]
-		public void MouseWheelZoom()
+		public void MouseWheelZoomUp()
 		{
 			bool isZoomed = false;
 			new Command((float zoomAmount) => isZoomed = true).Add(new MouseZoomTrigger());
 			mouse.ScrollUp();
+			AdvanceTimeAndUpdateEntities();
+			Assert.IsTrue(isZoomed);
+		}
+
+		[Test]
+		public void MouseWheelZoomDown()
+		{
+			bool isZoomed = false;
+			new Command((float zoomAmount) => isZoomed = true).Add(new MouseZoomTrigger());
+			mouse.ScrollDown();
 			AdvanceTimeAndUpdateEntities();
 			Assert.IsTrue(isZoomed);
 		}

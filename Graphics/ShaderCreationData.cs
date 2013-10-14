@@ -17,15 +17,15 @@ namespace DeltaEngine.Graphics
 		{
 			VertexCode = vertexCode;
 			FragmentCode = fragmentCode;
-			Dx11Code = dx11Code;
-			Dx9Code = dx9Code;
+			DX11Code = dx11Code;
+			DX9Code = dx9Code;
 			Format = format;
 		}
 		 
 		public string VertexCode { get; private set; }
 		public string FragmentCode { get; private set; }
-		public string Dx11Code { get; private set; }
-		public string Dx9Code { get; private set; }
+		public string DX11Code { get; private set; }
+		public string DX9Code { get; private set; }
 		public VertexFormat Format { get; private set; }
 	}
 }

@@ -22,8 +22,8 @@ namespace DeltaEngine.Input
 		{
 			var parameters = button.SplitAndTrim(new[] { ' ' });
 			Button = parameters.Length > 0 ? parameters[0].Convert<MouseButton>() : MouseButton.Left;
-			Direction = parameters.Length > 2
-				? parameters[2].Convert<DragDirection>() : DragDirection.Free;
+			Direction = parameters.Length > 1
+				? parameters[1].Convert<DragDirection>() : DragDirection.Free;
 		}
 
 		protected override void StartInputDevice()

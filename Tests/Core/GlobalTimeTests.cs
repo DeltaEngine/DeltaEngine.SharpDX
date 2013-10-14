@@ -20,7 +20,7 @@ namespace DeltaEngine.Tests.Core
 		public void RunTime()
 		{
 			time.Update();
-			Assert.LessOrEqual(time.Milliseconds, 16);
+			Assert.LessOrEqual(time.Milliseconds, 50);
 		}
 
 		[Test]
@@ -37,13 +37,13 @@ namespace DeltaEngine.Tests.Core
 			do
 				time.Update();
 			while (time.Milliseconds <= 1000);
-			Assert.IsTrue(Math.Abs(time.Fps - 60) <= 1, "Fps=" + time.Fps);
+			Assert.IsTrue(Math.Abs(time.Fps - 20) <= 1, "Fps=" + time.Fps);
 		}
 
 		[Test]
 		public void GetSecondsSinceStartToday()
 		{
-			Assert.LessOrEqual(time.GetSecondsSinceStartToday(), 1.0f/60.0f);
+			Assert.LessOrEqual(time.GetSecondsSinceStartToday(), 1.0f / 20.0f);
 			time.Update();
 			Assert.AreNotEqual(0.0f, time.GetSecondsSinceStartToday());
 		}
@@ -55,7 +55,7 @@ namespace DeltaEngine.Tests.Core
 		}
 
 		//ncrunch: no coverage start
-		[Test, Category("Slow")]
+		[Test, Ignore]
 		public void CalculateFpsWithStopwatch()
 		{
 			time = new StopwatchTime();

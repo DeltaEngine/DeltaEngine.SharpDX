@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
@@ -18,7 +20,7 @@ namespace DeltaEngine.Rendering2D.Tests
 
 		private class MockDrawBehavior : DrawBehavior
 		{
-			public void Draw(IEnumerable<DrawableEntity> entities) {}
+			public void Draw(List<DrawableEntity> visibleEntities) {} // ncrunch: no coverage
 		}
 
 		[Test]
@@ -144,7 +146,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			byte[] savedBytes = data.ToArray();
 			int bytesForName = "Entity2D".Length + 1;
 			const int VersionNumberBytes = 4;
-			int componentBytes = 1 + "Rectangle".Length + 1 + 16 + "Visibility".Length + 1 + 4 + 1;
+			int componentBytes = 1 + "Rectangle".Length + 1 + 16 + "IsVisible".Length + 1 + 1 + 2;
 			const int BehaviorBytes = 27;
 			Assert.AreEqual(bytesForName + VersionNumberBytes + componentBytes + BehaviorBytes,
 				savedBytes.Length);
@@ -186,6 +188,64 @@ namespace DeltaEngine.Rendering2D.Tests
 			Assert.IsFalse(entity.RotatedDrawAreaContains(new Vector2D(0.15f, 0.15f)));
 			Assert.IsTrue(entity.RotatedDrawAreaContains(new Vector2D(0.85f, 0.85f)));
 			EntitiesRunner.Current.UpdateAndDrawAllEntities(() => {});
+		}
+
+		[Test]
+		public void GetComponentsForEntityDebugger()
+		{
+			var entityWithComponent = new Entity2D(Rectangle.HalfCentered);
+			List<object> components = entityWithComponent.GetComponentsForViewing();
+			Assert.AreEqual(5, components.Count);
+			Assert.AreEqual(Rectangle.HalfCentered, GetComponent<Rectangle>(components));
+			Assert.AreEqual(Color.White, GetComponent<Color>(components));
+			Assert.AreEqual(Vector2D.Half, GetComponent<Vector2D>(components));
+			Assert.AreEqual(0, GetComponent<float>(components));
+			Assert.IsTrue(GetComponent<bool>(components));
+		}
+
+		private static T GetComponent<T>(List<object> components)
+		{
+			foreach (T component in components.OfType<T>())
+				return component;
+			throw new ComponentNotFound(typeof(T)); //ncrunch: no coverage
+		}
+
+		//ncrunch: no coverage start
+		public class ComponentNotFound : Exception
+		{
+			public ComponentNotFound(Type component)
+				: base(component.ToString()) { }
+		}
+		//ncrunch: no coverage end
+
+		[Test]
+		public void SettingDrawAreaWithoutInterpolationSetsLastDrawAreaAlso()
+		{
+			var entity = new Entity2D(Rectangle.One);
+			Assert.AreEqual(Rectangle.One, entity.LastDrawArea);
+			entity.SetWithoutInterpolation(Rectangle.HalfCentered);
+			Assert.AreEqual(Rectangle.HalfCentered, entity.DrawArea);
+			Assert.AreEqual(Rectangle.HalfCentered, entity.LastDrawArea);
+		}
+
+		[Test]
+		public void SettingColorWithoutInterpolationSetsLastColorAlso()
+		{
+			var entity = new Entity2D(Rectangle.Zero) { Color = Color.Green };
+			Assert.AreEqual(Color.Green, entity.LastColor);
+			entity.SetWithoutInterpolation(Color.Blue);
+			Assert.AreEqual(Color.Blue, entity.Color);
+			Assert.AreEqual(Color.Blue, entity.LastColor);
+		}
+
+		[Test]
+		public void SettingRotationWithoutInterpolationSetsLastRotationAlso()
+		{
+			var entity = new MockEntity2D(Rectangle.Zero) { Rotation = 90.0f };
+			Assert.AreEqual(90.0f, entity.GetLastTickLerpComponents()[0]);
+			entity.SetWithoutInterpolation(180.0f);
+			Assert.AreEqual(180.0f, entity.Rotation);
+			Assert.AreEqual(180.0f, entity.GetLastTickLerpComponents()[0]);
 		}
 	}
 }

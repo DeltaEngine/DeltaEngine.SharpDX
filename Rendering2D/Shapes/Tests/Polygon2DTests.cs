@@ -86,5 +86,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 					CreatePolygon(new Vector2D(0.025f, 0.025f) + new Vector2D(x / 20.0f, y / 20.0f), 0.025f,
 						Color.GetRandomColor());
 		}
+
+
 	}
 }

@@ -11,6 +11,12 @@ namespace DeltaEngine.ScreenSpaces
 		public PixelScreenSpace(Window window)
 			: base(window) {}
 
+		protected override void Update(Size newViewportSize)
+		{
+			base.Update(newViewportSize);
+			RaiseViewportSizeChanged();
+		}
+
 		public override Vector2D ToPixelSpace(Vector2D currentScreenSpacePosition)
 		{
 			return currentScreenSpacePosition;

@@ -5,7 +5,6 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering2D.Sprites;
 using NUnit.Framework;
 
 namespace DeltaEngine.Rendering2D.Shapes.Tests
@@ -22,7 +21,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		public void RenderLineAndSprite()
 		{
 			new Line2D(Vector2D.Zero, Vector2D.One, Color.Red);
-			new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"),
+			new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"),
 				Rectangle.FromCenter(Vector2D.Half, new Size(0.1f)));
 		}
 
@@ -186,7 +185,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(0.4f, 0.4f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.6f, 0.5f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -196,7 +195,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(0.2f, -1.0f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.6f, -1.5f), line.EndPoint);
-			Assert.AreEqual(Visibility.Hide, line.Visibility);
+			Assert.IsFalse(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -206,7 +205,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(-0.2f, 2.0f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(2.6f, 2.5f), line.EndPoint);
-			Assert.AreEqual(Visibility.Hide, line.Visibility);
+			Assert.IsFalse(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -216,7 +215,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(-0.2f, 0.0f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(-0.6f, 1.0f), line.EndPoint);
-			Assert.AreEqual(Visibility.Hide, line.Visibility);
+			Assert.IsFalse(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -226,7 +225,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(1.2f, 0.5f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(1.6f, 0.5f), line.EndPoint);
-			Assert.AreEqual(Visibility.Hide, line.Visibility);
+			Assert.IsFalse(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -236,7 +235,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(-1.0f, 0.2f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.2f, -1.0f), line.EndPoint);
-			Assert.AreEqual(Visibility.Hide, line.Visibility);
+			Assert.IsFalse(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -246,7 +245,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(0.0f, 0.15f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.5f, 0.2f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -256,7 +255,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.5f));
 			Assert.AreEqual(new Vector2D(0.5f, 0.4f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.25f, 0.4f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -266,7 +265,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.5f));
 			Assert.AreEqual(new Vector2D(0.5f, 0.4f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.75f, 0.375f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -276,7 +275,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(1.0f, 0.15f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.5f, 0.2f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -286,7 +285,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(0.15f, 0.0f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.2f, 0.5f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -296,7 +295,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.5f));
 			Assert.AreEqual(new Vector2D(0.4f, 0.5f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.375f, 0.25f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -306,7 +305,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.5f));
 			Assert.AreEqual(new Vector2D(0.4f, 0.5f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.375f, 0.75f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -316,7 +315,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.One);
 			Assert.AreEqual(new Vector2D(0.15f, 1.0f), line.StartPoint);
 			Assert.AreEqual(new Vector2D(0.2f, 0.5f), line.EndPoint);
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -326,14 +325,22 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			line.Clip(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.5f));
 			Assert.IsTrue(line.StartPoint.IsNearlyEqual(new Vector2D(0.25f, 0.4833f)));
 			Assert.IsTrue(line.EndPoint.IsNearlyEqual(new Vector2D(0.75f, 0.5167f)));
-			Assert.AreEqual(Visibility.Show, line.Visibility);
+			Assert.IsTrue(line.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void RenderingHiddenLineDoesNotThrowException()
 		{
-			new Line2D(Vector2D.Zero, Vector2D.One, Color.White) { Visibility = Visibility.Hide };
+			new Line2D(Vector2D.Zero, Vector2D.One, Color.White) { IsVisible = false };
 			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void EvenWithoutPointsRenderingDoesNotCrash()
+		{
+			var line = new Line2D(Vector2D.Zero, Vector2D.One, Color.White);
+			line.Points = new List<Vector2D>();
+			AdvanceTimeAndUpdateEntities();
 		}
 	}
 }

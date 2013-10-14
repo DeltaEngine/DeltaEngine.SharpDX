@@ -21,20 +21,16 @@ namespace $safeprojectname$
 					if (listOfCreeps.Count < 1)
 						return;
 
-					tower.RemoveFireLine();
 					var closestCreep = FindClosestCreepToAttack(tower);
 					tower.FireAtCreep(closestCreep);
 					if (closestCreep == null)
 						continue;
 
 					closestCreep.CreepIsDead += closestCreep.Dispose;
-					var currentManager = manager;
-					closestCreep.UpdateHealthBar += () => currentManager.UpdateCreepHealthBar(closestCreep);
+					closestCreep.UpdateHealthBar += () => closestCreep.RecalculateHitpointBar();
 				}
 				foreach (Creep creep in listOfCreeps)
-				{
 					creep.UpdateStateTimersAndTimeBasedDamage();
-				}
 			}
 		}
 
@@ -51,8 +47,7 @@ namespace $safeprojectname$
 				if (distVec.Length <= dist)
 					closestCreep = creep;
 			}
-			if (tower.Get<TowerProperties>().Range < DistanceBetweenClosestCreepAndTower(closestCreep, 
-				tower))
+			if (tower.Get<TowerData>().Range < DistanceBetweenClosestCreepAndTower(closestCreep, tower))
 				closestCreep = null;
 
 			return closestCreep;

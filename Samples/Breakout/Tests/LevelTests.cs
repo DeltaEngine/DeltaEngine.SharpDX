@@ -96,8 +96,8 @@ namespace Breakout.Tests
 			var level = Resolve<Level>();
 			Assert.AreEqual(4, level.BricksLeft);
 			var brick = level.GetBrickAt(0.25f, 0.25f);
-			Assert.IsTrue(brick.Visibility == Visibility.Show);
-			brick.Visibility = Visibility.Hide;
+			Assert.IsTrue(brick.IsVisible == true);
+			brick.IsVisible = false;
 			Assert.AreEqual(3, level.BricksLeft);
 			Assert.IsNull(level.GetBrickAt(0.25f, 0.25f));
 		}

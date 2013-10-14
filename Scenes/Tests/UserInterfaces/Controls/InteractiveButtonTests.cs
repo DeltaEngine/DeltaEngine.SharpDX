@@ -106,7 +106,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void ExitingMakesItNormalize()
 		{
 			SetMouseState(State.Released, Vector2D.Half);
-			SetMouseState(State.Released, Vector2D.Zero);
+			SetMouseState(State.Released, new Vector2D(0.0f, 0.22f));
 			Assert.AreEqual(BaseSize, button.Size);
 		}
 

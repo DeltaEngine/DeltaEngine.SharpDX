@@ -1,4 +1,5 @@
 using DeltaEngine.Commands;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 
 namespace $safeprojectname$
@@ -8,7 +9,7 @@ namespace $safeprojectname$
 		public Controls(Game game)
 		{
 			this.game = game;
-			controlCommands = new Command[5];
+			controlCommands = new Command[6];
 			commandsInUse = 0;
 		}
 
@@ -29,13 +30,34 @@ namespace $safeprojectname$
 					AddPlayerSteerLeft();
 					AddPlayerSteerRight();
 					AddPlayerShootingControls();
+					AddPlayerMoveDirectly();
 					break;
 				case GameState.GameOver:
 					AddRestartControl();
+					AddMainMenuControl();
 					break;
 				default:
 					return;
 			}
+		}
+
+		private void AddPlayerMoveDirectly()
+		{
+			controlCommands [5] = new Command(SteerPlayerAnalogue).Add(new 
+				GamePadAnalogTrigger(GamePadAnalog.LeftThumbStick));
+			commandsInUse++;
+		}
+
+		private void SteerPlayerAnalogue(Vector2D direction)
+		{
+			if (direction.Y > 0)
+				game.InteractionLogics.Player.ShipAccelerate(direction.Y * 0.7f);
+
+			if (direction.X > 0)
+				game.InteractionLogics.Player.SteerRight(direction.X * 0.7f);
+
+			if (direction.X < 0)
+				game.InteractionLogics.Player.SteerLeft(-direction.X * 0.7f);
 		}
 
 		private void AddPlayerAccelerationControl()
@@ -45,7 +67,6 @@ namespace $safeprojectname$
 			controlCommands [0].Add(new KeyTrigger(Key.W));
 			controlCommands [0].Add(new KeyTrigger(Key.CursorUp, State.Pressed));
 			controlCommands [0].Add(new KeyTrigger(Key.CursorUp));
-			commandsInUse++;
 		}
 
 		private void AddPlayerSteerLeft()
@@ -71,8 +92,10 @@ namespace $safeprojectname$
 		private void AddPlayerShootingControls()
 		{
 			controlCommands [3] = new Command(PlayerBeginFireing).Add(new KeyTrigger(Key.Space));
+			controlCommands [3].Add(new GamePadButtonTrigger(GamePadButton.A));
 			controlCommands [4] = new Command(PlayerHoldFire).Add(new KeyTrigger(Key.Space, 
 				State.Releasing));
+			controlCommands [4].Add(new GamePadButtonTrigger(GamePadButton.A, State.Releasing));
 			commandsInUse += 2;
 		}
 
@@ -80,6 +103,15 @@ namespace $safeprojectname$
 		{
 			controlCommands [0] = new Command(() => game.RestartGame());
 			controlCommands [0].Add(new KeyTrigger(Key.Space, State.Releasing));
+			controlCommands [0].Add(new GamePadButtonTrigger(GamePadButton.A, State.Releasing));
+			commandsInUse++;
+		}
+
+		private void AddMainMenuControl()
+		{
+			controlCommands [1] = new Command(() => game.BackToMenu());
+			controlCommands [1].Add(new KeyTrigger(Key.Escape, State.Releasing));
+			controlCommands [1].Add(new GamePadButtonTrigger(GamePadButton.B, State.Releasing));
 			commandsInUse++;
 		}
 

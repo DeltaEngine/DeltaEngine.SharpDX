@@ -51,5 +51,11 @@ namespace DeltaEngine.Input.Mocks
 		}
 
 		public override void Vibrate(float strength) {}
+
+		protected override void UpdateGamePadStates() {}
+		public void SetUnavailable()
+		{
+			IsAvailable = false;
+		}
 	}
 }

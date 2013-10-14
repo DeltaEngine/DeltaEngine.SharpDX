@@ -1,7 +1,7 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes;
 
 namespace Blocks
@@ -26,7 +26,7 @@ namespace Blocks
 		private void AddBackground()
 		{
 			var image = content.Load<Image>("Background");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUv);
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image);
 			Add(new Sprite(material, Rectangle.One) { RenderLayer = Background });
 		}
@@ -36,7 +36,7 @@ namespace Blocks
 		private void AddGrid()
 		{
 			var image = content.Load<Image>("Grid");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUv);
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image);
 			grid = new Sprite(material, GetGridDrawArea()) { RenderLayer = Background };
 			Add(grid);
@@ -61,7 +61,7 @@ namespace Blocks
 		private void AddScoreWindow()
 		{
 			var image = content.Load<Image>("ScoreWindow");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUv);
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image);
 			scoreWindow = new Sprite(material, GetScoreWindowDrawArea(material.DiffuseMap.PixelSize));
 			scoreWindow.RenderLayer = Background;

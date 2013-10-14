@@ -20,27 +20,39 @@ namespace DeltaEngine.Input.Tests
 		}
 
 		[Test]
-		public void FlickDetection()
+		public void FlickWithMouse()
 		{
 			var trigger = new MouseFlickTrigger();
-			var mouse = (MockMouse)Resolve<Mouse>();
-			mouse.SetButtonState(MouseButton.Left, State.Pressing);
-			mouse.SetPosition(new Vector2D(0.5f, 0.5f));
-			AdvanceTimeAndUpdateEntities();
-			mouse.Update(new[] { trigger });
-			Assert.IsFalse(trigger.WasInvoked);
-			Assert.AreEqual(0, trigger.PressTime);
+			var mouse = Resolve<Mouse>() as MockMouse;
+			if (mouse == null)
+				return; //ncrunch: no coverage
+			bool flickHappened = false;
+			trigger.Invoked += () => flickHappened = true;
+			AdvanceMouseTick(mouse, State.Pressing, new Vector2D(0.5f, 0.5f));
+			Assert.IsFalse(flickHappened);
+			Assert.AreEqual(0.0f, trigger.PressTime);
 			Assert.AreEqual(new Vector2D(0.5f, 0.5f), trigger.StartPosition);
-			mouse.SetButtonState(MouseButton.Left, State.Pressed);
-			mouse.SetPosition(new Vector2D(0.52f, 0.5f));
+			AdvanceMouseTick(mouse, State.Pressed, new Vector2D(0.52f, 0.5f));
+			Assert.IsFalse(flickHappened);
+			AdvanceMouseTick(mouse, State.Releasing, new Vector2D(0.8f, 0.8f));
+			Assert.IsTrue(flickHappened);
+			Assert.AreEqual(new Vector2D(0.5f, 0.5f), trigger.StartPosition);
+		}
+
+		private void AdvanceMouseTick(MockMouse mouse, State state, Vector2D position)
+		{
+			mouse.SetButtonState(MouseButton.Left, state);
+			mouse.SetPosition(position);
 			AdvanceTimeAndUpdateEntities();
-			mouse.Update(new[] { trigger });
-			Assert.IsFalse(trigger.WasInvoked);
-			mouse.SetButtonState(MouseButton.Left, State.Releasing);
-			mouse.SetPosition(new Vector2D(0.6f, 0.5f));
-			AdvanceTimeAndUpdateEntities();
-			mouse.Update(new[] { trigger });
-			Assert.IsTrue(trigger.WasInvoked);
+		}
+
+		[Test]
+		public void Creation()
+		{
+			Assert.DoesNotThrow(() => new MouseFlickTrigger(""));
+			Assert.DoesNotThrow(() => new MouseFlickTrigger(null));
+			Assert.Throws<MouseFlickTrigger.MouseFlickTriggerHasNoParameters>(
+				() => new MouseFlickTrigger("Left"));
 		}
 	}
 }

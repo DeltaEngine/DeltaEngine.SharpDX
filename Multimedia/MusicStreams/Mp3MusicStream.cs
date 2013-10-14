@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using ToyMp3;
+using NAudio.Wave;
 
 namespace DeltaEngine.Multimedia.MusicStreams
 {
@@ -8,11 +8,21 @@ namespace DeltaEngine.Multimedia.MusicStreams
 		public Mp3MusicStream(Stream stream)
 		{
 			baseStream = stream;
-			mp3 = new Mp3Stream(stream);
+			mp3 = new Mp3FileReader(stream);
+			lengthInSeconds = CalculateLengthInSeconds();
 		}
 
 		private Stream baseStream;
-		private Mp3Stream mp3;
+		private Mp3FileReader mp3;
+		private readonly float lengthInSeconds;
+
+		private float CalculateLengthInSeconds()
+		{
+			int bytesPerSample = mp3.WaveFormat.BitsPerSample / 8;
+			long numberOfSamples = mp3.Length / bytesPerSample;
+			long samplesPerChannel = numberOfSamples / mp3.WaveFormat.Channels;
+			return (float)samplesPerChannel / mp3.WaveFormat.SampleRate;
+		}
 
 		public void Dispose()
 		{
@@ -22,28 +32,29 @@ namespace DeltaEngine.Multimedia.MusicStreams
 
 		public int Channels
 		{
-			get { return mp3.Channels; }
+			get { return mp3.WaveFormat.Channels; }
 		}
 
 		public int Samplerate
 		{
-			get { return mp3.Samplerate; }
+			get { return mp3.WaveFormat.SampleRate; }
 		}
 
 		public float LengthInSeconds
 		{
-			get { return mp3.LengthInSeconds; }
+			get { return lengthInSeconds; }
 		}
 
 		public int Read(byte[] buffer, int length)
 		{
-			return mp3.Read(buffer, length);
+			int bytesReaded = mp3.Read(buffer, 0, length);
+			return bytesReaded;
 		}
 
 		public void Rewind()
 		{
 			baseStream.Position = 0;
-			mp3 = new Mp3Stream(baseStream);
+			mp3.Position = 0;
 		}
 	}
 }

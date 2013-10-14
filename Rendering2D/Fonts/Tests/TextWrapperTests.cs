@@ -1,8 +1,6 @@
 ﻿using DeltaEngine.Content;
-using DeltaEngine.Content.Xml;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
 
 namespace DeltaEngine.Rendering2D.Fonts.Tests
@@ -12,7 +10,7 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		[SetUp, CloseAfterFirstFrame]
 		public void Init()
 		{
-			fontDescription = new FontDescription(ContentLoader.Load<XmlContent>("Verdana12").Data);
+			fontDescription = new FontDescription(ContentLoader.Load<Font>("Verdana12").Data);
 			textWrapper = new TextWrapper(fontDescription.GlyphDictionary, ' ', fontDescription.PixelLineHeight);
 		}
 

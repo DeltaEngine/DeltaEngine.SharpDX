@@ -47,27 +47,43 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		private static readonly Rectangle Center = Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f);
 
 		[Test, CloseAfterFirstFrame]
-		public void ChangeText()
+		public void InitialText()
 		{
 			Assert.AreEqual("Hello World", label.Text);
-			label.Text = "Changed";
-			Assert.AreEqual("Changed", label.Text);
+			Assert.AreEqual("Hello World", label.PreviousText);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void ChangeTextOnce()
+		{
+			label.Text = "Change 1";
+			Assert.AreEqual("Change 1", label.Text);
+			Assert.AreEqual("Hello World", label.PreviousText);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void ChangeTextTwice()
+		{
+			label.Text = "Change 1";
+			label.Text = "Change 2";
+			Assert.AreEqual("Change 2", label.Text);
+			Assert.AreEqual("Change 1", label.PreviousText);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ChangingLabelVisibilityChangesFontTextVisibility()
 		{
-			Assert.IsTrue(label.Visibility == Visibility.Show);
-			Assert.IsTrue(label.Get<FontText>().Visibility == Visibility.Show);
-			label.Visibility = Visibility.Hide;
-			Assert.IsTrue(label.Visibility == Visibility.Hide);
-			Assert.IsTrue(label.Get<FontText>().Visibility == Visibility.Hide);
+			Assert.IsTrue(label.IsVisible);
+			Assert.IsTrue(label.Get<FontText>().IsVisible);
+			label.IsVisible = false;
+			Assert.IsFalse(label.IsVisible);
+			Assert.IsFalse(label.Get<FontText>().IsVisible);
 		}
 
 		[Test]
 		public void RenderLabelsThatChangeColorWhenInsideRubberBandSelection()
 		{
-			label.Visibility = Visibility.Hide;
+			label.IsVisible = false;
 			CreateLabels();
 			CreateRubberBand();
 		}
@@ -110,6 +126,13 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		private static readonly Color TransparentWhite = new Color(1.0f, 1.0f, 1.0f, 0.3f);
 
 		[Test]
+		public void RenderLabelAttachedToMouse()
+		{
+			new Command(point => label.DrawArea = Rectangle.FromCenter(point, label.DrawArea.Size)).Add(
+				new MouseMovementTrigger());
+		}
+
+		[Test]
 		public void ChangeColorIfInsideRotatedLabel()
 		{
 			label.Text = "";
@@ -128,14 +151,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					label.Text = "Relative Mouse Position: " + label.State.RelativePointerPosition;
 				}
 			}
-		}
-		//ncrunch: no coverage end
-
-		[Test]
-		public void RenderLabelAttachedToMouse()
-		{
-			new Command(point => label.DrawArea = Rectangle.FromCenter(point, label.DrawArea.Size)).Add(
-				new MouseMovementTrigger());
 		}
 	}
 }

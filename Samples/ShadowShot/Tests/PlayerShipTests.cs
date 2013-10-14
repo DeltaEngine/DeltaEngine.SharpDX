@@ -17,7 +17,7 @@ namespace ShadowShot.Tests
 		public void SetUp()
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(500, 500);
-			var shipImage = new Material(Shader.Position2DColorUv, "player");
+			var shipImage = new Material(Shader.Position2DColorUV, "player");
 			var shipDrawArea = Rectangle.FromCenter(new Vector2D(0.5f, 0.95f), playerShipSize);
 			playerShip = new PlayerShip(shipImage, shipDrawArea, Resolve<ScreenSpace>().Viewport);
 		}
@@ -81,7 +81,7 @@ namespace ShadowShot.Tests
 		public void CollisonWithAsteroidEndsGame()
 		{
 			playerShip.DrawArea = new Rectangle(Vector2D.Half, playerShip.Size);
-			new GameController(playerShip, new Material(Shader.Position2DColorUv, "asteroid"),
+			new GameController(playerShip, new Material(Shader.Position2DColorUV, "asteroid"),
 				playerShip.Size, Resolve<ScreenSpace>());
 		}
 

@@ -14,7 +14,7 @@ namespace DeltaEngine.Content.Disk
 	/// </summary>
 	public sealed class DiskContentLoader : ContentLoader
 	{
-		private DiskContentLoader() {}
+		private DiskContentLoader() { }
 
 		private void LazyInitialize()
 		{
@@ -31,14 +31,15 @@ namespace DeltaEngine.Content.Disk
 
 		private void LoadMetaData(string xmlFilePath)
 		{
-			if (IsMetaDataNotLongerUpToDate(xmlFilePath))
-				xml = new ContentMetaDataFileCreator(xml).CreateAndLoad(xmlFilePath);
+			IsMetaDataNoLongerUpToDate(xmlFilePath);
+			//if (IsMetaDataNoLongerUpToDate(xmlFilePath))
+			//xml = new ContentMetaDataFileCreator(xml).CreateAndLoad(xmlFilePath);
 			ParseXmlNode(xml.Root);
 		}
 
 		private XDocument xml;
 
-		private bool IsMetaDataNotLongerUpToDate(string filePath)
+		private bool IsMetaDataNoLongerUpToDate(string filePath)
 		{
 			if (File.Exists(filePath))
 			{
@@ -69,34 +70,34 @@ namespace DeltaEngine.Content.Disk
 			foreach (var attribute in attributes)
 				switch (attribute.Name.LocalName)
 				{
-				case "Name":
-					data.Name = attribute.Value;
-					break;
-				case "Type":
-					data.Type = attribute.Value.TryParse(ContentType.Image);
-					break;
-				case "LastTimeUpdated":
-					data.LastTimeUpdated = DateExtensions.Parse(attribute.Value);
-					break;
-				case "LocalFilePath":
-					data.LocalFilePath = attribute.Value;
-					break;
-				case "PlatformFileId":
-					data.PlatformFileId = attribute.Value.Convert<int>();
-					break;
-				case "FileSize":
-					data.FileSize = attribute.Value.Convert<int>();
-					break;
-				default:
-					data.Values.Add(attribute.Name.LocalName, attribute.Value);
-					break;
+					case "Name":
+						data.Name = attribute.Value;
+						break;
+					case "Type":
+						data.Type = attribute.Value.TryParse(ContentType.Image);
+						break;
+					case "LastTimeUpdated":
+						data.LastTimeUpdated = DateExtensions.Parse(attribute.Value);
+						break;
+					case "LocalFilePath":
+						data.LocalFilePath = attribute.Value;
+						break;
+					case "PlatformFileId":
+						data.PlatformFileId = attribute.Value.Convert<int>();
+						break;
+					case "FileSize":
+						data.FileSize = attribute.Value.Convert<int>();
+						break;
+					default:
+						data.Values.Add(attribute.Name.LocalName, attribute.Value);
+						break;
 				}
 			if (string.IsNullOrEmpty(data.Name))
 				throw new InvalidContentMetaDataNameIsAlwaysNeeded();
 			return data;
 		}
 
-		public class InvalidContentMetaDataNameIsAlwaysNeeded : Exception {}
+		public class InvalidContentMetaDataNameIsAlwaysNeeded : Exception { }
 
 		private readonly Dictionary<string, ContentMetaData> metaData =
 			new Dictionary<string, ContentMetaData>(StringComparer.OrdinalIgnoreCase);

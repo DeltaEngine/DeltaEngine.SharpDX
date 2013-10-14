@@ -42,10 +42,6 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Content\Disk\DeltaEngine.Content.Disk.csproj">
-      <Project>{EE9847E1-9C76-4ACE-B531-D3EA84F7D741}</Project>
-      <Name>DeltaEngine.Content.Disk</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Content\Online\DeltaEngine.Content.Online.csproj">
       <Project>{68AA6280-09EF-4325-B5F8-B8A967004144}</Project>
       <Name>DeltaEngine.Content.Online</Name>
@@ -73,14 +69,6 @@
     <ProjectReference Include="..\Rendering3D\Cameras\DeltaEngine.Rendering3D.Cameras.csproj">
       <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
       <Name>DeltaEngine.Rendering3D.Cameras</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rendering3D\Mocks\DeltaEngine.Rendering3D.Mocks.csproj">
-      <Project>{DE00BA97-4ABF-443A-82B2-2D2947DAA0B4}</Project>
-      <Name>DeltaEngine.Rendering3D.Mocks</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rendering3D\Models\DeltaEngine.Rendering3D.Models.csproj">
-      <Project>{701FDD1A-6B8A-4CA9-B796-AC9546233F47}</Project>
-      <Name>DeltaEngine.Rendering3D.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

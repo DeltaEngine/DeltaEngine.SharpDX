@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
+using DeltaEngine.GameLogic;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering3D.Particles;
 using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
@@ -12,13 +15,16 @@ namespace Asteroids
 	/// <summary>
 	/// Game object representing the projectiles fired by the player
 	/// </summary>
-	public class Projectile : Sprite
+	public class Projectile : Entity2D
 	{
-		public Projectile(Material texture, Vector2D startPosition, float angle)
-			: base(texture, Rectangle.FromCenter(startPosition, new Size(.02f)))
+		public Projectile(Material missileMaterial, Vector2D startPosition, float angle)
+			: base(Rectangle.FromCenter(startPosition, new Size(.02f)))
 		{
 			Rotation = angle;
 			RenderLayer = (int)AsteroidsRenderLayer.Rockets;
+			missileAndTrails = new ParticleSystem();
+			AttachMissileEmitter();
+			AttachTrailEmitter();
 			Add(new SimplePhysics.Data
 			{
 				Gravity = Vector2D.Zero,
@@ -29,18 +35,50 @@ namespace Asteroids
 			Start<MoveAndDisposeOnBorderCollision>();
 		}
 
+		private void AttachMissileEmitter()
+		{
+			var missileData = ContentLoader.Load<ParticleEmitterData>("MissileEmitter");
+			missileData.DoParticlesTrackEmitter = true;
+			var missileEmitter = new ParticleEmitter(missileData, new Vector3D(Center));
+			missileEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets + 1;
+			missileAndTrails.AttachEmitter(missileEmitter);
+		}
+
+		private void AttachTrailEmitter()
+		{
+			var trailData = ContentLoader.Load<ParticleEmitterData>("PropulsionEmitter");
+			trailData.DoParticlesTrackEmitter = true;
+			var trailEmitter = new ParticleEmitter(trailData, new Vector3D(Center));
+			trailEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets;
+			trailEmitter.EmitterData.StartRotation.Start = new ValueRange(Rotation);
+			missileAndTrails.AttachEmitter(trailEmitter);
+		}
+
 		private const float ProjectileVelocity = .5f;
+		private readonly ParticleSystem missileAndTrails;
+
+		public void Dispose()
+		{
+			missileAndTrails.DisposeSystem();
+			IsActive = false;
+		}
 
 		private class MoveAndDisposeOnBorderCollision : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
 			{
-				foreach (var entity in entities)
+				foreach (Projectile projectile in entities.OfType<Projectile>())
 				{
-					var projectile = entity as Projectile;
+					projectile.missileAndTrails.Position = new Vector3D(projectile.Center);
+					projectile.missileAndTrails.Rotation = Quaternion.FromAxisAngle(Vector3D.UnitZ,
+						projectile.Rotation);
+					foreach (var emitter in projectile.missileAndTrails.AttachedEmitters)
+					{
+						emitter.EmitterData.StartRotation.Start = new ValueRange(projectile.Rotation);
+					}
 					projectile.DrawArea = CalculateFutureDrawArea(projectile, Time.Delta);
 					if (ObjectHasCrossedScreenBorder(projectile.DrawArea, ScreenSpace.Current.Viewport))
-						projectile.IsActive = false;
+						projectile.Dispose();
 				}
 			}
 

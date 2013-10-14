@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using DeltaEngine.Entities;
 
 namespace DeltaEngine.Input
@@ -21,36 +20,40 @@ namespace DeltaEngine.Input
 		{
 			if (!IsAvailable)
 				return; //ncrunch: no coverage
-			// ReSharper disable PossibleMultipleEnumeration
 			ProcessKeyTriggers(entities);
 			ProcessInputHandling(entities);
-			// ReSharper restore PossibleMultipleEnumeration
 			UpdateKeyStates();
 		}
 
 		private void ProcessKeyTriggers(IEnumerable<Entity> entities)
 		{
-			foreach (var trigger in entities.OfType<KeyTrigger>())
-				trigger.WasInvoked = GetKeyState(trigger.Key) == trigger.State;
+			foreach (Entity entity in entities)
+			{
+				var trigger = entity as KeyTrigger;
+				if (trigger != null && GetKeyState(trigger.Key) == trigger.State)
+					trigger.Invoke();
+			}
 		}
 
 		private void ProcessInputHandling(IEnumerable<Entity> entities)
 		{
-			var entityWithFocus =
-				entities.OfType<KeyboardControllable>().FirstOrDefault(
-					entity => entity.IsEnabled && entity.HasFocus);
-			if (entityWithFocus != null)
-				entityWithFocus.Text = HandleInput(entityWithFocus.Text);
-			else
-				HandleInput("");
+			foreach (Entity entity in entities)
+			{
+				var keyEntity = entity as KeyboardControllable;
+				if (keyEntity != null && keyEntity.IsEnabled && keyEntity.HasFocus)
+				{
+					keyEntity.Text = HandleInput(keyEntity.Text);
+					return;
+				}
+			}
+			newlyPressedKeys.Clear();
 		}
 
 		public string HandleInput(string inputText)
 		{
-			Key[] pressedKeys = newlyPressedKeys.ToArray();
+			foreach (var key in newlyPressedKeys)
+				inputText = HandleInputForKey(inputText, key);
 			newlyPressedKeys.Clear();
-			for (int i = 0; i < pressedKeys.Length; i++)
-				inputText = HandleInputForKey(inputText, pressedKeys[i]);
 			return inputText;
 		}
 

@@ -18,9 +18,9 @@ namespace DeltaEngine.Input.Windows
 			IsAvailable = CheckIfWindows7OrHigher();
 			if (IsAvailable)
 				hook = new TouchHook(window);
-			else
-				Logger.Warning("Touch is not supported by the OS. Touch triggers won't work!");
-		}
+			else //ncrunch: no coverage start (can only be reached from Windows Vista or earlier)
+				Logger.Warning("Touch is not supported by the OS. Touch triggers won't work!"); 
+		}//ncrunch: no coverage end
 
 		private readonly TouchHook hook;
 		private readonly TouchCollection touches;

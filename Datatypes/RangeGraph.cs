@@ -6,16 +6,23 @@ namespace DeltaEngine.Datatypes
 	public class RangeGraph<T> : BaseRangeGraph<T>
 		where T : Lerp<T>
 	{
-		public RangeGraph() {}
+		protected RangeGraph() {}
 
 		public RangeGraph(T minimum, T maximum)
 			: base(minimum, maximum) {}
 
-		public RangeGraph(List<T> values) : base(values)
-		{}
+		public RangeGraph(T value)
+			: this(new List<T> { value }) {}
+
+		public RangeGraph(List<T> values)
+			: base(values) {}
+
+		public RangeGraph(T[] values): base(values) {} 
 
 		public override T GetInterpolatedValue(float interpolation)
 		{
+			if (Values.Length == 1)
+				return Values[0];
 			if (interpolation >= 1.0f)
 				return Values[Values.Length - 1];
 			var intervalLeft = (int)(interpolation * (Values.Length - 1));

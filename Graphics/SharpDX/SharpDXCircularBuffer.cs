@@ -6,7 +6,7 @@ using SharpDX;
 using SharpDX.DXGI;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
-using DxDevice = SharpDX.Direct3D11.Device;
+using DXDevice = SharpDX.Direct3D11.Device;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace DeltaEngine.Graphics.SharpDX
@@ -32,7 +32,7 @@ namespace DeltaEngine.Graphics.SharpDX
 		}
 
 		private SharpDXDevice sharpDXDevice;
-		private DxDevice nativeDevice;
+		private DXDevice nativeDevice;
 		private DeviceContext deviceContext;
 		private SharpDXBuffer nativeVertexBuffer;
 		private SharpDXBuffer nativeIndexBuffer;

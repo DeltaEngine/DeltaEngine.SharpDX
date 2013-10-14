@@ -17,12 +17,13 @@ namespace DeltaEngine.Graphics.Tests
 	/// </summary>
 	public class DrawingPerformanceTests : TestWithMocksOrVisually
 	{
+		//ncrunch: no coverage start
 		/// <summary>
 		/// Proof that 30k lines can be rendered with up to 3000fps in a small window, fast GPU. Even
 		/// 1000fps means that 30 million lines are drawn each second. More than 30k lines are possible
 		/// with multiple draw calls, but causes multiple CircularBuffer flushes and thus not faster.
 		/// </summary>
-		[Test]
+		[Test, Category("Slow")]
 		public void Draw30000LinesPerFrame()
 		{
 			var manyLines = new DrawingTests.Line(Vector2D.Zero, new Vector2D(1280, 720), Color.Red);
@@ -41,10 +42,10 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		/// <summary>
-		/// Draws 100*100 small images (=10000 images =20000 polygons) 50 times a frame to reach 1mio
-		/// polygons drawn per frame. Can reach 100fps or more, which means 100mio+ polygons per second.
+		/// Draws 100*100 small images (=10000 images =20000 polygons) 50 times a frame to reach 1 million
+		/// polygons drawn per frame. Can reach 100fps or more, which means 100 million polygons per second.
 		/// </summary>
-		[Test]
+		[Test, Category("Slow")]
 		public void DrawImagesWithOneMillionPolygonsPerFrame()
 		{
 			var verticesAndIndices = CreateVerticesAndIndices();
@@ -94,6 +95,7 @@ namespace DeltaEngine.Graphics.Tests
 			imagesIndices.Add((short)(quadIndex + 3));
 		}
 
+#pragma warning disable 1570
 		/// <summary>
 		/// Draw 100x100 quads 50 times to reach 1 million polygons per frame still at high frame rates.
 		/// See forum discussion: http://deltaengine.net/Forum/default.aspx?g=posts&t=1459
@@ -104,17 +106,17 @@ namespace DeltaEngine.Graphics.Tests
 			{
 				this.drawing = drawing;
 				this.window = window;
-				logo = new Material(Shader.Position2DColorUv, "DeltaEngineLogoOpaque");
+				logo = new Material(Shader.Position2DColorUV, "DeltaEngineLogoOpaque");
 			}
 
 			private readonly Drawing drawing;
 			private readonly Window window;
 			private readonly Material logo;
 
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
 				window.Title = "DrawImagesWithOneMillionPolygonsPerFrame Fps: " + GlobalTime.Current.Fps;
-				foreach (DrawableEntity entity in entities)
+				foreach (DrawableEntity entity in visibleEntities)
 				{
 					var vertices = entity.Get<VertexPosition2DColorUV[]>();
 					var indices = entity.Get<short[]>();

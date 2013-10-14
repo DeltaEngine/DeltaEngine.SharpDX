@@ -55,10 +55,6 @@
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering2D\Sprites\DeltaEngine.Rendering2D.Sprites.csproj">
-      <Project>{FCA7BAAA-3F6E-4CA3-B354-C34AF4F1BDDD}</Project>
-      <Name>DeltaEngine.Rendering2D.Sprites</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DeltaEngine.Physics2D.csproj">
       <Project>{DC3AA434-09B9-43AD-8F43-431811FA054D}</Project>
       <Name>DeltaEngine.Physics2D</Name>

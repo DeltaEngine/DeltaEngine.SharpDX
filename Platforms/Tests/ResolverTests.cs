@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using DeltaEngine.Content;
 using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
+using DeltaEngine.Mocks;
 using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
@@ -62,23 +65,31 @@ namespace DeltaEngine.Platforms.Tests
 		private class C {}
 
 		[Test]
-		public void TryResolveWithInvalidParameter()
+		public void TryResolveWithCustomParameter()
 		{
-			resolver.Register(typeof(D));
-			try
-			{
-				resolver.Resolve(typeof(D), null);
-			} //ncrunch: no coverage
-			catch (Exception)
-			{
-				return;
-			} //ncrunch: no coverage start
-			Assert.Fail("The resolving didn't throw!");
+			resolver.Register(typeof(DummyClassWithString));
+			Assert.DoesNotThrow(() => resolver.Resolve(typeof(DummyClassWithString), "Huhu"));
 		}
 
-		private class D
+		private class DummyClassWithString
 		{
-			public D(string value) {} //ncrunch: no coverage
+			// ReSharper disable UnusedParameter.Local
+			public DummyClassWithString(string value) {}
+			// ReSharper restore UnusedParameter.Local
+		}
+
+		[Test]
+		public void TryResolveWithInvalidParameter()
+		{
+			resolver.Register(typeof(DummyClassWithString));
+			Assert.Throws<Resolver.ResolvingFailed>(() => resolver.Resolve(typeof(DummyClassWithString)));
+		}
+
+		[Test]
+		public void TryResolveWithContentCreationData()
+		{
+			var creationData = new ImageCreationData(new Size(1));
+			Assert.IsNotNull(resolver.Resolve(typeof(MockImage), creationData));
 		}
 
 		[Test]

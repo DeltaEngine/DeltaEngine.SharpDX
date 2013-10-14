@@ -1,25 +1,23 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D.Fonts;
 
 namespace DeltaEngine.Rendering2D.Graphs
 {
 	/// <summary>
-	/// Labels at fixed vertical intervals to the right of the graph - eg. if there were 
-	/// five percentiles there'd be six lines at 0%, 20%, 40%, 60%, 80% and 100% of the 
-	/// maximum value.
+	/// Labels at fixed vertical intervals to the right of the graph - eg. if there were five
+	/// percentiles there's be six lines at 0%, 20%, 40%, 60%, 80% and 100% of the maximum value.
 	/// </summary>
 	internal class RenderPercentileLabels
 	{
 		public void Refresh(Graph graph)
 		{
 			ClearOldPercentileLabels();
-			if (graph.Visibility == Visibility.Show && Visibility == Visibility.Show)
+			if (graph.IsVisible && IsVisible)
 				CreateNewPercentileLabels(graph);
 		}
 
-		public Visibility Visibility { get; set; }
+		public bool IsVisible { get; set; }
 
 		private void ClearOldPercentileLabels()
 		{

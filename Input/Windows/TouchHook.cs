@@ -29,7 +29,7 @@ namespace DeltaEngine.Input.Windows
 		{
 			if(!(window is FormsWindow))
 				return;
-
+			//ncrunch: no coverage start. We couldn't test that with MockWindows
 			var formsWindow = window as FormsWindow;
 			formsWindow.NativeEvent += delegate(ref Message message)
 			{
@@ -47,6 +47,7 @@ namespace DeltaEngine.Input.Windows
 			if (newTouches != null)
 				nativeTouches.AddRange(newTouches);
 		}
+		//ncrunch: no coverage end
 
 		internal static NativeTouchInput[] GetTouchDataFromHandle(int inputCount, IntPtr handle)
 		{
@@ -61,7 +62,7 @@ namespace DeltaEngine.Input.Windows
 		public override void Dispose()
 		{
 			if (windowHandle != IntPtr.Zero)
-				NativeMethods.UnregisterTouchWindow(windowHandle);
+				NativeMethods.UnregisterTouchWindow(windowHandle); //ncrunch: no coverage. Is always zero
 			base.Dispose();
 		}
 	}

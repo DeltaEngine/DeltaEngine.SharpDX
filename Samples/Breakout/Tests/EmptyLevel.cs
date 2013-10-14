@@ -10,7 +10,7 @@ namespace Breakout.Tests
 		{
 			for (int x = 0; x < rows; x++)
 				for (int y = 0; y < columns; y++)
-					bricks[x, y].Visibility = Visibility.Hide;
+					bricks[x, y].IsVisible = false;
 		}
 	}
 }

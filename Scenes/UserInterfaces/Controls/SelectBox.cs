@@ -85,8 +85,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			scrollbar.RenderLayer = RenderLayer + 1;
 			scrollbar.MaxValue = values.Count - 1;
 			scrollbar.ValueWidth = DisplayCount;
-			scrollbar.Visibility = Visibility == Visibility.Hide || values.Count <= MaxDisplayCount
-				? Visibility.Hide : Visibility.Show;
+			scrollbar.IsVisible = IsVisible && values.Count > MaxDisplayCount;
 		}
 
 		private const float ScrollbarPercentageWidth = 0.1f;
@@ -109,7 +108,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				var font = new FontText(theme.Font, "", Rectangle.Unused)
 				{
 					HorizontalAlignment = HorizontalAlignment.Left,
-					Visibility = Visibility
+					IsVisible = IsVisible
 				};
 				AddChild(font);
 				texts.Add(font);
@@ -128,13 +127,12 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		private int GetMouseoverLineNumber()
 		{
 			float x = Get<InteractiveState>().RelativePointerPosition.X;
-			if (scrollbar.Visibility == Visibility.Show && x >= 1.0f - ScrollbarPercentageWidth)
+			if (scrollbar.IsVisible && x >= 1.0f - ScrollbarPercentageWidth)
 				return -1; //ncrunch: no coverage
 			float y = Get<InteractiveState>().RelativePointerPosition.Y;
 			return y < 0.0f || y > 1.0f ? -1 : (int)(y * DisplayCount);
-		}
+		} //ncrunch: no coverage start
 
-		//ncrunch: no coverage start
 		public override void Update()
 		{
 			base.Update();
@@ -158,8 +156,6 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				texts[i].Text = values[i + scrollbar.LeftValue].ToString();
 			}
 		}
-
-		//ncrunch: no coverage end
 
 		private const float ReductionDueToBorder = 0.9f;
 	}

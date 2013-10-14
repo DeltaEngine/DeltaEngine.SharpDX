@@ -91,5 +91,12 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 			camera.MoveDown(1.0f);
 			Assert.AreEqual(new Vector3D(0.0f, -1.0f, -1.0f), camera.Position);
 		}
+
+		[Test, CloseAfterFirstFrame]
+		public void Zoom()
+		{
+			camera.Zoom(4.0f);
+			Assert.AreEqual(0.25f, camera.ZoomScale);
+		}
 	}
 }

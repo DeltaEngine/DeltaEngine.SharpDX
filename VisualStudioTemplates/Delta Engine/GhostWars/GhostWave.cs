@@ -4,7 +4,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
@@ -15,7 +15,7 @@ namespace $safeprojectname$
 			this.start = start;
 			this.target = target;
 			sprites = new Sprite[waveSize];
-			var ghostMaterial = new Material(Shader.Position2DColorUv, "Ghost") {
+			var ghostMaterial = new Material(Shader.Position2DColorUV, "Ghost") {
 				DefaultColor = color
 			};
 			for (int num = 0; num < waveSize; num++)
@@ -37,7 +37,7 @@ namespace $safeprojectname$
 				newSprite.Size *= GameLogic.GhostSize;
 
 			if (start.X > target.X)
-				newSprite.Coordinates = new Sprite.SpriteCoordinates(Rectangle.One, FlipMode.Horizontal);
+				newSprite.FlipMode = FlipMode.Horizontal;
 
 			return newSprite;
 		}

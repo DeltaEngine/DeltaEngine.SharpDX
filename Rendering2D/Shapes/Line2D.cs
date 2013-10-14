@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 
 namespace DeltaEngine.Rendering2D.Shapes
 {
@@ -14,7 +13,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 		{
 			Color = color;
 			Add(new List<Vector2D> { startPoint, endPoint });
-			OnDraw<DrawLine2D>();
+			OnDraw<Line2DRenderer>();
 		}
 
 		public List<Vector2D> Points
@@ -62,7 +61,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 			var line = new ClippedLine(StartPoint, EndPoint, clippingBounds);
 			StartPoint = line.StartPoint;
 			EndPoint = line.EndPoint;
-			Visibility = line.IsVisible ? Visibility.Show : Visibility.Hide;
+			IsVisible = line.IsVisible;
 		}
 	}
 }

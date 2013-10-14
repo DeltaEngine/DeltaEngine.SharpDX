@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D.Shapes;
 
 namespace DeltaEngine.Rendering2D.Graphs
@@ -11,13 +10,13 @@ namespace DeltaEngine.Rendering2D.Graphs
 	{
 		public void Refresh(Graph graph)
 		{
-			if (graph.Visibility == Visibility.Show && Visibility == Visibility.Show)
+			if (graph.IsVisible && IsVisible)
 				ShowAxes(graph);
 			else
 				HideAxes();
 		}
 
-		public Visibility Visibility { get; set; }
+		public bool IsVisible { get; set; }
 
 		private void ShowAxes(Graph graph)
 		{
@@ -42,12 +41,12 @@ namespace DeltaEngine.Rendering2D.Graphs
 
 		public readonly Line2D XAxis = new Line2D(Vector2D.Zero, Vector2D.Zero, Color.White)
 		{
-			Visibility = Visibility.Hide
+			IsVisible = false
 		};
 
 		public readonly Line2D YAxis = new Line2D(Vector2D.Zero, Vector2D.Zero, Color.White)
 		{
-			Visibility = Visibility.Hide
+			IsVisible = false
 		};
 
 		private static Vector2D ToQuadratic(Vector2D point, Rectangle viewport, Rectangle drawArea)
@@ -69,8 +68,8 @@ namespace DeltaEngine.Rendering2D.Graphs
 
 		internal void HideAxes()
 		{
-			XAxis.Visibility = Visibility.Hide;
-			YAxis.Visibility = Visibility.Hide;
+			XAxis.IsVisible = false;
+			YAxis.IsVisible = false;
 		}
 	}
 }

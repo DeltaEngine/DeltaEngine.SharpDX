@@ -66,18 +66,18 @@ namespace DeltaEngine.Content.Json.Tests
 		}
 
 		[Test]
+		public void UsingNonExistingIndexThrows()
+		{
+			var json = new JsonNode("{ \"layers\":[ { \"sky\":[1, 1] }, { \"ground\":[0, 0] } ] }");
+			Assert.Throws<IndexOutOfRangeException>(() => Assert.NotNull(json["layers"][3]));
+		}
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
 		public void GetStringOfNode()
 		{
 			var json = new JsonNode("{ \"layers\":[ { \"sky\":[1, 1] }, { \"ground\":[0, 0] } ] }");
 			var nodeString = json.ToString();
 			Assert.IsFalse(string.IsNullOrEmpty(nodeString));
-		}
-
-		[Test]
-		public void GivingUnexistantIndexThrows()
-		{
-			var json = new JsonNode("{ \"layers\":[ { \"sky\":[1, 1] }, { \"ground\":[0, 0] } ] }");
-			Assert.Throws<IndexOutOfRangeException>(() => { var nodeValue = json["layers"][3]; });
 		}
 	}
 }

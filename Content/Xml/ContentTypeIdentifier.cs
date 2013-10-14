@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Linq;
+using DeltaEngine.Core;
 
 namespace DeltaEngine.Content.Xml
 {
@@ -46,7 +47,11 @@ namespace DeltaEngine.Content.Xml
 					return ContentType.Material;
 				case ".deltageometry":
 					return ContentType.Geometry;
+				case ".deltascene":
+					return ContentType.Scene;
 			}
+			Logger.Warning("Unknown content type, unable to proceed : " +
+				Path.GetFileName(fileName));
 			throw new UnsupportedContentFileFoundCannotParseType(extension);
 		}
 

@@ -1,6 +1,5 @@
 ﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -11,7 +10,7 @@ namespace CreepyTowers.Tests
 		[Test]
 		public void CheckForCoordinatesRemappingGivenSize()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
+			new Game(Resolve<Window>());
 			var window = Resolve<Window>();
 			window.ViewportPixelSize = new Size(800, 600);
 			var remap = new RemapCoordinates();
@@ -22,7 +21,7 @@ namespace CreepyTowers.Tests
 		[Test]
 		public void CheckForCoordinatesSpacesRemappingGivenPoint()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
+			new Game(Resolve<Window>());
 			var window = Resolve<Window>();
 			window.ViewportPixelSize = new Size(800, 600);
 			var remap = new RemapCoordinates();

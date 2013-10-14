@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Autofac.Core;
 using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
@@ -14,18 +13,19 @@ namespace DeltaEngine.Rendering3D.Cameras.Tests
 	public class PathCameraTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void ThrowExceptionIfNoTrackPositionaAreSpecified()
+		public void ThrowExceptionIfNoTrackPositionIsSpecified()
 		{
 			// The inner exception is PathCamera.NoTrackSpecified
-			Assert.Throws<DependencyResolutionException>(() => CreatePathCamera(null));
-			Assert.Throws<DependencyResolutionException>(() => CreatePathCamera(new Matrix[0]));
-			Assert.Throws<DependencyResolutionException>(
-				() => CreatePathCamera(new[] { Matrix.Identity }));
+			Assert.Throws<Resolver.ResolvingFailed>(() => CreatePathCamera(null));
+			Assert.Throws<Resolver.ResolvingFailed>(() => CreatePathCamera(new Matrix[0]));
+			Assert.Throws<Resolver.ResolvingFailed>(() => CreatePathCamera(new[] { Matrix.Identity }));
 		}
 
 		private static PathCamera CreatePathCamera(Matrix[] cameraTrack)
 		{
-			return Camera.Use<PathCamera>(cameraTrack);
+			var camera = Camera.Use<PathCamera>(cameraTrack);
+			Assert.IsTrue(camera.IsPauseable);
+			return camera;
 		}
 
 		[Test]

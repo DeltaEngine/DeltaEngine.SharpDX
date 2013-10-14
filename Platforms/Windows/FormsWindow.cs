@@ -40,7 +40,7 @@ namespace DeltaEngine.Platforms.Windows
 				(int)settings.Resolution.Height);
 			form.MinimumSize = new SystemSize(1, 1);
 			form.Text = StackTraceExtensions.GetEntryName();
-			BackgroundColor = Datatypes.Color.Black;
+			BackgroundColor = Color.Black;
 			Icon appIcon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 			if (appIcon != null)
 				form.Icon = appIcon;
@@ -51,7 +51,7 @@ namespace DeltaEngine.Platforms.Windows
 		protected FormsWindow(Control panel)
 		{
 			this.panel = panel;
-			BackgroundColor = Datatypes.Color.Black;
+			BackgroundColor = Color.Black;
 		}
 
 		protected readonly Control panel;
@@ -107,7 +107,7 @@ namespace DeltaEngine.Platforms.Windows
 			set { panel.Text = value; }
 		}
 
-		public bool Visibility
+		public bool IsVisible
 		{
 			get { return panel.Visible; }
 		}

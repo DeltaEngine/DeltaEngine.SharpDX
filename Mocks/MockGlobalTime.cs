@@ -19,6 +19,6 @@ namespace DeltaEngine.Mocks
 			get { return UpdatePerSecond; }
 		}
 
-		public const int UpdatePerSecond = 60;
+		public const int UpdatePerSecond = 20;
 	}
 }

@@ -7,11 +7,14 @@ using DeltaEngine.Extensions;
 namespace DeltaEngine.Rendering2D
 {
 	/// <summary>
-	/// 2D entities are the basis of all 2D renderables like lines, sprites etc.
+	/// Basis of all 2D entity objects to render like lines, sprites etc.
 	/// </summary>
 	public class Entity2D : DrawableEntity
 	{
-		protected Entity2D() {}
+		protected Entity2D()
+		{
+			LastDrawArea = Rectangle.Unused;
+		}
 
 		public Entity2D(Rectangle drawArea)
 		{
@@ -20,13 +23,6 @@ namespace DeltaEngine.Rendering2D
 
 		public Rectangle DrawArea { get; set; }
 		public Rectangle LastDrawArea { get; set; }
-
-		protected internal override void FillComponents(List<object> createFromComponents)
-		{
-			base.FillComponents(createFromComponents);
-			foreach (Rectangle component in createFromComponents.OfType<Rectangle>())
-				LastDrawArea = DrawArea = component;
-		}
 
 		public Vector2D TopLeft
 		{
@@ -81,7 +77,7 @@ namespace DeltaEngine.Rendering2D
 			base.NextUpdateStarted();
 		}
 
-		protected bool DidFootprintChange { get; private set; }
+		public bool DidFootprintChange { get; private set; }
 
 		private float GetLastRotation()
 		{
@@ -93,6 +89,30 @@ namespace DeltaEngine.Rendering2D
 		{
 			object lastTickPoint = lastTickLerpComponents.Find(component => component is Vector2D);
 			return lastTickPoint == null ? LastDrawArea.Center : (Vector2D)lastTickPoint;
+		}
+
+		protected internal override List<object> GetComponentsForSaving()
+		{
+			var componentsForSaving = new List<object> { DrawArea, IsVisible };
+			foreach (var component in base.GetComponentsForSaving())
+				if (!component.GetType().Name.Contains("Theme") &&
+					!component.GetType().Name.Contains("Font"))
+					componentsForSaving.Add(component);
+			return componentsForSaving;
+		}
+
+		protected internal override List<object> GetComponentsForViewing()
+		{
+			var componentsForViewing = base.GetComponentsForViewing();
+			componentsForViewing.Add(DrawArea);
+			componentsForViewing.Add(IsVisible);
+			if (!componentsForViewing.Any(c => c is Color))
+				componentsForViewing.Add(Color);
+			if (!componentsForViewing.Any(c => c is float))
+				componentsForViewing.Add(Rotation);
+			if (!componentsForViewing.Any(c => c is Vector2D))
+				componentsForViewing.Add(RotationCenter);
+			return componentsForViewing;
 		}
 
 		public override sealed T Get<T>()
@@ -157,27 +177,41 @@ namespace DeltaEngine.Rendering2D
 			return base.Add(component);
 		}
 
-		public override sealed void Set<T>(T component)
+		public override void SetWithoutInterpolation<T>(T component)
 		{
 			if (typeof(T) == typeof(Rectangle))
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
 				DrawArea = (Rectangle)(object)component;
-			base.Set(component);
+				LastDrawArea = DrawArea;
+			}
+			else if (typeof(T) == typeof(Color))
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
+				Color = (Color)(object)component;
+				LastColor = Color;
+			}
+			else
+				base.SetWithoutInterpolation(component);
+		}
+
+		public override void Set(object component)
+		{
+			if (component is Rectangle)
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
+				DrawArea = (Rectangle)component;
+				if (LastDrawArea == Rectangle.Unused)
+					LastDrawArea = DrawArea;
+			}
+			else
+				base.Set(component);
 		}
 
 		public bool RotatedDrawAreaContains(Vector2D position)
 		{
 			return DrawArea.Contains(Rotation == DefaultRotation
 				? position : position.RotateAround(RotationCenter, -Rotation));
-		}
-
-		protected internal override List<object> GetComponentsForSaving()
-		{
-			var componentsToSave = new List<object> { DrawArea, Visibility };
-			foreach (var component in base.GetComponentsForSaving())
-				if (!component.GetType().Name.Contains("Theme") &&
-					!component.GetType().Name.Contains("Font"))
-					componentsToSave.Add(component);
-			return componentsToSave;
 		}
 	}
 }

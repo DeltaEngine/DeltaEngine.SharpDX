@@ -45,10 +45,10 @@ namespace DeltaEngine.Graphics.Tests
 				private readonly string testName;
 				private readonly Material material;
 
-				public void Draw(IEnumerable<DrawableEntity> entities)
+				public void Draw(List<DrawableEntity> visibleEntities)
 				{
 					window.Title = testName + " Fps: " + GlobalTime.Current.Fps;
-					foreach (var entity in entities)
+					foreach (var entity in visibleEntities)
 						drawing.AddLines(material, entity.Get<VertexPosition2DColor[]>());
 				}
 			}
@@ -69,11 +69,13 @@ namespace DeltaEngine.Graphics.Tests
 				OnDraw<Line.DrawLine>();
 			}
 
+			//ncrunch: no coverage start
 			public void Update()
 			{
 				if (Time.CheckEvery(0.1f))
 					CreateRandomLines((int)(Time.Total * 10));
 			}
+
 
 			private void CreateRandomLines(int numberOfLines)
 			{
@@ -93,6 +95,7 @@ namespace DeltaEngine.Graphics.Tests
 			}
 
 			public bool IsPauseable { get { return true; } }
+			//ncrunch: no coverage end
 		}
 
 		/// <summary>
@@ -140,7 +143,7 @@ namespace DeltaEngine.Graphics.Tests
 							Color.GetRandomColor());
 			}
 
-			public bool IsPauseable { get { return true; } }
+			public bool IsPauseable { get { return true; } } //ncrunch: no coverage
 
 			public class DrawLine : DrawBehavior
 			{
@@ -157,10 +160,10 @@ namespace DeltaEngine.Graphics.Tests
 				private readonly string testName;
 				private readonly Material material;
 
-				public void Draw(IEnumerable<DrawableEntity> entities)
+				public void Draw(List<DrawableEntity> visibleEntities)
 				{
 					window.Title = testName + " Fps: " + GlobalTime.Current.Fps;
-					foreach (var entity in entities)
+					foreach (var entity in visibleEntities)
 						draw.AddLines(material, entity.GetInterpolatedList<VertexPosition2DColor>().ToArray());
 				}
 			}
@@ -183,9 +186,9 @@ namespace DeltaEngine.Graphics.Tests
 			var drawing = Resolve<Drawing>();
 			var shader =
 				ContentLoader.Create<Shader>(
-					new ShaderCreationData(ShaderCodeOpenGL.PositionUvOpenGLVertexCode,
-						ShaderCodeOpenGL.PositionUvOpenGLFragmentCode, ShaderCodeDX11.PositionUvDx11,
-						ShaderCodeDX11.PositionUvDx11, VertexFormat.Position2DUv));
+					new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
+						ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
+						ShaderCodeDX11.PositionUVDX11, VertexFormat.Position2DUV));
 			var image = ContentLoader.Create<Image>(new ImageCreationData(new Size(4)));
 			var generatedMaterial = new Material(shader, image);
 			Assert.Throws<Drawing.LineMaterialShouldNotUseDiffuseMap>(

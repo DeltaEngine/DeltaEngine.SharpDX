@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D.Fonts;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
@@ -19,7 +18,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		{
 			selectBox = new SelectBox(theme,
 				new Rectangle(drawArea.Left, drawArea.Top + drawArea.Height, drawArea.Width,
-					drawArea.Height), values) { Visibility = Visibility.Hide };
+					drawArea.Height), values) { IsVisible = false };
 			selectBox.LineClicked += SelectNewValue;
 			AddChild(selectBox);
 			Values = values;
@@ -58,16 +57,15 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void SelectNewValue(int lineNumber)
 		{
-			if (selectBox.Visibility == Visibility.Hide)
+			if (!selectBox.IsVisible)
 				return;
 			SelectedValue = Values[lineNumber];
-			selectBox.Visibility = Visibility.Hide;
+			selectBox.IsVisible = false;
 		}
 
 		private void ToggleSelectionBoxVisibility()
 		{
-			selectBox.Visibility = selectBox.Visibility == Visibility.Show
-				? Visibility.Hide : Visibility.Show;
+			selectBox.IsVisible = !selectBox.IsVisible;
 		}
 
 		public override void Update()
@@ -87,7 +85,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			{
 				base.IsEnabled = value;
 				if (!value)
-					selectBox.Visibility = Visibility.Hide;
+					selectBox.IsVisible = false;
 			}
 		}
 

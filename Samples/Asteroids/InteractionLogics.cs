@@ -1,8 +1,10 @@
 ﻿using System;
+using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace Asteroids
 {
@@ -10,21 +12,27 @@ namespace Asteroids
 	{
 		public InteractionLogics()
 		{
-			random = new PseudoRandom();
-			Player = new PlayerShip();
-			CreateRandomAsteroids(1);
-			CreateRandomAsteroids(1, 2);
+			explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
+			shipExplosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
 			IncreaseScore += i => { };
 		}
 
+		public void BeginGame()
+		{
+			gameRunning = true;
+			Player = new PlayerShip();
+		}
+
 		public PlayerShip Player { get; private set; }
-		private readonly PseudoRandom random;
+		private ParticleEmitterData explosionData;
+		private ParticleEmitterData shipExplosionData;
+		private bool gameRunning;
 
 		public void CreateRandomAsteroids(int howMany, int sizeMod = 1)
 		{
 			for (int asteroidCount = 0; asteroidCount < howMany; asteroidCount++)
 			{
-				new Asteroid(random, this, sizeMod);
+				new Asteroid(this, sizeMod);
 			}
 		}
 
@@ -32,8 +40,8 @@ namespace Asteroids
 		{
 			for (int asteroidCount = 0; asteroidCount < howMany; asteroidCount++)
 			{
-				var asteroid = new Asteroid(random, this, sizeMod);
-				asteroid.DrawArea = new Rectangle(position, asteroid.DrawArea.Size);
+				var asteroid = new Asteroid(this, sizeMod);
+				asteroid.SetDrawAreaNoInterpolation(new Rectangle(position, asteroid.DrawArea.Size));
 			}
 		}
 
@@ -49,11 +57,21 @@ namespace Asteroids
 				foreach (var projectile in EntitiesRunner.Current.GetEntitiesOfType<Projectile>())
 					if (ObjectsInHitRadius(projectile, asteroid, 0.1f / asteroid.sizeModifier))
 					{
-						projectile.IsActive = false;
+						var explosionEmitter = new ParticleEmitter(explosionData, new Vector3D(projectile.Center));
+						explosionEmitter.RenderLayer = 10;
+						explosionEmitter.DisposeAfterSeconds(0.7f);
+						projectile.Dispose();
 						asteroid.Fracture();
 					}
-				if (ObjectsInHitRadius(Player, asteroid, 0.06f / asteroid.sizeModifier) && GameOver != null)
+				if (Player.IsActive && ObjectsInHitRadius(Player, asteroid, 0.06f / asteroid.sizeModifier))
+				{
+					Player.IsActive = false;
+					var explosionEmitter = new ParticleEmitter(shipExplosionData, new Vector3D(Player.Center));
+					explosionEmitter.RenderLayer = 10;
+					explosionEmitter.DisposeAfterSeconds(0.5f);
+					if(GameOver != null)
 						GameOver();
+				}
 			}
 		}
 
@@ -80,17 +98,32 @@ namespace Asteroids
 
 		public void Restart()
 		{
+			DisposeObjects();
+			BeginGame();
+			gameRunning = true;
+		}
+
+		public void DisposeObjects()
+		{
 			foreach (Asteroid asteroid in EntitiesRunner.Current.GetEntitiesOfType<Asteroid>())
 				asteroid.IsActive = false;
 			foreach (Projectile projectile in EntitiesRunner.Current.GetEntitiesOfType<Projectile>())
-				projectile.IsActive = false;
-			Player = new PlayerShip();
+				projectile.Dispose();
+			foreach (PlayerShip playerShip in EntitiesRunner.Current.GetEntitiesOfType<PlayerShip>())
+				playerShip.IsActive = false;
 		}
 
 		public void Update()
 		{
+			if(!gameRunning)
+				return;
 			CheckAsteroidCollisions();
 			CreateNewAsteroidIfNecessary();
+		}
+
+		public void PauseUpdate()
+		{
+			gameRunning = false;
 		}
 
 		public bool IsPauseable { get { return true; } }

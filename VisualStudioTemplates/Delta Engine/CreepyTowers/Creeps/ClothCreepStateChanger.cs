@@ -1,108 +1,95 @@
 using $safeprojectname$.Towers;
-using DeltaEngine.Core;
 
 namespace $safeprojectname$.Creeps
 {
 	public class ClothCreepStateChanger
 	{
-		public static void ChangeStatesIfClothCreep(Tower.TowerType damageType, Creep creep, 
-			CreepProperties properties)
+		public static void ChangeStatesIfClothCreep(TowerType damageType, Creep creep)
 		{
-			if (properties.CreepType != Creep.CreepType.Cloth)
-				return;
+			if (damageType == TowerType.Ice)
+				SetAffectedByIce(creep);
+			else if (damageType == TowerType.Impact)
+				SetAffectedByImpact(creep);
+			else if (damageType == TowerType.Water)
+				SetAffectedByWater(creep);
+			else if (damageType == TowerType.Acid)
+				SetAffectedByAcid(creep);
+			else if (damageType == TowerType.Fire)
+				SetAffectedByFire(creep);
+		}
 
-			if ((damageType == Tower.TowerType.Ice || damageType == Tower.TowerType.Impact || 
-				damageType == Tower.TowerType.Water))
+		private static void SetAffectedByIce(Creep creep)
+		{
+			if (creep.state.Burst)
 			{
-				creep.state.Slow = true;
-				creep.state.SlowTimer = 0;
-			}
-			if (damageType == Tower.TowerType.Acid)
+				creep.state.Fast = false;
+				creep.state.Burst = false;
+			} else
 			{
-				creep.state.Enfeeble = true;
-				creep.state.EnfeebleTimer = 0;
-			}
-			if (damageType == Tower.TowerType.Fire)
-				SetClothCreepStatesWhenAttackedByFire(creep);
-
-			if (damageType == Tower.TowerType.Water)
-			{
-				if (creep.state.Frozen)
-					return;
-
-				SetClothCreepWetState(creep);
-			}
-			if (damageType == Tower.TowerType.Ice)
-			{
+				StateChanger.MakeCreepSlow(creep);
 				if (creep.state.Wet)
-					SetClothCreepFrozenState(creep);
+					StateChanger.MakeCreepFrozen(creep);
 
-				creep.state.Wet = false;
 				creep.state.Burst = false;
 				creep.state.Burn = false;
-			}
-			if (damageType == Tower.TowerType.Impact)
-				if (creep.state.Frozen)
-			{
-				var chanceForShather = Randomizer.Current.Get(0, 10);
-				if (chanceForShather < 1)
-				{
-					creep.IsActive = false;
-					creep.Shatter();
-				}
+				creep.state.Fast = false;
 			}
 		}
 
-		private static void SetClothCreepStatesWhenAttackedByFire(Creep creep)
+		private static void SetAffectedByImpact(Creep creep)
 		{
-			if (creep.state.Wet)
-			{
-				creep.state.Wet = false;
-				ChangeStartStatesIfClothCreep(Creep.CreepType.Cloth, creep);
-			} else if (creep.state.Frozen)
-			{
-				creep.state.Frozen = false;
-				SetClothCreepWetState(creep);
-			} else
-			{
-				creep.state.Burst = true;
-				creep.state.BurstTimer = 0;
-			}
+			StateChanger.MakeCreepLimitedSlow(creep);
+			if (creep.state.Frozen)
+				StateChanger.CheckChanceForSudden(creep);
+		}
+
+		private static void SetAffectedByWater(Creep creep)
+		{
+			if (creep.state.Fast)
+				creep.state.Fast = false;
+
+			SetClothCreepWetState(creep);
 		}
 
 		private static void SetClothCreepWetState(Creep creep)
 		{
-			creep.state.Burst = false;
-			creep.state.Burn = false;
-			creep.state.WetTimer = 0;
-			creep.state.Wet = true;
-			creep.state.SetVulnerability(Tower.TowerType.Fire, CreepState.VulnerabilityType.Resistant);
-			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.HardBoiled);
-			creep.state.SetVulnerability(Tower.TowerType.Ice, CreepState.VulnerabilityType.Weak);
+			StateChanger.MakeCreepWet(creep);
+			StateChanger.MakeCreepHardBoiledToType(creep, TowerType.Impact);
+			StateChanger.MakeCreepWeakToType(creep, TowerType.Ice);
+			StateChanger.MakeCreepNormalToType(creep, TowerType.Slice);
 		}
 
-		private static void SetClothCreepFrozenState(Creep creep)
+		private static void SetAffectedByAcid(Creep creep)
 		{
-			creep.state.Frozen = true;
-			creep.state.FrozenTimer = 0;
-			creep.state.Paralysed = true;
-			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.Resistant);
-			creep.state.SetVulnerability(Tower.TowerType.Water, CreepState.VulnerabilityType.Resistant);
-			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Vulnerable);
-			creep.state.SetVulnerability(Tower.TowerType.Fire, CreepState.VulnerabilityType.Immune);
+			StateChanger.MakeCreepEnfeeble(creep);
 		}
 
-		public static void ChangeStartStatesIfClothCreep(Creep.CreepType creepType, Creep creep)
+		private static void SetAffectedByFire(Creep creep)
 		{
-			if (creepType != Creep.CreepType.Cloth)
-				return;
+			if (creep.state.Wet)
+			{
+				creep.state.Wet = false;
+				ChangeStartStatesIfClothCreep(creep);
+			} else if (creep.state.Frozen)
+			{
+				creep.state.Frozen = false;
+				StateChanger.MakeCreepUnfreezable(creep);
+				SetClothCreepWetState(creep);
+			} else
+			{
+				StateChanger.MakeCreepFast(creep);
+				StateChanger.MakeCreepBurst(creep);
+			}
+		}
 
+		public static void ChangeStartStatesIfClothCreep(Creep creep)
+		{
 			creep.state.SetVulnerabilitiesToNormal();
-			creep.state.SetVulnerability(Tower.TowerType.Ice, CreepState.VulnerabilityType.HardBoiled);
-			creep.state.SetVulnerability(Tower.TowerType.Slice, CreepState.VulnerabilityType.Weak);
-			creep.state.SetVulnerability(Tower.TowerType.Impact, CreepState.VulnerabilityType.Resistant);
-			creep.state.SetVulnerability(Tower.TowerType.Acid, CreepState.VulnerabilityType.Vulnerable);
-			creep.state.SetVulnerability(Tower.TowerType.Fire, CreepState.VulnerabilityType.Vulnerable);
+			StateChanger.MakeCreepHardBoiledToType(creep, TowerType.Ice);
+			StateChanger.MakeCreepWeakToType(creep, TowerType.Slice);
+			StateChanger.MakeCreepHardBoiledToType(creep, TowerType.Impact);
+			StateChanger.MakeCreepVulnerableToType(creep, TowerType.Acid);
+			StateChanger.MakeCreepVulnerableToType(creep, TowerType.Fire);
 		}
 	}
 }

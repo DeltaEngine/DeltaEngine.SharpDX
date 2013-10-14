@@ -185,14 +185,13 @@ namespace DeltaEngine.Content.Online
 			RemoveExistingEntry(entry, parent);
 			var child = new XmlData("ContentMetaData");
 			parent.AddChild(child);
-			child.Attributes.Clear();
 			child.Attributes.AddRange(ParseAttributes(entry));
 		}
 
 		private static void RemoveExistingEntry(ContentMetaData entry, XmlData parent)
 		{
 			foreach (var child in parent.Children)
-				if (child.GetAttributeValue("Name") == entry.Name)
+				if (child.GetAttributeValue("Name").Compare(entry.Name))
 				{
 					parent.RemoveChild(child);
 					break;
@@ -228,7 +227,7 @@ namespace DeltaEngine.Content.Online
 		{
 			XmlData entryToDelete = null;
 			foreach (var child in XmlFile.Root.Children)
-				if (child.GetAttributeValue("Name") == content.ContentName)
+				if (child.GetAttributeValue("Name").Compare(content.ContentName))
 					entryToDelete = child;
 			if (entryToDelete == null)
 				return;
@@ -240,14 +239,19 @@ namespace DeltaEngine.Content.Online
 				ContentDeleted(content.ContentName);
 		}
 
-		private static void DeleteFiles(XmlData entry)
+		private void DeleteFiles(XmlData entry)
 		{
 			var localFilePath = entry.GetAttributeValue("LocalFilePath");
-			if (string.IsNullOrEmpty(localFilePath))
-				foreach (var child in entry.Children)
-					DeleteFiles(child);
-			else
+			if (NoContentEntryUsesFile(entry, localFilePath))
 				File.Delete(Path.Combine(contentPath, localFilePath));
+		}
+
+		private bool NoContentEntryUsesFile(XmlData entry, string localFilePath)
+		{
+			foreach (var child in XmlFile.Root.Children)
+				if (child != entry && child.GetAttributeValue("LocalFilePath").Compare(localFilePath))
+					return false;
+			return true;
 		}
 
 		public event Action<string> ContentDeleted;

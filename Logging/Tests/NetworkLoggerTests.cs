@@ -3,7 +3,6 @@ using System.Threading;
 using DeltaEngine.Core;
 using DeltaEngine.Networking.Messages;
 using DeltaEngine.Networking.Tcp;
-using Microsoft.Win32;
 using NUnit.Framework;
 
 namespace DeltaEngine.Logging.Tests
@@ -29,20 +28,6 @@ namespace DeltaEngine.Logging.Tests
 		}
 
 		private LocalhostLogServer server;
-
-		private static string GetApiKeyFromRegistry()
-		{
-			string apiKey = "";
-			using (var key = Registry.CurrentUser.OpenSubKey(@"Software\DeltaEngine\Editor", false))
-				if (key != null)
-					apiKey = (string)key.GetValue("ApiKey");
-			if (string.IsNullOrEmpty(apiKey))
-				throw new ApiKeyNotSetPleaseStartEditor();
-			return apiKey;
-		}
-
-		private class ApiKeyNotSetPleaseStartEditor : Exception { }
-
 		private NetworkLogger logger;
 
 		[TestFixtureTearDown]

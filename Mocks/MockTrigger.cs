@@ -5,11 +5,5 @@ namespace DeltaEngine.Mocks
 	/// <summary>
 	/// Mocks an input trigger during unit tests.
 	/// </summary>
-	public class MockTrigger : Trigger
-	{
-		public void Invoke()
-		{
-			WasInvoked = true;
-		}
-	}
+	public class MockTrigger : Trigger {}
 }

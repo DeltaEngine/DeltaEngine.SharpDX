@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D.Shapes;
 
 namespace DeltaEngine.Rendering2D.Graphs
@@ -152,7 +151,7 @@ namespace DeltaEngine.Rendering2D.Graphs
 				UpdateLine(i);
 			if (lines.Count > 0)
 				for (int i = lines.Count - 1; i >= points.Count - 1; i--)
-					RemoveLine(i);
+					RemoveLine(i); //ncrunch: no coverage
 		}
 
 		private void UpdateLine(int i)
@@ -162,8 +161,8 @@ namespace DeltaEngine.Rendering2D.Graphs
 			line.EndPoint = ToQuadratic(points[i], viewport, drawArea);
 			line.RenderLayer = graph.RenderLayer + RenderLayerOffset;
 			line.Clip(clippingBounds);
-			if (graph.Visibility == Visibility.Hide)
-				line.Visibility = Visibility.Hide;
+			if (!graph.IsVisible)
+				line.IsVisible = false;
 		}
 
 		private const int RenderLayerOffset = 3;

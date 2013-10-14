@@ -1,133 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using CreepyTowers.Content;
 using CreepyTowers.Towers;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Multimedia;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace CreepyTowers.GUI
 {
-	public class TowerSelectionPanel : Scene, IDisposable
+	public class TowerSelectionPanel
 	{
 		public TowerSelectionPanel(Vector2D position, Manager manager)
 		{
+			SelectionPanel = ContentLoader.Load<Scene>("TowerSelectionPanel");
 			clickedPosition = position;
 			this.manager = manager;
 			DisplayTowerSelectionPanel();
+			PutButtonsOnRightPosition();
 		}
 
-		private Vector2D clickedPosition;
+		public readonly Scene SelectionPanel;
+		private readonly Vector2D clickedPosition;
 		private readonly Manager manager;
 
 		private void DisplayTowerSelectionPanel()
 		{
-			DrawAcidTowerButton();
-			DrawFireTowerButton();
-			DrawIceTowerButton();
-			DrawImpactTowerButton();
-			DrawSliceTowerButton();
-			DrawWaterTowerButton();
+			foreach (var control in SelectionPanel.Controls)
+				if (control.GetType() == typeof(Button))
+				{
+					var button = (Button)control;
+					if (button.ContainsTag(TowerType.Acid.ToString()))
+						AddClickEvent((InteractiveButton)button, TowerType.Acid,
+							TowerModels.TowerAcidConeJanitorHigh.ToString());
+					if (button.ContainsTag(TowerType.Fire.ToString()))
+						AddClickEvent((InteractiveButton)button, TowerType.Fire,
+							TowerModels.TowerFireCandlehulaHigh.ToString());
+					if (button.ContainsTag(TowerType.Ice.ToString()))
+						AddClickEvent((InteractiveButton)button, TowerType.Ice,
+							TowerModels.TowerIceConeIceladyHigh.ToString());
+					if (button.ContainsTag(TowerType.Impact.ToString()))
+						AddClickEvent((InteractiveButton)button, TowerType.Impact,
+							TowerModels.TowerImpactRangedKnightscalesHigh.ToString());
+					if (button.ContainsTag(TowerType.Slice.ToString()))
+						AddClickEvent((InteractiveButton)button, TowerType.Slice,
+							TowerModels.TowerSliceConeKnifeblockHigh.ToString());
+					if (button.ContainsTag(TowerType.Water.ToString()))
+						AddClickEvent((InteractiveButton)button, TowerType.Water,
+							TowerModels.TowerWaterRangedWatersprayHigh.ToString());
+				}
 		}
 
-		private void DrawAcidTowerButton()
-		{
-			var button = CreateInteractiveButton(0.0f, Names.ButtonAcidTower);
-			AddClickEvent(button, Tower.TowerType.Acid, Names.TowerAcidConeJanitor);
-			Add(button);
-		}
-
-		private InteractiveButton CreateInteractiveButton(float angle, string imageName)
-		{
-			var drawArea = CalculateDrawArea(angle);
-			var button = new InteractiveButton(CreateTheme(imageName), drawArea);
-			button.AddTag(imageName);
-			button.RenderLayer = (int)CreepyTowersRenderLayer.Interface;
-			return button;
-		}
-
-		private Rectangle CalculateDrawArea(float angle)
-		{
-			var drawAreaCenterX = (float)(clickedPosition.X + 0.07f * Math.Cos(angle * Math.PI / 180));
-			var drawAreaCenterY = (float)(clickedPosition.Y + 0.07f * Math.Sin(angle * Math.PI / 180));
-			var drawArea = Rectangle.FromCenter(new Vector2D(drawAreaCenterX, drawAreaCenterY),
-				new Size(0.05f));
-			return drawArea;
-		}
-
-		private static Theme CreateTheme(string buttonImageName)
-		{
-			var appearance = new Theme.Appearance(buttonImageName);
-			return new Theme
-			{
-				Button = appearance,
-				ButtonDisabled = new Theme.Appearance(buttonImageName, Color.Gray),
-				ButtonMouseover = appearance,
-				ButtonPressed = appearance,
-				Font = ContentLoader.Load<Font>(Names.FontChelseaMarket14)
-			};
-		}
-
-		private void AddClickEvent(InteractiveButton button, Tower.TowerType type, string towerName)
+		private void AddClickEvent(InteractiveButton button, TowerType type, string towerName)
 		{
 			button.Clicked += () =>
 			{
-				manager.Get<InputCommands>().HideTowerPanel();
-				manager.CreateTower(manager.Get<InputCommands>().PositionInGrid, type, towerName);
+				ContentLoader.Load<Sound>(Sounds.PressButton.ToString()).Play();
+				manager.Get<InGameCommands>().HideTowerPanel();
+				manager.CreateTower(manager.Get<InGameCommands>().PositionInGrid, type, towerName);
 			};
-		}
-
-		private void DrawFireTowerButton()
-		{
-			var button = CreateInteractiveButton(60.0f, Names.ButtonFireTower);
-			AddClickEvent(button, Tower.TowerType.Fire, Names.TowerFireCandlehula);
-			Add(button);
-		}
-
-		private void DrawIceTowerButton()
-		{
-			var button = CreateInteractiveButton(120.0f, Names.ButtonIceTower);
-			AddClickEvent(button, Tower.TowerType.Ice, Names.TowerIceConeIcelady);
-			Add(button);
-		}
-
-		private void DrawImpactTowerButton()
-		{
-			var button = CreateInteractiveButton(180.0f, Names.ButtonImpactTower);
-			AddClickEvent(button, Tower.TowerType.Impact, Names.TowerImpactRangedKnightscales);
-			Add(button);
-		}
-
-		private void DrawSliceTowerButton()
-		{
-			var button = CreateInteractiveButton(240.0f, Names.ButtonSliceTower);
-			AddClickEvent(button, Tower.TowerType.Slice, Names.TowerSliceConeKnifeblock);
-			Add(button);
-		}
-
-		private void DrawWaterTowerButton()
-		{
-			var button = CreateInteractiveButton(300.0f, Names.ButtonWaterTower);
-			AddClickEvent(button, Tower.TowerType.Water, Names.TowerWaterRangedWaterspray);
-			Add(button);
 		}
 
 		public void InactiveButtonsInPanel(List<string> inactiveButtonsTagList)
 		{
 			if (inactiveButtonsTagList == null)
 				return;
-
 			foreach (string tag in inactiveButtonsTagList)
-				foreach (InteractiveButton button in Controls.Where(control => control.ContainsTag(tag)))
+				foreach (InteractiveButton button in
+					SelectionPanel.Controls.Where(control => control.ContainsTag(tag)))
 					button.IsEnabled = false;
 		}
 
-		public new void Dispose()
+		private void PutButtonsOnRightPosition()
 		{
-			Hide();
-			Clear();
+			foreach (var control in SelectionPanel.Controls)
+				if (control.GetType() == typeof(Button))
+					control.DrawArea = new Rectangle(control.DrawArea.TopLeft + clickedPosition,
+						control.DrawArea.Size);
 		}
 	}
 }

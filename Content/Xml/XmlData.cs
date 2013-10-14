@@ -33,7 +33,6 @@ namespace DeltaEngine.Content.Xml
 			{
 				if (string.IsNullOrEmpty(value) || value.Contains(" "))
 					throw new InvalidXmlNameException();
-
 				name = value;
 			}
 		}

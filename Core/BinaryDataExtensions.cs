@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using DeltaEngine.Content;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Core
@@ -15,6 +16,7 @@ namespace DeltaEngine.Core
 	/// </summary>
 	public static class BinaryDataExtensions
 	{
+		//ncrunch: no coverage start (faster to not profile this code)
 		static BinaryDataExtensions()
 		{
 			RegisterAvailableBinaryDataImplementation();
@@ -29,15 +31,16 @@ namespace DeltaEngine.Core
 		{
 			AddPrimitiveTypes();
 			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (Assembly assembly in assemblies.Where(ShouldLoadTypes))
-				AddAssemblyTypes(assembly);
+			foreach (Assembly assembly in assemblies)
+				if (ShouldLoadTypes(assembly))
+					AddAssemblyTypes(assembly);
 		}
 
 		private static bool ShouldLoadTypes(Assembly assembly)
 		{
-			return assembly.IsAllowed() &&
-				!AssemblyExtensions.IsPlatformAssembly(assembly.GetName().Name) ||
-				assembly.GetName().Name == "DeltaEngine";
+			var name = assembly.GetName().Name;
+			return name == "DeltaEngine" || !name.StartsWith("nunit") &&
+				!name.EndsWith(".Xml") && assembly.IsAllowed() && !AssemblyExtensions.IsPlatformAssembly(name);
 		}
 
 		private static void AddPrimitiveTypes()
@@ -64,9 +67,10 @@ namespace DeltaEngine.Core
 			try
 			{
 				Type[] types = assembly.GetTypes();
-				foreach (Type type in types.Where(type => IsValidBinaryDataType(type)))
-					AddType(type);
-			} //ncrunch: no coverage start
+				foreach (Type type in types)
+					if (IsValidBinaryDataType(type))
+						AddType(type);
+			}
 			catch (ReflectionTypeLoadException ex)
 			{
 				foreach (var failedLoader in ex.LoaderExceptions)
@@ -75,16 +79,13 @@ namespace DeltaEngine.Core
 			catch (Exception ex)
 			{
 				Logger.Error(ex);
-			} //ncrunch: no coverage end
+			}
 		}
 
 		private static bool IsValidBinaryDataType(Type type)
 		{
-			if (type.IsAbstract || typeof(Exception).IsAssignableFrom(type))
-				return false;
-			string name = type.FullName;
-			return !name.StartsWith("NUnit.") && !name.EndsWith("Tests") && !name.Contains("<") &&
-				!name.StartsWith("Microsoft.");
+			return !type.IsAbstract && !typeof(Exception).IsAssignableFrom(type) &&
+				!type.Name.StartsWith("<") && !type.Name.EndsWith(".Tests");
 		}
 
 		private static void AddType(Type type)
@@ -94,21 +95,46 @@ namespace DeltaEngine.Core
 			{
 				shortName = type.FullName;
 				if (TypeMap.ContainsKey(shortName))
-					return; //ncrunch: no coverage
+					return;
 			}
 			ShortNames.Add(type, shortName);
 			TypeMap.Add(shortName, type);
+			if (!type.IsGenericType)
+				return;
+			GenericTypeMap.Add(shortName.Replace("`1", ""), type);
+			GenericShortNames.Add(type, shortName.Replace("`1", ""));
 		}
 
 		private static readonly Dictionary<string, Type> TypeMap = new Dictionary<string, Type>();
 		private static readonly Dictionary<Type, string> ShortNames = new Dictionary<Type, string>();
+		private static readonly Dictionary<string, Type> GenericTypeMap =
+			new Dictionary<string, Type>();
+		private static readonly Dictionary<Type, string> GenericShortNames =
+			new Dictionary<Type, string>();
+		//ncrunch: no coverage end
 
 		internal static string GetShortName(object data)
 		{
-			if (ShortNames.ContainsKey(data.GetType()))
-				return ShortNames[data.GetType()];
+			var type = data.GetType();
+			if (ShortNames.ContainsKey(type))
+				return ShortNames[type];
+			if (IsGenericType(type))
+				return CreateGenericType(type);
 			throw new NoShortNameStoredFor(data);
 		}
+
+		private static bool IsGenericType(Type type)
+		{
+			return type.IsGenericType && GenericShortNames.ContainsKey(type.GetGenericTypeDefinition());
+		}
+
+		private static string CreateGenericType(Type type)
+		{
+			return GenericShortNames[type.GetGenericTypeDefinition()] + GenericTypeSeparator +
+				ShortNames[type.GetGenericArguments()[0]];
+		}
+
+		private const char GenericTypeSeparator = '|';
 
 		internal class NoShortNameStoredFor : Exception
 		{
@@ -119,7 +145,13 @@ namespace DeltaEngine.Core
 		internal static string GetShortNameOrFullNameIfNotFound(this object data)
 		{
 			var type = GetTypeOrObjectType(data);
-			return ShortNames.ContainsKey(type) ? ShortNames[type] : type.AssemblyQualifiedName;
+			if (ShortNames.ContainsKey(type))
+				return ShortNames[type];
+			if (IsGenericType(type))
+				return CreateGenericType(type); // ncrunch: no coverage
+			if (data is ContentData && ShortNames.ContainsKey(type.BaseType))
+				return ShortNames[type.BaseType]; // ncrunch: no coveragev
+			return type.AssemblyQualifiedName;
 		}
 
 		internal static Type GetTypeOrObjectType(Object element)
@@ -129,7 +161,20 @@ namespace DeltaEngine.Core
 
 		public static Type GetTypeFromShortNameOrFullNameIfNotFound(this string typeName)
 		{
-			return TypeMap.ContainsKey(typeName) ? TypeMap[typeName] : Type.GetType(typeName, true);
+			return TypeMap.ContainsKey(typeName)
+				? TypeMap[typeName] : GetGenericTypeFromShortName(typeName);
+		}
+
+		private static Type GetGenericTypeFromShortName(string typeName)
+		{
+			if (typeName.Contains(GenericTypeSeparator))
+			{
+				var typeParts = typeName.Split(GenericTypeSeparator);
+				if (typeParts.Length == 2 && GenericTypeMap.ContainsKey(typeParts[0]) &&
+					TypeMap.ContainsKey(typeParts[1]))
+					return GenericTypeMap[typeParts[0]].MakeGenericType(TypeMap[typeParts[1]]);
+			} // ncrunch: no coverage
+			return Type.GetType(typeName, true);
 		}
 
 		/// <summary>
@@ -162,9 +207,8 @@ namespace DeltaEngine.Core
 				throw new NotEnoughDataLeftInStream(reader.BaseStream.Length);
 			string shortName = reader.ReadString();
 			var dataVersion = ReadDataVersionNumber(reader);
-			if (TypeMap.ContainsKey(shortName))
-				return BinaryDataLoader.TryCreateAndLoad(TypeMap[shortName], reader, dataVersion);
-			throw new UnknownMessageTypeReceived(shortName); //ncrunch: no coverage
+			var type = GetTypeFromShortNameOrFullNameIfNotFound(shortName);
+			return BinaryDataLoader.TryCreateAndLoad(type, reader, dataVersion);
 		}
 
 		public class NotEnoughDataLeftInStream : Exception
@@ -176,12 +220,6 @@ namespace DeltaEngine.Core
 		private static Version ReadDataVersionNumber(BinaryReader r)
 		{
 			return new Version(r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte());
-		}
-
-		public class UnknownMessageTypeReceived : Exception
-		{
-			public UnknownMessageTypeReceived(string message)
-				: base(message) {}
 		}
 
 		public static MemoryStream SaveToMemoryStream(object binaryData)

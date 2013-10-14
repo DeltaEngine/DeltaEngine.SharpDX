@@ -1,86 +1,103 @@
 ﻿using System;
+using System.Collections.Generic;
+using CreepyTowers.Content;
+using CreepyTowers.Levels;
 using CreepyTowers.Towers;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering2D.Sprites;
-using DeltaEngine.Rendering3D.Models;
+using DeltaEngine.GameLogic;
+using DeltaEngine.Rendering2D.Shapes;
+using DeltaEngine.Rendering3D;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace CreepyTowers.Creeps
 {
 	/// <summary>
 	/// Enemy creature, its features determined by the type given to the constructor.
 	/// </summary>
-	public class Creep : Model, IDisposable
+	public sealed class Creep : DrawableEntity, Actor
 	{
-		public Creep(Vector3D position, string name, CreepProperties creepProperties)
-			: base(name, position)
+		public Creep(CreepType type, Vector3D position, float rotationZ)
 		{
+			Add(Data = ContentLoader.Load<CreepPropertiesXml>("CreepProperties").Get(type));
 			Position = position;
-			SetupHealthBar();
-			SetDefaultValues();
-			Add(creepProperties);
-			Start<MovementInGrid>();
+			Orientation = Quaternion.FromAxisAngle(Vector3D.UnitZ, rotationZ);
+			hitpointBar = new FilledRect(CurrentHpRect, Color.Green);
+			Scale = Vector3D.One;
 			state = new CreepState();
-			creepStateChanger = new CreepStateChanger();
-			creepStateChanger.SetStartStateOfCreep(creepProperties.CreepType, this);
-			calculateDamage = new CalculateDamage();
+			SetRenderLayer();
+			SetStartStateOfCreep();
+			Add(ContentLoader.Load<ModelData>(Data.Name));
+			OnDraw<ModelRenderer>();
 		}
 
+		//TODO: add 2D constructor
+		public readonly CreepData Data;
+		public float CurrentHp { get; set; }
+		public readonly FilledRect hitpointBar;
+		public Vector3D Position { get; set; }
+		public Quaternion Orientation { get; set; }
+		public Vector3D Scale { get; set; }
+		public Vector3D Target { get; set; }
+		public List<Vector3D> Path { get; set; }
+		public LevelGrid Grid; //TODO: remove, this should not be here
 		public CreepState state;
-		private readonly CreepStateChanger creepStateChanger;
-		private readonly CalculateDamage calculateDamage;
 
-		private void SetupHealthBar()
+		private Rectangle CurrentHpRect
 		{
-			HealthBar = new Sprite(new Material(Shader.Position2DUv, Names.ImageHealthBarGreen100),
-				Rectangle.Zero);
-			HealthBar.RenderLayer = (int)CreepyTowersRenderLayer.Interface;
+			get
+			{
+				return new Rectangle(Position.GetVector2D(),
+					new Size((CurrentHp / Data.MaxHp) * 0.2f, 0.2f));
+			}
 		}
 
-		private void SetDefaultValues()
+		private void SetRenderLayer()
 		{
 			RenderLayer = (int)CreepyTowersRenderLayer.Creeps;
 		}
 
-		public Sprite HealthBar { get; set; }
-		public readonly Size HealthBarSize = new Size(0.04f, 0.005f);
-
-		public enum CreepType
+		private void SetStartStateOfCreep()
 		{
-			Paper,
-			Cloth,
-			Wood,
-			Plastic,
-			Sand,
-			Glass,
-			Iron
+			StateChanger.SetStartStateOfCreep(this);
 		}
 
-		public void ReceiveAttack(Tower.TowerType damageType, float rawDamage)
+		public void RecalculateHitpointBar()
 		{
-			var properties = Get<CreepProperties>();
-			creepStateChanger.CheckIfChangingCreepState(damageType, this, properties);
+			hitpointBar.DrawArea = CurrentHpRect;
+			hitpointBar.Color = CurrentHp > Data.MaxHp / 2
+				? Color.Green : CurrentHp > Data.MaxHp / 4 ? Color.Orange : Color.Red;
+		}
+
+		public void ReceiveAttack(TowerType damageType, float rawDamage)
+		{
 			if (!IsActive)
 				return;
-			var interactionEffect = calculateDamage.CalculateResistanceBasedOnStates(damageType, this);
-			float dmg;
-			if (state.Enfeeble)
-				dmg = (rawDamage - (properties.Resistance / 2)) * interactionEffect;
-			else
-				dmg = (rawDamage - properties.Resistance) * interactionEffect;
-			properties.CurrentHp -= dmg;
-			if (properties.CurrentHp <= 0.0f)
+			CheckCreepState(damageType);
+			var interactionEffect = CalculateResistanceBasedOnStates(damageType);
+			float resistance = state.Enfeeble ? Data.Resistance * 0.5f : Data.Resistance;
+			float damage = (rawDamage - resistance) * interactionEffect;
+			CurrentHp -= damage;
+			if (CurrentHp <= 0.0f)
 				Die();
+		}
+
+		private void CheckCreepState(TowerType type)
+		{
+			StateChanger.CheckCreepState(type, this);
+		}
+
+		public float CalculateResistanceBasedOnStates(TowerType damageType)
+		{
+			return Data.TypeDamageModifier[damageType];
 		}
 
 		private void Die()
 		{
-			//DisplayCreepDieEffect();
-
+			DisplayCreepDieEffect();
 			if (CreepIsDead != null)
 				CreepIsDead();
-
 			Dispose();
 		}
 
@@ -88,14 +105,10 @@ namespace CreepyTowers.Creeps
 
 		private void DisplayCreepDieEffect()
 		{
-			//var creep2DPoint = Game.CameraAndGrid.GameCamera.WorldToScreenPoint(Position);
-			//var drawArea = Rectangle.FromCenter(creep2DPoint, new Size(0.07f));
-			//DyingEffect = new SpriteSheetAnimation("SpriteDyingCloud", drawArea);
-			//DyingEffect.RenderLayer = (int)CreepyTowersRenderLayer.Interface;
-			//DyingEffect.FinalFrame += RemoveDyingEffect;
+			var emitterData = ContentLoader.Load<ParticleEmitterData>(Effects.SmokecloudEffect.ToString());
+			var emitter = new Particle3DPointEmitter(emitterData, Position);
+			emitter.SpawnAndDispose();
 		}
-
-		public SpriteSheetAnimation DyingEffect { get; private set; }
 
 		public void UpdateHealthBarPositionAndImage()
 		{
@@ -107,74 +120,102 @@ namespace CreepyTowers.Creeps
 
 		public void Dispose()
 		{
-			if (HealthBar != null)
-				HealthBar.IsActive = false;
-
+			if (hitpointBar != null)
+			{
+				hitpointBar.IsActive = false;
+				hitpointBar.IsVisible = false;
+			}
 			IsActive = false;
 		}
 
-		private void RemoveDyingEffect()
-		{
-			//if (DyingEffect != null)
-			//	DyingEffect.IsActive = false;
-		}
-
-		// ToDo: Somehow feels like the time logic doesnt work or that the logic is wrong. Needs to be checked.
 		public void UpdateStateTimersAndTimeBasedDamage()
 		{
-			var properties = Get<CreepProperties>();
 			if (state.Burst)
-				if (Time.CheckEvery(1))
-					properties.CurrentHp -= properties.MaxHp / 12;
+				if (Time.CheckEvery(1)) //TODO: should not be hardcoded
+					CurrentHp -= Data.MaxHp / 12; //TODO: should not be hardcoded
 			if (state.Burn)
-				if (Time.CheckEvery(1))
-					properties.CurrentHp -= properties.MaxHp / 16;
+				if (Time.CheckEvery(1)) //TODO: should not be hardcoded
+					CurrentHp -= Data.MaxHp / 16; //TODO: should not be hardcoded
 			UpdateTimers();
 		}
 
 		private void UpdateTimers()
 		{
-			if (state.Slow)
-				state.Slow = state.UpdateSlowState(state.SlowTimer, state.MaxTimeMedium);
-			if (state.Delayed)
-				state.Delayed = state.UpdateSlowState(state.DelayedTimer, state.MaxTimeMedium);
-			if (state.Burn)
-				state.Burn = state.UpdateSlowState(state.BurnTimer, state.MaxTimeMedium);
-			if (state.Burst)
-				state.Burst = state.UpdateSlowState(state.BurstTimer, state.MaxTimeMedium);
 			if (state.Paralysed)
-				state.Paralysed = state.UpdateSlowState(state.ParalysedTimer, state.MaxTimeShort);
+				UpdateParalyzedState();
 			if (state.Frozen)
-				state.Frozen = state.UpdateSlowState(state.FrozenTimer, state.MaxTimeShort);
-			if (state.Fast)
-				state.Fast = state.UpdateSlowState(state.FastTimer, state.MaxTimeMedium);
-			if (state.Enfeeble)
-				state.Enfeeble = state.UpdateSlowState(state.EnfeebleTimer, state.MaxTimeMedium);
+				UpdateFrozenState();
 			if (state.Melt)
-				state.Melt = state.UpdateSlowState(state.MeltTimer, state.MaxTimeLong);
-			if (state.Rust)
-				state.Rust = state.UpdateSlowState(state.RustTimer, state.MaxTimeLong);
+				UpdateMeltState();
 			if (state.Wet)
-				state.Wet = state.UpdateSlowState(state.WetTimer, state.MaxTimeLong);
+				UpdateWetState();
+			if (state.Slow)
+				UpdateSlowState();
+			if (state.Unfreezable)
+				UpdateUnfreezableState();
+		}
+
+		private void UpdateParalyzedState()
+		{
+			state.ParalysedTimer += Time.Delta;
+			state.Paralysed = !(state.ParalysedTimer > state.MaxTimeShort);
+		}
+
+		private void UpdateFrozenState()
+		{
+			state.FrozenTimer += Time.Delta;
+			state.Frozen = !(state.FrozenTimer > state.MaxTimeShort);
+			if (state.Frozen)
+				return;
+			state.Paralysed = false;
+			state.Unfreezable = true;
+			state.UnfreezableTimer = 0;
+			state.Wet = true;
+			state.WetTimer = 0;
+		}
+
+		private void UpdateMeltState()
+		{
+			state.MeltTimer += Time.Delta;
+			state.Melt = !(state.MeltTimer > state.MaxTimeShort);
+			if (state.Melt)
+				return;
+			state.Slow = false;
+			state.Enfeeble = false;
+		}
+
+		private void UpdateWetState()
+		{
+			state.WetTimer += Time.Delta;
+			state.Wet = !(state.WetTimer > state.MaxTimeShort);
+			if (!state.Wet)
+				state.Slow = false;
+		}
+
+		private void UpdateSlowState()
+		{
+			if (state.SlowTimer == -1)
+				return;
+			state.SlowTimer += Time.Delta;
+			state.Slow = !(state.SlowTimer > state.MaxTimeShort);
+		}
+
+		private void UpdateUnfreezableState()
+		{
+			state.UnfreezableTimer += Time.Delta;
+			state.Unfreezable = !(state.UnfreezableTimer > state.MaxTimeMedium);
 		}
 
 		public void Shatter()
 		{
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			foreach (Creep creep in creepList)
-			{
-				if (creep == this)
-					continue;
-
-				var distance = ((creep.Position.X - Position.X) * (creep.Position.X - Position.X)) +
-					((creep.Position.Y - Position.Y) * (creep.Position.Y - Position.Y));
-
-				if (distance > 4)
-					return;
-
-				var properties = creep.Get<CreepProperties>();
-				properties.CurrentHp -= 40;
-			}
+				if (creep != this)
+					if (creep.Position.DistanceSquared(Position) <= DistanceToReceiveShatter)
+						creep.CurrentHp -= AmountHpHurtReceived;
 		}
+
+		private const float DistanceToReceiveShatter = 4.0f;
+		private const float AmountHpHurtReceived = 40.0f;
 	}
 }

@@ -18,27 +18,26 @@ using DeltaEngine.ScreenSpaces;
 namespace DeltaEngine.Platforms
 {
 	/// <summary>
-	/// Starts an application on demand by registering, resolving and running it (via EntitiesRunner)
+	/// Starts an application on demand by registering, resolving and running it (via EntitiesRunner).
+	/// Most of the registration is not used when running with MockResolver, replaces lots of classes.
 	/// </summary>
 	public abstract class AppRunner : ApproveFirstFrameScreenshot
 	{
 		//ncrunch: no coverage start
 		protected void RegisterCommonEngineSingletons()
 		{
-			LoadSettingsAndCommands();
+			LoadFileSettingsAndCommands();
 			CreateOnlineService();
 			CreateDefaultLoggers();
 			CreateConsoleCommandResolver();
 			CreateContentLoader();
-			RegisterInstance(new StopwatchTime());
-			RegisterSingleton<Drawing>();
 			CreateEntitySystem();
 			RegisterMediaTypes();
 			CreateNetworking();
 			CreateScreenSpacesAndCameraResolvers();
 		}
 
-		private void LoadSettingsAndCommands()
+		private void LoadFileSettingsAndCommands()
 		{
 			instancesToDispose.Add(settings = new FileSettings());
 			RegisterInstance(settings);
@@ -70,12 +69,12 @@ namespace DeltaEngine.Platforms
 
 		protected readonly List<IDisposable> instancesToDispose = new List<IDisposable>();
 
+		/// <summary>
+		/// Console commands are only available when not starting from NCrunch. Initialization is slow.
+		/// </summary>
 		private void CreateConsoleCommandResolver()
 		{
-			var consoleCommandManager = new ConsoleCommands(new ConsoleCommandResolver(this));
-			AllRegistrationCompleted +=
-				() => consoleCommandManager.RegisterCommandsFromTypes(alreadyRegisteredTypes);
-			RegisterInstance(consoleCommandManager);
+			ConsoleCommands.resolver = new ConsoleCommandResolver(this);
 		}
 
 		private void CreateContentLoader()
@@ -159,6 +158,11 @@ namespace DeltaEngine.Platforms
 					new[] { "OK" });
 				Environment.Exit((int)ExitCode.ContentMissingAndApiKeyNotSet);
 			}
+			RaiseContentIsReadyEvent();
+		}
+
+		private void RaiseContentIsReadyEvent()
+		{
 			if (ContentIsReady != null)
 				ContentIsReady();
 		}
@@ -195,7 +199,7 @@ namespace DeltaEngine.Platforms
 			instancesToDispose.Add(new Messaging(new AutofacNetworkResolver(this)));
 		}
 
-		protected void CreateScreenSpacesAndCameraResolvers()
+		private void CreateScreenSpacesAndCameraResolvers()
 		{
 			Register<QuadraticScreenSpace>();
 			Register<RelativeScreenSpace>();

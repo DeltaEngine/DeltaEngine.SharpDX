@@ -25,11 +25,13 @@ namespace DeltaEngine.Input.Tests
 		{
 			var rectangle = new FilledRect(Rectangle.Unused, Color.GetRandomColor());
 			new Command((start, end, done) =>
+			//ncrunch: no coverage start
 			{
 				rectangle.DrawArea = Rectangle.FromCorners(start, end);
 				if (done)
 					rectangle = new FilledRect(Rectangle.Unused, Color.GetRandomColor());
 			}).Add(new TouchDragTrigger());
+			//ncrunch: no coverage end
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -43,12 +45,58 @@ namespace DeltaEngine.Input.Tests
 			Assert.IsTrue(isFinished);
 		}
 
+		[Test, CloseAfterFirstFrame]
+		public void IfDistanceIsToSmallNothingWillHappen()
+		{
+			bool isFinished = false;
+			new Command((start, end, done) => isFinished = done).Add(new TouchDragTrigger());
+			SetTouchState(State.Pressing, Vector2D.Zero);
+			SetTouchState(State.Pressed, Vector2D.Zero);
+			SetTouchState(State.Releasing, Vector2D.Zero);
+			Assert.False(isFinished);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void DragTouchHorizontal()
+		{
+			bool isFinished = false;
+			new Command((start, end, done) => isFinished = done).Add(
+				new TouchDragTrigger(DragDirection.Horizontal));
+			SetTouchState(State.Pressing, Vector2D.Zero);
+			SetTouchState(State.Pressed, new Vector2D(1,0));
+			SetTouchState(State.Releasing, new Vector2D(1,0));
+			Assert.IsTrue(isFinished);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void DragTouchVertical()
+		{
+			bool isFinished = false;
+			new Command((start, end, done) => isFinished = done).Add(
+				new TouchDragTrigger(DragDirection.Vertical));
+			SetTouchState(State.Pressing, Vector2D.Zero);
+			SetTouchState(State.Pressed, new Vector2D(0, 1));
+			SetTouchState(State.Releasing, new Vector2D(0, 1));
+			Assert.IsTrue(isFinished);
+		}
+
 		private void SetTouchState(State state, Vector2D position)
 		{
 			if (touch == null)
 				return; //ncrunch: no coverage
 			touch.SetTouchState(0, state, position);
 			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void Create()
+		{
+			var trigger = new TouchDragTrigger("");
+			Assert.AreEqual(DragDirection.Free, trigger.Direction);
+			trigger = new TouchDragTrigger("Horizontal");
+			Assert.AreEqual(DragDirection.Horizontal, trigger.Direction);
+			trigger = new TouchDragTrigger("Vertical");
+			Assert.AreEqual(DragDirection.Vertical, trigger.Direction);
 		}
 	}
 }

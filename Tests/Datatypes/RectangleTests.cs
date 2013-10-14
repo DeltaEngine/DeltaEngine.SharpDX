@@ -273,7 +273,7 @@ namespace DeltaEngine.Tests.Datatypes
 			var rect = new Rectangle(1, 1, 1, 1);
 			Assert.AreEqual(rect, rect.Move(Vector2D.Zero));
 			Assert.AreEqual(new Rectangle(2.0f, 2.0f, 1.0f, 1.0f), rect.Move(Vector2D.One));
-			Assert.AreEqual(new Rectangle(-1.0f, -2.0f, 1.0f, 1.0f), rect.Move(new Vector2D(-2, -3)));
+			Assert.AreEqual(new Rectangle(-1.0f, -2.0f, 1.0f, 1.0f), rect.Move(-2, -3));
 		}
 
 		[Test]

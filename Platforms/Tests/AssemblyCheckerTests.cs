@@ -13,15 +13,17 @@ namespace DeltaEngine.Platforms.Tests
 	/// AssemblyChecker.IsAllowed is used whenever we have to check all loaded assemblies for types.
 	/// Examples include BinaryDataExtensions and AutofacResolver.RegisterAllTypesFromAllAssemblies
 	/// </summary>
+	[Category("Slow")]
 	public class AssemblyCheckerTests : TestWithMocksOrVisually
 	{
+		//ncrunch: no coverage start
 		[TearDown]
 		public void Dispose()
 		{
 			File.Delete(Path.Combine(Directory.GetCurrentDirectory(), "test.dll"));
 		}
 
-		[Test, Category("Slow")]
+		[Test]
 		public void MakeSureToOnlyIncludeAllowedDeltaEngineAndUserAssemblies()
 		{
 			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();

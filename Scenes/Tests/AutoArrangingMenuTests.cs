@@ -2,9 +2,9 @@
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -16,7 +16,7 @@ namespace DeltaEngine.Scenes.Tests
 		public void SetUp()
 		{
 			menu = new AutoArrangingMenu(ButtonSize, BaseRenderLayer);
-			menu.SetBackground(new Material(Shader.Position2DColorUv, "SimpleSubMenuBackground"));
+			menu.SetQuadraticBackground(new Material(Shader.Position2DColorUV, "SimpleSubMenuBackground"));
 			text = new FontText(Font.Default, "", new Rectangle(0.4f, 0.7f, 0.2f, 0.1f));
 		}
 
@@ -155,7 +155,7 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ClearMenuOptionsLeavesOtherControlsAlone()
 		{
-			var logo = new Material(Shader.Position2DUv, "DeltaEngineLogo");
+			var logo = new Material(Shader.Position2DUV, "DeltaEngineLogo");
 			menu.Add(new Sprite(logo, Rectangle.One));
 			menu.AddMenuOption(() => { });
 			Assert.AreEqual(1, menu.Buttons.Count);

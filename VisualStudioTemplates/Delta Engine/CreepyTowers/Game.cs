@@ -1,24 +1,18 @@
-using $safeprojectname$.GUI;
 using DeltaEngine.Core;
-using DeltaEngine.Datatypes;
-using DeltaEngine.Graphics;
+using DeltaEngine.Scenes;
 
 namespace $safeprojectname$
 {
 	public class Game
 	{
-		public Game(Window window, Device device)
+		public Game(Window window)
 		{
 			Game.window = window;
-			Game.device = device;
 			Game.window.Title = "Creepy Towers";
-			Game.window.ViewportPixelSize = new Size(1920, 1080);
 			MaxZoomedOutFovSize = 6.0f;
-			CameraAndGrid = new CreateCameraAndGrid(MaxZoomedOutFovSize);
 		}
 
 		public static Window window;
-		public static Device device;
 
 		public float MaxZoomedOutFovSize
 		{
@@ -26,13 +20,13 @@ namespace $safeprojectname$
 			private set;
 		}
 
-		public static CreateCameraAndGrid CameraAndGrid
+		public static GameCamera CreateCamera
 		{
 			get;
 			private set;
 		}
 
-		public MainMenu GameMainMenu
+		public Scene GameMainMenu
 		{
 			get;
 			private set;

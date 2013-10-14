@@ -2,7 +2,6 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Rendering2D.Sprites;
 using NUnit.Framework;
 
 namespace DeltaEngine.Rendering2D.Fonts.Tests
@@ -89,7 +88,7 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		[Test, ApproveFirstFrameScreenshot]
 		public void DrawFontOverSprite()
 		{
-			new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"), Rectangle.HalfCentered)
+			new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), Rectangle.HalfCentered)
 			{
 				Color = Color.PaleGreen,
 				RenderLayer = -1

@@ -5,8 +5,8 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Scenes
 {
@@ -19,7 +19,13 @@ namespace DeltaEngine.Scenes
 			: base(contentName) {}
 
 		public Scene()
-			: base("<GeneratedScene>") { }
+			: base("<GeneratedScene>") {}
+
+		public void Add(IEnumerable<Entity2D> newControls)
+		{
+			foreach (Entity2D control in newControls)
+				Add(control);
+		}
 
 		public virtual void Add(Entity2D control)
 		{
@@ -45,14 +51,20 @@ namespace DeltaEngine.Scenes
 		public void Show()
 		{
 			foreach (var control in controls)
+			{
+				control.IsVisible = true;
 				control.IsActive = true;
+			}
 			isShown = true;
 		}
 
 		public void Hide()
 		{
 			foreach (var control in controls)
+			{
+				control.IsVisible = false;
 				control.IsActive = false;
+			}
 			isShown = false;
 		}
 
@@ -75,12 +87,12 @@ namespace DeltaEngine.Scenes
 			controls.Clear();
 		}
 
-		public void SetBackground(string imageName)
+		public void SetQuadraticBackground(string imageName)
 		{
-			SetBackground(new Material(Shader.Position2DColorUv, imageName));
+			SetQuadraticBackground(new Material(Shader.Position2DColorUV, imageName));
 		}
 
-		public void SetBackground(Material material)
+		public void SetQuadraticBackground(Material material)
 		{
 			if (background != null)
 				Remove(background);
@@ -90,7 +102,23 @@ namespace DeltaEngine.Scenes
 
 		protected Sprite background;
 
-		protected override void DisposeData(){}
+		public void SetViewportBackground(string imageName)
+		{
+			SetViewportBackground(new Material(Shader.Position2DColorUV, imageName));
+		}
+
+		public void SetViewportBackground(Material material)
+		{
+			if (background != null)
+				Remove(background);
+			var screen = ScreenSpace.Current;
+			background = new Sprite(material, screen.Viewport) { RenderLayer = int.MinValue };
+			ScreenSpace.Current.ViewportSizeChanged += () => 
+				background.SetWithoutInterpolation(screen.Viewport);
+			Add(background);
+		}
+
+		protected override void DisposeData() {}
 
 		protected override void LoadData(Stream fileData)
 		{
@@ -98,7 +126,5 @@ namespace DeltaEngine.Scenes
 			controls = sceneData.Controls;
 			background = sceneData.background;
 		}
-
-
 	}
 }

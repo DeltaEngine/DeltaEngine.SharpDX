@@ -10,7 +10,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test]
 		public void CreateGradientGraph()
 		{
-			new ColorGradient(Rectangle.FromCenter(Vector2D.Half, new Size(0.6f, 0.1f)), Color.Red);
+			RangeGraph<Color> colors = new RangeGraph<Color>(Color.Blue, Color.Green);
+			var graph = new ColorGradient(Rectangle.FromCenter(Vector2D.Half, new Size(0.6f, 0.1f)), colors);
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace DeltaEngine.Tests.Entities
 
 		public class EntityCreatorInDraw : DrawBehavior
 		{
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
 				Assert.Throws<EntitiesRunner.YouAreNotAllowedToSetAnEntityComponentInsideTheDrawLoop>(
 					() => new MockEntity().Start<EntitiesRunnerTests.IncrementCounter>().Add(0));

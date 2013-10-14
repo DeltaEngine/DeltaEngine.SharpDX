@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Content
 {
@@ -22,15 +23,33 @@ namespace DeltaEngine.Content
 			UseMipmaps = data.UseMipmaps;
 			AllowTiling = data.AllowTiling;
 			DisableLinearFiltering = data.DisableLinearFiltering;
+			UVCalculator = new UVCalculator();
 		}
+
+		public Size PixelSize { get; private set; }
+		private static readonly Size DefaultTextureSize = new Size(4, 4);
+		public BlendMode BlendMode { get; set; }
+		public bool UseMipmaps { get; private set; }
+		public bool AllowTiling { get; private set; }
+		public bool DisableLinearFiltering { get; private set; }
+		public UVCalculator UVCalculator { get; private set; }
 
 		protected override bool AllowCreationIfContentNotFound { get { return !Debugger.IsAttached; } }
 
 		protected override void LoadData(Stream fileData)
 		{
+			string atlasImageName = MetaData.Get("ImageName", "");
+			if (atlasImageName == "")
+				ProcessImage(fileData);
+			else
+				ProcessAtlas(atlasImageName);
+		}
+
+		private void ProcessImage(Stream fileData)
+		{
 			ExtractMetaData();
-			TryLoadImage(fileData);
-			SetSamplerState();
+			SetSamplerStateAndTryToLoadImage(fileData);
+			UVCalculator = new UVCalculator();
 		}
 
 		private void ExtractMetaData()
@@ -42,14 +61,9 @@ namespace DeltaEngine.Content
 			DisableLinearFiltering = MetaData.Get("DisableLinearFiltering", false);
 		}
 
-		public Size PixelSize { get; private set; }
-		private static readonly Size DefaultTextureSize = new Size(4, 4);
-		public BlendMode BlendMode { get; set; }
-		public bool UseMipmaps { get; private set; }
-		public bool AllowTiling { get; private set; }
-		public bool DisableLinearFiltering { get; private set; }
+		protected abstract void SetSamplerStateAndTryToLoadImage(Stream fileData);
 
-		private void TryLoadImage(Stream fileData)
+		protected void TryLoadImage(Stream fileData)
 		{
 			try
 			{
@@ -66,6 +80,41 @@ namespace DeltaEngine.Content
 		}
 
 		protected abstract void LoadImage(Stream fileData);
+
+		// An Image object from an atlas has no texture of its own and only PixelSize for inferred 
+		// metadata; Classes like Material wishing to use this Image object should extract the data 
+		// they need and then make use of AtlasImage instead.
+		private void ProcessAtlas(string atlasImageName)
+		{
+			DisposeData();
+			AtlasImage = ContentLoader.Load<Image>(atlasImageName);
+			var uv = new Rectangle(MetaData.Get("UV", ""));
+			PixelSize = new Size(AtlasImage.PixelSize.Width * uv.Width,
+				AtlasImage.PixelSize.Height * uv.Height);
+			CreateUVCalculator(uv);
+		}
+
+		public Image AtlasImage { get; private set; }
+
+		private void CreateUVCalculator(Rectangle uv)
+		{
+			UVCalculator =
+				new UVCalculator(new AtlasRegion
+				{
+					UV = uv,
+					PadLeft = GetFloatOrZero("PadLeft"),
+					PadRight = GetFloatOrZero("PadRight"),
+					PadTop = GetFloatOrZero("PadTop"),
+					PadBottom = GetFloatOrZero("PadBottom"),
+					IsRotated = MetaData.Get("Rotated", "").ToLowerInvariant() == "true"
+				});
+		}
+
+		private float GetFloatOrZero(string metaDataKey)
+		{
+			var value = MetaData.Get(metaDataKey, "");
+			return value == "" ? 0.0f : value.Convert<float>();
+		}
 
 		protected void WarnAboutWrongAlphaFormat(bool imageHasAlphaFormat)
 		{
@@ -109,8 +158,8 @@ namespace DeltaEngine.Content
 
 		private readonly Color[] checkerMapColors =
 		{
-			Color.LightGray, Color.DarkGray, Color.LightGray, Color.DarkGray,
-			Color.DarkGray, Color.LightGray, Color.DarkGray, Color.LightGray,
+			Color.LightGray, Color.DarkGray, Color.LightGray, Color.DarkGray, 
+			Color.DarkGray, Color.LightGray, Color.DarkGray, Color.LightGray, 
 			Color.LightGray, Color.DarkGray, Color.LightGray, Color.DarkGray,
 			Color.DarkGray, Color.LightGray, Color.DarkGray, Color.LightGray
 		};

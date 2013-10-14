@@ -45,6 +45,12 @@ namespace DeltaEngine.Tests.Commands
 			Assert.AreEqual(0.0f, pos);
 		}
 
+		[Test]
+		public void CommandIsNotPausable()
+		{
+			Assert.IsFalse(new Command(() => { }).IsPauseable);
+		}
+
 		private void InvokingTriggerOnceWithMultipleRunsOnlyCausesOneAction()
 		{
 			customTrigger.Invoke();
@@ -80,17 +86,15 @@ namespace DeltaEngine.Tests.Commands
 		[Test]
 		public void CommandWithPositionAction()
 		{
-			const string CommandName = "PositionActionCommand";
-			var trigger = new MockTrigger();
-			Command.Register(CommandName, trigger);
-			actionPerformed = false;
+			var trigger = new MockPositionTrigger();
+			var CommandName = RegisterCommand(trigger);
 			new Command(CommandName, delegate(Vector2D point) { actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
 
 		private bool actionPerformed;
 
-		private void AssertActionPerformed(MockTrigger trigger)
+		private void AssertActionPerformed(Trigger trigger)
 		{
 			Assert.IsFalse(actionPerformed);
 			trigger.Invoke();
@@ -101,24 +105,72 @@ namespace DeltaEngine.Tests.Commands
 		[Test]
 		public void CommandWithDragAction()
 		{
-			const string CommandName = "CommandWithDragAction";
-			var trigger = new MockTrigger();
-			Command.Register(CommandName, trigger);
-			actionPerformed = false;
-			new Command(CommandName, (start, end, dragDone) => actionPerformed = true);
+			var trigger = new MockDragTrigger();
+			var CommandName = RegisterCommand(trigger);
+			new Command(CommandName, delegate(Vector2D point, Vector2D dims, bool test) 
+				{ actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
 
 		[Test]
 		public void CommandWithZoomAction()
 		{
-			const string CommandName = "CommandWithZoomAction";
-			var trigger = new MockTrigger();
-			Command.Register(CommandName, trigger);
-			actionPerformed = false;
-			new Command(CommandName, delegate(float zoomAmount) { actionPerformed = true; });
+			var trigger = new MockZoomTrigger();
+			var CommandName = RegisterCommand(trigger);
+			new Command(CommandName, delegate(float zoom) { actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
+
+		[Test]
+		public void CommandWithPositionctionMock()
+		{
+			var trigger = new MockTrigger();
+			var CommandName = RegisterCommand(trigger);
+			new Command(CommandName, delegate(Vector2D point) { actionPerformed = true; });
+			AssertActionPerformed(trigger);
+		}
+
+		[Test]
+		public void CommandWithDragActionMock()
+		{
+			var trigger = new MockTrigger();
+			var CommandName = RegisterCommand(trigger);
+			new Command(CommandName, delegate(Vector2D point, Vector2D dims, bool test) 
+				{ actionPerformed = true; });
+			AssertActionPerformed(trigger);
+		}
+
+		private string RegisterCommand(Trigger trigger)
+		{
+			const string CommandName = "PositionActionCommand";
+			Command.Register(CommandName, trigger);
+			actionPerformed = false;
+			return CommandName;
+		}
+
+		[Test]
+		public void CommandWithZoomActionMock()
+		{
+			var trigger = new MockTrigger();
+			const string CommandName = "PositionActionCommand";
+			Command.Register(CommandName, trigger);
+			actionPerformed = false;
+			new Command(CommandName, delegate(float zoom) { actionPerformed = true; });
+			AssertActionPerformed(trigger);
+		}
+
+		public class MockPositionTrigger : PositionTrigger
+		{
+			protected override void StartInputDevice() { }
+		}
+
+		public class MockDragTrigger : DragTrigger {
+			protected override void StartInputDevice() {}
+		}
+
+		public class MockZoomTrigger : ZoomTrigger {
+			protected override void StartInputDevice() {}
+		}		
 
 		[Test]
 		public void RegisterCommandWithSeveralTriggers()
@@ -129,6 +181,16 @@ namespace DeltaEngine.Tests.Commands
 			Command.Register(CommandName, trigger1, trigger2);
 			var command = new Command(CommandName, (Action)null);
 			Assert.AreEqual(2, command.GetTriggers().Count);
+		}
+
+		[Test]
+		public void InvokeOnTrigger()
+		{
+			customTrigger = new MockTrigger();
+			customTrigger.Invoked = () => { customTrigger.UpdatePriority = Priority.Normal; };
+			customTrigger.Invoke();
+			Assert.AreEqual(customTrigger.UpdatePriority, Priority.Normal);
+			Assert.IsFalse(customTrigger.IsPauseable);
 		}
 	}
 }

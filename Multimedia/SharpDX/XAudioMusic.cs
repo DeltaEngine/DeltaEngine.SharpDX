@@ -70,7 +70,7 @@ namespace DeltaEngine.Multimedia.SharpDX
 				PutInStreamIfDataAvailable();
 				if (isAbleToStream)
 					continue;
-				Stop();
+				HandleStreamFinished();
 				break;
 			}
 		}

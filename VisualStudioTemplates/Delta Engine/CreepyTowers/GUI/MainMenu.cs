@@ -1,133 +1,99 @@
+using System.Linq;
+using $safeprojectname$.Content;
 using DeltaEngine.Commands;
 using DeltaEngine.Content;
-using DeltaEngine.Datatypes;
-using DeltaEngine.Input;
-using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Multimedia;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace $safeprojectname$.GUI
 {
-	public class MainMenu : Scene
+	public class MainMenu : Menu
 	{
 		public MainMenu()
 		{
-			remap = new RemapCoordinates();
 			AddEscCommand();
 			AddMenuBackground();
 			AddMenuItems();
+			if (ContentLoader.Exists("MenuMusic", ContentType.Music))
+			{
+				var music = ContentLoader.Load<Music>("MenuMusic");
+				music.Loop = true;
+				music.Play();
+			}
 		}
-
-		private readonly RemapCoordinates remap;
 
 		private void AddEscCommand()
 		{
-			escCommand = new Command(ExitGame).Add(new KeyTrigger(Key.Escape, State.Pressed));
+			escCommand = new Command(Command.Exit, ExitGame);
 		}
 
 		private Command escCommand;
 
 		private void AddMenuBackground()
 		{
-			SetBackground(new Material(Shader.Position2DUv, Names.BackgroundMainMenu));
 		}
 
 		private void AddMenuItems()
 		{
-			var xmlParser = new UIXmlParser();
-			xmlParser.ParseXml(Names.XmlMenuScene, "MainMenu");
-			foreach (var uiObject in xmlParser.UiObjectList)
-			{
-				var image = ContentLoader.Load<Image>(uiObject.Name);
-				var imageSize = remap.RemapCoordinateSpaces(uiObject.ObjectSize);
-				var centerPos = remap.RemapCoordinateSpaces(uiObject.Position);
-				var drawArea = Rectangle.FromCenter(centerPos, imageSize);
-				CreateUiElement(uiObject, drawArea, image);
-			}
-			Show();
+			scene = ContentLoader.Load<Scene>(UI.SceneMainMenu.ToString());
+			scene.SetQuadraticBackground(new Material(Shader.Position2DUV, 
+				Content.GUI.TextureBackgroundBlue.ToString()));
+			foreach (Control control in scene.Controls)
+				if (control.GetType() == typeof(InteractiveButton))
+					AttachButtonEvents(control);
 		}
 
-		private void CreateUiElement(UIObject uiObject, Rectangle drawArea, Image image)
+		private void AttachButtonEvents(Control control)
 		{
-			var material = new Material(Shader.Position2DUv, uiObject.Name);
-			if (uiObject.Name.Equals(Names.ImageLogo))
-			{
-				var gameLogo = new Sprite(material, drawArea);
-				gameLogo.AddTag(uiObject.Name);
-				Add(gameLogo);
-			} else if (uiObject.Name.Equals(Names.ImageMenuKid))
-			{
-				var kid = new Sprite(material, drawArea);
-				kid.AddTag(uiObject.Name);
-				Add(kid);
-			} else
-			{
-				var button = new InteractiveButton(CreateTheme(uiObject.Name), drawArea);
-				button.AddTag(uiObject.Name);
-				Add(button);
-				AttachButtonEvents(uiObject.Name, button);
-			}
-		}
-
-		private static Theme CreateTheme(string buttonImageName)
-		{
-			var appearance = new Theme.Appearance(buttonImageName);
-			return new Theme {
-				Button = appearance,
-				ButtonMouseover = appearance,
-				ButtonPressed = appearance,
-				Font = ContentLoader.Load<Font>(Names.FontChelseaMarket14)
-			};
-		}
-
-		private void AttachButtonEvents(string buttonName, InteractiveButton button)
-		{
-			switch (buttonName)
-			{
-				case Names.ButtonMainMenuPlay:
-					button.Clicked += StartIntro;
-					break;
-				case Names.ButtonMainMenuHelpAndOptions:
-					button.Clicked += DisplayOptions;
-					break;
-				case Names.ButtonMainMenuCredits:
-					button.Clicked += DisplayCredits;
-					break;
-				case Names.ButtonMainMenuQuit:
-					button.Clicked += ExitGame;
-					break;
-			}
+			var tags = control.GetTags();
+			foreach (var tag in tags)
+				if (tag.Contains(Content.GUI.MenuButtonPlay.ToString()))
+					control.Clicked += StartIntro;
+				else if (tag.Contains(Content.GUI.MenuButtonHelpAndOptions.ToString()))
+					control.Clicked += DisplayOptions;
+				else if (tag.Contains(Content.GUI.MenuButtonCredits.ToString()))
+					control.Clicked += DisplayCredits;
+				else if (tag.Contains(Content.GUI.MenuButtonQuit.ToString()))
+					control.Clicked += ExitGame;
 		}
 
 		private void StartIntro()
 		{
-			Dispose();
+			PlayClickedSound();
+			scene.Hide();
 			new IntroScene();
+		}
+
+		private static void PlayClickedSound()
+		{
+			var clickSound = ContentLoader.Load<Sound>(Sounds.PressButton.ToString());
+			clickSound.Play();
 		}
 
 		public Manager manager;
 
-		private void DisplayOptions()
+		private static void DisplayOptions()
 		{
+			PlayClickedSound();
+			var options = MenuManager.Current.GetScenesOfType<OptionMenu>().First();
+			if (options != null)
+				MenuManager.Current.SetCurrentScene(options);
 		}
 
-		private void DisplayCredits()
+		private static void DisplayCredits()
 		{
-			Dispose();
-			new Credits();
+			PlayClickedSound();
+			Credits credits = MenuManager.Current.GetScenesOfType<Credits>().First();
+			if (credits != null)
+				MenuManager.Current.SetCurrentScene(credits);
 		}
 
 		private void ExitGame()
 		{
-			Dispose();
+			PlayClickedSound();
+			scene.Dispose();
 			Game.EndGame();
-		}
-
-		protected override void DisposeData()
-		{
-			escCommand.IsActive = false;
-			Clear();
 		}
 	}
 }

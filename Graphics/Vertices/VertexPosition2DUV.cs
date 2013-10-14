@@ -18,7 +18,7 @@ namespace DeltaEngine.Graphics.Vertices
 		public Vector2D Position;
 		public Vector2D UV;
 
-		public static readonly int SizeInBytes = VertexFormat.Position2DUv.Stride;
+		public static readonly int SizeInBytes = VertexFormat.Position2DUV.Stride;
 
 		public VertexPosition2DUV Lerp(VertexPosition2DUV other, float interpolation)
 		{
@@ -27,7 +27,7 @@ namespace DeltaEngine.Graphics.Vertices
 
 		public VertexFormat Format
 		{
-			get { return VertexFormat.Position2DUv; }
+			get { return VertexFormat.Position2DUV; }
 		}
 	}
 }

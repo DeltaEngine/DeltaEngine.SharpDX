@@ -5,9 +5,9 @@ namespace DeltaEngine.Graphics.Vertices
 	/// <summary>
 	/// Vertex format with 3D position, texture UV and vertex skinning data (12 + 8 + 8 + 8 bytes).
 	/// </summary>
-	public struct VertexPosition3DUvSkinned : Lerp<VertexPosition3DUvSkinned>, Vertex
+	public struct VertexPosition3DUVSkinned : Lerp<VertexPosition3DUVSkinned>, Vertex
 	{
-		public VertexPosition3DUvSkinned(Vector3D position, Vector2D uv, SkinningData skinning)
+		public VertexPosition3DUVSkinned(Vector3D position, Vector2D uv, SkinningData skinning)
 		{
 			Position = position;
 			UV = uv;
@@ -20,15 +20,15 @@ namespace DeltaEngine.Graphics.Vertices
 
 		public static readonly int SizeInBytes = VertexFormat.Position3DColorSkinned.Stride;
 
-		public VertexPosition3DUvSkinned Lerp(VertexPosition3DUvSkinned other, float interpolation)
+		public VertexPosition3DUVSkinned Lerp(VertexPosition3DUVSkinned other, float interpolation)
 		{
-			return new VertexPosition3DUvSkinned(Position.Lerp(other.Position, interpolation),
+			return new VertexPosition3DUVSkinned(Position.Lerp(other.Position, interpolation),
 				UV.Lerp(other.UV, interpolation), Skinning.Lerp(other.Skinning, interpolation));
 		}
 
 		public VertexFormat Format
 		{
-			get { return VertexFormat.Position3DUvSkinned; }
+			get { return VertexFormat.Position3DUVSkinned; }
 		}
 	}
 }

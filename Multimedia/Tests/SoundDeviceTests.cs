@@ -55,5 +55,24 @@ namespace DeltaEngine.Multimedia.Tests
 			device.RapidUpdate();
 			device.Dispose();
 		}
+
+		[Test]
+		public void PlayAndStopMusic()
+		{
+			MockSoundDevice device = new MockSoundDevice();
+			Assert.IsTrue(device.IsPauseable);
+			Assert.IsTrue(device.IsInitialized);
+			var musicTime = ContentLoader.Load<Music>("DefaultMusic");
+			musicTime.StreamFinished = () => { };
+			musicTime.Play();
+			device.RegisterCurrentMusic(musicTime);
+			musicTime.Stop();
+			device.RapidUpdate();
+			musicTime.Loop = true;
+			musicTime.Stop();
+			device.RapidUpdate();
+			device.Dispose();
+		}
+
 	}
 }

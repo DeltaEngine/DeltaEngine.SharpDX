@@ -77,10 +77,13 @@ namespace DeltaEngine.Extensions
 			return someObj.ToString();
 		}
 
-		public static float[] SplitIntoFloats(this string value, char[] separators = null)
+		public static float[] SplitIntoFloats(this string value)
 		{
-			if (separators == null)
-				separators = new[] { ',', '(', ')', '{', '}' };
+			return SplitIntoFloats(value, new[] { ',', '(', ')', '{', '}' });
+		}
+
+		public static float[] SplitIntoFloats(this string value, params char[] separators)
+		{
 			string[] components = value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 			return SplitIntoFloats(components);
 		}
@@ -91,6 +94,12 @@ namespace DeltaEngine.Extensions
 			for (int i = 0; i < floats.Length; i++)
 				floats[i] = components[i].Convert<float>();
 			return floats;
+		}
+
+		public static float[] SplitIntoFloats(this string value, params string[] separators)
+		{
+			string[] components = value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+			return SplitIntoFloats(components);
 		}
 
 		public static string MaxStringLength(this string value, int maxLength)

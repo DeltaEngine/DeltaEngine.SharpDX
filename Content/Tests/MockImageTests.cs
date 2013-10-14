@@ -76,6 +76,10 @@ namespace DeltaEngine.Content.Tests
 				: base(contentName) {}
 
 			protected override void DisposeData() {} // ncrunch: no coverage
+			protected override void SetSamplerStateAndTryToLoadImage(Stream fileData)
+			{
+				TryLoadImage(fileData);
+			}
 
 			protected override void LoadImage(Stream fileData)
 			{
@@ -83,9 +87,7 @@ namespace DeltaEngine.Content.Tests
 			}
 
 			public override void Fill(Color[] colors) {}
-
 			public override void Fill(byte[] colors) {}	// ncrunch: no coverage
-
 			protected override void SetSamplerState() {}
 		}
 	}

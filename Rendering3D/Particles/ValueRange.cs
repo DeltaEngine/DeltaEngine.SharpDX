@@ -6,6 +6,9 @@ namespace DeltaEngine.Rendering3D.Particles
 {
 	public struct ValueRange : Lerp<ValueRange>
 	{
+		public ValueRange(float value)
+			: this(value, value) {}
+
 		public ValueRange(float minimum, float maximum)
 			: this()
 		{
@@ -23,12 +26,13 @@ namespace DeltaEngine.Rendering3D.Particles
 
 		public ValueRange Lerp(ValueRange other, float interpolation)
 		{
-			return new ValueRange(Start.Lerp(other.Start,interpolation),End.Lerp(other.End, interpolation));
+			return new ValueRange(Start.Lerp(other.Start, interpolation),
+				End.Lerp(other.End, interpolation));
 		}
 
 		public override string ToString()
 		{
-			return "[" + Start + ", " + End + "]";
+			return "[" + Start.ToInvariantString() + ", " + End.ToInvariantString() + "]";
 		}
 	}
 }

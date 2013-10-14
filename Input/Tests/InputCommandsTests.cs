@@ -1,6 +1,5 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Content;
-using DeltaEngine.Content.Mocks;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
@@ -18,18 +17,21 @@ namespace DeltaEngine.Input.Tests
 			int released = 0;
 			var fontText = new FontText(Font.Default,
 				"MouseLeft pressed: " + pressed + " released: " + released, Rectangle.One);
-			new Command(
+			new Command( //ncrunch: no coverage start
 				() => fontText.Text = "MouseLeft pressed: " + ++pressed + " released: " + released).Add(
 					new MouseButtonTrigger());
-			new Command(
+			//ncrunch: no coverage end
+			new Command( //ncrunch: no coverage start
 				() => fontText.Text = "MouseLeft pressed: " + pressed + " released: " + ++released).Add(
 					new MouseButtonTrigger(MouseButton.Left, State.Releasing));
+			//ncrunch: no coverage end
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void GetInputCommands()
 		{
-			ContentLoader.Load<InputCommands>("DefaultCommands");
+			var inputCommands = ContentLoader.Load<InputCommands>("InputCommands");
+			Assert.AreEqual(ContentType.InputCommand, inputCommands.MetaData.Type);
 		}
 	}
 }

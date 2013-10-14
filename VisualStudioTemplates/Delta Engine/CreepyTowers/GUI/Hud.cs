@@ -1,81 +1,47 @@
+using $safeprojectname$.Content;
 using DeltaEngine.Content;
-using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Multimedia;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace $safeprojectname$.GUI
 {
-	public class Hud : Scene
+	public class Hud : Menu
 	{
 		public Hud()
 		{
-			remap = new RemapCoordinates();
 			CreateHud();
 		}
 
-		private readonly RemapCoordinates remap;
-		private UIXmlParser hudXmlParser;
-
 		private void CreateHud()
 		{
-			hudXmlParser = new UIXmlParser();
-			hudXmlParser.ParseXml(Names.XmlGameHud, "GameHud");
-			foreach (var uiObject in hudXmlParser.UiObjectList)
-			{
-				var image = ContentLoader.Load<Image>(uiObject.Name);
-				var imageSize = remap.RemapCoordinateSpaces(uiObject.ObjectSize);
-				var centerPos = remap.RemapCoordinateSpaces(uiObject.Position);
-				var drawArea = Rectangle.FromCenter(centerPos, imageSize);
-				CreateUiElement(uiObject, drawArea, image);
-			}
+			scene = ContentLoader.Load<Scene>(UI.GameHud.ToString());
+			foreach (Control control in scene.Controls)
+				if (control.GetType() == typeof(InteractiveButton))
+					AttachButtonEvents(control);
 		}
 
-		private void CreateUiElement(UIObject uiObject, Rectangle drawArea, Image image)
+		private void AttachButtonEvents(Control control)
 		{
-			var material = new Material(Shader.Position2DUv, uiObject.Name);
-			if (uiObject.Type.Equals("Interactable"))
-			{
-				var button = new InteractiveButton(CreateTheme(uiObject.Name), drawArea);
-				button.AddTag(uiObject.Name);
-				Add(button);
-				AttachButtonEvents(uiObject.Name, button);
-			}
-			var sprite = new Sprite(material, drawArea);
-			sprite.AddTag(uiObject.Name);
-			Add(sprite);
-		}
-
-		private static Theme CreateTheme(string buttonImageName)
-		{
-			var appearance = new Theme.Appearance(buttonImageName);
-			return new Theme {
-				Button = appearance,
-				ButtonMouseover = appearance,
-				ButtonPressed = appearance,
-				Font = ContentLoader.Load<Font>(Names.FontChelseaMarket14)
-			};
-		}
-
-		private void AttachButtonEvents(string buttonName, InteractiveButton button)
-		{
-			switch (buttonName)
-			{
-				case Names.UIOptions:
-					button.Clicked += DisplayOptions;
-					break;
-				case Names.UIDragonSpecialAttackBreath:
-					button.Clicked += DisplayOptions;
-					break;
-				case Names.UIDragonSpecialAttackCannon:
-					button.Clicked += DisplayOptions;
-					break;
-			}
+			var tags = control.GetTags();
+			foreach (var tag in tags)
+				if (tag.Contains(Content.GUI.UIOptions.ToString()))
+					control.Clicked += DisplayOptions;
+				else if (tag.Contains(Content.GUI.UIDragonSpecialAttackBreath.ToString()))
+					control.Clicked += DisplayOptions;
+				else if (tag.Contains(Content.GUI.UIDragonSpecialAttackCannon.ToString()))
+					control.Clicked += DisplayOptions;
 		}
 
 		private void DisplayOptions()
 		{
+			PlayClickedSound();
+		}
+
+		private static void PlayClickedSound()
+		{
+			var clickSound = ContentLoader.Load<Sound>(Sounds.PressButton.ToString());
+			clickSound.Play();
 		}
 	}
 }

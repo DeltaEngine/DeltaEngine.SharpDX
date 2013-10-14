@@ -4,7 +4,7 @@ using DeltaEngine.Entities;
 namespace DeltaEngine.Rendering3D
 {
 	/// <summary>
-	/// Base entity for 3D objects.
+	/// Base entity for 3D objects. Usually used in Meshes or Models, both normally Actors.
 	/// </summary>
 	public class Entity3D : DrawableEntity
 	{
@@ -15,10 +15,12 @@ namespace DeltaEngine.Rendering3D
 		{
 			lastPosition = Position = position;
 			lastOrientation = Orientation = orientation;
+			Scale = Vector3D.One;
 		}
 
 		public Vector3D Position { get; set; }
 		public Quaternion Orientation { get; set; }
+		public Vector3D Scale { get; set; }
 
 		protected override void NextUpdateStarted()
 		{
@@ -27,8 +29,8 @@ namespace DeltaEngine.Rendering3D
 			base.NextUpdateStarted();
 		}
 
-		private Vector3D lastPosition;
-		private Quaternion lastOrientation;
+		protected Vector3D lastPosition;
+		protected Quaternion lastOrientation;
 
 		public override sealed T Get<T>()
 		{
@@ -55,14 +57,39 @@ namespace DeltaEngine.Rendering3D
 				throw new ComponentOfTheSameTypeAddedMoreThanOnce();
 			return base.Add(component);
 		}
-
-		public override sealed void Set<T>(T component)
+		
+		public override void SetWithoutInterpolation<T>(T component)
 		{
 			if (typeof(T) == typeof(Vector3D))
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
 				Position = (Vector3D)(object)component;
-			if (typeof(T) == typeof(Quaternion))
+				lastPosition = Position;
+			}
+			else if (typeof(T) == typeof(Quaternion))
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
 				Orientation = (Quaternion)(object)component;
-			base.Set(component);
+				lastOrientation = Orientation;
+			}
+			else
+				base.SetWithoutInterpolation(component);
+		}
+
+		public override void Set(object component)
+		{
+			if (component is Vector3D)
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
+				Position = (Vector3D)component;
+			}
+			else if (component is Quaternion)
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
+				Orientation = (Quaternion)component;
+			}
+			else
+				base.Set(component);
 		}
 	}
 }

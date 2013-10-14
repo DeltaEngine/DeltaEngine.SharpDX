@@ -47,5 +47,14 @@ namespace DeltaEngine.Input.Tests
 			Assert.IsTrue(isPressed);
 			Assert.IsTrue(mockGamePad.IsAvailable);
 		}
+
+		[Test]
+		public void CheckGamePadIsAvailable()
+		{
+			var gamePad = Resolve<GamePad>();
+			if (gamePad is MockGamePad)
+				((MockGamePad)gamePad).SetUnavailable();
+			Assert.IsFalse(gamePad.IsAvailable);
+		}
 	}
 }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using CreepyTowers.Content;
 using CreepyTowers.Creeps;
 using CreepyTowers.Levels;
 using CreepyTowers.Towers;
-using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Graphics;
+
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering3D.Cameras;
 using NUnit.Framework;
@@ -19,17 +19,21 @@ namespace CreepyTowers.Tests
 		[SetUp]
 		public void StartTutorial()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
+			new Game(Resolve<Window>());
 			manager = new Manager(6.0f);
+			grid = new LevelGrid(24, 0.2f);
+			gridProp = grid.PropertyMatrix;
 		}
 
 		private Manager manager;
+		private LevelGrid grid;
+		private GridProperties[,] gridProp;
 
 		[Test]
 		public void ChangeCameraSize()
 		{
 			Assert.AreEqual(6.0f, ((OrthoCamera)Camera.Current).Size.Width);
-			Game.CameraAndGrid.GameCamera.Size = new Size(4.0f);
+			Game.CreateCamera.FovSizeFactor = 4.0f;
 			Assert.AreEqual(4.0f, ((OrthoCamera)Camera.Current).Size.Width);
 		}
 
@@ -37,25 +41,15 @@ namespace CreepyTowers.Tests
 		public void CheckCreepCreation()
 		{
 			var creep = CreateDefaultCreep();
+			Assert.IsTrue(creep.Contains<MovementInGrid.MovementData>());
 			Assert.AreEqual(1, EntitiesRunner.Current.GetEntitiesOfType<Creep>().Count);
-			Assert.AreEqual(Creep.CreepType.Cloth, creep.Get<CreepProperties>().CreepType);
+			Assert.AreEqual(CreepType.Cloth, creep.Get<CreepData>().Type);
 		}
 
+		//TODO: this is the wrong way to create a creep
 		private Creep CreateDefaultCreep()
 		{
-			var creep = manager.CreateCreep(Vector3D.Zero, Names.CreepCottonMummy, Creep.CreepType.Cloth, MovementData());
-			creep.Remove<CreepProperties>();
-			creep.Add(new CreepProperties
-			{
-				MaxHp = 100.0f,
-				CurrentHp = 100.0f,
-				Resistance = 1.0f,
-				CreepType = Creep.CreepType.Cloth,
-				GoldReward = 20,
-				Speed = 2.0f,
-				Name = Names.CreepCottonMummy,
-			});
-			return creep;
+			return manager.CreateCreep(Vector3D.Zero, CreepType.Cloth, MovementData());
 		}
 
 		private static MovementInGrid.MovementData MovementData()
@@ -72,102 +66,74 @@ namespace CreepyTowers.Tests
 		[Test, Ignore]
 		public void CheckTowerCreation()
 		{
-			manager.CreateTower(Vector3D.Zero, Tower.TowerType.Water, Names.TowerWaterRangedWaterspray);
+			manager.CreateTower(Vector3D.Zero, TowerType.Water, TowerModels.TowerWaterRangedWatersprayHigh.ToString());
 			Assert.AreEqual(1, EntitiesRunner.Current.GetEntitiesOfType<Tower>().Count);
-			Assert.AreEqual(Tower.TowerType.Water,
-				EntitiesRunner.Current.GetEntitiesOfType<Tower>()[0].Get<TowerProperties>().TowerType);
+			Assert.AreEqual(TowerType.Water,
+				EntitiesRunner.Current.GetEntitiesOfType<Tower>()[0].Get<TowerData>().Type);
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void ClearAllData()
 		{
-			var creep = CreateDefaultCreep();
-			manager.CreateTower(Vector3D.Zero, Tower.TowerType.Water, Names.TowerWaterRangedWaterspray);
+			manager.CreateTower(Vector3D.Zero, TowerType.Water, TowerModels.TowerWaterRangedWatersprayHigh.ToString());
 			manager.Dispose();
 			Assert.AreEqual(0, EntitiesRunner.Current.GetEntitiesOfType<Creep>().Count);
 			Assert.AreEqual(0, EntitiesRunner.Current.GetEntitiesOfType<Tower>().Count);
-			Assert.IsFalse(creep.IsActive);
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CreepInRangeIsAttacked()
 		{
-			var gridProp = Game.CameraAndGrid.Grid.PropertyMatrix;
-			manager.CreateCreep(gridProp[2, 2].MidPoint, Names.CreepCottonMummy, Creep.CreepType.Cloth, MovementData());
-			manager.CreateTower(gridProp[2, 4].MidPoint, Tower.TowerType.Water,
-				Names.TowerWaterRangedWaterspray);
+			CreateCreep(gridProp[2, 2].MidPoint);
+			CreateTower(gridProp[2, 4].MidPoint);
 			var towerList = EntitiesRunner.Current.GetEntitiesOfType<Tower>();
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			var distanceBetweenCreepAndTower = (towerList[0].Position - creepList[0].Position).Length;
-			Assert.GreaterOrEqual(towerList[0].Get<TowerProperties>().Range,
+			Assert.GreaterOrEqual(towerList[0].Get<TowerData>().Range,
 				distanceBetweenCreepAndTower);
-			var creepHpBeforeHit = creepList[0].Get<CreepProperties>().CurrentHp;
+			var creepHpBeforeHit = creepList[0].CurrentHp;
 			AdvanceTimeAndUpdateEntities(3.0f);
-			var creepHpAfterHit = creepList[0].Get<CreepProperties>().CurrentHp;
+			var creepHpAfterHit = creepList[0].CurrentHp;
 			Assert.Less(creepHpAfterHit, creepHpBeforeHit);
 		}
 
-		[Test, Ignore]
+		private static Creep CreateCreep(Vector3D creepPos)
+		{
+			return new Creep(CreepType.Cloth, creepPos, 0);
+		}
+
+		private static void CreateTower(Vector3D towerPos)
+		{
+			new Tower(TowerType.Water, towerPos);
+		}
+
+		[Test]
 		public void CreepOutOfRangeIsNotAttacked()
 		{
-			var gridProp = Game.CameraAndGrid.Grid.PropertyMatrix;
-			manager.CreateCreep(gridProp[2, 2].MidPoint, Names.CreepCottonMummy, Creep.CreepType.Cloth, MovementData());
-			manager.CreateTower(gridProp[2, 10].MidPoint, Tower.TowerType.Water,
-				Names.TowerWaterRangedWaterspray);
+			CreateCreep(gridProp[2, 2].MidPoint);
+			CreateTower(gridProp[2, 10].MidPoint);
 			var towerList = EntitiesRunner.Current.GetEntitiesOfType<Tower>();
 			var creepList = EntitiesRunner.Current.GetEntitiesOfType<Creep>();
 			var distanceBetweenCreepAndTower = (towerList[0].Position - creepList[0].Position).Length;
-			Assert.LessOrEqual(towerList[0].Get<TowerProperties>().Range, distanceBetweenCreepAndTower);
-			var creepHpBeforeHit = creepList[0].Get<CreepProperties>().CurrentHp;
+			Assert.LessOrEqual(towerList[0].Get<TowerData>().Range, distanceBetweenCreepAndTower);
+			var creepHpBeforeHit = creepList[0].CurrentHp;
 			AdvanceTimeAndUpdateEntities(2.0f);
-			var creepHpAfterHit = creepList[0].Get<CreepProperties>().CurrentHp;
+			var creepHpAfterHit = creepList[0].CurrentHp;
 			Assert.AreEqual(creepHpAfterHit, creepHpBeforeHit);
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void DisplayCreepHealthBar()
 		{
-			var gridProp = Game.CameraAndGrid.Grid.PropertyMatrix;
-			var creep = CreateDefaultCreep(gridProp, CreateMovementData());
-			manager.UpdateCreepHealthBar(creep);
-		}
-
-		private static MovementInGrid.MovementData CreateMovementData()
-		{
-			return new MovementInGrid.MovementData
-			{
-				Velocity = new Vector3D(0.0f, 0.0f, 0.0f),
-				StartGridPos = new Tuple<int, int>(16, 0),
-				FinalGridPos = new Tuple<int, int>(16, 0),
-				Waypoints = new List<Tuple<int, int>>()
-			};
-		}
-
-		private Creep CreateDefaultCreep(GridProperties[,] gridProp,
-			MovementInGrid.MovementData movementData)
-		{
-			var creep = manager.CreateCreep(gridProp[16, 0].MidPoint, Names.CreepCottonMummy, Creep.CreepType.Cloth, 
-				movementData);
-			creep.Remove<MovementInGrid>();
-			creep.Remove<CreepProperties>();
-			creep.Add(new CreepProperties
-			{
-				Name = Names.CreepCottonMummy,
-				CreepType = Creep.CreepType.Cloth,
-				CurrentHp = 100.0f,
-				GoldReward = 30,
-				MaxHp = 100.0f,
-				Resistance = 1.0f,
-				Speed = 1.0f
-			});
-			return creep;
+			var creep = CreateCreep(Vector3D.Zero);
+			creep.RecalculateHitpointBar();
 		}
 
 		[Test]
 		public void DisposingManagerDisposesAllActiveCreepsAndTowers()
 		{
-			new Creep(Vector3D.Zero, Names.CreepCottonMummy, new CreepProperties());
-			new Tower(Vector3D.Zero, Names.TowerWaterRangedWaterspray, new TowerProperties());
+			new Creep(CreepType.Paper, Vector3D.Zero, 0);
+			new Tower(TowerType.Water, Vector3D.Zero);
 			manager.Dispose();
 			Assert.AreEqual(0, EntitiesRunner.Current.GetEntitiesOfType<Creep>().Count);
 			Assert.AreEqual(0, EntitiesRunner.Current.GetEntitiesOfType<Tower>().Count);
@@ -176,91 +142,62 @@ namespace CreepyTowers.Tests
 		[Test]
 		public void CheckingForCreepHealthStatus100To80()
 		{
-			var creep = CreateCreepWithHpValues(90);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarGreen100).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(90);
 		}
 
-		private Creep CreateCreepWithHpValues(float currHp)
+		private static void CreateCreepWithHpValues(float currHp)
 		{
-			var creep = new Creep(Vector3D.Zero, Names.CreepCottonMummy, new CreepProperties
-			{
-				Name = Names.CreepCottonMummy,
-				CreepType = Creep.CreepType.Cloth,
-				CurrentHp = currHp,
-				GoldReward = 30,
-				MaxHp = 100.0f,
-				Resistance = 1.0f,
-				Speed = 1.0f
-			});
-			
-			creep.Add(MovementData());
-			manager.UpdateCreepHealthBar(creep);
-			return creep;
+			var creep = new Creep(CreepType.Cloth, Vector3D.Zero, 0);
+			creep.CurrentHp = currHp;
+			creep.RecalculateHitpointBar();
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatus80To60()
 		{
-			var creep = CreateCreepWithHpValues(70.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarGreen80).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(70.0f);
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatus60To50()
 		{
-			var creep = CreateCreepWithHpValues(53.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarGreen60).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(53.0f);
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatus50To40()
 		{
-			var creep = CreateCreepWithHpValues(42.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarOrange50).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(42.0f);
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatus40To25()
 		{
-			var creep = CreateCreepWithHpValues(30.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarOrange40).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(30.0f);
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatus25To20()
 		{
-			var creep = CreateCreepWithHpValues(22.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarOrange25).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(22.0f);
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatus25To10()
 		{
-			var creep = CreateCreepWithHpValues(15.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarRed20).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(15.0f);
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatus10To5()
 		{
-			var creep = CreateCreepWithHpValues(7.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarRed10).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(7.0f);
 		}
 
 		[Test]
 		public void CheckingForCreepHealthStatusLessThan5()
 		{
-			var creep = CreateCreepWithHpValues(4.0f);
-			Assert.AreEqual(new Material(Shader.Position2DUv, Names.ImageHealthBarRed05).Name,
-				creep.HealthBar.Material.Name);
+			CreateCreepWithHpValues(4.0f);
 		}
 	}
 }

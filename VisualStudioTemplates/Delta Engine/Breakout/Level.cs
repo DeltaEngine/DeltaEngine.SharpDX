@@ -3,7 +3,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering3D.Particles;
 
 namespace $safeprojectname$
@@ -12,8 +12,8 @@ namespace $safeprojectname$
 	{
 		public Level(Score score)
 		{
-			brickMaterial = new Material(Shader.Position2DColorUv, "Brick");
-			var explosionMaterial = new Material(Shader.Position2DColorUv, "Explosion");
+			brickMaterial = new Material(Shader.Position2DColorUV, "Brick");
+			var explosionMaterial = new Material(Shader.Position2DColorUV, "Explosion");
 			explosionSound = ContentLoader.Load<Sound>("BrickExplosion");
 			lostBallSound = ContentLoader.Load<Sound>("LostBall");
 			explosionData = new ParticleEmitterData {
@@ -140,7 +140,7 @@ namespace $safeprojectname$
 				var bricksAlive = 0;
 				for (int x = 0; x < rows; x++)
 					for (int y = 0; y < columns; y++)
-						if (bricks [x, y].Visibility == Visibility.Show)
+						if (bricks [x, y].IsVisible == true)
 							bricksAlive++;
 
 				return bricksAlive;
@@ -152,7 +152,7 @@ namespace $safeprojectname$
 			var brickIndexX = (int)(x / brickWidth);
 			var brickIndexY = (int)(y / brickHeight);
 			if (brickIndexX < 0 || brickIndexX >= rows || brickIndexY < 0 || brickIndexY >= columns || 
-				bricks [brickIndexX, brickIndexY].Visibility != Visibility.Show)
+				bricks [brickIndexX, brickIndexY].IsVisible != true)
 				return null;
 
 			return bricks [brickIndexX, brickIndexY];
@@ -161,16 +161,17 @@ namespace $safeprojectname$
 		public void Explode(Sprite brick, Vector2D collision)
 		{
 			score.IncreasePoints();
-			brick.Visibility = Visibility.Hide;
+			brick.IsVisible = false;
 			CreateExplosion(collision);
 			explosionSound.Play();
 		}
 
 		private void CreateExplosion(Vector2D collision)
 		{
-			var explosion = new Particle2DEmitter(explosionData, collision);
-			explosion.RenderLayer = 16;
-			explosion.SpawnBurst(1, true);
+			var explosion = new ParticleEmitter(explosionData, collision) {
+				RenderLayer = 16
+			};
+			explosion.SpawnAndDispose();
 		}
 
 		private static readonly Size ExplosionSize = new Size(0.1f, 0.1f);

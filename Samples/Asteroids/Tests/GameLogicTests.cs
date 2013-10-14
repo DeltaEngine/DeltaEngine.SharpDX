@@ -18,17 +18,18 @@ namespace Asteroids.Tests
 
 		private InteractionLogics interactionLogics;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void AsteroidCreatedWhenTimeReached()
 		{
+			interactionLogics.BeginGame();
 			AdvanceTimeAndUpdateEntities(1.1f);
-			Assert.GreaterOrEqual(EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count, 2);
+			Assert.GreaterOrEqual(EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count, 1);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ProjectileAndAsteroidDisposedOnCollision()
 		{
-			var projectile = new Projectile(new Material(Shader.Position2DColorUv, "DeltaEngineLogo"),
+			var projectile = new Projectile(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"),
 				Vector2D.Half, 0);
 			EntitiesRunner.Current.GetEntitiesOfType<Projectile>().Add(projectile);
 			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
@@ -36,14 +37,12 @@ namespace Asteroids.Tests
 			Assert.IsFalse(projectile.IsActive);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void PlayerShipAndAsteroidCollidingResultsInGameOver()
 		{
 			bool gameOver = false;
-			interactionLogics.GameOver += () =>
-			{
-				gameOver = true;
-			};
+			interactionLogics.BeginGame();
+			interactionLogics.GameOver += () => { gameOver = true; };
 			interactionLogics.Player.Set(new Rectangle(Vector2D.Half, new Size(.05f)));
 			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
 			AdvanceTimeAndUpdateEntities(0.2f);

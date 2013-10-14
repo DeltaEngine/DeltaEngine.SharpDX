@@ -6,7 +6,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	internal class ColorGradient : Control
 	{
 		public ColorGradient(Rectangle drawArea, Color defaultColor = default(Color))
-			: this(drawArea, new RangeGraph<Color>(defaultColor, defaultColor)) {}
+			: this(drawArea, new RangeGraph<Color>(defaultColor)) {}
 
 		public ColorGradient(Rectangle drawArea, RangeGraph<Color> colorRange)
 			: base(drawArea)

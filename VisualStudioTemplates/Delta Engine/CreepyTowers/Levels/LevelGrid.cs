@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
@@ -6,13 +7,14 @@ using DeltaEngine.Rendering3D.Shapes3D;
 
 namespace $safeprojectname$.Levels
 {
-	public class LevelGrid : Entity
+	public class LevelGrid : Entity, IDisposable
 	{
 		public LevelGrid(int gridSize, float gridScale)
 		{
 			GridSize = gridSize;
 			GridScale = gridScale;
 			HalfGridSize = GridSize * 0.5f;
+			gridLines = new List<Line3D>();
 			CreateGrid();
 			AssignGridPositions();
 		}
@@ -55,12 +57,14 @@ namespace $safeprojectname$.Levels
 					YOffset, 0.0f);
 				xLineEnd = new Vector3D(HalfGridSize * GridScale + XOffset, axisXy.Y * GridScale - 
 					YOffset, 0.0f);
-				new Line3D(xLineStart, xLineEnd, Color.White);
+				var lineX = new Line3D(xLineStart, xLineEnd, Color.White);
 				yLineStart = new Vector3D(axisXy.X * GridScale + XOffset, -HalfGridSize * GridScale - 
 					YOffset, 0.0f);
 				yLineEnd = new Vector3D(axisXy.X * GridScale + XOffset, HalfGridSize * GridScale - 
 					YOffset, 0.0f);
-				new Line3D(yLineStart, yLineEnd, Color.White);
+				var lineY = new Line3D(yLineStart, yLineEnd, Color.White);
+				gridLines.Add(lineX);
+				gridLines.Add(lineY);
 			}
 		}
 
@@ -68,6 +72,7 @@ namespace $safeprojectname$.Levels
 		private Vector3D xLineStart;
 		private Vector3D xLineEnd;
 		private Vector3D yLineStart;
+		private readonly List<Line3D> gridLines;
 		private Vector3D yLineEnd;
 		private const float XOffset = 0.01f;
 		private const float YOffset = 0.01f;
@@ -140,6 +145,18 @@ namespace $safeprojectname$.Levels
 		{
 			get;
 			private set;
+		}
+
+		public void ToggleVisibility(bool visibility)
+		{
+			foreach (Line3D gridLine in gridLines)
+				gridLine.IsVisible = visibility;
+		}
+
+		public void Dispose()
+		{
+			foreach (Line3D gridLine in gridLines)
+				gridLine.IsActive = false;
 		}
 	}
 }

@@ -9,8 +9,8 @@ namespace DeltaEngine.Content
 {
 	/// <summary>
 	/// Displays images or shapes via shaders in 2D or 3D. Always need a shader and a diffuse map,
-	/// which can be a single <see cref="Image"/>, an <see cref="ImageAnimation"/> or a
-	/// <see cref="SpriteSheet"/>. 
+	/// which can be a single <see cref="Image"/>, an <see cref="ImageAnimation"/>, or a
+	/// <see cref="SpriteSheet"/>
 	/// </summary>
 	public sealed class Material : ContentData
 	{
@@ -28,7 +28,7 @@ namespace DeltaEngine.Content
 			: base("<GeneratedMaterial:" + shaderName + ":" + imageOrAnimationName + ">")
 		{
 			Initialize(shaderName, imageOrAnimationName, Color.White);
-			if(MetaData == null)
+			if (MetaData == null)
 				MetaData = new ContentMetaData();
 		}
 
@@ -38,6 +38,7 @@ namespace DeltaEngine.Content
 				throw new UnableToCreateMaterialWithoutValidShaderName();
 			Shader = ContentLoader.Load<Shader>(shaderName);
 			DefaultColor = defaultColor;
+			UVCalculator = new UVCalculator();
 			if (String.IsNullOrEmpty(imageOrAnimationName))
 				return;
 			if (ContentLoader.Exists(imageOrAnimationName, ContentType.ImageAnimation))
@@ -45,15 +46,43 @@ namespace DeltaEngine.Content
 			else if (ContentLoader.Exists(imageOrAnimationName, ContentType.SpriteSheetAnimation))
 				SpriteSheet = ContentLoader.Load<SpriteSheetAnimation>(imageOrAnimationName);
 			else
-				DiffuseMap = ContentLoader.Load<Image>(imageOrAnimationName);
+				DiffuseMap = ContentLoader.Load<Image>(imageOrAnimationName);	
 		}
 
 		public class UnableToCreateMaterialWithoutValidShaderName : Exception {}
 
 		public Shader Shader { get; private set; }
-		public Image DiffuseMap { get; set; }
-		public Image LightMap { get; set; }
 		public Color DefaultColor { get; set; }
+		public UVCalculator UVCalculator { get; private set; }
+
+		public Image DiffuseMap
+		{
+			get { return diffuseMap; }
+			set
+			{
+				if (value == null)
+					SetNullDiffuseMap();
+				else
+					SetDiffuseMap(value);
+			}
+		}
+
+		private void SetNullDiffuseMap()
+		{
+			diffuseMap = null;
+			pixelSize = Size.Zero;
+			UVCalculator = new UVCalculator();
+		}
+
+		private Image diffuseMap;
+		private Size pixelSize;
+
+		private void SetDiffuseMap(Image value)
+		{
+			diffuseMap = value.AtlasImage ?? value;
+			pixelSize = value.PixelSize;
+			UVCalculator = value.UVCalculator;
+		}
 
 		/// <summary>
 		/// Special constructor for creating custom shaders and images or reusing existing instances.
@@ -105,27 +134,29 @@ namespace DeltaEngine.Content
 			{
 				var size = new Size(0.5f);
 				if (spriteSheet != null)
-					size = SetRenderSize(spriteSheet.SubImageSize);
+					size = SetRenderSize(renderSize, spriteSheet.SubImageSize);
 				else if (DiffuseMap != null)
-					size = SetRenderSize(DiffuseMap.PixelSize);
+					size = SetRenderSize(renderSize, pixelSize);
 				return size;
 			}
 		}
 
-		private Size SetRenderSize(Size pixelSize)
+		private RenderSize renderSize = RenderSize.PixelBased;
+
+		private static Size SetRenderSize(RenderSize renderSize, Size pixelSize)
 		{
 			if (renderSize == RenderSize.PixelBased)
-				pixelSize = ScreenSpace.Current.FromPixelSpace(pixelSize);
-			else if (renderSize == RenderSize.Size800X480)
-				pixelSize = ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(800));
-			else if (renderSize == RenderSize.Size1024X720)
-				pixelSize = ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1024));
-			else if (renderSize == RenderSize.Size1280X720)
-				pixelSize = ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1280));
-			else if (renderSize == RenderSize.Size1920X1080)
-				pixelSize = ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1920));
-			else if (renderSize == RenderSize.SettingsBased)
-				pixelSize = GetRenderSizeBassedOnSettings(pixelSize);
+				return ScreenSpace.Current.FromPixelSpace(pixelSize);
+			if (renderSize == RenderSize.Size800X480)
+				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(800));
+			if (renderSize == RenderSize.Size1024X720)
+				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1024));
+			if (renderSize == RenderSize.Size1280X720)
+				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1280));
+			if (renderSize == RenderSize.Size1920X1080)
+				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1920));
+			if (renderSize == RenderSize.SettingsBased)
+				return GetRenderSizeBassedOnSettings(pixelSize);
 			return pixelSize;
 		}
 
@@ -147,7 +178,7 @@ namespace DeltaEngine.Content
 			DefaultColor = MetaData.Get("Color", Color.White);
 			string imageOrAnimationName = MetaData.Get("ImageOrAnimationName", "");
 			if (string.IsNullOrEmpty(imageOrAnimationName))
-				return;
+				return; // ncrunch: no coverage
 			if (ContentLoader.Exists(imageOrAnimationName, ContentType.ImageAnimation))
 				Animation = ContentLoader.Load<ImageAnimation>(imageOrAnimationName);
 			else if (ContentLoader.Exists(imageOrAnimationName, ContentType.SpriteSheetAnimation))
@@ -166,6 +197,8 @@ namespace DeltaEngine.Content
 				LightMap = ContentLoader.Load<Image>(lightMapName);
 		}
 
+		public Image LightMap { get; set; }
+
 		protected override void DisposeData() {}
 
 		public override string ToString()
@@ -179,7 +212,5 @@ namespace DeltaEngine.Content
 		{
 			renderSize = size;
 		}
-
-		private RenderSize renderSize = RenderSize.PixelBased;
 	}
 }

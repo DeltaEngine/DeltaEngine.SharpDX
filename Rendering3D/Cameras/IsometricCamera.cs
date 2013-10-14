@@ -9,7 +9,7 @@ namespace DeltaEngine.Rendering3D.Cameras
 	/// be changed from how it was set in the constructor. Moving forwards and backwards has no
 	/// meaning for Orthographic, instead Zooming rescales the world
 	/// </summary>
-	public sealed class IsometricCamera : Camera
+	public sealed class IsometricCamera : TargetedCamera
 	{
 		public IsometricCamera(Device device, Window window, Vector3D lookDirection)
 			: base(device, window)
@@ -23,15 +23,16 @@ namespace DeltaEngine.Rendering3D.Cameras
 
 		public void ResetZoom()
 		{
-			scale = 1.0f;
+			ZoomScale = 1.0f;
 			ForceProjectionMatrixUpdate(window.ViewportPixelSize);
 		}
 
-		private float scale;
+		public float ZoomScale { get; private set; }
 
 		protected override Matrix GetCurrentProjectionMatrix()
 		{
-			return Matrix.CreateOrthoProjection(window.ViewportPixelSize * scale, NearPlane, FarPlane);
+			return Matrix.CreateOrthoProjection(window.ViewportPixelSize * ZoomScale, NearPlane,
+				FarPlane);
 		}
 
 		public void MoveUp(float distance)
@@ -76,7 +77,7 @@ namespace DeltaEngine.Rendering3D.Cameras
 
 		public void Zoom(float amount)
 		{
-			scale /= amount;
+			ZoomScale /= amount;
 			ForceProjectionMatrixUpdate(window.ViewportPixelSize);
 		}
 	}

@@ -30,7 +30,7 @@ namespace DeltaEngine.Graphics.Tests
 		{
 			public Sprite(Image image)
 			{
-				material = new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUv), image);
+				material = new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUV), image);
 				OnDraw<DrawSprite>();
 			}
 
@@ -45,9 +45,9 @@ namespace DeltaEngine.Graphics.Tests
 
 				private readonly Drawing drawing;
 
-				public void Draw(IEnumerable<DrawableEntity> entities)
+				public void Draw(List<DrawableEntity> visibleEntities)
 				{
-					foreach (var sprite in entities.OfType<Sprite>())
+					foreach (var sprite in visibleEntities.OfType<Sprite>())
 						drawing.Add(sprite.material, QuadVertices, QuadIndices);
 				}
 
@@ -125,9 +125,9 @@ namespace DeltaEngine.Graphics.Tests
 			public RenderBlendModes(Drawing drawing)
 			{
 				this.drawing = drawing;
-				logoOpaque = new Material(Shader.Position2DUv, "DeltaEngineLogoOpaque");
-				logoAlpha = new Material(Shader.Position2DUv, "DeltaEngineLogoAlpha");
-				additive = new Material(Shader.Position2DUv, "CoronaAdditive");
+				logoOpaque = new Material(Shader.Position2DUV, "DeltaEngineLogoOpaque");
+				logoAlpha = new Material(Shader.Position2DUV, "DeltaEngineLogoAlpha");
+				additive = new Material(Shader.Position2DUV, "CoronaAdditive");
 			}
 
 			private readonly Drawing drawing;
@@ -135,7 +135,7 @@ namespace DeltaEngine.Graphics.Tests
 			private readonly Material logoAlpha;
 			private readonly Material additive;
 
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
 				DrawAlphaImageTwice(25, 80, BlendMode.Opaque);
 				DrawAlphaImageTwice(225, 80, BlendMode.Normal);

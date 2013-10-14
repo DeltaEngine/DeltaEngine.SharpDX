@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using DeltaEngine.Content;
 using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Logging.Tests
@@ -57,6 +59,16 @@ namespace DeltaEngine.Logging.Tests
 				Assert.AreEqual("", console.ToString());
 				logger.Write(Logger.MessageType.Error, new NotSupportedException().ToString());
 				Assert.IsTrue(console.ToString().Contains("NotSupportedException"), console.ToString());
+			}
+		}
+
+		[Test]
+		public void RegisteringLoggerInTheSameThreadTwiceIsNotAllowed()
+		{
+			using (new ConsoleLogger())
+			{
+				Logger.Info("La la la");
+				using (new ConsoleLogger()) { }
 			}
 		}
 	}

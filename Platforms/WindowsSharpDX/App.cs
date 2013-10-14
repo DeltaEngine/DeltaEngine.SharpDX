@@ -1,4 +1,4 @@
-﻿using System;
+﻿using DeltaEngine.Core;
 
 namespace DeltaEngine.Platforms
 {
@@ -7,12 +7,19 @@ namespace DeltaEngine.Platforms
 	/// </summary>
 	public abstract class App
 	{
+		protected App() { }
+
+		protected App(Window windowToRegister)
+		{
+			resolver.RegisterInstance(windowToRegister);
+		}
+
+		private readonly SharpDXResolver resolver = new SharpDXResolver();
+
 		protected void Run()
 		{
 			resolver.Run();
 		}
-
-		private readonly SharpDXResolver resolver = new SharpDXResolver();
 
 		protected T Resolve<T>() where T : class
 		{

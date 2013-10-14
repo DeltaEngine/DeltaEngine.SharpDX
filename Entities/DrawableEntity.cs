@@ -14,31 +14,27 @@ namespace DeltaEngine.Entities
 	public class DrawableEntity : Entity
 	{
 		/// <summary>
-		/// By default all drawable entities are visible, but you can easily turn off drawing with Hide
+		/// By default all drawable entities are visible, but you can easily turn off drawing here.
 		/// </summary>
-		public DrawableEntity()
+		public bool IsVisible
 		{
-			// ReSharper disable DoNotCallOverridableMethodsInConstructor
-			Visibility = Visibility.Show;	
+			get { return isVisible; }
+			set
+			{
+				if (isVisible != value)
+					ToggleVisibility();
+			}
 		}
 
-		public virtual Visibility Visibility { get; set; }
+		private bool isVisible = true;
 
-		protected internal override void FillComponents(List<object> createFromComponents)
+		public virtual void ToggleVisibility()
 		{
-			base.FillComponents(createFromComponents);
-			foreach (Visibility component in createFromComponents.OfType<Visibility>())
-				Visibility = component;
-		}
-
-		public void ToggleVisibility()
-		{
-			Visibility = Visibility == Visibility.Show ? Visibility.Hide : Visibility.Show;	
-		}
-
-		public void ToggleVisibility(Visibility value)
-		{
-			Visibility = value;
+			isVisible = !isVisible;
+			if (isVisible)
+				EntitiesRunner.Current.AddVisible(this);
+			else
+				EntitiesRunner.Current.RemoveVisible(this);
 		}
 
 		/// <summary>
@@ -98,7 +94,7 @@ namespace DeltaEngine.Entities
 		}
 
 		/// <summary>
-		/// Each element can either be a Lerp, a List of Lerps or an array of Lerp objects.
+		/// Each element can either be a Lerp, a Lerp List or an array of Lerp objects.
 		/// </summary>
 		protected readonly List<object> lastTickLerpComponents = new List<object>();
 
@@ -108,7 +104,7 @@ namespace DeltaEngine.Entities
 				typeof(Lerp).IsAssignableFrom(typeof(T)))
 				if (typeof(Lerp<T>).IsAssignableFrom(typeof(T)))
 					foreach (T previous in lastTickLerpComponents.OfType<T>())
-						return ((Lerp<T>)base.Get<T>()).Lerp(previous, EntitiesRunner.CurrentDrawInterpolation);
+						return ((Lerp<T>)previous).Lerp(base.Get<T>(), EntitiesRunner.CurrentDrawInterpolation);
 			return base.Get<T>();
 		}
 
@@ -120,15 +116,15 @@ namespace DeltaEngine.Entities
 				{
 					foreach (var current in components.OfType<IEnumerable<T>>())
 					{
-						var ret = new List<T>(list);
+						var returnValue = new List<T>(list);
 						int index = 0;
 						foreach (var currentItem in current)
 						{
-							ret[index] = ((Lerp<T>)ret[index]).Lerp(currentItem,
+							returnValue[index] = ((Lerp<T>)returnValue[index]).Lerp(currentItem,
 								EntitiesRunner.CurrentDrawInterpolation);
 							index++;
 						}
-						return ret;
+						return returnValue;
 					}
 				} //ncrunch: no coverage 
 			throw new ListWithLerpElementsForInterpolationWasNotFound(typeof(T));
@@ -137,7 +133,7 @@ namespace DeltaEngine.Entities
 		public class ListWithLerpElementsForInterpolationWasNotFound : Exception
 		{
 			public ListWithLerpElementsForInterpolationWasNotFound(Type type)
-				: base(type.ToString()) {}
+				: base(type.ToString()) { }
 		}
 
 		public T[] GetInterpolatedArray<T>(int arrayCopyLimit = -1) where T : Lerp
@@ -151,11 +147,11 @@ namespace DeltaEngine.Entities
 						var length = Math.Min(array.Length, current.Length);
 						if (arrayCopyLimit > 0 && length > arrayCopyLimit)
 							length = arrayCopyLimit;
-						var ret = new T[length];
+						var returnValue = new T[length];
 						for (int index = 0; index < length; index++)
-							ret[index] = ((Lerp<T>)array[index]).Lerp(current[index],
+							returnValue[index] = ((Lerp<T>)array[index]).Lerp(current[index],
 								EntitiesRunner.CurrentDrawInterpolation);
-						return ret;
+						return returnValue;
 					}
 				} //ncrunch: no coverage 
 			throw new ArrayWithLerpElementsForInterpolationWasNotFound(typeof(T));
@@ -186,17 +182,36 @@ namespace DeltaEngine.Entities
 					return true;
 				var arguments = list.GetType().GetGenericArguments();
 				if (arguments.Length > 0 && typeof(Lerp).IsAssignableFrom(arguments[0]))
-					return true;
+					return true; // ncrunch: no coverage
 			}
 			return false;
 		}
 
-		public override void Set<T>(T component)
+		public virtual void SetWithoutInterpolation<T>(T component)
 		{
+			Set(component);
+			if (!IsLerpableType(component))
+				return;
+			for (int index = 0; index < lastTickLerpComponents.Count; index++)
+				if (lastTickLerpComponents[index] is T)
+				{
+					lastTickLerpComponents[index] = component;
+					return;
+				}
+		}
+
+		public override void Set(object component)
+		{
+			if (component is bool)
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
+				isVisible = (bool)component;
+				return;
+			}
 			base.Set(component);
 			if (!IsLerpableType(component))
 				return;
-			if (!lastTickLerpComponents.OfType<T>().Any())
+			if (lastTickLerpComponents.All(c => c.GetType() != component.GetType()))
 				lastTickLerpComponents.Add(component);
 		}
 
@@ -209,7 +224,7 @@ namespace DeltaEngine.Entities
 		{
 			var behavior = EntitiesRunner.Current.GetDrawBehavior(drawBehaviorType) as DrawBehavior;
 			if (drawBehaviors.Contains(behavior))
-				return;
+				return; // ncrunch: no coverage
 			drawBehaviors.Add(behavior);
 			EntitiesRunner.Current.AddToDrawBehaviorList(this, behavior);
 		}

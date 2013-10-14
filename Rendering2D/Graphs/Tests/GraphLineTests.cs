@@ -210,5 +210,14 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			line.AddValue(3.0f);
 			Assert.AreEqual(new Vector2D(2.0f, 3.0f), line.points[3]);
 		}
+
+		[Test]
+		public void RefreshWillRemoveLines()
+		{
+			GraphLine line = CreateLineWithTwoPoints();
+			line.AddValue(0.4f, 4.0f);
+			line.lines.Add(new Line2D(Vector2D.Zero, Vector2D.One, Color.Purple));
+			line.Refresh();
+		}
 	}
 }

@@ -8,7 +8,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace Breakout
 {
@@ -18,7 +18,7 @@ namespace Breakout
 	public class Ball : Sprite
 	{
 		public Ball(Paddle paddle)
-			: base(new Material(Shader.Position2DColorUv,"Ball"), Rectangle.Zero)
+			: base(new Material(Shader.Position2DColorUV,"Ball"), Rectangle.Zero)
 		{
 			this.paddle = paddle;
 			fireBallSound = ContentLoader.Load<Sound>("PaddleBallStart");
@@ -53,7 +53,7 @@ namespace Breakout
 
 		private void FireBallFromPaddle()
 		{
-			if (!isOnPaddle || Visibility != Visibility.Show)
+			if (!isOnPaddle || IsVisible != true)
 				return;
 
 			isOnPaddle = false;
@@ -161,7 +161,6 @@ namespace Breakout
 			if (Position.Y + Radius > paddle.Position.Y && velocity.Y > 0)
 				return Position.X + Radius > paddle.Position.X - Paddle.HalfWidth &&
 					Position.X - Radius < paddle.Position.X + Paddle.HalfWidth;
-
 			return false;
 		}
 
@@ -169,18 +168,20 @@ namespace Breakout
 		{
 			velocity.X += (Position.X - paddle.Position.X) * SpeedXIncrease;
 			velocity.Y = -Math.Abs(velocity.Y) * SpeedYIncrease;
-			velocity.X = velocity.X.Clamp(-5f, 5f);
-			velocity.Y = velocity.Y.Clamp(-5f, 0f);
+			float speed = velocity.Length;
+			if (speed > MaximumScalarSpeed)
+				velocity *= MaximumScalarSpeed / speed;
 			collisionSound.Play(0.6f);
 		}
 
 		private const float SpeedYIncrease = 1.015f;
 		private const float SpeedXIncrease = 2.5f;
+		private const float MaximumScalarSpeed = 1.2f;
 
 		public void Dispose()
 		{
-			Visibility = Visibility.Hide;
-			paddle.Visibility = Visibility.Hide;
+			IsVisible = false;
+			paddle.IsVisible = false;
 		}
 	}
 }

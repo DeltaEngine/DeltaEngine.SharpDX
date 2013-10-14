@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D.Fonts;
 
 namespace DeltaEngine.Rendering2D.Graphs
@@ -13,11 +12,11 @@ namespace DeltaEngine.Rendering2D.Graphs
 		public void Refresh(Graph graph)
 		{
 			ClearOldKeyLabels();
-			if (graph.Visibility == Visibility.Show && Visibility == Visibility.Show)
+			if (graph.IsVisible && IsVisible)
 				CreateNewKeyLabels(graph);
 		}
 
-		public Visibility Visibility { get; set; }
+		public bool IsVisible { get; set; }
 
 		private void ClearOldKeyLabels()
 		{
@@ -49,12 +48,12 @@ namespace DeltaEngine.Rendering2D.Graphs
 
 		private static Rectangle GetKeyLabelDrawArea(Entity2D graph, int index)
 		{
-			float x = GetKeyLabelXCoord(graph, index);
-			float y = GetKeyLabelYCoord(graph, index);
+			float x = GetKeyLabelXCoordinate(graph, index);
+			float y = GetKeyLabelYCoordinate(graph, index);
 			return new Rectangle(x, y, 1.0f, 1.0f);
 		}
 
-		private static float GetKeyLabelXCoord(Entity2D graph, int index)
+		private static float GetKeyLabelXCoordinate(Entity2D graph, int index)
 		{
 			float borderWidth = graph.DrawArea.Width * Graph.Border;
 			float left = graph.DrawArea.Left + borderWidth;
@@ -63,7 +62,7 @@ namespace DeltaEngine.Rendering2D.Graphs
 			return left + column * interval;
 		}
 
-		private static float GetKeyLabelYCoord(Entity2D graph, int index)
+		private static float GetKeyLabelYCoordinate(Entity2D graph, int index)
 		{
 			int row = 1 + index / 6;
 			float borderHeight = graph.DrawArea.Height * Graph.Border;

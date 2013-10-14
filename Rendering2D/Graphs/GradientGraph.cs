@@ -6,7 +6,7 @@ namespace DeltaEngine.Rendering2D.Graphs
 	public class GradientGraph : Entity2D
 	{
 		public GradientGraph(Rectangle drawArea)
-			: this(drawArea, new RangeGraph<Color>(Color.White, Color.White)) {}
+			: this(drawArea, new RangeGraph<Color>(Color.White)) {}
 
 		public GradientGraph(Rectangle drawArea, RangeGraph<Color> colorRanges)
 			: base(drawArea)

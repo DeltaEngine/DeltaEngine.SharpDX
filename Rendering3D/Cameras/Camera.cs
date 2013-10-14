@@ -8,31 +8,37 @@ using DeltaEngine.ScreenSpaces;
 namespace DeltaEngine.Rendering3D.Cameras
 {
 	/// <summary>
-	/// Provides some useful constants and properties that are commonly used 
-	/// in most camera classes. The current camera can be assigned using Camera.Use.
+	/// Provides some useful constants and properties that are commonly used in most camera classes.
+	/// The current camera can be assigned using Camera.Use.
 	/// </summary>
 	public abstract class Camera : Entity, IDisposable
 	{
 		public static T Use<T>(object optionalParameter = null) where T : Camera
 		{
-			if (Current != null)
-				Current.Dispose();
-			return (T)resolver.ResolveCamera<T>(optionalParameter);
+			if (current != null)
+				current.Dispose();
+			current = resolver.ResolveCamera<T>(optionalParameter);
+			return (T)current;
 		}
 
-		public static Camera Current { get; private set; }
+		private static Camera current;
 		internal static CameraResolver resolver;
+
+		public static Camera Current
+		{
+			get { return current ?? (current = resolver.ResolveCamera<LookAtCamera>(null)); }
+		}
 
 		public static bool IsInitialized
 		{
-			get { return Current != null; }
+			get { return current != null; }
 		}
 
 		protected Camera(Device device, Window window)
 		{
 			this.device = device;
 			this.window = window;
-			Current = this;
+			current = this;
 			FieldOfView = DefaultFieldOfView;
 			FarPlane = DefaultFarPlane;
 			NearPlane = DefaultNearPlane;
@@ -73,27 +79,9 @@ namespace DeltaEngine.Rendering3D.Cameras
 				FarPlane);
 		}
 
-		protected internal virtual Matrix GetCurrentViewMatrix()
-		{
-			return Matrix.CreateLookAt(Position, Target, UpDirection);
-		}
+		protected internal abstract Matrix GetCurrentViewMatrix();
 
 		public virtual Vector3D Position { get; set; }
-
-		public virtual Vector3D Target
-		{
-			get { return GetFinalTargetPosition(); }
-			set { targetPosition = value; }
-		}
-
-		protected static readonly Vector3D UpDirection = Vector3D.UnitZ;
-
-		protected virtual Vector3D GetFinalTargetPosition()
-		{
-			return targetPosition;
-		}
-
-		private Vector3D targetPosition;
 
 		public Ray ScreenPointToRay(Vector2D screenSpacePosition)
 		{
@@ -130,7 +118,7 @@ namespace DeltaEngine.Rendering3D.Cameras
 		{
 			window.ViewportSizeChanged -= ForceProjectionMatrixUpdate;
 			device.OnSet3DMode -= SetMatricesToDevice;
-			Current = null;
+			current = null;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
@@ -6,13 +7,14 @@ using DeltaEngine.Rendering3D.Shapes3D;
 
 namespace CreepyTowers.Levels
 {
-	public class LevelGrid : Entity
+	public class LevelGrid : Entity, IDisposable
 	{
 		public LevelGrid(int gridSize, float gridScale)
 		{
 			GridSize = gridSize;
 			GridScale = gridScale;
 			HalfGridSize = GridSize * 0.5f;
+			gridLines = new List<Line3D>();
 			CreateGrid();
 			AssignGridPositions();
 		}
@@ -33,17 +35,18 @@ namespace CreepyTowers.Levels
 			axisXy = new Vector2D(-HalfGridSize, -HalfGridSize);
 			for (int i = 0; i <= GridSize; i++, axisXy.X += 1, axisXy.Y += 1)
 			{
-				xLineStart = new Vector3D(-HalfGridSize * GridScale + XOffset, axisXy.Y * GridScale - YOffset,
-					0.0f);
+				xLineStart = new Vector3D(-HalfGridSize * GridScale + XOffset,
+					axisXy.Y * GridScale - YOffset, 0.0f);
 				xLineEnd = new Vector3D(HalfGridSize * GridScale + XOffset, axisXy.Y * GridScale - YOffset,
 					0.0f);
-				new Line3D(xLineStart, xLineEnd, Color.White);
-
-				yLineStart = new Vector3D(axisXy.X * GridScale + XOffset, -HalfGridSize * GridScale - YOffset,
-					0.0f);
+				var lineX = new Line3D(xLineStart, xLineEnd, Color.White);
+				yLineStart = new Vector3D(axisXy.X * GridScale + XOffset,
+					-HalfGridSize * GridScale - YOffset, 0.0f);
 				yLineEnd = new Vector3D(axisXy.X * GridScale + XOffset, HalfGridSize * GridScale - YOffset,
 					0.0f);
-				new Line3D(yLineStart, yLineEnd, Color.White);
+				var lineY = new Line3D(yLineStart, yLineEnd, Color.White);
+				gridLines.Add(lineX);
+				gridLines.Add(lineY);
 			}
 		}
 
@@ -51,6 +54,7 @@ namespace CreepyTowers.Levels
 		private Vector3D xLineStart;
 		private Vector3D xLineEnd;
 		private Vector3D yLineStart;
+		private readonly List<Line3D> gridLines;
 		private Vector3D yLineEnd;
 		private const float XOffset = 0.01f;
 		private const float YOffset = 0.01f;
@@ -75,9 +79,11 @@ namespace CreepyTowers.Levels
 		private void ComputePrerequisites()
 		{
 			axisXy = new Vector2D(-HalfGridSize, -HalfGridSize);
-			var startPoint = new Vector3D(-HalfGridSize * GridScale + XOffset, axisXy.Y * GridScale, 0.0f);
+			var startPoint = new Vector3D(-HalfGridSize * GridScale + XOffset, axisXy.Y * GridScale,
+				0.0f);
 			var offsetFactor = GridSize * GridScale;
-			topLeft = new Vector3D(startPoint.X + offsetFactor, startPoint.Y + offsetFactor, startPoint.Z);
+			topLeft = new Vector3D(startPoint.X + offsetFactor, startPoint.Y + offsetFactor,
+				startPoint.Z);
 		}
 
 		private void CreateDrawAreaCoordinates(int x, int y)
@@ -97,7 +103,6 @@ namespace CreepyTowers.Levels
 			ChangeableList<Tuple<int, int>> interactablePointsList)
 		{
 			IsClickInGrid = false;
-
 			foreach (var tuple in interactablePointsList)
 			{
 				var gridBlock = grid.PropertyMatrix[tuple.Item1, tuple.Item2];
@@ -105,7 +110,6 @@ namespace CreepyTowers.Levels
 				var topRight = new Vector2D(gridBlock.TopRight.X, gridBlock.TopRight.Y);
 				var bottomRight = new Vector2D(gridBlock.BottomRight.X, gridBlock.BottomRight.Y);
 				var clickedPoint = new Vector2D(position.X, position.Y);
-
 				if (clickedPoint.X >= bottomRight.X && clickedPoint.X < topRight.X &&
 					clickedPoint.Y >= topRight.Y && clickedPoint.Y < topLeftPoint.Y)
 				{
@@ -114,57 +118,22 @@ namespace CreepyTowers.Levels
 					break;
 				}
 			}
-
-			//for (int x = 0; x < grid.GridSize; x++)
-			//	for (int z = 0; z < grid.GridSize; z++)
-			//	{
-			//		var gridBlock = grid.PropertyMatrix[x, z];
-			//		var topLeftPoint = new Vector2D(gridBlock.TopLeft.X, gridBlock.TopLeft.Z);
-			//		var topRight = new Vector2D(gridBlock.TopRight.X, gridBlock.TopRight.Z);
-			//		var bottomRight = new Vector2D(gridBlock.BottomRight.X, gridBlock.BottomRight.Z);
-			//		var clickedPoint = new Vector2D(position.X, position.Z);
-
-			//		if (clickedPoint.X >= bottomRight.X && clickedPoint.X < topRight.X &&
-			//			clickedPoint.Y >= topRight.Y && clickedPoint.Y < topLeftPoint.Y)
-			//		{
-			//			midPoint = gridBlock.MidPoint;
-			//			IsClickInGrid = true;
-			//			break;
-			//		}
-			//	}
-
 			return midPoint;
-
-			//var startPoint = grid.PropertyMatrix[0, 0].MidPoint;
-			//var dist = position - startPoint;
-			//var gridPosX = (int)(Math.Abs(dist.X) / grid.GridScale);
-			//var gridPosZ = (int)(Math.Abs(dist.Z) / grid.GridScale);
-			//var neighbouringGrids = new List<GridProperties>
-			//{
-			//	grid.PropertyMatrix[gridPosX - 1, gridPosZ - 1],
-			//	grid.PropertyMatrix[gridPosX, gridPosZ - 1],
-			//	grid.PropertyMatrix[gridPosX + 1, gridPosZ - 1],
-			//	grid.PropertyMatrix[gridPosX - 1, gridPosZ],
-			//	grid.PropertyMatrix[gridPosX, gridPosZ],
-			//	grid.PropertyMatrix[gridPosX + 1, gridPosZ],
-			//	grid.PropertyMatrix[gridPosX - 1, gridPosZ + 1],
-			//	grid.PropertyMatrix[gridPosX, gridPosZ + 1],
-			//	grid.PropertyMatrix[gridPosX + 1, gridPosZ + 1]
-			//};
-
-			//foreach (GridProperties gridBlock in neighbouringGrids)
-			//{
-			//	var point = new Vector2D(gridBlock.TopLeft.X, gridBlock.TopLeft.Z);
-			//	var drawArea = new Rectangle(point, new Size(grid.GridScale));
-
-			//	var clickedPoint = new Vector2D(position.X, position.Z);
-			//	if (drawArea.Contains(clickedPoint))
-			//		return gridBlock.MidPoint;
-			//}
-			//return Vector3D.Zero;
 		}
 
 		private Vector3D midPoint;
 		public bool IsClickInGrid { get; private set; }
+
+		public void ToggleVisibility(bool visibility)
+		{
+			foreach (Line3D gridLine in gridLines)
+				gridLine.IsVisible = visibility;
+		}
+
+		public void Dispose()
+		{
+			foreach (Line3D gridLine in gridLines)
+				gridLine.IsActive = false;
+		}
 	}
 }

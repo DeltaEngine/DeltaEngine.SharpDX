@@ -9,11 +9,12 @@
 		<CreateNewFolder>true</CreateNewFolder>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<DefaultName>Drench</DefaultName>
-		<Icon>DeltaEngineIcon.ico</Icon>
+		<Icon>DrenchIcon.ico</Icon>
 	</TemplateData>
 	<TemplateContent>
 		<Project File="Drench.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
+				<ProjectItem ReplaceParameters="false" TargetFileName="DrenchIcon.ico">DrenchIcon.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="AvailableColorFinder.cs">AvailableColorFinder.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Board.cs">Board.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="DrenchMenu.cs">DrenchMenu.cs</ProjectItem>

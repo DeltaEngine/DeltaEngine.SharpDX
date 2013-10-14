@@ -1,7 +1,5 @@
-﻿using CreepyTowers.GUI;
-using DeltaEngine.Core;
-using DeltaEngine.Datatypes;
-using DeltaEngine.Graphics;
+﻿using DeltaEngine.Core;
+using DeltaEngine.Scenes;
 
 namespace CreepyTowers
 {
@@ -10,23 +8,20 @@ namespace CreepyTowers
 	/// </summary>
 	public class Game
 	{
-		public Game(Window window, Device device)
+		public Game(Window window)
 		{
 			Game.window = window;
-			Game.device = device;
 			Game.window.Title = "Creepy Towers";
-			Game.window.ViewportPixelSize = new Size(1920, 1080);
-			//Game.window.SetFullscreen(viewPortSize);
+			//Game.window.ViewportPixelSize = new Size(1920, 1080);
 			MaxZoomedOutFovSize = 6.0f;
-			CameraAndGrid = new CreateCameraAndGrid(MaxZoomedOutFovSize);
+			//CreateCamera = new GameCamera(MaxZoomedOutFovSize);
 			//GameMainMenu = new MainMenu();
 		}
 
 		public static Window window;
-		public static Device device;
 		public float MaxZoomedOutFovSize { get; private set; }
-		public static CreateCameraAndGrid CameraAndGrid { get; private set; }
-		public MainMenu GameMainMenu { get; private set; }
+		public static GameCamera CreateCamera { get; private set; }
+		public Scene GameMainMenu { get; private set; }
 
 		public static void EndGame()
 		{

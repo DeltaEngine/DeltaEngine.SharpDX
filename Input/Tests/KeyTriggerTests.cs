@@ -1,7 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
@@ -54,22 +53,14 @@ namespace DeltaEngine.Input.Tests
 			var down = new Ellipse(centers[1], size.Width, size.Height, Color.Orange);
 			var left = new Ellipse(centers[2], size.Width, size.Height, Color.Orange);
 			var right = new Ellipse(centers[3], size.Width, size.Height, Color.Orange);
-			new Command(() => up.Visibility = Visibility.Show).Add(new KeyTrigger(Key.CursorUp,
-				State.Pressed));
-			new Command(() => up.Visibility = Visibility.Hide).Add(new KeyTrigger(Key.CursorUp,
-				State.Released));
-			new Command(() => down.Visibility = Visibility.Show).Add(new KeyTrigger(Key.CursorDown,
-				State.Pressed));
-			new Command(() => down.Visibility = Visibility.Hide).Add(new KeyTrigger(Key.CursorDown,
-				State.Released));
-			new Command(() => left.Visibility = Visibility.Show).Add(new KeyTrigger(Key.CursorLeft,
-				State.Pressed));
-			new Command(() => left.Visibility = Visibility.Hide).Add(new KeyTrigger(Key.CursorLeft,
-				State.Released));
-			new Command(() => right.Visibility = Visibility.Show).Add(new KeyTrigger(Key.CursorRight,
-				State.Pressed));
-			new Command(() => right.Visibility = Visibility.Hide).Add(new KeyTrigger(Key.CursorRight,
-				State.Released));
+			new Command(() => up.IsVisible = true).Add(new KeyTrigger(Key.CursorUp, State.Pressed));
+			new Command(() => up.IsVisible = false).Add(new KeyTrigger(Key.CursorUp, State.Released));
+			new Command(() => down.IsVisible = true).Add(new KeyTrigger(Key.CursorDown, State.Pressed));
+			new Command(() => down.IsVisible = false).Add(new KeyTrigger(Key.CursorDown, State.Released));
+			new Command(() => left.IsVisible = true).Add(new KeyTrigger(Key.CursorLeft, State.Pressed));
+			new Command(() => left.IsVisible = false).Add(new KeyTrigger(Key.CursorLeft, State.Released));
+			new Command(() => right.IsVisible = true).Add(new KeyTrigger(Key.CursorRight, State.Pressed));
+			new Command(() => right.IsVisible = false).Add(new KeyTrigger(Key.CursorRight, State.Released));
 		}
 
 		[Test, CloseAfterFirstFrame]

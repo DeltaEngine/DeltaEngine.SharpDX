@@ -56,6 +56,14 @@ namespace DeltaEngine.Tests.Entities
 		}
 
 		[Test]
+		public void TestUpdates()
+		{
+			const float NewTime = 2.0f;
+			EntitiesRunner.Current.ChangeUpdateTimeStep(NewTime);
+			Assert.AreEqual(NewTime, Time.Delta);
+		}
+
+		[Test]
 		public void InactivateEntity()
 		{
 			var entity = new MockEntity();
@@ -305,7 +313,7 @@ namespace DeltaEngine.Tests.Entities
 
 		public class DrawTest : DrawBehavior
 		{
-			public void Draw(IEnumerable<DrawableEntity> entities) {}
+			public void Draw(List<DrawableEntity> visibleEntities) {}
 		}
 
 		[Test]
@@ -361,13 +369,17 @@ namespace DeltaEngine.Tests.Entities
 			VerifyEntityWasNotUpdated(new MockRapidEntity(), () => entities.RunEntitiesPaused());
 		}
 
+// ReSharper disable UnusedParameter.Local
 		private static void VerifyEntityWasUpdated(VerifiableUpdate entity, Action run)
+// ReSharper restore UnusedParameter.Local
 		{
 			run();
 			Assert.IsTrue(entity.WasUpdated);
 		}
 
+// ReSharper disable UnusedParameter.Local
 		private static void VerifyEntityWasNotUpdated(VerifiableUpdate entity, Action run)
+// ReSharper restore UnusedParameter.Local
 		{
 			run();
 			Assert.IsFalse(entity.WasUpdated);
@@ -414,6 +426,15 @@ namespace DeltaEngine.Tests.Entities
 			VerifyEntityWasUpdated(
 				(VerifiableUpdate)entity,
 				() => entities.RunEntitiesPaused());
+		}
+
+		[Test]
+		public void AddVisibleDrawableEntity()
+		{
+			var drawable = new DrawableEntity { IsVisible = false };
+			drawable.OnDraw<DrawTest>();
+			drawable.ToggleVisibility();
+			Assert.IsTrue(drawable.IsVisible);
 		}
 	}
 }

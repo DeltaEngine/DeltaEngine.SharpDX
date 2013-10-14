@@ -12,9 +12,6 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Graphics;
-using DeltaEngine.Rendering3D.Mocks;
-using DeltaEngine.Rendering3D.Models;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Platforms
@@ -31,6 +28,11 @@ namespace DeltaEngine.Platforms
 		}
 
 		private readonly AssemblyTypeLoader assemblyLoader;
+
+		internal IEnumerable<Type> RegisteredTypes
+		{
+			get { return alreadyRegisteredTypes; }
+		}
 
 		public void Register<T>()
 		{
@@ -71,9 +73,9 @@ namespace DeltaEngine.Platforms
 		{
 			AddRegisteredType(t);
 			if (typeof(ContentData).IsAssignableFrom(t))
-				return
-					builder.RegisterType(t).AsSelf().FindConstructorsWith(publicAndNonPublicConstructorFinder).
-					        UsingConstructor(contentConstructorSelector);
+				return builder.RegisterType(t).AsSelf().
+					FindConstructorsWith(publicAndNonPublicConstructorFinder).
+					UsingConstructor(contentConstructorSelector);
 			return builder.RegisterType(t).AsSelf();
 		}
 
@@ -108,27 +110,34 @@ namespace DeltaEngine.Platforms
 			}
 		}
 
-		private void AddRegisteredType(Type type)
+		private bool AddRegisteredType(Type type)
 		{
-			if (type.Namespace.StartsWith("System") || type.Namespace.StartsWith("Microsoft"))
-				return;
+			if (type == typeof(IDisposable) || type.Module.ScopeName == "CommonLanguageRuntimeLibrary")
+				return false; //ncrunch: no coverage
 			if (!alreadyRegisteredTypes.Contains(type))
 			{
 				alreadyRegisteredTypes.Add(type);
-				return;
+				return true;
 			}
 			if (ExceptionExtensions.IsDebugMode && !type.IsInterface && !type.IsAbstract)
 				Console.WriteLine("Warning: Type " + type + " already exists in alreadyRegisteredTypes");
+			return false;
 		}
 
 		private ContainerBuilder builder = new ContainerBuilder();
 
+		/// <summary>
+		/// Registers an already created instance and overwrite all base classes and interfaces. For
+		/// example if registering WpfHostedFormsWindow will force all Resolve Window calls to use it.
+		/// </summary>
 		protected internal void RegisterInstance(object instance)
 		{
-			var registration =
-				builder.RegisterInstance(instance).SingleInstance().AsSelf().AsImplementedInterfaces();
-			AddRegisteredType(instance.GetType());
-			RegisterAllBaseTypes(instance.GetType().BaseType, registration);
+			var registration = builder.RegisterInstance(instance).SingleInstance().AsSelf();
+			var type = instance.GetType();
+			AddRegisteredType(type);
+			registration.AsImplementedInterfaces();
+			if (type.BaseType != typeof(object))
+				RegisterAllBaseTypes(type.BaseType, registration);
 		}
 
 		private void RegisterAllBaseTypes(Type baseType,
@@ -136,8 +145,8 @@ namespace DeltaEngine.Platforms
 		{
 			while (baseType != null && baseType != typeof(object))
 			{
-				AddRegisteredType(baseType);
-				registration.As(baseType);
+				if (AddRegisteredType(baseType))
+					registration.As(baseType);
 				baseType = baseType.BaseType;
 			}
 		}
@@ -146,32 +155,35 @@ namespace DeltaEngine.Platforms
 			IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
 				registration)
 		{
-			foreach (var type in typeToRegister.GetInterfaces())
-				AddRegisteredType(type);
-			registration.AsImplementedInterfaces();
 			var baseType = typeToRegister.BaseType;
+			if (baseType == typeof(object))
+			{
+				foreach (var type in typeToRegister.GetInterfaces())
+					AddRegisteredType(type);
+				registration.AsImplementedInterfaces();
+			}
 			while (baseType != null && baseType != typeof(object))
 			{
 				if (baseType.IsAbstract)
 				{
-					AddRegisteredType(baseType);
-					registration.As(baseType);
+					if (AddRegisteredType(baseType))
+						registration.As(baseType);
 				}
 				baseType = baseType.BaseType;
 			}
 		}
 
-		public BaseType Resolve<BaseType>() where BaseType : class
+		public virtual BaseType Resolve<BaseType>() where BaseType : class
 		{
-			MakeSureContainerIsInitialized();
 			if (typeof(BaseType) == typeof(EntitiesRunner))
 				return EntitiesRunner.Current as BaseType;
 			if (typeof(BaseType) == typeof(GlobalTime))
-				return GlobalTime.Current as BaseType;
+				return GlobalTime.Current as BaseType; //ncrunch: no coverage, already registered in MockResolver
 			if (typeof(BaseType) == typeof(ScreenSpace))
-				return ScreenSpace.Current as BaseType;
+				return ScreenSpace.Current as BaseType; //ncrunch: no coverage, already registered in MockResolver
 			if (typeof(BaseType) == typeof(Randomizer))
 				return Randomizer.Current as BaseType;
+			MakeSureContainerIsInitialized();
 			return (BaseType)container.Resolve(typeof(BaseType));
 		}
 
@@ -181,8 +193,6 @@ namespace DeltaEngine.Platforms
 				return; //ncrunch: no coverage
 			assemblyLoader.RegisterAllTypesFromAllAssemblies<ContentData, UpdateBehavior, DrawBehavior>();
 			container = builder.Build();
-			if (AllRegistrationCompleted != null)
-				AllRegistrationCompleted();
 		}
 
 		protected bool IsAlreadyInitialized
@@ -190,8 +200,6 @@ namespace DeltaEngine.Platforms
 			get { return container != null; }
 		}
 		private IContainer container;
-
-		protected event Action AllRegistrationCompleted;
 
 		internal void RegisterAllTypesInAssembly(Type[] assemblyTypes)
 		{
@@ -203,7 +211,7 @@ namespace DeltaEngine.Platforms
 				}
 		}
 
-		internal object Resolve(Type baseType, object customParameter = null)
+		internal virtual object Resolve(Type baseType, object customParameter = null)
 		{
 			MakeSureContainerIsInitialized();
 			return ResolveAndShowErrorBoxIfNoDebuggerIsAttached(baseType, customParameter);
@@ -220,7 +228,7 @@ namespace DeltaEngine.Platforms
 				Logger.Error(ex);
 				if (Debugger.IsAttached || baseType == typeof(Window) ||
 					StackTraceExtensions.StartedFromNCrunch)
-					throw;
+					throw new ResolvingFailed(ex.InnerException ?? ex);
 				//ncrunch: no coverage start
 				ShowInitializationErrorBox(baseType, ex.InnerException ?? ex);
 				return null;
@@ -228,29 +236,50 @@ namespace DeltaEngine.Platforms
 			}
 		}
 
+		public class ResolvingFailed : Exception
+		{
+			public ResolvingFailed(Exception reason)
+				: base(reason.ToString()) {}
+		}
+
 		private object TryResolve(Type baseType, object parameter)
 		{
 			if (parameter == null)
 				return container.Resolve(baseType);
-			if (baseType == typeof(MeshAnimation))
-				if (parameter is ContentCreationData)
-					return new MockMeshAnimation((MeshAnimationCreationData)parameter);
-				else
-					return new MockMeshAnimation((string)parameter);
-			if (parameter is ContentCreationData &&
-				(baseType == typeof(Image) || baseType == typeof(Shader) ||
-					baseType.Assembly.GetName().Name == "DeltaEngine.Graphics"))
-				return CreateTypeManually(FindConcreteType(baseType), parameter);
+			if (parameter is ContentCreationData)
+			{
+				var resolvedInstance = CreateTypeManually(FindConcreteType(baseType), parameter);
+				if (resolvedInstance != null)
+					return resolvedInstance; //ncrunch: no coverage
+			}
 			return container.Resolve(baseType,
 				new Parameter[] { new TypedParameter(parameter.GetType(), parameter) });
 		}
 
 		private object CreateTypeManually(Type concreteTypeToCreate, object parameter)
 		{
-			return Activator.CreateInstance(concreteTypeToCreate,
-				BindingFlags.NonPublic | BindingFlags.Instance, default(Binder),
-				concreteTypeToCreate.Name.EndsWith("MockImage")
-					? new[] { parameter } : new[] { parameter, Resolve<Device>() }, default(CultureInfo));
+			const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance;
+			var constructors = concreteTypeToCreate.GetConstructors(Flags);
+			//ncrunch: no coverage start
+			foreach (var constructor in constructors)
+			{
+				var parameterInfos = constructor.GetParameters();
+				if (parameterInfos.Length <= 0 || !parameterInfos[0].ParameterType.IsInstanceOfType(parameter))
+					continue; //ncrunch: no coverage
+				var parameters = new object[parameterInfos.Length];
+				parameters[0] = parameter;
+				for (int num = 1; num < parameters.Length; num++)
+					parameters[num] = Resolve(parameterInfos[num].ParameterType);
+				return Activator.CreateInstance(concreteTypeToCreate, Flags, default(Binder), parameters,
+					default(CultureInfo));
+			} //ncrunch: no coverage end
+			return null;
+		}
+
+		private Type FindConcreteType(Type baseType)
+		{
+			return alreadyRegisteredTypes.FirstOrDefault(
+				type => !type.IsAbstract && baseType.IsAssignableFrom(type));
 		}
 
 		/// <summary>
@@ -259,29 +288,37 @@ namespace DeltaEngine.Platforms
 		/// </summary>
 		internal abstract void MakeSureContentManagerIsReady();
 
-		private Type FindConcreteType(Type baseType)
-		{
-			return
-				alreadyRegisteredTypes.FirstOrDefault(
-					type => !type.IsAbstract && baseType.IsAssignableFrom(type));
-		}
-
 		// ncrunch: no coverage start
 		private void ShowInitializationErrorBox(Type baseType, Exception ex)
 		{
 			var exceptionText = StackTraceExtensions.FormatExceptionIntoClickableMultilineText(ex);
 			var window = Resolve<Window>();
 			window.CopyTextToClipboard(exceptionText);
-			if (
-				window.ShowMessageBox("Fatal Initialization Error",
-					"Unable to resolve class " + baseType + "\n" +
-						(ExceptionExtensions.IsDebugMode ? exceptionText : ex.GetType().Name + " " + ex.Message) +
-						"\n\nMessage was logged and copied to the clipboard. Click Ignore to try to continue.",
-					new[] { "Ignore", "Abort" }) == "Ignore")
+			const string Header = "Fatal Initialization Error";
+			var text = GetHintTextForKnownIssues(ex);
+			text += "Unable to resolve class " + baseType + "\n";
+			if (ExceptionExtensions.IsDebugMode)
+				text += exceptionText;
+			else
+				text += ex.GetType().Name + " " + ex.Message;
+			text += "\n\nMessage was logged and copied to the clipboard. Click Ignore to try to continue.";
+			if (window.ShowMessageBox(Header, text, new[] { "Ignore", "Abort" }) != "Abort")
 				return;
 			Dispose();
 			if (!StackTraceExtensions.StartedFromNCrunch)
 				Environment.Exit((int)AppRunner.ExitCode.InitializationError);
+		}
+
+		private static string GetHintTextForKnownIssues(Exception ex)
+		{
+			if (ex.GetShortNameOrFullNameIfNotFound().Contains("OpenGLVersionDoesNotSupportShaders"))
+			{
+				string hintText = "Please verify that your video card support OpenGL 3.0 or higher and" +
+					" your driver is up to date.\n\n";
+				hintText += "Exception details:\n";
+				return hintText;
+			}
+			return "";
 		} // ncrunch: no coverage end
 
 		public virtual void Dispose()

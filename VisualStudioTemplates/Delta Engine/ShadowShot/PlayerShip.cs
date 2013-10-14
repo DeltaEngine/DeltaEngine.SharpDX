@@ -5,7 +5,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
@@ -99,7 +99,7 @@ namespace $safeprojectname$
 
 		private void SpawnProjectile(Vector2D point)
 		{
-			var projectile = new Projectile(new Material(Shader.Position2DColorUv, "projectile"), 
+			var projectile = new Projectile(new Material(Shader.Position2DColorUV, "projectile"), 
 				point, viewportBorders);
 			addProjectileList.Add(projectile);
 		}

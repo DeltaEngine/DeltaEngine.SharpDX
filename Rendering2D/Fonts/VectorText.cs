@@ -45,7 +45,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 			public List<Vector2D> LinePoints { get; set; }
 		}
 
-		internal class ProcessText : UpdateBehavior, Filtered
+		public class ProcessText : UpdateBehavior, Filtered
 		{
 			public ProcessText()
 				: base(Priority.Last) {}
@@ -98,9 +98,9 @@ namespace DeltaEngine.Rendering2D.Fonts
 			private readonly Material material;
 			private readonly List<VertexPosition2DColor> vertices = new List<VertexPosition2DColor>();
 
-			public void Draw(IEnumerable<DrawableEntity> entities)
+			public void Draw(List<DrawableEntity> visibleEntities)
 			{
-				foreach (Entity2D entity in entities)
+				foreach (Entity2D entity in visibleEntities)
 					AddVertices(entity);
 				if (vertices.Count > 0)
 					drawing.AddLines(material, vertices.ToArray());
@@ -110,11 +110,9 @@ namespace DeltaEngine.Rendering2D.Fonts
 			private void AddVertices(Entity2D entity)
 			{
 				var area = entity.DrawArea;
-				List<Vector2D> linePoints = entity.Get<Data>().LinePoints;
-				for (int num = 0; num < linePoints.Count; num++)
+				foreach (Vector2D pos in entity.Get<Data>().LinePoints)
 					vertices.Add(new VertexPosition2DColor(
-							ScreenSpace.Current.ToPixelSpaceRounded(linePoints[num] * area.Height + area.Center),
-							entity.Color));
+						ScreenSpace.Current.ToPixelSpaceRounded(pos * area.Height + area.Center), entity.Color));
 			}
 		}
 

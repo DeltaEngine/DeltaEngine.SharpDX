@@ -8,8 +8,10 @@ using Randomizer = DeltaEngine.Core.Randomizer;
 
 namespace DeltaEngine.Rendering2D.Graphs.Tests
 {
+	[Category("Slow")]
 	public class RemoveOldestPointsTests : TestWithMocksOrVisually
 	{
+		//ncrunch: no coverage start
 		[SetUp]
 		public void SetUp()
 		{
@@ -18,9 +20,9 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 				Viewport = Rectangle.One,
 				MaximumNumberOfPoints = 10,
 				NumberOfPercentiles = 2,
-				AxesVisibility = Visibility.Show,
-				PercentilesVisibility = Visibility.Show,
-				PercentileLabelsVisibility = Visibility.Show
+				AxesIsVisible = true,
+				PercentilesIsVisible = true,
+				PercentileLabelsIsVisible = true
 			};
 			line = graph.CreateLine("", LineColor);
 			graph.Add(line);

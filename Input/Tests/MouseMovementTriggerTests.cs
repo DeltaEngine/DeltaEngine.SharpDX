@@ -19,16 +19,15 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void UpdatePosition()
 		{
-			float xPosition = 0.0f;
-			new Command(pos => xPosition += pos.X).Add(new MouseMovementTrigger());
-			Assert.AreEqual(0.0f, xPosition);
+			Vector2D position = Vector2D.Zero;
+			new Command(pos => position = pos).Add(new MouseMovementTrigger());
+			Assert.AreEqual(Vector2D.Zero, position);
 			var mockMouse = Resolve<Mouse>() as MockMouse;
 			if (mockMouse == null)
 				return; //ncrunch: no coverage
+			mockMouse.SetPosition(new Vector2D(0.4f, 0.6f));
 			AdvanceTimeAndUpdateEntities();
-			mockMouse.SetPosition(new Vector2D(1.5f, 1.5f));
-			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(1.5f, xPosition);
+			Assert.AreEqual(new Vector2D(0.4f, 0.6f), position);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -36,6 +35,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			var trigger = new MouseMovementTrigger();
 			Assert.AreEqual(Vector2D.Zero, trigger.Position);
+			Assert.IsFalse(trigger.IsPauseable);
 		}
 
 		[Test, CloseAfterFirstFrame]

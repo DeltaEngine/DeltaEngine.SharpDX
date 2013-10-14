@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DeltaEngine.Content;
-using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Entities
 {
@@ -53,19 +52,19 @@ namespace DeltaEngine.Entities
 			EntitiesRunner.Current.Remove(this);
 		}
 
-		protected internal virtual void FillComponents(List<object> createFromComponents)
-		{
-			foreach (var component in createFromComponents)
-				if (!(component is Rectangle) && !(component is Visibility))
-					if (components.Any(c => c.GetType() == component.GetType()))
-						throw new ComponentOfTheSameTypeAddedMoreThanOnce();
-					else
-						components.Add(component);
-		}
-
 		protected readonly List<object> components = new List<object>();
 
 		public class ComponentOfTheSameTypeAddedMoreThanOnce : Exception { }
+
+		protected internal virtual List<object> GetComponentsForSaving()
+		{
+			return new List<object>(components);
+		}
+
+		protected internal virtual List<object> GetComponentsForViewing()
+		{
+			return new List<object>(components);
+		}
 
 		/// <summary>
 		/// Gets a specific component, derived classes can return faster cached values (e.g. Entity2D)
@@ -108,13 +107,19 @@ namespace DeltaEngine.Entities
 
 		public class InstantiatedHandlerAddedToEntity : Exception {}
 
-		public virtual void Set<T>(T component)
+		public void SetComponents(IEnumerable<object> componentList)
+		{
+			foreach (object component in componentList)
+				Set(component);
+		}
+
+		public virtual void Set(object component)
 		{
 			EntitiesRunner.Current.CheckIfInUpdateState();
 			if (component == null)
 				throw new ArgumentNullException();
 			for (int index = 0; index < components.Count; index++)
-				if (components[index] is T)
+				if (components[index].GetType() == component.GetType())
 				{
 					components[index] = component;
 					return;
@@ -241,11 +246,6 @@ namespace DeltaEngine.Entities
 		{
 			return GetTypeName(instance.GetType()) +
 				(instance.GetType().IsValueType || instance is ContentData ? "=" + instance : "");
-		}
-
-		protected internal virtual List<object> GetComponentsForSaving()
-		{
-			return components;
 		}
 
 		protected internal List<UpdateBehavior> GetActiveBehaviors()

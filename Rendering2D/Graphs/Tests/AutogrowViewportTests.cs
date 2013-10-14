@@ -17,14 +17,20 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 		public void SetUp()
 		{
 			new FilledRect(Rectangle.One, Color.Gray) { RenderLayer = int.MinValue };
-			graph = new Graph(Center) { AxesVisibility = Visibility.Show, IsAutogrowing = true };
+			graph = new Graph(Center) { AxesIsVisible = true, IsAutogrowing = true };
 			line = graph.CreateLine("One", LineColor);
 		}
 
 		private Graph graph;
-		private static readonly Rectangle Center = Rectangle.FromCenter(0.5f, 0.5f, 0.4f, 0.3f);
+		private static Rectangle Center
+		{
+			get { return Rectangle.FromCenter(0.5f, 0.5f, 0.4f, 0.3f); }
+		}
 		private GraphLine line;
-		private static readonly Color LineColor = Color.Blue;
+		private static Color LineColor
+		{
+			get { return Color.Blue; }
+		}
 
 		[Test]
 		public void RenderGraph()
@@ -47,8 +53,10 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			public override void Update(IEnumerable<Entity> entities)
 			{
 				if (Time.CheckEvery(1.0f))
+					//ncrunch: no coverage start
 					foreach (Entity entity in entities)
 						entity.Get<GraphLine>().AddValue(Randomizer.Current.Get());
+				//ncrunch: no coverage end
 			}
 		}
 
@@ -66,11 +74,13 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			{
 				if (!Time.CheckEvery(1.0f))
 					return;
+				//ncrunch: no coverage start
 				foreach (Entity entity in entities)
 				{
 					entity.Get<GraphLine>().AddValue(0.1f, GlobalTime.Current.Fps);
 					entity.Get<FontText>().Text = GlobalTime.Current.Fps + " fps";
 				}
+				//ncrunch: no coverage end 
 			}
 		}
 
@@ -89,11 +99,13 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			{
 				if (!Time.CheckEvery(1.0f))
 					return;
+				//ncrunch: no coverage start
 				foreach (Entity entity in entities)
 				{
 					entity.Get<GraphLine>().AddValue(EntitiesRunner.Current.NumberOfEntities);
 					entity.Get<FontText>().Text = EntitiesRunner.Current.NumberOfEntities + " entities";
 				}
+				//ncrunch: no coverage end
 			}
 		}
 
@@ -110,8 +122,10 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			public override void Update(IEnumerable<Entity> entities)
 			{
 				if (Time.CheckEvery(1.0f))
+					//ncrunch: no coverage start
 					foreach (GraphLine line in entities.SelectMany(entity => entity.Get<List<GraphLine>>()))
 						line.AddValue(Randomizer.Current.Get());
+				//ncrunch: no coverage end
 			}
 		}
 

@@ -4,6 +4,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Platforms.Tests;
 using DeltaEngine.Scenes.UserInterfaces.Terminal;
 using NUnit.Framework;
@@ -15,7 +16,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Terminal
 		[SetUp]
 		public void SetUp()
 		{
-			resolver.Register<TestCommand>();
+			if (!(resolver is MockResolver))
+				return; //ncrunch: no coverage
+			(resolver as MockResolver).RegisterMock(new TestCommand());
 			Resolve<Window>().ViewportPixelSize = new Size(500, 500);
 			console = new Console();
 			keyboard = Resolve<Keyboard>() as MockKeyboard;

@@ -14,7 +14,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 {
 	public class TilemapTests : TestWithMocksOrVisually
 	{
-		[Test]
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
 		public void RenderColoredLogoTilemap()
 		{
 			CreateBorder();
@@ -27,7 +28,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			tilemap.Start<RenderDragInfo>();
 		}
 
-		//ncrunch: no coverage start
 		private static readonly Size World = new Size(100, 100);
 		private static readonly Size Map = new Size(10, 10);
 		private static readonly Rectangle Center = new Rectangle(Left, Top, Width, Height);
@@ -97,7 +97,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			AdvanceTimeAndUpdateEntities();
 		}
 
-		[Test]
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
 		public void MoveToLeft()
 		{
 			new ColoredLogoTilemap(World, Map);
@@ -108,7 +109,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			AdvanceTimeAndUpdateEntities(1);
 		}
 
-		[Test]
+		[Test, Category("Slow")]
 		public void TestBorderIntersection()
 		{
 			new ColoredLogoTilemap(new Size(1), new Size(1));

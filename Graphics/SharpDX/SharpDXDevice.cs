@@ -8,8 +8,8 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Buffer = SharpDX.Direct3D11.Buffer;
-using DxDevice = SharpDX.Direct3D11.Device;
-using DxSwapChain = SharpDX.DXGI.SwapChain;
+using DXDevice = SharpDX.Direct3D11.Device;
+using DXSwapChain = SharpDX.DXGI.SwapChain;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 using Resource = SharpDX.Direct3D11.Resource;
 
@@ -25,7 +25,7 @@ namespace DeltaEngine.Graphics.SharpDX
 			: base(window)
 		{
 			states = new SharpDXStates(settings);
-			DxDevice.CreateWithSwapChain(DriverType.Hardware, SharpDXStates.CreationFlags,
+			DXDevice.CreateWithSwapChain(DriverType.Hardware, SharpDXStates.CreationFlags,
 				states.CreateSwapChainDescription(Width, Height, (IntPtr)window.Handle), out nativeDevice,
 				out swapChain);
 			window.ViewportSizeChanged += ResetDeviceToNewViewportSize;
@@ -42,12 +42,12 @@ namespace DeltaEngine.Graphics.SharpDX
 		{
 			get { return (int)window.ViewportPixelSize.Height; }
 		}
-		private readonly DxDevice nativeDevice;
-		public DxDevice NativeDevice
+		private readonly DXDevice nativeDevice;
+		public DXDevice NativeDevice
 		{
 			get { return nativeDevice; }
 		}
-		private readonly DxSwapChain swapChain;
+		private readonly DXSwapChain swapChain;
 
 		private void ResetDeviceToNewViewportSize(Size newSizeInPixel)
 		{

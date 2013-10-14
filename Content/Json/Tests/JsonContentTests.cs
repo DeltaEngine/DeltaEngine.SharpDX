@@ -5,6 +5,7 @@ namespace DeltaEngine.Content.Json.Tests
 {
 	public class JsonContentTests :TestWithMocksOrVisually
 	{
+		// ncrunch: no coverage start
 		[Test, Category("Slow"), Ignore]
 		public void LoadJsonContentFromFile()
 		{

@@ -17,12 +17,14 @@ namespace $safeprojectname$
 			mainMenu.QuitGame += window.CloseAfterFrame;
 		}
 
+		private readonly Menu mainMenu;
+
 		public void StartGame()
 		{
 			mainMenu.Hide();
 			interact = new InteractionLogics();
-			playerTexture = new Material(Shader.Position2DColorUv, "PlayerPlane");
-			enemyTexture = new Material(Shader.Position2DColorUv, "EnemyPlane");
+			playerTexture = new Material(Shader.Position2DColorUV, "PlayerPlane");
+			enemyTexture = new Material(Shader.Position2DColorUV, "EnemyPlane");
 			player = new PlayerPlane(playerTexture, new Vector2D(0.15f, 0.5f));
 			controls = new GameControls();
 			background = new ParallaxBackground(4, layerImageNames, layerScrollFactors);
@@ -37,7 +39,6 @@ namespace $safeprojectname$
 		internal InteractionLogics interact;
 		internal Material playerTexture;
 		internal Material enemyTexture;
-		private readonly Menu mainMenu;
 		private ParallaxBackground background;
 
 		public void CreateEnemyAtPosition(Vector2D position)

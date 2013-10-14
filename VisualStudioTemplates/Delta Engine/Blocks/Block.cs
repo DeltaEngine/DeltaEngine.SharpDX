@@ -26,7 +26,7 @@ namespace $safeprojectname$
 			int numberOfBricks = content.AreFiveBrickBlocksAllowed ? GetNumberOfBricks() : 
 				NormalNumberOfBricks;
 			var image = content.Load<Image>("Block" + Randomizer.Current.Get(1, 8));
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUv);
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image);
 			var newBrick = new Brick(material, Vector2D.Zero, displayMode);
 			Bricks = new List<Brick> {

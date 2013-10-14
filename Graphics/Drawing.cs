@@ -137,7 +137,14 @@ namespace DeltaEngine.Graphics
 			int numberOfVerticesUsed = 0, int numberOfIndicesUsed = 0) where T : struct, Vertex
 		{
 			var mode = material.DiffuseMap == null ? BlendMode.Normal : material.DiffuseMap.BlendMode;
-			GetDrawBuffer(material.Shader, mode).Add(material.DiffuseMap, vertices, indices,
+			Add(material, mode, vertices, indices, numberOfVerticesUsed, numberOfIndicesUsed);
+		}
+
+		public void Add<T>(Material material, BlendMode blendMode, T[] vertices,
+			short[] indices = null, int numberOfVerticesUsed = 0, int numberOfIndicesUsed = 0)
+			where T : struct, Vertex
+		{
+			GetDrawBuffer(material.Shader, blendMode).Add(material.DiffuseMap, vertices, indices,
 				numberOfVerticesUsed, numberOfIndicesUsed);
 		}
 

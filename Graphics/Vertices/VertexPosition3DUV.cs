@@ -24,7 +24,7 @@ namespace DeltaEngine.Graphics.Vertices
 			UV = uv;
 		}
 
-		public static readonly int SizeInBytes = VertexFormat.Position3DUv.Stride;
+		public static readonly int SizeInBytes = VertexFormat.Position3DUV.Stride;
 
 		public VertexPosition3DUV Lerp(VertexPosition3DUV other, float interpolation)
 		{
@@ -33,7 +33,7 @@ namespace DeltaEngine.Graphics.Vertices
 
 		public VertexFormat Format
 		{
-			get { return VertexFormat.Position3DUv; }
+			get { return VertexFormat.Position3DUV; }
 		}
 	}
 }

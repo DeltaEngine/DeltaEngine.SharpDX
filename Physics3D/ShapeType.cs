@@ -4,6 +4,7 @@
 	{
 		Circle,
 		Rectangle,
+		Triangle,
 		Ellipse,
 		Polygon,
 		Compound,
@@ -13,7 +14,7 @@
 		Capsule,
 		Cone,
 		Cylinder,
-		Triangle,
-		Terrain,
+		Mesh,
+		Terrain
 	}
 }

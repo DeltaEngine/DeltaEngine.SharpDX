@@ -24,7 +24,7 @@ namespace SideScroller.Tests
 
 		private void InitPlayerPlane()
 		{
-			var material = new Material(Shader.Position2DColorUv, PlaneTextureName);
+			var material = new Material(Shader.Position2DColorUV, PlaneTextureName);
 			playerPlane = new PlayerPlane(material, Vector2D.Half);
 		}
 
@@ -80,7 +80,7 @@ namespace SideScroller.Tests
 		[Test]
 		public void CreateEnemyPlane()
 		{
-			var foeTexture = new Material(Shader.Position2DColorUv, EnemyTextureName);
+			var foeTexture = new Material(Shader.Position2DColorUV, EnemyTextureName);
 			new EnemyPlane(foeTexture, new Vector2D(1.2f, 0.5f));
 		}
 

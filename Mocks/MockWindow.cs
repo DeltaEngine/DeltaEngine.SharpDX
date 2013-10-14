@@ -12,7 +12,7 @@ namespace DeltaEngine.Mocks
 		public MockWindow()
 		{
 			Title = "MockWindow";
-			TotalPixelSize = new Size(640, 360);
+			currentSize = new Size(640, 360);
 		}
 
 		public void Present() {}
@@ -20,7 +20,7 @@ namespace DeltaEngine.Mocks
 
 		public string Title { get; set; }
 
-		public bool Visibility
+		public bool IsVisible
 		{
 			get { return true; }
 		}

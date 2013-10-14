@@ -34,6 +34,9 @@
   <PropertyGroup>
     <StartupObject>$safeprojectname$.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>CreepyTowersIcon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,14 +46,11 @@
     <Reference Include="DeltaEngine">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Graphics">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Graphics.dll</HintPath>
+    <Reference Include="DeltaEngine.GameLogic">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.GameLogic.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Input">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Physics2D">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Physics2D.dll</HintPath>
+    <Reference Include="DeltaEngine.GameLogic.PathFinding">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.GameLogic.PathFinding.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Rendering2D">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
@@ -58,17 +58,8 @@
     <Reference Include="DeltaEngine.Rendering2D.Fonts">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Fonts.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering2D.Graphs">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Graphs.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine.Rendering2D.Shapes">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Shapes.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering2D.Sprites">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Sprites.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering2D.Triggers">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Triggers.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Rendering3D.Cameras">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Cameras.dll</HintPath>
@@ -76,17 +67,11 @@
     <Reference Include="DeltaEngine.Rendering3D">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering3D.Mocks">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Mocks.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering3D.Models">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Models.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine.Rendering3D.Particles">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Particles.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering3D.Shapes3D">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Shapes3D.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering3D.Shapes">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Shapes.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Scenes">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Scenes.dll</HintPath>
@@ -96,69 +81,77 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CreepyTowersIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GUI\Credits.cs" />
-    <Compile Include="Creeps\CreepProperties.cs" />
+    <Compile Include="Content\Buttons.cs" />
+    <Compile Include="Content\ComicStripImages.cs" />
+    <Compile Include="Content\ComicStrips.cs" />
+    <Compile Include="Content\CreepGroups.cs" />
+    <Compile Include="Content\CreepModels.cs" />
+    <Compile Include="Content\Effects.cs" />
+    <Compile Include="Content\Fonts.cs" />
+    <Compile Include="Content\Grids.cs" />
+    <Compile Include="Content\GUI.cs" />
+    <Compile Include="Content\LevelModels.cs" />
+    <Compile Include="Content\Levels.cs" />
+    <Compile Include="Content\Sounds.cs" />
+    <Compile Include="Content\TowerModels.cs" />
+    <Compile Include="Content\UI.cs" />
+    <Compile Include="Creeps\CreepGroup.cs" />
+    <Compile Include="Creeps\CreepType.cs" />
     <Compile Include="Creeps\ClothCreepStateChanger.cs" />
-    <Compile Include="FadeEffect.cs" />
     <Compile Include="Creeps\GlassCreepStateChanger.cs" />
-    <Compile Include="Creeps\Group.cs" />
-    <Compile Include="Creeps\GroupXmlParser.cs" />
-    <Compile Include="GUI\IntroScene.cs" />
-    <Compile Include="PathFinding\AStar.cs" />
-    <Compile Include="PathFinding\Graph.cs" />
-    <Compile Include="PathFinding\GraphSearch.cs" />
-    <Compile Include="PathFinding\PathFindingGraph.cs" />
+    <Compile Include="Creeps\IronCreepStateChanger.cs" />
+    <Compile Include="Creeps\PaperCreepStateChanger.cs" />
+    <Compile Include="Creeps\PlasticCreepStateChanger.cs" />
     <Compile Include="Creeps\SandCreepStateChanger.cs" />
-    <Compile Include="Simple2D\Basic2DDisplaySystem.cs" />
-    <Compile Include="Creeps\CalculateDamage.cs" />
-    <Compile Include="GUI\CreateSceneFromXml.cs" />
+    <Compile Include="Creeps\StateChanger.cs" />
+    <Compile Include="Creeps\WoodCreepStateChanger.cs" />
+    <Compile Include="Creeps\CreepData.cs" />
+    <Compile Include="FadeEffect.cs" />
+    <Compile Include="Creeps\Group.cs" />
+    <Compile Include="Creeps\GroupPropertiesXml.cs" />
     <Compile Include="Creeps\CreepState.cs" />
-    <Compile Include="Creeps\CreepStateChanger.cs" />
-    <Compile Include="Levels\LevelGridXmlParser.cs" />
-    <Compile Include="Levels\LevelBathroom.cs" />
-    <Compile Include="CreateCameraAndGrid.cs" />
+    <Compile Include="GUI\CreateSceneFromXml.cs" />
+    <Compile Include="GUI\Credits.cs" />
+    <Compile Include="GUI\Hud.cs" />
+    <Compile Include="GUI\IntroScene.cs" />
+    <Compile Include="GUI\MainMenu.cs" />
+    <Compile Include="GUI\Menu.cs" />
+    <Compile Include="GUI\MenuManager.cs" />
+    <Compile Include="GUI\OptionMenu.cs" />
+    <Compile Include="GUI\TowerSelectionPanel.cs" />
+    <Compile Include="Levels\GameLevelRoom.cs" />
+    <Compile Include="GameCamera.cs" />
     <Compile Include="Creeps\Creep.cs" />
-    <Compile Include="Creeps\CreepPropertiesXmlParser.cs" />
+    <Compile Include="Creeps\CreepPropertiesXml.cs" />
     <Compile Include="FindPossibleTargets.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="InputCommands.cs" />
+    <Compile Include="InGameCommands.cs" />
     <Compile Include="Levels\LevelGrid.cs" />
-    <Compile Include="Levels\Level.cs" />
+    <Compile Include="Towers\AttackType.cs" />
+    <Compile Include="Towers\TowerType.cs" />
+    <Compile Include="Triggers\LifeIsLessThanZero.cs" />
+    <Compile Include="Triggers\StartingGold.cs" />
     <Compile Include="Manager.cs" />
-    <Compile Include="Levels\LevelLivingRoom.cs" />
-    <Compile Include="Simple2D\CalculateDamage2D.cs" />
-    <Compile Include="Simple2D\Creep2D.cs" />
-    <Compile Include="Simple2D\ClothCreepStateChanger2D.cs" />
-    <Compile Include="Simple2D\ShootingManager.cs" />
-    <Compile Include="Simple2D\StateChanger.cs" />
-    <Compile Include="Simple2D\GlassCreepStateChanger2D.cs" />
-    <Compile Include="Simple2D\IronCreepStateChanger2D.cs" />
-    <Compile Include="Simple2D\PaperCreepStateChanger2D.cs" />
-    <Compile Include="Simple2D\PlasticCreepStateChanger2D.cs" />
-    <Compile Include="Simple2D\SandCreepStateChanger2D.cs" />
-    <Compile Include="Simple2D\Tower2D.cs" />
-    <Compile Include="Simple2D\WoodCreepStateChanger2D.cs" />
-    <Compile Include="Towers\TowerProperties.cs" />
-    <Compile Include="GUI\UIXmlParser.cs" />
-    <Compile Include="GUI\UIObject.cs" />
+    <Compile Include="Towers\TowerData.cs" />
     <Compile Include="Levels\GridProperties.cs" />
-    <Compile Include="GUI\Hud.cs" />
-    <Compile Include="GUI\MainMenu.cs" />
     <Compile Include="Creeps\MovememtInGrid.cs" />
-    <Compile Include="Names.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RemapCoordinates.cs" />
     <Compile Include="CreepyTowersRenderLayer.cs" />
     <Compile Include="TimeCounter.cs" />
     <Compile Include="Towers\Tower.cs" />
-    <Compile Include="Towers\TowerPropertiesXmlParser.cs" />
-    <Compile Include="GUI\TowerSelectionPanel.cs" />
-    <Compile Include="Levels\LevelChildsRoom.cs" />
+    <Compile Include="Towers\TowerPropertiesXml.cs" />
     <Compile Include="Messages.cs" />
-    <Compile Include="Creeps\Wave.cs" />
+    <Compile Include="Creeps\CreepWave.cs" />
     <Compile Include="Creeps\WaveManager.cs" />
-    <Compile Include="Creeps\WaveXmlParser.cs" />
+    <Compile Include="Triggers\StartingLifes.cs" />
+    <Compile Include="Triggers\StartTimer.cs" />
+    <Compile Include="Triggers\SubstractLife.cs" />
+    <Compile Include="Triggers\TimerReachZero.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

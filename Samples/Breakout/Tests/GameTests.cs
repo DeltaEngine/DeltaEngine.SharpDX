@@ -56,7 +56,7 @@ namespace Breakout.Tests
 			for (float x = 0; x < 1.0f; x += 0.1f)
 				for (float y = 0; y < 1.0f; y += 0.1f)
 					if (level.GetBrickAt(x, y) != null)
-						level.GetBrickAt(x, y).Visibility = Visibility.Hide;
+						level.GetBrickAt(x, y).IsVisible = false;
 		}
 
 		//[Test]

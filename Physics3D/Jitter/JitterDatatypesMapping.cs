@@ -61,11 +61,9 @@ namespace DeltaEngine.Physics3D.Jitter
 			return result;
 		}
 
-		public static void Convert(JVector vector, ref Vector3D result)
+		public static Vector3D Convert(JVector vector)
 		{
-			result.X = vector.X;
-			result.Y = vector.Y;
-			result.Z = vector.Z;
+			return new Vector3D(vector.X, vector.Y, vector.Z);
 		}
 
 		public static void Convert(ref JVector vector, ref Vector3D result)

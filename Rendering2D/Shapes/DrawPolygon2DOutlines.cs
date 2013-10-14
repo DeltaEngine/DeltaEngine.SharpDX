@@ -22,9 +22,9 @@ namespace DeltaEngine.Rendering2D.Shapes
 		private readonly Drawing draw;
 		private readonly Material material;
 
-		public void Draw(IEnumerable<DrawableEntity> entities)
+		public void Draw(List<DrawableEntity> visibleEntities)
 		{
-			foreach (var entity in entities)
+			foreach (var entity in visibleEntities)
 				AddToBatch(entity);
 			if (vertices.Count == 0)
 				return;

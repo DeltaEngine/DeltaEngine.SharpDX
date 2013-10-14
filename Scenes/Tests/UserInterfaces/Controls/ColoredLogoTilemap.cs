@@ -1,6 +1,6 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
@@ -14,7 +14,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			: base(world, map)
 		{
 			var data = Get<Data>();
-			var logo = new Material(Shader.Position2DColorUv, "DeltaEngineLogo");
+			var logo = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
 			CreateWorld(data, logo);
 			CreateMap(data, logo);
 		}

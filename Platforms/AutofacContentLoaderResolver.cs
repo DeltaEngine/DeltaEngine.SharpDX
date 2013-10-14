@@ -17,7 +17,7 @@ namespace DeltaEngine.Platforms
 		public override ContentLoader ResolveContentLoader(Type contentLoaderType)
 		{
 			if (contentLoaderType == typeof(DeveloperOnlineContentLoader))
-				return new DeveloperOnlineContentLoader(resolver.Resolve<OnlineServiceConnection>());
+				return new DeveloperOnlineContentLoader(resolver.Resolve<OnlineServiceConnection>()); //ncrunch: no coverage
 			return base.ResolveContentLoader(contentLoaderType);
 		}
 

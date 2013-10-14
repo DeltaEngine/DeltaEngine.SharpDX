@@ -1,5 +1,7 @@
-﻿using DeltaEngine.Datatypes;
+﻿using System.Collections.Generic;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
+using Jitter.Collision;
 using Jitter.Collision.Shapes;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
@@ -7,7 +9,7 @@ using Jitter.LinearMath;
 namespace DeltaEngine.Physics3D.Jitter
 {
 	/// <summary>
-	/// Jitter body implementation.
+	/// Jitter body implementation supporting all 3D physics shapes.
 	/// </summary>
 	internal sealed class JitterBody : PhysicsBody
 	{
@@ -66,80 +68,68 @@ namespace DeltaEngine.Physics3D.Jitter
 				CreateConeShape();
 			if (Shape.ShapeType == ShapeType.Cylinder)
 				CreateCylinderShape();
-			if (Shape.ShapeType == ShapeType.Triangle)
-				CreateTriangleShape();
+			if (Shape.ShapeType == ShapeType.Mesh)
+				CreateMeshShape();
 			if (Shape.ShapeType == ShapeType.Terrain)
 				CreateTerrainShape();
 		}
 
 		private void CreateSphereShape()
 		{
-			jitterShape =
-				new SphereShape(ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(
-					Shape.Properties, PhysicsShape.PropertyType.Radius));
+			jitterShape = new SphereShape(
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+				PhysicsShape.PropertyType.Radius));
 		}
 
 		private void CreateBoxShape()
 		{
-			Vector3D size =
-				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, Vector3D>(Shape.Properties,
-					PhysicsShape.PropertyType.Size);
+			Vector3D size = ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, Vector3D>(
+				Shape.Properties, PhysicsShape.PropertyType.Size);
 			jitterShape = new BoxShape(size.Y, size.Z, size.X);
 		}
 
 		private void CreateCapsuleShape()
 		{
-			jitterShape =
-				new CapsuleShape(
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.Depth),
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.Radius));
+			jitterShape = new CapsuleShape(
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.Depth),
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.Radius));
 		}
 
 		private void CreateConeShape()
 		{
-			jitterShape =
-				new ConeShape(
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.Height),
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.Radius));
+			jitterShape = new ConeShape(
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.Height),
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.Radius));
 		}
 
 		private void CreateCylinderShape()
 		{
-			jitterShape =
-				new CylinderShape(
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.Height),
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.Radius));
+			jitterShape = new CylinderShape(
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.Height),
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.Radius));
 		}
 
-		private void CreateTriangleShape()
+		private void CreateMeshShape()
 		{
-			//JitterBody.CreateTriangleShape
-			//jitterShape =
-			//	Helpers.CreateFrom(
-			//		ArrayHelper.SafeGet<PhysicsShape.PropertyType, Mesh>(properties,
-			//			PhysicsShape.PropertyType.Mesh),
-			//		ArrayHelper.SafeGet<PhysicsShape.PropertyType, Matrix>(properties,
-			//			PhysicsShape.PropertyType.LocalSpaceMatrix),
-			//		ArrayHelper.SafeGet<PhysicsShape.PropertyType, bool>(properties,
-			//			PhysicsShape.PropertyType.InvertTriangles));
+			jitterShape = new TriangleMeshShape(
+				new Octree(new List<JVector>(), new List<TriangleVertexIndices>()));
 		}
 
 		private void CreateTerrainShape()
 		{
-			jitterShape =
-				new TerrainShape(
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float[,]>(Shape.Properties,
-						PhysicsShape.PropertyType.Height),
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.ScaleX),
-					ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
-						PhysicsShape.PropertyType.ScaleY));
+			jitterShape = new TerrainShape(
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float[,]>(Shape.Properties,
+					PhysicsShape.PropertyType.Height),
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.ScaleX),
+				ArrayExtensions.GetWithDefault<PhysicsShape.PropertyType, float>(Shape.Properties,
+					PhysicsShape.PropertyType.ScaleY));
 		}
 
 		internal void FireCollisionBegin(PhysicsBody other)
@@ -176,51 +166,26 @@ namespace DeltaEngine.Physics3D.Jitter
 
 		public override Vector3D Position
 		{
-			get
-			{
-				JitterDatatypesMapping.Convert(jitterBody.Position, ref position);
-				return position;
-			}
+			get { return JitterDatatypesMapping.Convert(jitterBody.Position); }
 			set { jitterBody.Position = JitterDatatypesMapping.Convert(ref value); }
 		}
 
-		private Vector3D position;
-
 		public override Vector2D Position2D
 		{
-			get
-			{
-				position2D.X = jitterBody.Position.X;
-				position2D.Y = jitterBody.Position.Y;
-				return position2D;
-			}
+			get { return new Vector2D(jitterBody.Position.X, jitterBody.Position.Y); }
 		}
-
-		private Vector2D position2D;
 
 		public override Vector3D LinearVelocity
 		{
-			get
-			{
-				JitterDatatypesMapping.Convert(jitterBody.LinearVelocity, ref linearVelocity);
-				return linearVelocity;
-			}
+			get { return JitterDatatypesMapping.Convert(jitterBody.LinearVelocity); }
 			set { jitterBody.LinearVelocity = JitterDatatypesMapping.Convert(ref value); }
 		}
 
-		private Vector3D linearVelocity;
-
 		public override Vector3D AngularVelocity
 		{
-			get
-			{
-				JitterDatatypesMapping.Convert(jitterBody.AngularVelocity, ref angularVelocity);
-				return angularVelocity;
-			}
+			get { return JitterDatatypesMapping.Convert(jitterBody.AngularVelocity); }
 			set { jitterBody.AngularVelocity = JitterDatatypesMapping.Convert(ref value); }
 		}
-
-		private Vector3D angularVelocity;
 
 		public override float AngularVelocity2D
 		{
@@ -252,13 +217,11 @@ namespace DeltaEngine.Physics3D.Jitter
 		{
 			get
 			{
-				JitterDatatypesMapping.Convert(jitterBody.BoundingBox.Min, ref bounds.Min);
-				JitterDatatypesMapping.Convert(jitterBody.BoundingBox.Max, ref bounds.Max);
-				return bounds;
+				return new BoundingBox(
+					JitterDatatypesMapping.Convert(jitterBody.BoundingBox.Min),
+					JitterDatatypesMapping.Convert(jitterBody.BoundingBox.Max));
 			}
 		}
-
-		private readonly BoundingBox bounds = new BoundingBox(Vector3D.Zero, Vector3D.Zero);
 
 		/// <summary>
 		/// Applies a force at the center of mass.
@@ -269,9 +232,8 @@ namespace DeltaEngine.Physics3D.Jitter
 		}
 
 		/// <summary>
-		/// Apply a force at a world point. If the force is not
-		/// applied at the center of mass, it will generate a torque and
-		/// affect the angular velocity. This wakes up the body.
+		/// Apply a force at a world point. If the force is not applied at the center of mass, it will
+		/// generate a torque and affect the angular velocity. This wakes up the body.
 		/// </summary>
 		public override void ApplyForce(Vector3D force, Vector3D forcePosition)
 		{
@@ -280,11 +242,8 @@ namespace DeltaEngine.Physics3D.Jitter
 		}
 
 		/// <summary>
-		/// Apply a torque. This affects the angular velocity without affecting the
-		/// linear velocity of the center of mass.
-		/// <remarks>
-		/// This wakes up the body.
-		/// </remarks>
+		/// Apply a torque. This affects the angular velocity without affecting the linear velocity of
+		/// the center of mass. It wakes up the body.
 		/// </summary>
 		public override void ApplyTorque(Vector3D torque)
 		{
@@ -292,10 +251,7 @@ namespace DeltaEngine.Physics3D.Jitter
 		}
 
 		/// <summary>
-		/// Apply an impulse at a point. This immediately modifies the velocity.
-		/// <remarks>
-		/// This wakes up the body.
-		/// </remarks>
+		/// Apply an impulse at a point. This immediately modifies the velocity. It wakes up the body.
 		/// </summary>
 		public override void ApplyLinearImpulse(Vector3D impulse)
 		{
@@ -303,12 +259,8 @@ namespace DeltaEngine.Physics3D.Jitter
 		}
 
 		/// <summary>
-		/// Apply an impulse at a point. This immediately modifies the velocity.
-		/// It also modifies the angular velocity if the point of application
-		/// is not at the center of mass.
-		/// <remarks>
-		/// This wakes up the body.
-		/// </remarks>
+		/// Apply an impulse at a point. This immediately modifies the velocity. It wakes up the body
+		/// and modifies the angular velocity if the point of application is not at the center of mass.
 		/// </summary>
 		public override void ApplyLinearImpulse(Vector3D impulse, Vector3D impulsePosition)
 		{

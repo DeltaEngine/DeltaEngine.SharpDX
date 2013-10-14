@@ -69,7 +69,10 @@ namespace DeltaEngine.Rendering2D.Shapes
 				rotationSin = MathExtensions.Sin(rotation);
 				rotationCos = MathExtensions.Cos(rotation);
 				var drawArea = entity.DrawArea;
-				center = drawArea.Center;
+				rotationCenter = entity.RotationCenter;
+				center = entity.DrawArea.Center;
+				if (center != rotationCenter)
+					center = center.RotateAround(rotationCenter, rotationSin, rotationCos);
 				radiusX = drawArea.Width / 2.0f;
 				radiusY = drawArea.Height / 2.0f;
 				float maxRadius = MathExtensions.Max(radiusX, radiusY);
@@ -80,6 +83,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 			private float rotationSin;
 			private float rotationCos;
 			private Vector2D center;
+			private Vector2D rotationCenter;
 			private float radiusX;
 			private float radiusY;
 			private int pointsCount;
@@ -110,7 +114,8 @@ namespace DeltaEngine.Rendering2D.Shapes
 			{
 				var ellipsePoint = new Vector2D(radiusX * MathExtensions.Sin(i * theta),
 					radiusY * MathExtensions.Cos(i * theta));
-				ellipsePoints.Add(center + ellipsePoint.RotateAround(Vector2D.Zero, rotationSin, rotationCos));
+				ellipsePoints.Add(center +
+					ellipsePoint.RotateAround(Vector2D.Zero, rotationSin, rotationCos));
 			}
 		}
 	}

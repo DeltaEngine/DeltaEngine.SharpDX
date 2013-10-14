@@ -31,5 +31,15 @@ namespace DeltaEngine.Input.Windows.Tests
 		{
 			touch.Dispose();
 		}
+
+		[Test]
+		public void CheckNativeTouchInput()
+		{
+			var native = new NativeTouchInput(0, 1, 0, 0);
+			Assert.AreEqual(0, native.Flags);
+			Assert.AreEqual(1, native.Id);
+			Assert.AreEqual(0, native.X);
+			Assert.AreEqual(0, native.Y);
+		}
 	}
 }

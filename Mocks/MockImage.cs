@@ -6,12 +6,13 @@ namespace DeltaEngine.Mocks
 {
 	public sealed class MockImage : Image
 	{
-		private MockImage(string contentName)
+		public MockImage(string contentName)
 			: base(contentName) {}
 
-		private MockImage(ImageCreationData creationData)
+		public MockImage(ImageCreationData creationData)
 			: base(creationData) {}
 
+		protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) {}
 		protected override void LoadImage(Stream fileData) {}
 
 		public override void Fill(Color[] colors)

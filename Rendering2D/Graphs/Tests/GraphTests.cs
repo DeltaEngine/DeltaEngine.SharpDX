@@ -14,7 +14,7 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			graph = new Graph(Center) { Viewport = LargeViewport, AxesVisibility = Visibility.Show };
+			graph = new Graph(Center) { Viewport = LargeViewport, AxesIsVisible = true };
 		}
 
 		private Graph graph;
@@ -25,7 +25,7 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 		public void RenderGraphWithFourLines()
 		{
 			CreateGraphWithFourLines();
-			graph.AxesVisibility = Visibility.Hide;
+			graph.AxesIsVisible = false;
 		}
 
 		private void CreateGraphWithFourLines()
@@ -91,39 +91,39 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ChangeAxesVisibility()
 		{
-			Assert.AreEqual(Visibility.Show, graph.AxesVisibility);
-			graph.AxesVisibility = Visibility.Hide;
-			graph.AxesVisibility = Visibility.Hide;
-			Assert.AreEqual(Visibility.Hide, graph.AxesVisibility);
+			Assert.IsTrue(graph.AxesIsVisible);
+			graph.AxesIsVisible = false;
+			Assert.IsFalse(graph.AxesIsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ChangePercentilesVisibility()
 		{
-			Assert.AreEqual(Visibility.Hide, graph.PercentilesVisibility);
-			graph.PercentilesVisibility = Visibility.Show;
-			graph.PercentilesVisibility = Visibility.Show;
+			Assert.IsFalse(graph.PercentilesIsVisible);
+			graph.PercentilesIsVisible = true;
 			graph.NumberOfPercentiles = 2;
-			Assert.AreEqual(Visibility.Show, graph.PercentilesVisibility);
+			Assert.IsTrue(graph.PercentilesIsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ChangePercentileLabelsVisibility()
 		{
-			Assert.AreEqual(Visibility.Hide, graph.PercentileLabelsVisibility);
-			graph.PercentileLabelsVisibility = Visibility.Show;
-			graph.PercentileLabelsVisibility = Visibility.Show;
+			Assert.IsFalse(graph.PercentileLabelsIsVisible);
+			graph.PercentileLabelsIsVisible = true;
 			graph.ArePercentileLabelsInteger = true;
-			Assert.AreEqual(Visibility.Show, graph.PercentileLabelsVisibility);
+			Assert.IsTrue(graph.PercentileLabelsIsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ChangeKeyVisibility()
 		{
-			Assert.AreEqual(Visibility.Show, graph.KeyVisibility);
-			graph.KeyVisibility = Visibility.Hide;
-			graph.KeyVisibility = Visibility.Hide;
-			Assert.AreEqual(Visibility.Hide, graph.KeyVisibility);
+			graph.CreateLine("TestLine", Color.Red);
+			graph.CreateLine("TestLine2", Color.Red);
+			Assert.IsFalse(graph.KeyVisibility);
+			graph.KeyVisibility = true;
+			Assert.IsTrue(graph.KeyVisibility);
+			graph.RefreshKey();
+
 		}
 		
 		[Test, CloseAfterFirstFrame]
@@ -231,7 +231,7 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			GraphLine line = graph.CreateLine("", LineColor);
 			line.AddPoint(new Vector2D(-1.0f, -1.0f));
 			line.AddPoint(new Vector2D(0.1f, 0.5f));
-			graph.Visibility = Visibility.Hide;
+			graph.IsVisible = false;
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -245,6 +245,31 @@ namespace DeltaEngine.Rendering2D.Graphs.Tests
 			graph.RemoveLine(line);
 			Assert.AreEqual(0, graph.Lines.Count);
 			Assert.AreEqual(0, line.lines.Count);
+		}
+
+		[Test]
+		public void GraphsArePauseable()
+		{
+			Assert.IsTrue(graph.IsPauseable);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void RenderGraphIncludingKey()
+		{
+			graph.CreateLine("key", LineColor);
+			graph.KeyVisibility = true;
+			graph.RefreshKey();
+			graph.KeyVisibility = true;
+			graph.PercentileLabelsIsVisible = false;
+			graph.PercentilesIsVisible = false;
+			graph.Origin = graph.Origin;
+			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test,CloseAfterFirstFrame]
+		public void GraphUpdatePauseable()
+		{
+			Assert.IsTrue(graph.IsPauseable);
 		}
 	}
 }

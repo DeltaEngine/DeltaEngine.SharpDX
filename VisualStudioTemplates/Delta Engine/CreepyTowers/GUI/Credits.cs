@@ -1,17 +1,18 @@
+using System.Linq;
+using $safeprojectname$.Content;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Multimedia;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace $safeprojectname$.GUI
 {
-	public class Credits : Scene
+	public class Credits : Menu
 	{
 		public Credits()
 		{
 			remap = new RemapCoordinates();
-			SetBackground(new Material(Shader.Position2DUv, Names.ImageCredits));
 			CreateCreditsScene();
 		}
 
@@ -19,38 +20,28 @@ namespace $safeprojectname$.GUI
 
 		private void CreateCreditsScene()
 		{
-			var creditsXmlParser = new UIXmlParser();
-			creditsXmlParser.ParseXml(Names.XmlCreditsScene, "Credits");
-			foreach (var uiObject in creditsXmlParser.UiObjectList)
+			scene = ContentLoader.Load<Scene>(UI.SceneCredits.ToString());
+			scene.SetQuadraticBackground(new Material(Shader.Position2DUV, 
+				Content.GUI.CreditsScreen.ToString()));
+			foreach (Control control in scene.Controls)
 			{
-				var imageSize = remap.RemapCoordinateSpaces(uiObject.ObjectSize);
-				var centerPos = remap.RemapCoordinateSpaces(uiObject.Position);
+				var imageSize = remap.RemapCoordinateSpaces(control.DrawArea.Size);
+				var centerPos = remap.RemapCoordinateSpaces(control.DrawArea.TopLeft);
 				var drawArea = Rectangle.FromCenter(centerPos, imageSize);
-				var button = new InteractiveButton(CreateTheme(uiObject.Name), drawArea);
-				button.Clicked += () => 
-				{
-					Dispose();
-					new MainMenu();
-				};
-				Add(button);
+				DefineBackButton(control, drawArea);
 			}
-			Show();
 		}
 
-		private static Theme CreateTheme(string buttonImageName)
+		private static void DefineBackButton(Control button, Rectangle drawArea)
 		{
-			var appearance = new Theme.Appearance(buttonImageName);
-			return new Theme {
-				Button = appearance,
-				ButtonMouseover = appearance,
-				ButtonPressed = appearance,
-				Font = ContentLoader.Load<Font>(Names.FontChelseaMarket14)
+			button.Clicked += () => 
+			{
+				var clickSound = ContentLoader.Load<Sound>(Sounds.PressButton.ToString());
+				clickSound.Play();
+				MainMenu mainMenu = MenuManager.Current.GetScenesOfType<MainMenu>().First();
+				if (mainMenu != null)
+					MenuManager.Current.SetCurrentScene(mainMenu);
 			};
-		}
-
-		protected override void DisposeData()
-		{
-			Clear();
 		}
 	}
 }

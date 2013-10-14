@@ -4,7 +4,6 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Rendering2D.Sprites;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
@@ -27,7 +26,7 @@ namespace DeltaEngine.Physics2D.Tests
 
 		private static Sprite CreateFallingSpriteWhichExpires()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"), Rectangle.One);
+			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), Rectangle.One);
 			sprite.Add(new SimplePhysics.Data
 			{
 				Velocity = Vector2D.Half,
@@ -49,7 +48,7 @@ namespace DeltaEngine.Physics2D.Tests
 		[Test]
 		public void RenderSlowlyFallingLogo()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"), screenCenter);
+			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), screenCenter);
 			sprite.Add(new SimplePhysics.Data
 			{
 				Velocity = new Vector2D(0.0f, -0.3f),
@@ -139,11 +138,20 @@ namespace DeltaEngine.Physics2D.Tests
 		}
 
 		[Test]
-		public void RenderMovingUvSprite()
+		public void RenderMovingUVSprite()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUv, "DeltaEngineLogo"), Rectangle.One);
-			sprite.SetNewUV(new Rectangle(0, 0, 5, 5), FlipMode.Vertical);
-			sprite.StartMovingUv(Vector2D.One);
+			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), Rectangle.One);
+			sprite.SetUVWithoutInterpolation(new Rectangle(0, 0, 0.1f, 0.1f));
+			sprite.FlipMode = FlipMode.Vertical;
+			sprite.StartMovingUV(Vector2D.One/10);
+		}
+
+		[Test]
+		public void RenderBouncingOffScreenEdgesSprite()
+		{
+			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), 
+				new Rectangle(Vector2D.Zero, new Size(0.1f)));
+			sprite.StartBouncingOffScreenEdges(Vector2D.Half, () => { });
 		}
 	}
 }

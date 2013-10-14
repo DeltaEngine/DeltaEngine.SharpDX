@@ -1,41 +1,42 @@
-﻿using CreepyTowers.Towers;
+﻿using CreepyTowers.Content;
+using CreepyTowers.Towers;
+using DeltaEngine.Content;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace CreepyTowers.Tests.Towers
 {
-	///<summary>
-	///Tests for parsing of the TowerProperties.xml
-	///</summary>
+	//TODO: Add more useful tests to actually load and check tower settings
+	/// <summary>
+	/// Tests for parsing of the TowerProperties.xml
+	/// </summary>
 	public class TowerPropertiesTests : TestWithMocksOrVisually
 	{
-		[SetUp]
-		public void TowerProperties()
+		[Test, CloseAfterFirstFrame]
+		public void TowerDataShouldBeAsCreated()
 		{
-			towerProp = new TowerProperties
-			{
-				Name = Names.TowerAcidConeJanitor,
-				TowerType = Tower.TowerType.Acid,
-				AttackType = Tower.AttackType.DirectShot,
-				Range = 30.0f,
-				AttackFrequency = 3.0f,
-				AttackDamage = 30.0f,
-				Cost = 100
-			};
+			TowerData towerData = CreateTowerData();
+			Assert.AreEqual(TowerModels.TowerAcidConeJanitorHigh.ToString(), towerData.Name);
+			Assert.AreEqual(TowerType.Acid, towerData.Type);
+			Assert.AreEqual(AttackType.DirectShot, towerData.AttackType);
+			Assert.AreEqual(30.0f, towerData.Range);
+			Assert.AreEqual(3.0f, towerData.AttackFrequency);
+			Assert.AreEqual(30.0f, towerData.AttackDamage);
+			Assert.AreEqual(100, towerData.Cost);
 		}
 
-		private TowerProperties towerProp;
-
-		[Test, CloseAfterFirstFrame]
-		public void LoadTowerPropertiesAndCheckNumberOfAvailableTowers()
+		private static TowerData CreateTowerData()
 		{
-			Assert.AreEqual(Names.TowerAcidConeJanitor, towerProp.Name);
-			Assert.AreEqual(Tower.TowerType.Acid, towerProp.TowerType);
-			Assert.AreEqual(Tower.AttackType.DirectShot, towerProp.AttackType);
-			Assert.AreEqual(30.0f, towerProp.Range);
-			Assert.AreEqual(3.0f, towerProp.AttackFrequency);
-			Assert.AreEqual(30.0f, towerProp.AttackDamage);
-			Assert.AreEqual(100, towerProp.Cost);
+			return new TowerData(TowerType.Acid, TowerModels.TowerAcidConeJanitorHigh.ToString(),
+				AttackType.DirectShot, 30.0f, 3.0f, 30.0f, 100);
+		}
+
+		[Test, Category("Slow"), CloseAfterFirstFrame]
+		public void LoadTowerPropertiesXmlContentAndCheckNames()
+		{
+			var towerProperties = ContentLoader.Load<TowerPropertiesXml>("TowerProperties");
+			Assert.IsTrue(towerProperties.Get(TowerType.Acid).Name.Contains("Acid"));
+			Assert.IsTrue(towerProperties.Get(TowerType.Water).Name.Contains("Water"));
 		}
 	}
 }

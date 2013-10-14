@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Entities;
@@ -15,6 +16,18 @@ namespace DeltaEngine.Rendering3D.Particles
 		}
 
 		private readonly Drawing drawing;
+
+		public void Draw(List<DrawableEntity> visibleEntities)
+		{
+			foreach (ParticleEmitter entity in visibleEntities)
+				if (entity.NumberOfActiveParticles > 0)
+					FillParticlesDrawContexts(entity);
+			foreach (var verticesToRender in verticesPerTexture)
+				if (verticesToRender.CurrentIndex > 0)
+					RenderBatch(verticesToRender);
+		}
+
+		private readonly List<VerticesToRender> verticesPerTexture = new List<VerticesToRender>();
 
 		private class VerticesToRender
 		{
@@ -45,60 +58,33 @@ namespace DeltaEngine.Rendering3D.Particles
 			public readonly short[] Indices = new short[12 * 1024];
 			public int CurrentIndex;
 
-			public void AddParticlesOfEmitter(Particle2D interpolatedParticle)
+			public void AddParticlesOfEmitter(Particle interpolatedParticle)
 			{
-				if (!interpolatedParticle.IsActive)
-					return;
-				if (CurrentIndex + 4 > Data.Length)
-				{
-					if (!alreadyWarned)
-						Logger.Warning("Too many particles for " + interpolatedParticle.Image);
-					alreadyWarned = true;
-					return;
-				}
 				Data[CurrentIndex] = interpolatedParticle.GetTopLeftVertex();
 				Data[CurrentIndex + 1] = interpolatedParticle.GetTopRightVertex();
 				Data[CurrentIndex + 2] = interpolatedParticle.GetBottomRightVertex();
 				Data[CurrentIndex + 3] = interpolatedParticle.GetBottomLeftVertex();
 				CurrentIndex += 4;
 			}
-
-			private bool alreadyWarned;
 		}
 
-		public void Draw(IEnumerable<DrawableEntity> entities)
+		private void FillParticlesDrawContexts(ParticleEmitter emitter)
 		{
-			foreach (Particle2DEmitter entity in entities)
-				if (entity.NumberOfActiveParticles > 0)
-					FillParticlesDrawContexts(entity);
-			foreach (var verticesToRender in verticesPerTexture)
-				if (verticesToRender.CurrentIndex > 0)
-					RenderBatch(verticesToRender);
-		}
-
-		private readonly List<VerticesToRender> verticesPerTexture = new List<VerticesToRender>();
-
-		private void FillParticlesDrawContexts(Particle2DEmitter emitter)
-		{
-			foreach (var particle in emitter.GetInterpolatedArray<Particle2D>())
+			foreach (var particle in emitter.GetInterpolatedArray<Particle>())
 			{
 				if (!particle.IsActive)
 					continue;
-				CreateVerticeToRenderIfNewImage(emitter, particle);
+				CreateVerticesToRenderIfNewImage(emitter, particle);
 				foreach (var verticesToRender in verticesPerTexture)
-					if (verticesToRender.Texture == particle.Image)
+					if (verticesToRender.Texture == particle.Material.DiffuseMap)
 						verticesToRender.AddParticlesOfEmitter(particle);
 			}
 		}
 
-		private void CreateVerticeToRenderIfNewImage(Particle2DEmitter emitter, Particle2D particle)
+		private void CreateVerticesToRenderIfNewImage(ParticleEmitter emitter, Particle particle)
 		{
-			bool hasVerticesWithImage = true;
-			foreach (VerticesToRender x in verticesPerTexture)
-				if (x.Texture == particle.Image)
-					hasVerticesWithImage = false;
-			if (hasVerticesWithImage)
-				verticesPerTexture.Add(new VerticesToRender(particle.Image,
+			if (verticesPerTexture.All(vpt => vpt.Texture != particle.Material.DiffuseMap))
+				verticesPerTexture.Add(new VerticesToRender(particle.Material.DiffuseMap,
 					emitter.EmitterData.ParticleMaterial));
 		}
 

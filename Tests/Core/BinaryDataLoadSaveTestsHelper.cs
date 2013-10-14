@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 using NUnit.Framework;

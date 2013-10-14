@@ -1,5 +1,4 @@
 using DeltaEngine.Core;
-using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 
 namespace $safeprojectname$
@@ -8,7 +7,7 @@ namespace $safeprojectname$
 	{
 		public Program()
 		{
-			new Game(Resolve<Window>(), Resolve<Device>());
+			new Game(Resolve<Window>());
 		}
 
 		public static void Main()

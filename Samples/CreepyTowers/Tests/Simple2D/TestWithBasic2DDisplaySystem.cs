@@ -1,5 +1,4 @@
 ﻿using CreepyTowers.Creeps;
-using CreepyTowers.Simple2D;
 using CreepyTowers.Towers;
 using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
@@ -15,14 +14,14 @@ namespace CreepyTowers.Tests.Simple2D
 		[SetUp]
 		public void CreateGrid()
 		{
-			display = new Basic2DDisplaySystem("LevelsChildrensRoom");
-			SelectTower(Tower.TowerType.Acid);
+			display = new Basic2DDisplaySystem();
+			SelectTower(TowerType.Acid);
 			Assert.AreEqual(new Size(24, 24), display.Size);
 			SetCommands();
 		}
 
 		protected Basic2DDisplaySystem display;
-		private Tower.TowerType selectedTower;
+		private TowerType selectedTower;
 
 		private void SetCommands()
 		{
@@ -32,21 +31,21 @@ namespace CreepyTowers.Tests.Simple2D
 				new MouseButtonTrigger(MouseButton.Right));
 			new Command(pos => { display.RemoveElement(display.GetGridPosition(pos)); }).Add(
 				new MouseButtonTrigger(MouseButton.Middle));
-			new Command(() => SelectTower(Tower.TowerType.Acid)).Add(new KeyTrigger(Key.D1,
+			new Command(() => SelectTower(TowerType.Acid)).Add(new KeyTrigger(Key.D1,
 				State.Pressed));
-			new Command(() => SelectTower(Tower.TowerType.Slice)).Add(new KeyTrigger(Key.D2,
+			new Command(() => SelectTower(TowerType.Slice)).Add(new KeyTrigger(Key.D2,
 				State.Pressed));
-			new Command(() => SelectTower(Tower.TowerType.Fire)).Add(new KeyTrigger(Key.D3,
+			new Command(() => SelectTower(TowerType.Fire)).Add(new KeyTrigger(Key.D3,
 				State.Pressed));
-			new Command(() => SelectTower(Tower.TowerType.Ice)).Add(new KeyTrigger(Key.D4,
+			new Command(() => SelectTower(TowerType.Ice)).Add(new KeyTrigger(Key.D4,
 				State.Pressed));
-			new Command(() => SelectTower(Tower.TowerType.Impact)).Add(new KeyTrigger(Key.D5,
+			new Command(() => SelectTower(TowerType.Impact)).Add(new KeyTrigger(Key.D5,
 				State.Pressed));
-			new Command(() => SelectTower(Tower.TowerType.Water)).Add(new KeyTrigger(Key.D6,
+			new Command(() => SelectTower(TowerType.Water)).Add(new KeyTrigger(Key.D6,
 				State.Pressed));
 		}
 
-		private void SelectTower(Tower.TowerType towerType)
+		private void SelectTower(TowerType towerType)
 		{
 			selectedTower = towerType;
 			if (selectedTowerRect != null)
@@ -60,17 +59,17 @@ namespace CreepyTowers.Tests.Simple2D
 		[Test]
 		public void AddFireTower()
 		{
-			display.AddTower(new Vector2D(12, 12), Tower.TowerType.Water);
+			display.AddTower(new Vector2D(12, 12), TowerType.Water);
 		}
 
 		[Test]
 		public void AddClothCreep()
 		{
-			display.AddCreep(new Vector2D(0, 10), new Vector2D(24, 10), Creep.CreepType.Cloth);
+			display.AddCreep(new Vector2D(0, 10), new Vector2D(24, 10), CreepType.Cloth);
 		}
 
 		[Test]
-		public void TestPerformanceAStar()
+		public void CheckAStarAlgorithmPerformance()
 		{
 			for (int i = 0; i < 50; i++)
 				display.GetPath(new Vector2D(0, 10), new Vector2D(24, 10));

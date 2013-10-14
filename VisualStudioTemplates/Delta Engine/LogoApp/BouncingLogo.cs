@@ -4,13 +4,13 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Multimedia;
 using DeltaEngine.Physics2D;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
 	public class BouncingLogo : Sprite
 	{
-		public BouncingLogo() : base(new Material(Shader.Position2DColorUv, "DeltaEngineLogo"), 
+		public BouncingLogo() : base(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"), 
 			Vector2D.Half)
 		{
 			Color = Color.GetRandomColor();

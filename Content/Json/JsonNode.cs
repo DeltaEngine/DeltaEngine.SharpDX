@@ -79,7 +79,7 @@ namespace DeltaEngine.Content.Json
 			var array = data as JArray;
 			return array.Values<int>().ToArray();
 		}
-
+		//ncrunch: no coverage start
 		public override string ToString()
 		{
 			return JsonConvert.SerializeObject(data);

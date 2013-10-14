@@ -1,5 +1,4 @@
-﻿using System;
-using DeltaEngine.Platforms;
+﻿using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Windows.Tests
@@ -17,7 +16,7 @@ namespace DeltaEngine.Input.Windows.Tests
 		[Test]
 		public void UpdateKeyboard()
 		{
-			var trigger = new KeyTrigger(Key.A, State.Pressing);
+			var trigger = new KeyTrigger(Key.A);
 			keyboard.Update(new[]{trigger});
 			AdvanceTimeAndUpdateEntities();
 		}
@@ -27,6 +26,39 @@ namespace DeltaEngine.Input.Windows.Tests
 		{
 			keyboard.Dispose();
 			Assert.IsFalse(keyboard.IsAvailable);
+		}
+
+		[Test]
+		public void UpdateKeyStates()
+		{
+			var mockKeyboard = new MockWindowsKeyboard();
+			mockKeyboard.SetPressedKey(Key.A);
+			var triggerPressing = new KeyTrigger(Key.A);
+			mockKeyboard.Update(new[] { triggerPressing });
+			Assert.AreEqual(State.Pressing, mockKeyboard.GetKeyboardState(Key.A));
+			mockKeyboard.Update(new[] { triggerPressing });
+			Assert.AreEqual(State.Pressed, mockKeyboard.GetKeyboardState(Key.A));
+			mockKeyboard.SetReleasedKeys(Key.A);
+			mockKeyboard.Update(new[] { new KeyTrigger(Key.A, State.Released) });
+			Assert.AreEqual(State.Releasing, mockKeyboard.GetKeyboardState(Key.A));
+		}
+
+		private class MockWindowsKeyboard : WindowsKeyboard
+		{
+			public void SetPressedKey(Key key)
+			{
+				pressedKeys.Add(key);
+			}
+
+			public State GetKeyboardState(Key key)
+			{
+				return keyboardStates[(int)key];
+			}
+
+			public void SetReleasedKeys(Key key)
+			{
+				releasedKeys.Add(key);
+			}
 		}
 	}
 }

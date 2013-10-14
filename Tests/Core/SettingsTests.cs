@@ -1,6 +1,7 @@
 ﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Mocks;
+using DeltaEngine.Platforms;
 using NUnit.Framework;
 using ProfilingMode = DeltaEngine.Core.ProfilingMode;
 
@@ -36,6 +37,7 @@ namespace DeltaEngine.Tests.Core
 			Settings settings = Settings.Current;
 			settings.PlayerName = ModifiedPlayerName;
 			settings.TwoLetterLanguageName = ModifiedTwoLetterLanguageName;
+			settings.StartInFullscreen = false;
 			Assert.AreEqual(settings.TwoLetterLanguageName, ModifiedTwoLetterLanguageName);
 			Assert.AreEqual(ModifiedPlayerName, settings.PlayerName);
 			settings.Save();
@@ -60,6 +62,14 @@ namespace DeltaEngine.Tests.Core
 			Settings settings = Settings.Current;
 			EditSettings(settings);
 			CheckSettings(settings);
+		}
+
+		[Test]
+		public void SettingsChangeBeforeClose()
+		{
+			MockSettings settings = new MockSettings();
+			settings.Change();
+			settings.Dispose();
 		}
 
 		private static void EditSettings(Settings settings)

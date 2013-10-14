@@ -76,7 +76,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 							currentWordWidth = 0.0f;
 						}
 					}
-					else if (!isClipping || IsGlyphFittingIntoRemainingWidth(maxTextPixelSize.Width))
+					else
 					{
 						currentTextLine.Add(character);
 						currentTextLineWidth += glyphWidth;
@@ -164,11 +164,6 @@ namespace DeltaEngine.Rendering2D.Fonts
 				currentWord.Add(parsedLine[characterIndex]);
 
 			parsedLines.Insert(lineIndex + 1, currentWord);
-		}
-
-		private bool IsGlyphFittingIntoRemainingWidth(float width)
-		{
-			return currentTextLineWidth + glyph.UV.Width <= width + 1;
 		}
 
 		private void UpdateMaxTextLineWidth()

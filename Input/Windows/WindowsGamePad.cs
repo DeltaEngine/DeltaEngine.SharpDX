@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Input.Windows
@@ -29,7 +27,7 @@ namespace DeltaEngine.Input.Windows
 		private readonly int joyCapsSize;
 		private readonly State[] states;
 
-		public override void Vibrate(float strength) {}
+		public override void Vibrate(float strength) {} // ncrunch: no coverage
 
 		private float triggerLeft;
 		private float triggerRight;
@@ -54,9 +52,9 @@ namespace DeltaEngine.Input.Windows
 			UpdateButton(IsButtonPressed(buttons, JoystickButtons.Start), GamePadButton.Start);
 		}
 
-		private bool IsButtonPressed(JoystickButtons buttons, JoystickButtons button)
+		private static bool IsButtonPressed(JoystickButtons buttons, JoystickButtons button)
 		{
-			return (buttons | JoystickButtons.A) == buttons;
+			return (buttons | button) == buttons;
 		}
 
 		private void UpdateStickAndShoulderButtons(JoystickButtons buttons)
@@ -112,9 +110,9 @@ namespace DeltaEngine.Input.Windows
 		private uint GetAnyJoystick()
 		{
 			if (GetPresence(1))
-				return 1;
+				return 1;		//ncrunch: no coverage
 			if (GetPresence(2))
-				return 2;
+				return 2;		//ncrunch: no coverage
 			return GetPresence(3) ? 3u : 0;
 		}
 
@@ -230,13 +228,7 @@ namespace DeltaEngine.Input.Windows
 			JoyAll = JoyX | JoyY | JoyZ | JoyR | JoyU | JoyV | JoyPov | JoyButtons
 		}
 
-		public override void Update(IEnumerable<Entity> entities)
-		{
-			Run();
-			base.Update(entities);
-		}
-
-		public unsafe void Run()
+		protected unsafe override void UpdateGamePadStates()
 		{
 			uint index = GetJoystickByNumber();
 			JoyCaps caps;
@@ -247,16 +239,14 @@ namespace DeltaEngine.Input.Windows
 				Flags = (uint)JoystickDwFlags.JoyAll
 			};
 			joyGetPosEx(index, &info);
-
 			UpdateAllButtons((JoystickButtons)info.Buttons);
 			UpdateDPadButtons(info.Pov);
-
 			triggerLeft = info.Zpos == 65407 ? 1 : 0;
 			triggerRight = info.Zpos == 127 ? 1 : 0;
 			xAxisLeft = ((info.Xpos - caps.wXmin) * (2f / (caps.wXmax - caps.wXmin))) - 1f;
 			yAxisLeft = ((info.Ypos - caps.wYmin) * (2f / (caps.wYmax - caps.wYmin))) - 1f;
 			xAxisRight = ((info.Upos - caps.wUmin) * (2f / (caps.wUmax - caps.wUmin))) - 1f;
-			yAxisRight = ((info.Rpos - caps.wRmin) * (2f / (caps.wRmax - caps.wRmin))) - 1f;
+			yAxisRight = ((info.Rpos - caps.wRmin) * (2f / (caps.wRmax - caps.wRmin))) - 1f;			
 		}
 	}
 }

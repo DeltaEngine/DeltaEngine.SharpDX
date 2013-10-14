@@ -3,19 +3,20 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering3D.Particles;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
 	public class PlayerShip : Sprite, Updateable
 	{
-		public PlayerShip() : base(new Material(Shader.Position2DColorUv, "ship1"), new 
+		public PlayerShip() : base(ContentLoader.Load<Material>("Ship2D"), new 
 			Rectangle(Vector2D.Half, new Size(.05f)))
 		{
 			Add(new Velocity2D(Vector2D.Zero, MaximumPlayerVelocity));
 			RenderLayer = (int)AsteroidsRenderLayer.Player;
-			projectileMaterial = new Material(Shader.Position2DColorUv, "projectile");
+			projectileMaterial = ContentLoader.Load<Material>("Missile");
 			timeLastShot = GlobalTime.Current.Milliseconds;
 		}
 
@@ -23,21 +24,21 @@ namespace $safeprojectname$
 		private readonly Material projectileMaterial;
 		private float timeLastShot;
 
-		public void ShipAccelerate()
+		public void ShipAccelerate(float amount = 1)
 		{
-			Get<Velocity2D>().Accelerate(PlayerAcceleration * Time.Delta, Rotation);
+			Get<Velocity2D>().Accelerate(PlayerAcceleration * amount * Time.Delta, Rotation);
 		}
 
 		private const float PlayerAcceleration = 1;
 
-		public void SteerLeft()
+		public void SteerLeft(float amount = 1)
 		{
-			Rotation -= PlayerTurnSpeed * Time.Delta;
+			Rotation -= PlayerTurnSpeed * amount * Time.Delta;
 		}
 
-		public void SteerRight()
+		public void SteerRight(float amount = 1)
 		{
-			Rotation += PlayerTurnSpeed * Time.Delta;
+			Rotation += PlayerTurnSpeed * amount * Time.Delta;
 		}
 
 		private const float PlayerTurnSpeed = 160;
@@ -46,7 +47,8 @@ namespace $safeprojectname$
 		public void Update()
 		{
 			MoveUpdate();
-			if (!IsFiring || !(GlobalTime.Current.Milliseconds - 1 / CadenceShotsPerSec > timeLastShot))
+			if (!IsFiring || !(GlobalTime.Current.Milliseconds - 1 / CadenceShotsPerMilliSec > 
+				timeLastShot))
 				return;
 
 			new Projectile(projectileMaterial, DrawArea.Center, Rotation);
@@ -55,7 +57,7 @@ namespace $safeprojectname$
 				ProjectileFired.Invoke();
 		}
 
-		private const float CadenceShotsPerSec = 0.003f;
+		private const float CadenceShotsPerMilliSec = 0.003f;
 
 		public bool IsFiring
 		{

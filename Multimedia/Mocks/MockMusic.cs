@@ -8,7 +8,7 @@ namespace DeltaEngine.Multimedia.Mocks
 	/// </summary>
 	public class MockMusic : Music
 	{
-		protected MockMusic(string contentName, SoundDevice device, Settings settings)
+		public MockMusic(string contentName, SoundDevice device, Settings settings)
 			: base(contentName, device, settings) {}
 
 		protected override void LoadData(Stream fileData) {}
@@ -20,7 +20,11 @@ namespace DeltaEngine.Multimedia.Mocks
 
 		public static bool MusicStopCalled { get; private set; }
 
-		public override void Run() {}
+		public override void Run()
+		{
+			if (!IsPlaying())
+				HandleStreamFinished();
+		}
 
 		protected override void StopNativeMusic()
 		{

@@ -48,11 +48,11 @@ namespace Breakout
 
 		private void SetUpTheme()
 		{
-			SetBackground("BreakoutMainMenuBackground");
+			SetQuadraticBackground("BreakoutMainMenuBackground");
 			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DColorUv, "BreakoutButtonDefault"));
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DColorUv, "BreakoutButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DColorUv, "BreakoutButtonPressed"));
+			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DColorUV, "BreakoutButtonDefault"));
+			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DColorUV, "BreakoutButtonHover"));
+			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DColorUV, "BreakoutButtonPressed"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
 		}
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Sprites;
 
 namespace DeltaEngine.Physics2D
 {
@@ -38,11 +37,11 @@ namespace DeltaEngine.Physics2D
 			entity.Start<SimplePhysics.Move>();
 		}
 
-		public static void StartMovingUv(this Sprite sprite, Vector2D velocity)
+		public static void StartMovingUV(this Sprite sprite, Vector2D velocity)
 		{
 			AddSimplePhysicsDataIfNeeded(sprite);
-			sprite.Get<SimplePhysics.Data>().UvVelocity = velocity;
-			sprite.Start<SimplePhysics.MoveUv>();
+			sprite.Get<SimplePhysics.Data>().UVVelocity = velocity;
+			sprite.Start<SimplePhysics.MoveUV>();
 		}
 
 		public static void StartBouncingOffScreenEdges(this Entity2D entity, Vector2D velocity,

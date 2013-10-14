@@ -5,18 +5,18 @@
 	/// </summary>
 	public static class ShaderCodeDX11
 	{
-		internal const string UvLightmapHlslCode = @"
+		public const string UVLightmapHLSLCode = @"
 struct VertexInputType
 {
 	float4 position : SV_POSITION;
 	float2 texCoord : TEXCOORD0;
-	float2 lightMapUv : TEXCOORD1;
+	float2 lightMapUV : TEXCOORD1;
 };
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float2 texCoord : TEXCOORD0;
-	float2 lightMapUv : TEXCOORD1;
+	float2 lightMapUV : TEXCOORD1;
 };
 float4x4 WorldViewProjection;
 
@@ -25,7 +25,7 @@ PixelInputType VsMain(VertexInputType input)
 	PixelInputType output;
 	output.position = mul(input.position, WorldViewProjection);
 	output.texCoord = input.texCoord;
-	output.lightMapUv = input.lightMapUv;
+	output.lightMapUV = input.lightMapUV;
 	return output;
 }
 
@@ -36,10 +36,10 @@ SamplerState TextureSamplerState : register(s0);
 float4 PsMain(PixelInputType input) : SV_TARGET
 {
 	return DiffuseTexture.Sample(TextureSamplerState, input.texCoord) *
-		Lightmap.Sample(TextureSamplerState, input.lightMapUv);
+		Lightmap.Sample(TextureSamplerState, input.lightMapUV);
 }";
 
-		internal const string PositionUvDx11 = @"
+		public const string PositionUVDX11 = @"
 struct VertexInputType
 {
 	float4 position : SV_POSITION;
@@ -68,7 +68,7 @@ float4 PsMain(PixelInputType input) : SV_TARGET
 	return DiffuseTexture.Sample(TextureSamplerState, input.texCoord);
 }";
 
-		internal const string PositionColorDx11 = @"
+		public const string PositionColorDX11 = @"
 struct VertexInputType
 {
 	float4 position : SV_POSITION;
@@ -94,7 +94,7 @@ float4 PsMain(PixelInputType input) : SV_TARGET
 	return input.color;
 }";
 
-		internal const string PositionColorUvDx11 = @"
+		public const string PositionColorUVDX11 = @"
 struct VertexInputType
 {
 	float4 position : SV_POSITION;
@@ -126,7 +126,7 @@ float4 PsMain(PixelInputType input) : SV_TARGET
 	return DiffuseTexture.Sample(TextureSamplerState, input.texCoord) * input.color;
 }";
 
-		public const string PositionNormalUvDx11 = @"
+		public const string PositionNormalUVDX11 = @"
 cbuffer cbVSPerFrame
  {
 	 float4 LightPosition;

@@ -43,7 +43,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 				RightSideBearing = glyphData.GetAttributeValue("RightBearing", 0.0f)
 			};
 			glyph.AdvanceWidth = glyphData.GetAttributeValue("AdvanceWidth", glyph.UV.Width - 2.0f);
-			glyph.PrecomputedFontMapUV = Rectangle.BuildUvRectangle(glyph.UV, fontMapSize);
+			glyph.PrecomputedFontMapUV = Rectangle.BuildUVRectangle(glyph.UV, fontMapSize);
 			GlyphDictionary.Add(character, glyph);
 		}
 		//ncrunch: no coverage start

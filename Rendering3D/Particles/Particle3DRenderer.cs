@@ -33,13 +33,13 @@ namespace DeltaEngine.Rendering3D.Particles
 		private readonly short[] indices = new short[BufferMaxParticles * 6];
 		private readonly short[] refIndices = new short[] { 0, 1, 2, 0, 2, 3 };
 
-		public void Draw(IEnumerable<DrawableEntity> entities)
+		public void Draw(List<DrawableEntity> visibleEntities)
 		{
 			cameraUp = device.CameraInvertedViewMatrix.Up;
 			cameraUp.Normalize();
 			sortedList.Clear();
 			unsortedList.Clear();
-			foreach (var emitter in entities.OfType<Particle3DEmitter>())
+			foreach (var emitter in visibleEntities.OfType<ParticleEmitter>())
 			{
 				AddActiveParticlesToTheRenderLists(emitter);
 			}
@@ -53,17 +53,17 @@ namespace DeltaEngine.Rendering3D.Particles
 
 		private struct ParticleToRender
 		{
-			public readonly Particle3D Particle;
+			public readonly Particle Particle;
 			public readonly Material Material;
 
-			public ParticleToRender(Particle3D particle, Material material)
+			public ParticleToRender(Particle particle, Material material)
 			{
 				Particle = particle;
 				Material = material;
 			}
 		}
 
-		private void AddActiveParticlesToTheRenderLists(Particle3DEmitter emitter)
+		private void AddActiveParticlesToTheRenderLists(ParticleEmitter emitter)
 		{
 			var interpolatedParticleArray = TryGetInterpolatedArray(emitter);
 			if(interpolatedParticleArray == null)
@@ -80,12 +80,12 @@ namespace DeltaEngine.Rendering3D.Particles
 			}
 		}
 
-		private static IEnumerable<Particle3D> TryGetInterpolatedArray(Particle3DEmitter emitter)
+		private static IEnumerable<Particle> TryGetInterpolatedArray(ParticleEmitter emitter)
 		{
-			Particle3D[] particles;
+			Particle[] particles;
 			try
 			{
-				particles = emitter.GetInterpolatedArray<Particle3D>();
+				particles = emitter.GetInterpolatedArray<Particle>();
 			}
 			catch (DrawableEntity.ArrayWithLerpElementsForInterpolationWasNotFound)
 			{
@@ -94,14 +94,14 @@ namespace DeltaEngine.Rendering3D.Particles
 			return particles;
 		}
 
-		private void AddParticleToTheSortedList(Particle3D particle, Material material)
+		private void AddParticleToTheSortedList(Particle particle, Material material)
 		{
 			Vector3D particlePositionInCameraSpace = device.CameraViewMatrix * particle.Position;
 			if (!sortedList.ContainsKey(particlePositionInCameraSpace.Z))
 				sortedList.Add(particlePositionInCameraSpace.Z, new ParticleToRender(particle, material));
 		}
 
-		private void AddParticleToTheUnsortedList(Particle3D particle, Material material)
+		private void AddParticleToTheUnsortedList(Particle particle, Material material)
 		{
 			unsortedList.Add(new ParticleToRender(particle, material));
 		}
@@ -120,17 +120,34 @@ namespace DeltaEngine.Rendering3D.Particles
 			foreach (var item in sortedList)
 			{
 				var material = item.Value.Material;
-				if (material != lastMaterial)
-					RenderParticlesInVertexArray(lastMaterial);
 				lastMaterial = material;
 				AddVerticesToTheVertexArray(item.Value.Particle);
 			}
 			RenderParticlesInVertexArray(lastMaterial);
 		}
 
-		private void AddVerticesToTheVertexArray(Particle3D particle)
+		private void AddVerticesToTheVertexArray(Particle particle)
 		{
-			Vector3D look = device.CameraInvertedViewMatrix.Translation - particle.Position;
+			UpdateTransformMatrix(particle);
+			var particleVertices = particle.GetVertices(particle.Size, particle.Color);
+			for (int i = 0; i < 4; i++)
+			{
+				vertices[currentVertex].Position = transform * particleVertices[i].Position;
+				vertices[currentVertex].Color = particleVertices[i].Color;
+				vertices[currentVertex].UV = particleVertices[i].UV;
+				currentVertex++;
+			}
+		}
+
+		private Matrix transform;
+		private readonly VertexPosition3DColorUV[] vertices =
+			new VertexPosition3DColorUV[BufferMaxParticles * 4];
+
+		private void UpdateTransformMatrix(Particle particle)
+		{
+			var inverseView = device.CameraInvertedViewMatrix;
+			Vector3D look = inverseView.Translation - particle.Position;
+			look = CalculateCameraUpAndLook(particle, look, inverseView);
 			look.Normalize();
 			Vector3D right = Vector3D.Cross(cameraUp, look);
 			Vector3D up = Vector3D.Cross(look, right);
@@ -138,19 +155,36 @@ namespace DeltaEngine.Rendering3D.Particles
 			transform.Right = right;
 			transform.Up = look;
 			transform.Forward = up;
+			transform *= Matrix.CreateRotationZYX(transform.Forward.X, transform.Forward.Y,
+				transform.Forward.Z);
 			transform.Translation = particle.Position;
-			for (int i = 0; i < 4; i++)
-			{
-				vertices[currentVertex].Position = transform * particle.Vertices[i].Position;
-				vertices[currentVertex].Color = particle.Vertices[i].Color;
-				vertices[currentVertex].UV = particle.Vertices[i].UV;
-				currentVertex++;
-			}			
 		}
 
-		private Matrix transform;
-		private readonly VertexPosition3DColorUV[] vertices =
-			new VertexPosition3DColorUV[BufferMaxParticles * 4];
+		private Vector3D CalculateCameraUpAndLook(Particle particle, Vector3D look,
+			Matrix inverseView)
+		{
+			if ((particle.BillboardMode & BillboardMode.FrontAxis) != 0)
+			{
+				cameraUp = Vector3D.UnitY;
+				look.Y = 0;
+			}
+			else if ((particle.BillboardMode & BillboardMode.UpAxis) != 0)
+			{
+				cameraUp = Vector3D.UnitZ;
+				look.Z = 0;
+			}
+			else if ((particle.BillboardMode & BillboardMode.Ground) != 0)
+			{
+				cameraUp = -Vector3D.UnitY;
+				look = Vector3D.UnitZ;
+			}
+			else
+			{
+				cameraUp = inverseView.Up;
+				cameraUp.Normalize();
+			}
+			return look;
+		}
 
 		private void RenderParticlesInVertexArray(Material material)
 		{
@@ -166,8 +200,6 @@ namespace DeltaEngine.Rendering3D.Particles
 			foreach (var item in unsortedList)
 			{
 				var material = item.Material;
-				if (material != lastMaterial)
-					RenderParticlesInVertexArray(lastMaterial);
 				lastMaterial = material;
 				AddVerticesToTheVertexArray(item.Particle);
 			}

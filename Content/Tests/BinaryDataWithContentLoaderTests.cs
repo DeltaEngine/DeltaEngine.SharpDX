@@ -11,20 +11,26 @@ namespace DeltaEngine.Content.Tests
 		[Test]
 		public void TestLoadContentType()
 		{
-			var stream = new MemoryStream();
-			var writer = new BinaryWriter(stream);
-			const string ContentName = "SomeXml";
-			writer.Write(ContentName);
 			ContentLoader.Use<MockContentLoader>();
-			stream.Position = 0;
-			var reader = new BinaryReader(stream);
-			object returnedContentType = BinaryDataLoader.TryCreateAndLoad(typeof(MockXmlContentType),
-				reader, Assembly.GetExecutingAssembly().GetName().Version);
-			var content = returnedContentType as MockXmlContentType;
-			Assert.IsNotNull(content);
-			Assert.AreEqual(ContentName, content.Name);
-			content.Dispose();
+			const string ContentName = "SomeXml";
+			var instance = new ObjectWithContent(ContentLoader.Load<MockXmlContent>(ContentName));
+			var stream = BinaryDataExtensions.SaveDataIntoMemoryStream(instance);
+			var loadedInstance =
+				BinaryDataExtensions.LoadDataWithKnownTypeFromMemoryStream<ObjectWithContent>(stream);
+			Assert.AreEqual(instance.xmlContent, loadedInstance.xmlContent);
 			ContentLoader.DisposeIfInitialized();
+		}
+
+		private class ObjectWithContent
+		{
+			private ObjectWithContent() {}
+
+			public ObjectWithContent(MockXmlContent xmlContent)
+			{
+				this.xmlContent = xmlContent;
+			}
+
+			public readonly MockXmlContent xmlContent;
 		}
 
 		[Test]
@@ -32,34 +38,17 @@ namespace DeltaEngine.Content.Tests
 		{
 			var stream = new MemoryStream();
 			var writer = new BinaryWriter(stream);
+			writer.Write(true);
 			writer.Write(string.Empty);
 			ContentLoader.Use<MockContentLoader>();
 			stream.Position = 0;
 			var reader = new BinaryReader(stream);
+			var version = Assembly.GetExecutingAssembly().GetName().Version;
 			Assert.That(
-				() => BinaryDataLoader.TryCreateAndLoad(typeof(MockXmlContentType), reader,
-					Assembly.GetExecutingAssembly().GetName().Version),
-				Throws.Exception.With.InnerException.TypeOf<BinaryDataLoader.UnableToLoadContentDataWithoutName>());
+				() => BinaryDataLoader.TryCreateAndLoad(typeof(MockXmlContent), reader, version),
+				Throws.Exception.With.InnerException.TypeOf
+					<BinaryDataLoader.UnableToLoadContentDataWithoutName>());
 			ContentLoader.DisposeIfInitialized();
-		}
-
-		[Test]
-		public void SaveContentData()
-		{
-			ContentLoader.Use<MockContentLoader>();
-			var xmlContent = ContentLoader.Load<MockXmlContent>("XmlData");
-			using (var dataWriter = new BinaryWriter(new MemoryStream()))
-				BinaryDataSaver.SaveDataType(xmlContent, typeof(MockXmlContent), dataWriter);
-			ContentLoader.DisposeIfInitialized();
-		}
-
-		private class MockXmlContentType : ContentData
-		{
-			protected MockXmlContentType(string contentName)
-				: base(contentName) {}
-
-			protected override void DisposeData() {}
-			protected override void LoadData(Stream fileData) {}
 		}
 	}
 }

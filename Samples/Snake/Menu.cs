@@ -20,12 +20,12 @@ namespace Snake
 
 		private void CreateMenuTheme()
 		{
-			SetBackground("SnakeMainMenuBackground");
+			SetQuadraticBackground("SnakeMainMenuBackground");
 			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUv, "SnakeButtonDefault"));
+			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonDefault"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUv, "SnakeButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUv, "SnakeButtonPressed"));
+			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonHover"));
+			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonPressed"));
 		}
 
 		private Theme menuTheme;

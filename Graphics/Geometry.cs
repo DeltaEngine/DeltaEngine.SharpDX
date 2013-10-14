@@ -77,15 +77,14 @@ namespace DeltaEngine.Graphics
 
 		public class InvalidNumberOfVertices : Exception
 		{
-			public InvalidNumberOfVertices(int verticesPassedIn, int geometryVertices)
-				: base(
-					"verticesPassedIn=" + verticesPassedIn + ", " + geometryVertices + "geometryVertices") {}
+			public InvalidNumberOfVertices(int actualVertices, int expectedVertices)
+				: base("actualVertices=" + actualVertices + ", expectedVertices=" + expectedVertices) { }
 		}
 
 		public class InvalidNumberOfIndices : Exception
 		{
-			public InvalidNumberOfIndices(int indicesPassedIn, int geometryIndices)
-				: base("indicesPassedIn=" + indicesPassedIn + ", " + geometryIndices + "geometryIndices") {}
+			public InvalidNumberOfIndices(int actualIndices, int expectedIndices)
+				: base("actualIndices=" + actualIndices + ", expectedIndices=" + expectedIndices) { }
 		}
 
 		public Matrix[] JointTranforms { get; set; }

@@ -9,12 +9,12 @@ namespace DeltaEngine.Graphics.Tests
 		[Test]
 		public void VertexSizeInBytes()
 		{
-			Assert.AreEqual(VertexPosition2DUV.SizeInBytes, 16);
-			Assert.AreEqual(VertexPosition2DColor.SizeInBytes, 12);
-			Assert.AreEqual(VertexPosition2DColorUV.SizeInBytes, 20);
-			Assert.AreEqual(VertexPosition3DUV.SizeInBytes, 20);
-			Assert.AreEqual(VertexPosition3DColor.SizeInBytes, 16);
-			Assert.AreEqual(VertexPosition3DColorUV.SizeInBytes, 24);
+			Assert.AreEqual(16, VertexPosition2DUV.SizeInBytes);
+			Assert.AreEqual(12, VertexPosition2DColor.SizeInBytes);
+			Assert.AreEqual(20, VertexPosition2DColorUV.SizeInBytes);
+			Assert.AreEqual(20, VertexPosition3DUV.SizeInBytes);
+			Assert.AreEqual(16, VertexPosition3DColor.SizeInBytes);
+			Assert.AreEqual(24, VertexPosition3DColorUV.SizeInBytes);
 		}
 
 		[Test]
@@ -52,7 +52,7 @@ namespace DeltaEngine.Graphics.Tests
 		{
 			Assert.AreEqual(VertexPosition3DColorUV.SizeInBytes, 24);
 			var vertex = new VertexPosition3DColorUV(Vector3D.UnitX, Color.Red, Vector2D.One);
-			Assert.AreEqual(vertex.Format, VertexFormat.Position3DColorUv);
+			Assert.AreEqual(vertex.Format, VertexFormat.Position3DColorUV);
 			Assert.AreEqual(vertex.Position, Vector3D.UnitX);
 			Assert.AreEqual(vertex.Color, Color.Red);
 			Assert.AreEqual(vertex.UV, Vector2D.One);
@@ -83,7 +83,7 @@ namespace DeltaEngine.Graphics.Tests
 		{
 			Assert.AreEqual(VertexPosition3DUV.SizeInBytes, 20);
 			var vertex = new VertexPosition3DUV(Vector3D.UnitX, Vector2D.One);
-			Assert.AreEqual(vertex.Format, VertexFormat.Position3DUv);
+			Assert.AreEqual(vertex.Format, VertexFormat.Position3DUV);
 			Assert.AreEqual(vertex.Position, Vector3D.UnitX);
 			Assert.AreEqual(vertex.UV, Vector2D.One);
 		}
@@ -152,8 +152,9 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
-		public void VertexPosition3DColorSkinned()
+		public void CheckVertexPosition3DColorSkinned()
 		{
+			Assert.AreEqual(32, VertexPosition3DColorSkinned.SizeInBytes);
 			var skinning = new SkinningData(0, 0, 0.0f, 0.0f);
 			var vertex = new VertexPosition3DColorSkinned(Vector3D.UnitX, Color.White, skinning);
 			Assert.AreEqual(vertex.Format, VertexFormat.Position3DColorSkinned);
@@ -176,9 +177,9 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
-		public void VertexFormatVertexPosition3DUvSkinned()
+		public void VertexFormatVertexPosition3DUVSkinned()
 		{
-			var format = VertexFormat.Position3DUvSkinned;
+			var format = VertexFormat.Position3DUVSkinned;
 			Assert.AreEqual(36, format.Stride);
 			Assert.AreEqual(0, format.Elements[0].Offset);
 			Assert.AreEqual(12, format.Elements[1].Offset);
@@ -187,22 +188,22 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
-		public void VertexPosition3DUvSkinned()
+		public void VertexPosition3DUVSkinned()
 		{
 			var skinning = new SkinningData(0, 0, 0.0f, 0.0f);
-			var vertex = new VertexPosition3DUvSkinned(Vector3D.UnitX, Vector2D.One, skinning);
-			Assert.AreEqual(vertex.Format, VertexFormat.Position3DUvSkinned);
+			var vertex = new VertexPosition3DUVSkinned(Vector3D.UnitX, Vector2D.One, skinning);
+			Assert.AreEqual(vertex.Format, VertexFormat.Position3DUVSkinned);
 			Assert.AreEqual(Vector3D.UnitX, vertex.Position);
 			Assert.AreEqual(Vector2D.One, vertex.UV);
 			Assert.AreEqual(skinning, vertex.Skinning);
 		}
 
 		[Test]
-		public void LerpVertexPosition3DUvSkinned()
+		public void LerpVertexPosition3DUVSkinned()
 		{
-			var vertex = new VertexPosition3DUvSkinned(Vector3D.UnitX, Vector2D.Zero,
+			var vertex = new VertexPosition3DUVSkinned(Vector3D.UnitX, Vector2D.Zero,
 				new SkinningData(0, 1, 1.0f, 1.0f));
-			var vertex2 = new VertexPosition3DUvSkinned(Vector2D.UnitY, Vector2D.One,
+			var vertex2 = new VertexPosition3DUVSkinned(Vector2D.UnitY, Vector2D.One,
 				new SkinningData(0, 1, 0.0f, 0.0f));
 			var lerpedVertex = vertex.Lerp(vertex2, 0.5f);
 			Assert.AreEqual(lerpedVertex.Position, new Vector3D(0.5f, 0.5f, 0f));
@@ -228,14 +229,14 @@ namespace DeltaEngine.Graphics.Tests
 				new VertexElement(VertexElementType.Position3D),
 				new VertexElement(VertexElementType.TextureUV) };
 			var format = new VertexFormat(elements);
-			Assert.IsTrue(VertexFormat.Position3DUv.Equals(format));
-			Assert.IsTrue(VertexFormat.Position3DUv.Equals((object)format));
-			Assert.AreEqual(VertexFormat.Position3DUv, format);
-			Assert.IsTrue(VertexFormat.Position3DUv == format);
-			Assert.IsTrue(VertexFormat.Position2DUv.Equals(VertexFormat.Position2DUv));
-			Assert.IsFalse(VertexFormat.Position2DUv == VertexFormat.Position2DColor);
-			Assert.AreEqual(VertexFormat.Position2DUv, VertexFormat.Position2DUv);
-			Assert.AreNotEqual(VertexFormat.Position2DUv, VertexFormat.Position2DColor);
+			Assert.IsTrue(VertexFormat.Position3DUV.Equals(format));
+			Assert.IsTrue(VertexFormat.Position3DUV.Equals((object)format));
+			Assert.AreEqual(VertexFormat.Position3DUV, format);
+			Assert.IsTrue(VertexFormat.Position3DUV == format);
+			Assert.IsTrue(VertexFormat.Position2DUV.Equals(VertexFormat.Position2DUV));
+			Assert.IsFalse(VertexFormat.Position2DUV == VertexFormat.Position2DColor);
+			Assert.AreEqual(VertexFormat.Position2DUV, VertexFormat.Position2DUV);
+			Assert.AreNotEqual(VertexFormat.Position2DUV, VertexFormat.Position2DColor);
 			VertexFormat unassignedFormat = null;
 			Assert.IsTrue(unassignedFormat == null);
 		}
@@ -284,7 +285,13 @@ namespace DeltaEngine.Graphics.Tests
 		public void VertexPosition3DFormat()
 		{
 			var v1 = new VertexPosition3DNormalUV(Vector3D.Zero, Vector3D.UnitZ, Vector2D.Zero);
-			Assert.AreEqual(VertexFormat.Position3DNormalUv, v1.Format);
+			Assert.AreEqual(VertexFormat.Position3DNormalUV, v1.Format);
+		}
+
+		[Test]
+		public void CheckPosition3DNormalUVLightmapFormat()
+		{
+			Assert.AreEqual(VertexFormat.Position3DNormalUVLightmap.Stride, 40);
 		}
 	}
 }

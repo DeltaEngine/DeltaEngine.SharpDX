@@ -17,14 +17,14 @@ namespace $safeprojectname$
 
 		private void CreateMenuTheme()
 		{
-			SetBackground("ShadowShotMainMenuBackground");
+			SetQuadraticBackground("ShadowShotMainMenuBackground");
 			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUv, 
+			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUV, 
 				"ShadowShotButtonDefault"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUv, 
+			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUV, 
 				"ShadowShotButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUv, 
+			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUV, 
 				"ShadowShotButtonPressed"));
 		}
 

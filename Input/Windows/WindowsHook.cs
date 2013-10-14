@@ -21,7 +21,6 @@ namespace DeltaEngine.Input.Windows
 		}
 
 		public delegate void HandleProcMessage(IntPtr wParam, IntPtr lParam, int msg);
-
 		protected HandleProcMessage messageAction;
 		private readonly NativeMethods.HookProc nativeCallbackLifetimeInstance;
 		private IntPtr hookHandle;

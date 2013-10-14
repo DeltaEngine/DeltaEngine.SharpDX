@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using CreepyTowers.Content;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
@@ -10,7 +11,8 @@ namespace CreepyTowers
 	public class TimeCounter : FontText
 	{
 		public TimeCounter()
-			: base(ContentLoader.Load<Font>(Names.FontChelseaMarket14), "0 : 0", new Rectangle(0.0f, 0.18f, 0.08f, 0.1f))
+			: base(ContentLoader.Load<Font>(Fonts.ChelseaMarket14.ToString()), "0 : 0",
+			new Rectangle(0.0f, 0.18f, 0.08f, 0.1f))
 		{
 			Start<TimerUpdate>();
 			isCounting = true;

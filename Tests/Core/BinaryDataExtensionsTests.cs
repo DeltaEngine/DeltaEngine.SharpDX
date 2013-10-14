@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Dynamic;
 using System.IO;
 using DeltaEngine.Core;
@@ -53,14 +54,21 @@ namespace DeltaEngine.Tests.Core
 		[Test]
 		public void ExpectExceptionForUnreadableData()
 		{
-			var message = new TestMessage() { content = "This message cannot be resolved!", ID = 0 };
+			var message = new TestMessage { content = "This message cannot be resolved!", ID = 0 };
 			var memoryStream = new MemoryStream(new byte[64]);
 			var binaryWriter = new BinaryWriter(memoryStream);
 			binaryWriter.Write(BinaryDataExtensions.ToByteArray(message));
 			memoryStream.Position = 0;
 			var binaryReader = new BinaryReader(memoryStream);
-			Assert.Throws<BinaryDataExtensions.UnknownMessageTypeReceived>(() =>
-			{ binaryReader.Create(); });
+			Assert.Throws<TypeLoadException>(() => binaryReader.Create());
+		}
+
+		[Test]
+		public void ObjectToBinaryData()
+		{
+			string message = "This message cannot be resolved!";
+			byte [] data = BinaryDataExtensions.ToByteArrayWithLengthHeader(message);
+			Assert.AreEqual(data[0], 44);
 		}
 
 		private struct TestMessage

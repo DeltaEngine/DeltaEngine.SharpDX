@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.ScreenSpaces;
@@ -28,9 +27,7 @@ namespace DeltaEngine.Input
 				return MiddleButton;
 			if (button == MouseButton.X1)
 				return X1Button;
-			if (button == MouseButton.X2)
-				return X2Button;
-			return LeftButton;
+			return button == MouseButton.X2 ? X2Button : LeftButton;
 		}
 
 		public abstract void SetPosition(Vector2D position);
@@ -44,34 +41,34 @@ namespace DeltaEngine.Input
 
 		private void InvokeTriggersForEntity(Entity entity)
 		{
-			TryInvokeTriggerOfType<MouseButtonTrigger>(entity, IsMouseButtonTriggered);
-			TryInvokeTriggerOfType<MouseDragTrigger>(entity, IsMouseDragTriggered);
-			TryInvokeTriggerOfType<MouseDragDropTrigger>(entity, IsMouseDragDropTriggered);
-			TryInvokeTriggerOfType<MouseHoldTrigger>(entity, IsMouseHoldTriggered);
-			TryInvokeTriggerOfType<MouseHoverTrigger>(entity, IsMouseHoverTriggered);
-			TryInvokeTriggerOfType<MouseMovementTrigger>(entity, IsMouseMovementTriggered);
-			TryInvokeTriggerOfType<MousePositionTrigger>(entity, IsMousePositionTriggered);
-			TryInvokeTriggerOfType<MouseTapTrigger>(entity, IsMouseTapTriggered);
-			TryInvokeTriggerOfType<MouseZoomTrigger>(entity, IsMouseZoomTriggered);
-			TryInvokeTriggerOfType<MouseFlickTrigger>(entity, IsMouseFlickTriggered);
+			HandleMouseButtonTrigger(entity);
+			HandleMouseDragTrigger(entity);
+			HandleMouseDragDropTrigger(entity);
+			HandleMouseHoldTrigger(entity);
+			HandleMouseHoverTrigger(entity);
+			HandleMouseMovementTrigger(entity);
+			HandleMousePositionTrigger(entity);
+			HandleMouseTapTrigger(entity);
+			HandleMouseZoomTrigger(entity);
+			HandleMouseFlickTrigger(entity);
 		}
 
-		private static void TryInvokeTriggerOfType<T>(Entity entity, Func<T, bool> triggeredCode)
-			where T : Trigger
+		private void HandleMouseButtonTrigger(Entity entity)
 		{
-			var trigger = entity as T;
-			if (trigger != null)
-				trigger.WasInvoked = triggeredCode.Invoke(trigger);
-		}
-
-		private bool IsMouseButtonTriggered(MouseButtonTrigger trigger)
-		{
+			var trigger = entity as MouseButtonTrigger;
+			if (trigger == null)
+				return;
 			trigger.Position = Position;
-			return GetButtonState(trigger.Button) == trigger.State;
+			if (GetButtonState(trigger.Button) == trigger.State &&
+				ScreenSpace.Current.Viewport.Contains(Position))
+				trigger.Invoke();
 		}
 
-		private bool IsMouseDragTriggered(MouseDragTrigger trigger)
+		private void HandleMouseDragTrigger(Entity entity)
 		{
+			var trigger = entity as MouseDragTrigger;
+			if (trigger == null)
+				return;
 			if (GetButtonState(trigger.Button) == State.Pressing)
 				trigger.StartPosition = Position;
 			else if (trigger.StartPosition != Vector2D.Unused &&
@@ -89,7 +86,8 @@ namespace DeltaEngine.Input
 						trigger.Position = Position;
 						trigger.DoneDragging = GetButtonState(trigger.Button) == State.Releasing;
 					}
-					return true;
+					if (ScreenSpace.Current.Viewport.Contains(Position))
+						trigger.Invoke();
 				}
 			}
 			else
@@ -97,36 +95,41 @@ namespace DeltaEngine.Input
 				trigger.StartPosition = Vector2D.Unused;
 				trigger.DoneDragging = false;
 			}
-			return false;
 		}
 
 		private const float PositionEpsilon = 0.0025f;
 		private const float AllowedDragDirectionOffset = 0.01f;
 
-		private bool IsMouseDragDropTriggered(MouseDragDropTrigger trigger)
+		private void HandleMouseDragDropTrigger(Entity entity)
 		{
+			var trigger = entity as MouseDragDropTrigger;
+			if (trigger == null)
+				return;
 			if (trigger.StartArea.Contains(Position) && GetButtonState(trigger.Button) == State.Pressing)
 				trigger.StartDragPosition = Position;
 			else if (trigger.StartDragPosition != Vector2D.Unused &&
 				GetButtonState(trigger.Button) != State.Released)
-			{
 				if (trigger.StartDragPosition.DistanceTo(Position) > PositionEpsilon)
-					return true;
-			}
-			else
-				trigger.StartDragPosition = Vector2D.Unused;
-			return false;
+					trigger.Invoke();
+				else
+					trigger.StartDragPosition = Vector2D.Unused;
 		}
 
-		private bool IsMouseHoldTriggered(MouseHoldTrigger trigger)
+		private void HandleMouseHoldTrigger(Entity entity)
 		{
+			var trigger = entity as MouseHoldTrigger;
+			if (trigger == null)
+				return;
 			if (GetButtonState(trigger.Button) == State.Pressing)
 				trigger.StartPosition = Position;
 			trigger.Position = Position;
 			if (CheckHoverState(trigger))
-				return trigger.IsHovering();
-			trigger.Elapsed = 0.0f;
-			return false;
+			{
+				if (trigger.IsHovering())
+					trigger.Invoke();
+			}
+			else
+				trigger.Elapsed = 0.0f;
 		}
 
 		private bool CheckHoverState(MouseHoldTrigger trigger)
@@ -136,43 +139,66 @@ namespace DeltaEngine.Input
 				trigger.StartPosition.DistanceTo(Position) < PositionEpsilon;
 		}
 
-		private bool IsMouseHoverTriggered(MouseHoverTrigger trigger)
+		private void HandleMouseHoverTrigger(Entity entity)
 		{
+			var trigger = entity as MouseHoverTrigger;
+			if (trigger == null)
+				return;
 			if (trigger.LastPosition.DistanceTo(Position) < PositionEpsilon)
-				return trigger.IsHovering();
-			trigger.LastPosition = Position;
-			trigger.Elapsed = 0.0f;
-			return false;
+			{
+				if (trigger.IsHovering())
+					trigger.Invoke();
+			}
+			else
+			{
+				trigger.LastPosition = Position;
+				trigger.Elapsed = 0.0f;
+			}
 		}
 
-		private bool IsMouseMovementTriggered(MouseMovementTrigger trigger)
+		private void HandleMouseMovementTrigger(Entity entity)
 		{
-			bool changedPosition = trigger.Position != Position && trigger.Position != Vector2D.Unused;
+			var trigger = entity as MouseMovementTrigger;
+			if (trigger == null)
+				return;
+			if (trigger.Position == Position)
+				return;
 			trigger.Position = Position;
-			return changedPosition;
+			if (ScreenSpace.Current.Viewport.Contains(Position))
+				trigger.Invoke();
 		}
 
-		private bool IsMousePositionTriggered(MousePositionTrigger trigger)
+		private void HandleMousePositionTrigger(Entity entity)
 		{
+			var trigger = entity as MousePositionTrigger;
+			if (trigger == null)
+				return;
+			if (trigger.Position == Position)
+				return;
 			var isButton = GetButtonState(trigger.Button) == trigger.State;
-			bool hasPositionChanged = trigger.Position != Position &&
-				trigger.Position != Vector2D.Unused &&
-				ScreenSpace.Current.Viewport.Contains(trigger.Position);
 			trigger.Position = Position;
-			return isButton && hasPositionChanged;
+			if (isButton && ScreenSpace.Current.Viewport.Contains(Position))
+				trigger.Invoke();
 		}
 
-		private bool IsMouseTapTriggered(MouseTapTrigger trigger)
+		private void HandleMouseTapTrigger(Entity entity)
 		{
+			var trigger = entity as MouseTapTrigger;
+			if (trigger == null)
+				return;
 			bool wasJustStartedPressing = trigger.LastState == State.Pressing;
 			State currentState = GetButtonState(trigger.Button);
 			var isNowReleased = currentState == State.Releasing;
 			trigger.LastState = currentState;
-			return isNowReleased && wasJustStartedPressing;
+			if (isNowReleased && wasJustStartedPressing)
+				trigger.Invoke();
 		}
 
-		private bool IsMouseZoomTriggered(MouseZoomTrigger trigger)
+		private void HandleMouseZoomTrigger(Entity entity)
 		{
+			var trigger = entity as MouseZoomTrigger;
+			if (trigger == null)
+				return;
 			int currentScrollValueDifference = ScrollWheelValue - trigger.LastScrollWheelValue;
 			trigger.LastScrollWheelValue = ScrollWheelValue;
 			if (currentScrollValueDifference > 0)
@@ -181,29 +207,32 @@ namespace DeltaEngine.Input
 				trigger.ZoomAmount = -1;
 			else
 				trigger.ZoomAmount = 0;
-			return trigger.ZoomAmount != 0;
+			if (trigger.ZoomAmount != 0)
+				trigger.Invoke();
 		}
 
-		private bool IsMouseFlickTriggered(MouseFlickTrigger trigger)
+		private void HandleMouseFlickTrigger(Entity entity)
 		{
+			var trigger = entity as MouseFlickTrigger;
+			if (trigger == null)
+				return;
 			if (LeftButton == State.Pressing)
-			{
-				trigger.StartPosition = Position;
-				trigger.PressTime = 0;
-			}
+				SetFlickPositionAndResetTime(trigger, Position);
 			else if (trigger.StartPosition != Vector2D.Unused && LeftButton != State.Released)
 			{
 				trigger.PressTime += Time.Delta;
 				if (LeftButton == State.Releasing &&
-					trigger.StartPosition.DistanceTo(Position) > PositionEpsilon)
-					return trigger.PressTime < 0.3f;
+					trigger.StartPosition.DistanceTo(Position) > PositionEpsilon && trigger.PressTime < 0.3f)
+					trigger.Invoke();
 			}
 			else
-			{
-				trigger.StartPosition = Vector2D.Unused;
-				trigger.PressTime = 0;
-			}
-			return false;
+				SetFlickPositionAndResetTime(trigger, Vector2D.Unused);
+		}
+
+		private static void SetFlickPositionAndResetTime(MouseFlickTrigger trigger, Vector2D position)
+		{
+			trigger.StartPosition = position;
+			trigger.PressTime = 0;
 		}
 	}
 }

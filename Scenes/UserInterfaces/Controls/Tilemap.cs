@@ -4,7 +4,6 @@ using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Input;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Sprites;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {

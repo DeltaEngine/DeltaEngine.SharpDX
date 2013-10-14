@@ -6,7 +6,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Multimedia.VideoStreams;
-using DeltaEngine.Rendering2D.Sprites;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.ScreenSpaces;
 using SharpDX.Multimedia;
 using SharpDX.XAudio2;
@@ -81,7 +81,7 @@ namespace DeltaEngine.Multimedia.SharpDX
 			if (image == null)
 				image =
 					ContentLoader.Create<Image>(new ImageCreationData(new Size(video.Width, video.Height)));
-			surface = new Sprite(new Material(ContentLoader.Load<Shader>(Shader.Position2DUv), image),
+			surface = new Sprite(new Material(ContentLoader.Load<Shader>(Shader.Position2DUV), image),
 				ScreenSpace.Current.Viewport);
 		}
 

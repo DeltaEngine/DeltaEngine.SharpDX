@@ -1,15 +1,15 @@
-﻿using System.IO;
-using DeltaEngine;
-using DeltaEngine.Content;
+﻿using DeltaEngine.Content;
 using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
+using DeltaEngine.Rendering3D.Particles;
 using NUnit.Framework;
 
 namespace Asteroids.Tests
 {
 	internal class GameTests : TestWithMocksOrVisually
 	{
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void GameOver()
 		{
 			var game = new Game(Resolve<Window>());
@@ -19,20 +19,11 @@ namespace Asteroids.Tests
 			Assert.IsFalse(game.InteractionLogics.Player.IsActive);
 		}
 
-		[Test, Ignore, CloseAfterFirstFrame]
-		public void CreateAsteroidsMaterials()
+		[Test]
+		public void LoadExplosion()
 		{
-			SaveMaterialWithNameAndImageName("PlayerMaterial", "ship1");
-			SaveMaterialWithNameAndImageName("AsteroidMaterial", "asteroid");
-			SaveMaterialWithNameAndImageName("BackgroundMaterial", "black-background");
-			SaveMaterialWithNameAndImageName("ProjectileMaterial", "projectile");
-		}
-
-		private static void SaveMaterialWithNameAndImageName(string materialName, string imageName)
-		{
-			var materialData = new Material(Shader.Position2DColorUv, imageName);
-			using (var file = File.Create(Path.Combine("Content", materialName + ".deltamaterial")))
-				BinaryDataExtensions.Save(materialData, new BinaryWriter(file));
+			var emitterData = ContentLoader.Load<ParticleEmitterData>("ExplosionSpaceship");
+			new ParticleEmitter(emitterData, Vector3D.Zero);
 		}
 	}
 }

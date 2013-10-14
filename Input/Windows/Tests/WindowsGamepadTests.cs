@@ -22,7 +22,6 @@ namespace DeltaEngine.Input.Windows.Tests
 			var buttonTrigger = new GamePadButtonTrigger(GamePadButton.A);
 			var joyStickTrigger = new GamePadAnalogTrigger(GamePadAnalog.LeftTrigger);
 			gamePad.Update(new Trigger[]{buttonTrigger, joyStickTrigger});
-
 		}
 
 		[Test]
@@ -33,6 +32,47 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(Vector2D.Zero, gamePad.GetRightThumbStick());
 			Assert.AreEqual(0.0f, gamePad.GetLeftTrigger());
 			Assert.AreEqual(0.0f, gamePad.GetRightTrigger());
+		}
+
+		[Test]
+		public void TestUpdateGamePad()
+		{
+			gamePad = new MockWindowsGamePad(GamePadNumber.Two);
+			var buttonTrigger = new GamePadButtonTrigger(GamePadButton.A);
+			var joyStickTrigger = new GamePadAnalogTrigger(GamePadAnalog.LeftTrigger);
+			gamePad.Update(new Trigger[] { buttonTrigger, joyStickTrigger });
+			Assert.AreEqual(0.0f, gamePad.GetLeftTrigger());
+			Assert.IsTrue(gamePad.IsAvailable);
+			gamePad.Dispose();
+		}
+
+		[Test]
+		public void CheckGamePadNumber()
+		{
+			var mockGamePad = new MockWindowsGamePad(GamePadNumber.Three);
+			var buttonTrigger = new GamePadButtonTrigger(GamePadButton.A);
+			var joyStickTrigger = new GamePadAnalogTrigger(GamePadAnalog.LeftTrigger);
+			mockGamePad.Update(new Trigger[] { buttonTrigger, joyStickTrigger });
+			Assert.AreEqual(GamePadNumber.Three, mockGamePad.GetGamePadNumber());
+			mockGamePad = new MockWindowsGamePad(GamePadNumber.Four);
+			mockGamePad.Update(new Trigger[] { buttonTrigger, joyStickTrigger });
+			Assert.AreEqual(GamePadNumber.Four, mockGamePad.GetGamePadNumber());
+		}
+
+		private class MockWindowsGamePad : WindowsGamePad
+		{
+			public MockWindowsGamePad(GamePadNumber number)
+				: base(number) {}
+
+			public override bool IsAvailable
+			{
+				get { return true; }
+			}
+
+			public GamePadNumber GetGamePadNumber()
+			{
+				return Number;
+			}
 		}
 	}
 }

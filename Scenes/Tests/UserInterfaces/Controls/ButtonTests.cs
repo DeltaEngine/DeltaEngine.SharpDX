@@ -61,9 +61,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				foreach (Button button in entities)
 					button.Get<List<FontText>>()[0].Text = button.State.RelativePointerPosition.ToString();
 			}
-		}
-
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test]
 		public void RenderOneButtonEnablingAndDisablingAnother()
@@ -163,7 +161,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			button.Visibility = Visibility.Hide;
+			button.IsVisible = false;
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
 			PressAndReleaseMouse(new Vector2D(0.53f, 0.52f), new Vector2D(0.53f, 0.52f));
@@ -184,9 +182,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
 			var loadedButton = loadedScene.Controls[0] as Button;
-			Assert.AreEqual(1, loadedButton.GetActiveBehaviors().Count);
-			Assert.AreEqual("Interact",
+			Assert.AreEqual(2, loadedButton.GetActiveBehaviors().Count);
+			Assert.AreEqual("UpdateUVCalculations",
 				loadedButton.GetActiveBehaviors()[0].GetShortNameOrFullNameIfNotFound());
+			Assert.AreEqual("Interact",
+				loadedButton.GetActiveBehaviors()[1].GetShortNameOrFullNameIfNotFound());
 			Assert.AreEqual(1, loadedButton.GetDrawBehaviors().Count);
 			Assert.AreEqual("SpriteBatchRenderer",
 				loadedButton.GetDrawBehaviors()[0].GetShortNameOrFullNameIfNotFound());

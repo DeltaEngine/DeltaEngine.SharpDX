@@ -22,7 +22,7 @@ namespace Breakout.Tests
 		public void FireBall()
 		{
 			var ball = Resolve<Ball>();
-			Assert.IsTrue(ball.Visibility == Visibility.Show);
+			Assert.IsTrue(ball.IsVisible == true);
 			AdvanceTimeAndUpdateEntities(0.1f);
 			var initialBallPosition = new Vector2D(0.5f, 0.86f);
 			Assert.AreEqual(initialBallPosition, ball.Position);
