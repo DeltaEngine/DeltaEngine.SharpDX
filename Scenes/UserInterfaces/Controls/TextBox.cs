@@ -25,7 +25,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			if (!IsEnabled)
 				SetAppearance(theme.TextBoxDisabled);
 			else if (HasFocus)
-				SetAppearance(theme.TextBoxFocussed);
+				SetAppearance(theme.TextBoxFocused);
 			else
 				SetAppearance(theme.TextBox);
 		}

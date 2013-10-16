@@ -3,7 +3,6 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Multimedia;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Rendering2D;
 
 namespace LogoApp

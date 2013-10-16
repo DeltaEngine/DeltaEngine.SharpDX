@@ -51,10 +51,6 @@
       <Project>{4E4D006D-9C6E-47DB-908D-674E0C8D98AA}</Project>
       <Name>DeltaEngine.Input.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Physics2D\DeltaEngine.Physics2D.csproj">
-      <Project>{DC3AA434-09B9-43AD-8F43-431811FA054D}</Project>
-      <Name>DeltaEngine.Physics2D</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>

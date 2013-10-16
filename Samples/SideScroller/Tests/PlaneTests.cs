@@ -76,14 +76,5 @@ namespace SideScroller.Tests
 		{
 			InitPlayerPlane();
 		}
-
-		[Test]
-		public void CreateEnemyPlane()
-		{
-			var foeTexture = new Material(Shader.Position2DColorUV, EnemyTextureName);
-			new EnemyPlane(foeTexture, new Vector2D(1.2f, 0.5f));
-		}
-
-		private const string EnemyTextureName = "EnemyPlane";
 	}
 }

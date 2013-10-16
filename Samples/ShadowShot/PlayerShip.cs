@@ -4,7 +4,6 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Rendering2D;
 
 namespace ShadowShot
@@ -16,7 +15,7 @@ namespace ShadowShot
 		{
 			timeLastShot = GlobalTime.Current.Milliseconds;
 			viewportBorders = borders;
-			Add(new Velocity2D.Data(Vector2D.Zero, Constants.MaximumObjectVelocity));
+			Add(new Velocity2D(Vector2D.Zero, Constants.MaximumObjectVelocity));
 			Start<MovementHandler>();
 			Start<ProjectileHandler>();
 			RenderLayer = (int)Constants.RenderLayer.PlayerShip;
@@ -29,7 +28,7 @@ namespace ShadowShot
 		public void Accelerate(Vector2D accelerateDirection)
 		{
 			var direction = new Vector2D(accelerateDirection.X * Time.Delta, accelerateDirection.Y);
-			Get<Velocity2D.Data>().Accelerate(direction);
+			Get<Velocity2D>().Accelerate(direction);
 		}
 
 		private class MovementHandler : UpdateBehavior
@@ -40,7 +39,7 @@ namespace ShadowShot
 				{
 					var nextRect = CalculateRectAfterMove(ship);
 					MoveEntity(ship, nextRect);
-					var velocity2D = ship.Get<Velocity2D.Data>();
+					var velocity2D = ship.Get<Velocity2D>();
 					velocity2D.Velocity -= velocity2D.Velocity * Constants.PlayerDecelFactor * Time.Delta;
 					ship.Set(velocity2D);
 				}
@@ -50,7 +49,7 @@ namespace ShadowShot
 			{
 				return
 					new Rectangle(
-						entity.Get<Rectangle>().TopLeft + entity.Get<Velocity2D.Data>().Velocity * Time.Delta,
+						entity.Get<Rectangle>().TopLeft + entity.Get<Velocity2D>().Velocity * Time.Delta,
 						entity.Get<Rectangle>().Size);
 			}
 
@@ -63,7 +62,7 @@ namespace ShadowShot
 			private static void StopAtBorder(PlayerShip entity)
 			{
 				var rect = entity.Get<Rectangle>();
-				var vel = entity.Get<Velocity2D.Data>();
+				var vel = entity.Get<Velocity2D>();
 				if (rect.Left < entity.viewportBorders.Left)
 				{
 					vel.Accelerate(0);
@@ -124,7 +123,7 @@ namespace ShadowShot
 
 		public void Deccelerate()
 		{
-			Get<Velocity2D.Data>().Accelerate(0.7f);
+			Get<Velocity2D>().Accelerate(0.7f);
 		}
 
 		public void Dispose()

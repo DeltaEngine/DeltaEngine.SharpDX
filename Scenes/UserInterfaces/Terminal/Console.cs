@@ -26,7 +26,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Terminal
 			CreateText();
 			UpdateDrawArea();
 			Add(new InteractiveState { WantsFocus = true });
-			Start<Interact>();
+			Start<ControlUpdater>();
 			Start<Keyboard>();
 			AddKeyboardCommands();
 			IsEnabled = true;

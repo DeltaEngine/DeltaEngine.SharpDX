@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Vertices;
-using DeltaEngine.Multimedia;
-using DeltaEngine.Rendering3D.Particles;
+using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
@@ -28,8 +26,8 @@ namespace DeltaEngine.Content.Mocks
 				stream = new XmlFile(new XmlData("Texts").AddChild(GoLocalizationNode)).ToMemoryStream();
 			else if (content.Name.Contains("Verdana12") || content.Name.Contains("Tahoma30"))
 				stream = CreateFontXml().ToMemoryStream();
-			else if (content.MetaData.Type == ContentType.ParticleEmitter)
-				stream = SaveTestParticle();
+			else if (content.Name == ("NewImageAnimation"))
+				stream = CreateImageAnimation();
 			else if (content.MetaData.Type == ContentType.Shader)
 				stream = SaveShader(content.Name);
 			else if (content.Name.Equals("EmptyScene"))
@@ -38,6 +36,18 @@ namespace DeltaEngine.Content.Mocks
 				stream = SaveSceneWithAButton();
 			else if (content.Name.Equals("TestMenuXml"))
 				stream = SaveTestMenu();
+			else if (content.Name.Equals("3DMaterial"))
+				stream = Save3DMaterial();
+			else if (content.Name.Equals("PointEmitter3D"))
+				stream = CreateEmitter3D("PointEmitter");
+			else if (content.Name.Equals("LineEmitter3D"))
+				stream = CreateEmitter3D("LineEmitter");
+			else if (content.Name.Equals("BoxEmitter3D"))
+				stream = CreateEmitter3D("BoxEmitter");
+			else if (content.Name.Equals("SphericalEmitter3D"))
+				stream = CreateEmitter3D("SphericalEmitter");
+			else if (content.MetaData.Type == ContentType.ParticleEmitter)
+				stream = SaveTestParticle();
 			return stream;
 		}
 
@@ -90,6 +100,17 @@ namespace DeltaEngine.Content.Mocks
 			font.AddAttribute("LineHeight", "16");
 			font.AddChild(bitmap).AddChild(glyphs).AddChild(kernings);
 			return new XmlFile(font);
+		}
+
+		private Stream CreateImageAnimation()
+		{
+			var array = new Image[2];
+			array[0] = Create<Image>(new ImageCreationData(new Size(8, 8)));
+			array[1] = Create<Image>(new ImageCreationData(new Size(8, 8)));
+			var imageAnimation = new ImageAnimation(array, 2);
+			var data = BinaryDataExtensions.SaveToMemoryStream(imageAnimation);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;
 		}
 
 		private static MemoryStream SaveTestParticle()
@@ -159,18 +180,45 @@ namespace DeltaEngine.Content.Mocks
 			return data;
 		}
 
+		private static MemoryStream Save3DMaterial()
+		{
+			var material = new Material(Shader.Position3DColorUV, "DeltaEngineLogo");
+			var data = BinaryDataExtensions.SaveToMemoryStream(material);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;
+		}
+
+		private Stream CreateEmitter3D(string ParticleType)
+		{
+			var pointEmitter = new ParticleEmitterData();
+			pointEmitter.ParticleMaterial = new Material(Shader.Position3DColorUV, "DeltaEngineLogo");
+			pointEmitter.EmitterType = ParticleType;
+			var data = BinaryDataExtensions.SaveToMemoryStream(pointEmitter);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;
+		}
+
+		private Stream CreateLineEmitter3D()
+		{
+			var pointEmitter = new ParticleEmitterData();
+			pointEmitter.ParticleMaterial = new Material(Shader.Position3DColorUV, "DeltaEngineLogo");
+			var data = BinaryDataExtensions.SaveToMemoryStream(pointEmitter);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;			
+		}
+
 		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
 			if (IsNoMetaDataAllowed(contentName, contentClassType))
 				return null;
 			ContentType contentType = ConvertClassTypeToContentType(contentClassType);
-			if (contentType == ContentType.Material)
+			if (contentType == ContentType.Material || contentName.Contains("NewMaterial"))
 				return CreateMaterialMetaData(contentName);
 			if (contentName.Contains("SpriteSheet") || contentType == ContentType.SpriteSheetAnimation)
 				return CreateSpriteSheetAnimationMetaData(contentName);
 			if (contentName == "ImageAnimationNoImages")
 				return CreateImageAnimationNoImagesMetaData(contentName);
-			if (contentName == "ImageAnimation" || contentType == ContentType.ImageAnimation)
+			if (contentName == ("ImageAnimation") || contentType == ContentType.ImageAnimation)
 				return CreateImageAnimationMetaData(contentName);
 			if (contentType == ContentType.Image)
 				return CreateImageMetaData(contentName);
@@ -180,8 +228,8 @@ namespace DeltaEngine.Content.Mocks
 				return CreateMeshMetaData(contentName);
 			if (contentType == ContentType.Shader)
 				return CreateShaderData(contentName);
-			if (contentType == ContentType.Video)
-				return CreateVideoData(contentName);
+			if (contentType == ContentType.ParticleSystem)
+				return CreateParticleSystemMetaData(contentName);
 			return new ContentMetaData { Name = contentName, Type = contentType };
 		}
 
@@ -311,12 +359,16 @@ namespace DeltaEngine.Content.Mocks
 		{
 			return new ContentMetaData { Name = contentName, Type = ContentType.Shader };
 		}
-
-		private static ContentMetaData CreateVideoData(string contentName)
+		
+		private static ContentMetaData CreateParticleSystemMetaData(string contentName)
 		{
-			if (contentName.Contains("No"))
-				throw new Video.VideoNotFoundOrAccessible(contentName, null);
-			return new ContentMetaData { Name = contentName, Type = ContentType.Video };
+			var metaData = new ContentMetaData()
+			{
+				Name = contentName,
+				Type = ContentType.ParticleSystem
+			};
+			metaData.Values.Add("EmitterNames", "EmitterAlpha, EmitterBeta");
+			return metaData;
 		}
 
 		public string GetContentMetaDataFilePath()

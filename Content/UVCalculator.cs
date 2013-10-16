@@ -12,7 +12,7 @@ namespace DeltaEngine.Content
 		internal UVCalculator()
 			: this(new AtlasRegion { UV = Rectangle.One }) {}
 
-		internal UVCalculator(AtlasRegion region)
+		public UVCalculator(AtlasRegion region)
 		{
 			uv = region.UV;
 			padLeft = region.PadLeft;
@@ -87,7 +87,7 @@ namespace DeltaEngine.Content
 			Rectangle expandedUV = GetExpandedUV();
 			Rectangle expandedUserUV = GetExpandedUserUV(userUV, expandedUV);
 			if (HasNoRendering(expandedUserUV))
-				return new Results
+				return new Results // ncrunch: no coverage
 				{
 					RequestedUserUV = userUV,
 					RequestedDrawArea = drawArea,
@@ -126,13 +126,13 @@ namespace DeltaEngine.Content
 		private static bool HasNoRendering(Rectangle expandedUserUV)
 		{
 			if (expandedUserUV.Left < 0 && expandedUserUV.Right < 0)
-				return true;
+				return true; // ncrunch: no coverage
 			if (expandedUserUV.Left > 1 && expandedUserUV.Right > 1)
-				return true;
+				return true; // ncrunch: no coverage
 			if (expandedUserUV.Top < 0 && expandedUserUV.Bottom < 0)
-				return true;
+				return true; // ncrunch: no coverage
 			if (expandedUserUV.Top > 1 && expandedUserUV.Bottom > 1)
-				return true;
+				return true; // ncrunch: no coverage
 			return false;
 		}
 

@@ -313,7 +313,7 @@ namespace DeltaEngine.Platforms
 		{
 			if (ex.GetShortNameOrFullNameIfNotFound().Contains("OpenGLVersionDoesNotSupportShaders"))
 			{
-				string hintText = "Please verify that your video card support OpenGL 3.0 or higher and" +
+				string hintText = "Please verify that your video card supports OpenGL 3.0 or higher and" +
 					" your driver is up to date.\n\n";
 				hintText += "Exception details:\n";
 				return hintText;

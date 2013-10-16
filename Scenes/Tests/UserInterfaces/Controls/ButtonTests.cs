@@ -128,7 +128,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			button.Clicked += () => clicked = true;
 			PressAndReleaseMouse(Vector2D.Half, Vector2D.Zero);
 			Assert.IsFalse(clicked);
-			Assert.IsFalse(button.State.IsPressed);
+			Assert.IsTrue(button.State.IsPressed);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -185,7 +185,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Assert.AreEqual(2, loadedButton.GetActiveBehaviors().Count);
 			Assert.AreEqual("UpdateUVCalculations",
 				loadedButton.GetActiveBehaviors()[0].GetShortNameOrFullNameIfNotFound());
-			Assert.AreEqual("Interact",
+			Assert.AreEqual("ControlUpdater",
 				loadedButton.GetActiveBehaviors()[1].GetShortNameOrFullNameIfNotFound());
 			Assert.AreEqual(1, loadedButton.GetDrawBehaviors().Count);
 			Assert.AreEqual("SpriteBatchRenderer",

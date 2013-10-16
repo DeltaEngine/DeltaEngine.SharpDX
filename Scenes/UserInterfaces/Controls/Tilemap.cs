@@ -88,7 +88,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		private void UpdateTilePositions()
 		{
 			if (data.RenderingTopLeft == data.TargetTopLeft)
-				return;
+				return; // ncrunch: no coverage
 			UpdateTopLeft();
 			UpdateMapSprites();
 		}

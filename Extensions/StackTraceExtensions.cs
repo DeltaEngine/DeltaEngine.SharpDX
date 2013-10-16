@@ -196,8 +196,10 @@ namespace DeltaEngine.Extensions
 		/// Since we do not initialize or run the resolver in a test, we need to set the current unit
 		/// test name up beforehand so we can find out if the test uses ApproveFirstFrameScreenshot.
 		/// </summary>
-		public static void SetUnitTestName(string fullName)
+		public static void SetUnitTestName(string fullName, bool forceOverwrite = false)
 		{
+			if (!forceOverwrite && unitTestClassName != null && unitTestClassName.EndsWith("Tests"))
+				return;
 			var nameParts = fullName.Split(new[] { '.' });
 			unitTestMethodName = nameParts[nameParts.Length - 1];
 			unitTestClassName = nameParts[nameParts.Length - 2];

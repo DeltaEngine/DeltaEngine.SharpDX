@@ -100,6 +100,8 @@ namespace DeltaEngine.Content.Xml
 			{
 				var trigger = command.Children[index];
 				var triggerType = trigger.Name.GetTypeFromShortNameOrFullNameIfNotFound();
+				if (triggerType == null)
+					throw new Trigger.UnableToCreateTriggerTypeIsUnknown(trigger.Name); //ncrunch: no coverage
 				triggers[index] = 
 					Trigger.GenerateTriggerFromType(triggerType, trigger.Name, trigger.Value) as Trigger;
 			}

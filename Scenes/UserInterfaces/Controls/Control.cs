@@ -20,7 +20,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			: base(CreateTransparentMaterial(), drawArea)
 		{
 			Add(new InteractiveState());
-			Start<Interact>();
+			Start<ControlUpdater>();
 		}
 
 		private static Material CreateTransparentMaterial()

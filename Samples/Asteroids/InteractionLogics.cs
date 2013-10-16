@@ -4,7 +4,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering3D.Particles;
+using DeltaEngine.Rendering2D.Particles;
 
 namespace Asteroids
 {
@@ -12,8 +12,8 @@ namespace Asteroids
 	{
 		public InteractionLogics()
 		{
-			explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
-			shipExplosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
+			explosionData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Explosion");
+			shipExplosionData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Explosion");
 			IncreaseScore += i => { };
 		}
 

@@ -71,13 +71,13 @@ namespace DeltaEngine.Scenes
 		public void ToBackground()
 		{
 			foreach (Control control in controls.OfType<Control>())
-				control.Stop<Interact>();
+				control.Stop<ControlUpdater>();
 		}
 
 		public void ToForeground()
 		{
 			foreach (Control control in controls.OfType<Control>())
-				control.Start<Interact>();
+				control.Start<ControlUpdater>();
 		}
 
 		public virtual void Clear()

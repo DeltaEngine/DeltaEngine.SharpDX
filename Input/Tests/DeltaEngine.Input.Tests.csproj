@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{92242E5E-5077-48B8-8D8B-AE7108C46FF9}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DeltaEngine.Input.Tests</RootNamespace>
     <AssemblyName>DeltaEngine.Input.Tests</AssemblyName>
@@ -117,7 +117,6 @@
     <Compile Include="KeyboardTests.cs" />
     <Compile Include="KeyTriggerTests.cs" />
     <Compile Include="MousePositionTriggerTests.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="StateExtensionsTests.cs" />
     <Compile Include="MouseTests.cs" />
     <Compile Include="MouseButtonTriggerTests.cs" />

@@ -11,7 +11,7 @@ namespace SideScroller
 	/// <summary>
 	/// Initialization of the SideScrollerGame, creation of all further instances used during the game.
 	/// </summary>
-	internal class Game : Entity2D
+	public class Game : Entity2D
 	{
 		public Game(Window window)
 			: base(Rectangle.Zero)

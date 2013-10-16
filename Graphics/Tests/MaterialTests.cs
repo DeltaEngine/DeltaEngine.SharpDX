@@ -36,6 +36,42 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
+		public void LoadSavedMaterialWithPadding()
+		{
+			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
+			loadedMaterial.UVCalculator =
+				new UVCalculator(new AtlasRegion
+				{
+					PadLeft = 0.5f,
+					PadRight = 0.5f,
+					PadTop = 0.5f,
+					PadBottom = 0.5f,
+					IsRotated = false
+				});
+			var result = loadedMaterial.UVCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
+				Rectangle.One, FlipMode.None);
+			Assert.AreEqual(result.RequestedUserUV, Rectangle.HalfCentered);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void LoadSavedMaterialWithClearPadding()
+		{
+			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
+			loadedMaterial.UVCalculator =
+				new UVCalculator(new AtlasRegion
+				{
+					PadLeft = 0,
+					PadRight = 0,
+					PadTop = 0,
+					PadBottom = 0,
+					IsRotated = false
+				});
+			var result = loadedMaterial.UVCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
+				Rectangle.One, FlipMode.None);
+			Assert.AreEqual(result.RequestedUserUV, Rectangle.HalfCentered);
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void SetRenderSize()
 		{
 			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");

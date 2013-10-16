@@ -48,7 +48,7 @@ namespace $safeprojectname$
 
 			private static void FireShotIfRightTime(EnemyPlane entity)
 			{
-				if (entity.timeLastShot - GlobalTime.Current.Milliseconds > 1)
+				if (GlobalTime.Current.Milliseconds - entity.timeLastShot > 1)
 				{
 					entity.timeLastShot = GlobalTime.Current.Milliseconds;
 					entity.EnemyFiredShot(entity.Center);

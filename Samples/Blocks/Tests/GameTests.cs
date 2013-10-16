@@ -32,6 +32,14 @@ namespace Blocks.Tests
 		}
 
 		[Test]
+		public void CreateGameInLandscape()
+		{
+			var window = Resolve<Window>();
+			window.ViewportPixelSize = new Size(800, 600);
+			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test]
 		public void AffixingBlockAddsToScore()
 		{
 			var game = new Game(Resolve<Window>(), new JewelBlocksContent(), Resolve<SoundDevice>());

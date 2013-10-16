@@ -23,7 +23,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			DefaultButtonAppearance();
 			DefaultDropdownListAppearance();
 			Font = Font.Default;
-			Label = new Appearance(CreateDefaultMaterial(new Size(128.0f, 32.0f), Color.White));
+			Label = new Appearance(CreateDefaultMaterial(new Size(128, 32), Color.White));
 			DefaultRadioButtonAppearance();
 			DefaultScrollbarAppearance();
 			DefaultSelectBoxAppearance();
@@ -70,7 +70,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void DefaultButtonAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(256.0f, 64.0f), Color.LightGray);
+			var material = CreateDefaultMaterial(new Size(256, 64), Color.LightGray);
 			Button = new Appearance(material);
 			material.DefaultColor = Color.Gray;
 			ButtonDisabled = new Appearance(material);
@@ -87,7 +87,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void DefaultDropdownListAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(128.0f, 32.0f), Color.White);
+			var material = CreateDefaultMaterial(new Size(128, 32), Color.White);
 			DropdownListBox = new Appearance(material);
 			material.DefaultColor = Color.Gray;
 			DropdownListBoxDisabled = new Appearance(material);
@@ -99,17 +99,17 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		private void DefaultRadioButtonAppearance()
 		{
 			RadioButtonBackground =
-				new Appearance(CreateDefaultMaterial(new Size(128.0f, 32.0f), Color.White));
+				new Appearance(CreateDefaultMaterial(new Size(128, 32), Color.White));
 			RadioButtonBackgroundDisabled =
-				new Appearance(CreateDefaultMaterial(new Size(128.0f, 32.0f), Color.Gray));
-			RadioButtonDisabled = new Appearance(CreateDefaultMaterial(new Size(32.0f), Color.Gray));
+				new Appearance(CreateDefaultMaterial(new Size(128, 32), Color.Gray));
+			RadioButtonDisabled = new Appearance(CreateDefaultMaterial(new Size(32), Color.Gray));
 			RadioButtonNotSelected =
-				new Appearance(CreateDefaultMaterial(new Size(32.0f), Color.LightGray));
+				new Appearance(CreateDefaultMaterial(new Size(32), Color.LightGray));
 			RadioButtonNotSelectedMouseover =
-				new Appearance(CreateDefaultMaterial(new Size(32.0f), Color.VeryLightGray));
-			RadioButtonSelected = new Appearance(CreateDefaultMaterial(new Size(32.0f), Color.White));
+				new Appearance(CreateDefaultMaterial(new Size(32), Color.VeryLightGray));
+			RadioButtonSelected = new Appearance(CreateDefaultMaterial(new Size(32), Color.White));
 			RadioButtonSelectedMouseover =
-				new Appearance(CreateDefaultMaterial(new Size(32.0f), Color.LightBlue));
+				new Appearance(CreateDefaultMaterial(new Size(32), Color.LightBlue));
 		}
 
 		public Appearance RadioButtonBackground { get; set; }
@@ -122,7 +122,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void DefaultScrollbarAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(256.0f, 64.0f), Color.White);
+			var material = CreateDefaultMaterial(new Size(256, 64), Color.White);
 			Scrollbar = new Appearance(material);
 			ScrollbarPointerMouseover = new Appearance(material);
 			material.DefaultColor = Color.Gray;
@@ -140,7 +140,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void DefaultSelectBoxAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(128.0f, 32.0f), Color.White);
+			var material = CreateDefaultMaterial(new Size(128, 32), Color.White);
 			SelectBox = new Appearance(material);
 			material.DefaultColor = Color.Gray;
 			SelectBoxDisabled = new Appearance(material);
@@ -151,13 +151,13 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void DefaultSliderAppearance()
 		{
-			Slider = new Appearance(CreateDefaultMaterial(new Size(256.0f, 64.0f), Color.White));
-			SliderDisabled = new Appearance(CreateDefaultMaterial(new Size(256.0f, 64.0f), Color.Gray));
-			SliderPointer = new Appearance(CreateDefaultMaterial(new Size(16.0f, 32.0f), Color.White));
+			Slider = new Appearance(CreateDefaultMaterial(new Size(256, 64), Color.White));
+			SliderDisabled = new Appearance(CreateDefaultMaterial(new Size(256, 64), Color.Gray));
+			SliderPointer = new Appearance(CreateDefaultMaterial(new Size(16, 32), Color.White));
 			SliderPointerDisabled =
-				new Appearance(CreateDefaultMaterial(new Size(16.0f, 32.0f), Color.Gray));
+				new Appearance(CreateDefaultMaterial(new Size(16, 32), Color.Gray));
 			SliderPointerMouseover =
-				new Appearance(CreateDefaultMaterial(new Size(16.0f, 32.0f), Color.White));
+				new Appearance(CreateDefaultMaterial(new Size(16, 32), Color.White));
 		}
 
 		public Appearance Slider { get; set; }
@@ -168,8 +168,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void DefaultTextBoxAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(128.0f, 32.0f), Color.White);
-			TextBoxFocussed = new Appearance(material);
+			var material = CreateDefaultMaterial(new Size(128, 32), Color.White);
+			TextBoxFocused = new Appearance(material);
 			material.DefaultColor = Color.LightGray;
 			TextBox = new Appearance(material);
 			material.DefaultColor = Color.Gray;
@@ -178,6 +178,6 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		public Appearance TextBox { get; set; }
 		public Appearance TextBoxDisabled { get; set; }
-		public Appearance TextBoxFocussed { get; set; }
+		public Appearance TextBoxFocused { get; set; }
 	}
 }

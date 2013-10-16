@@ -8,7 +8,7 @@ using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
-	internal class Game : Entity2D
+	public class Game : Entity2D
 	{
 		public Game(Window window) : base(Rectangle.Zero)
 		{

@@ -66,7 +66,6 @@
     <Compile Include="Multimedia\SoundDevice.cs" />
     <Compile Include="Multimedia\SoundInstance.cs" />
     <Compile Include="Content\SpriteSheetAnimation.cs" />
-    <Compile Include="Multimedia\Video.cs" />
     <Compile Include="Core\BinaryDataExtensions.cs" />
     <Compile Include="Core\BinaryDataLoader.cs" />
     <Compile Include="Core\BinaryDataSaver.cs" />

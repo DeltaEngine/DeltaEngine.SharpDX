@@ -83,41 +83,25 @@
       <Project>{1797C45C-F96B-4F95-BAAC-400910CAB473}</Project>
       <Name>DeltaEngine.Networking.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Physics2D\DeltaEngine.Physics2D.csproj">
-      <Project>{DC3AA434-09B9-43AD-8F43-431811FA054D}</Project>
-      <Name>DeltaEngine.Physics2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Physics2D\Farseer\DeltaEngine.Physics2D.Farseer.csproj">
-      <Project>{C983D137-8B7F-47BE-996E-894A3596DD06}</Project>
-      <Name>DeltaEngine.Physics2D.Farseer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering2D\Mocks\DeltaEngine.Rendering2D.Mocks.csproj">
+      <Project>{27C9A179-531F-41FB-8257-8396061C751B}</Project>
+      <Name>DeltaEngine.Rendering2D.Mocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering2D\Particles\DeltaEngine.Rendering2D.Particles.csproj">
+      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Name>DeltaEngine.Rendering2D.Particles</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering3D\Cameras\DeltaEngine.Rendering3D.Cameras.csproj">
-      <Project>{F5992CBF-8E17-4EB0-B483-F1DE7993C416}</Project>
-      <Name>DeltaEngine.Rendering3D.Cameras</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering3D\DeltaEngine.Rendering3D.csproj">
-      <Project>{3266F559-74EE-4A1C-B37B-2C591F73611B}</Project>
-      <Name>DeltaEngine.Rendering3D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering3D\Particles\DeltaEngine.Rendering3D.Particles.csproj">
-      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
-      <Name>DeltaEngine.Rendering3D.Particles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering3D\Shapes\DeltaEngine.Rendering3D.Shapes.csproj">
-      <Project>{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}</Project>
-      <Name>DeltaEngine.Rendering3D.Shapes</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
@@ -130,9 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MockFont.cs" />
     <Compile Include="MockInAppPurchase.cs" />
-    <Compile Include="MockMeshAnimation.cs" />
     <Compile Include="MockResolver.cs" />
     <Compile Include="MockSystemInformation.cs" />
   </ItemGroup>

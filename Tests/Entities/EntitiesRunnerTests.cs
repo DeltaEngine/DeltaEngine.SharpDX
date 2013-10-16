@@ -56,6 +56,15 @@ namespace DeltaEngine.Tests.Entities
 		}
 
 		[Test]
+		public void MockBehaviorResolversUpdateAndDrawAreNull()
+		{
+			Assert.AreEqual(null,
+				new MockBehaviorResolver().ResolveUpdateBehavior(typeof(DerivedBehavior)));
+			Assert.AreEqual(null,
+				new MockBehaviorResolver().ResolveDrawBehavior(typeof(DerivedBehavior)));
+		}
+
+		[Test]
 		public void TestUpdates()
 		{
 			const float NewTime = 2.0f;
@@ -313,13 +322,14 @@ namespace DeltaEngine.Tests.Entities
 
 		public class DrawTest : DrawBehavior
 		{
-			public void Draw(List<DrawableEntity> visibleEntities) {}
+			public void Draw(List<DrawableEntity> visibleEntities) { } //ncrunch: no coverage
 		}
-
+		
 		[Test]
 		public void PrioritiesAreHandledCorrectlyForAnUpdateableEntityWithExtraBehaviors()
 		{
 			var entity = new UpdateableEntityWithBehaviors();
+			Assert.IsTrue(entity.IsPauseable);
 			entities.RunEntities();
 			entity.Set("");
 			entities.RunEntities();

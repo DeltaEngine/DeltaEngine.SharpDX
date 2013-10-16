@@ -4,7 +4,6 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Platforms;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
@@ -31,11 +30,11 @@ namespace ShadowShot.Tests
 		[Test]
 		public void Accelerate()
 		{
-			Vector2D originalVelocity = playerShip.Get<Velocity2D.Data>().Velocity;
+			Vector2D originalVelocity = playerShip.Get<Velocity2D>().Velocity;
 			playerShip.Accelerate(Vector2D.One);
-			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D.Data>().Velocity);
+			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D>().Velocity);
 			playerShip.Accelerate(new Vector2D(0, 1.0f));
-			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D.Data>().Velocity);
+			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D>().Velocity);
 		}
 
 		[Test]

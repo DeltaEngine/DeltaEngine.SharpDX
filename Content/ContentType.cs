@@ -114,6 +114,11 @@
 		/// </summary>
 		Geometry = 25,
 		/// <summary>
+		/// The data for a ParticleSystem contain names of saved emitter data to be used.
+		/// Upon loading, those are loaded as well and the emitters are created and attached to the system.
+		/// </summary>
+		ParticleSystem = 26,
+		/// <summary>
 		/// Just store the file entry, this can be used for any file (binary makes most sense). All the
 		/// logic to load and use this file has to be done by the application.
 		/// </summary>

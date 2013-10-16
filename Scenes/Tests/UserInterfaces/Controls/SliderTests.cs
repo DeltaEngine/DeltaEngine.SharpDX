@@ -131,9 +131,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test, CloseAfterFirstFrame]
 		public void ValidatePointerCenter()
 		{
-			var position = new Vector2D(0.42f, 0.52f);
-			DragMouse(position);
-			Assert.IsTrue(slider.Pointer.DrawArea.Center.IsNearlyEqual(new Vector2D(0.42f, 0.5f)));
+			DragMouse(new Vector2D(0.42f, 0.52f));
+			var center = slider.Pointer.DrawArea.Center;
+			Assert.IsTrue(center.IsNearlyEqual(new Vector2D(0.419f, 0.5f)), center.ToString());
 		}
 
 		private void DragMouse(Vector2D position)
@@ -146,7 +146,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-
 			mouse.SetPosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();

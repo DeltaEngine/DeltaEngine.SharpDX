@@ -8,22 +8,37 @@ namespace DeltaEngine.Tests.Extensions
 	{
 		//ncrunch: no coverage start
 		[Test, Ignore]
-		public void StartRunTimeTestInAppDomain()
+		public void StartGlobalTimeTest()
 		{
-			using (var starter = new AssemblyStarter("DeltaEngine.Tests.dll"))
+			using (var starter = new AssemblyStarter("DeltaEngine.Tests.dll", false))
 				starter.Start("GlobalTimeTests", "CalculateFpsWithStopwatch");
 		}
 
 		[Test, Ignore]
-		public void FindAllTestsInAppDomain()
+		public void FindAllDeltaEngineTests()
 		{
-			using (var starter = new AssemblyStarter("DeltaEngine.Tests.dll"))
-			{
-				var tests = starter.GetTestNames();
-				if (tests != null)
-					foreach (var test in tests)
-						Console.WriteLine(test);
-			}
+			using (var starter = new AssemblyStarter("DeltaEngine.Tests.dll", false))
+				foreach (var test in starter.GetTestNames())
+					Console.WriteLine(test);
+		}
+
+		[Test, Ignore]
+		public void FindAllGraphicsTests()
+		{
+			const string TestAssemblyFilename =
+				@"c:\code\DeltaEngine\Graphics\Tests\bin\Debug\DeltaEngine.Graphics.Tests.exe";
+			using (var starter = new AssemblyStarter(TestAssemblyFilename, false))
+				foreach (var test in starter.GetTestNames())
+					Console.WriteLine(test);
+		}
+
+		[Test, Ignore]
+		public void StartGraphicsVisualTest()
+		{
+			const string TestAssemblyFilename =
+				@"c:\code\DeltaEngine\Graphics\Tests\bin\Debug\DeltaEngine.Graphics.Tests.exe";
+			using (var starter = new AssemblyStarter(TestAssemblyFilename, true))
+				starter.Start("DeviceTests", "DrawRedBackground");
 		}
 	}
 }

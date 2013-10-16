@@ -162,8 +162,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void RenderTextBoxAttachedToMouse()
 		{
 			new Command(
-				point => topTextBox.DrawArea = Rectangle.FromCenter(point, topTextBox.DrawArea.Size)).Add(
-					new MouseMovementTrigger());
+				point => topTextBox.DrawArea = //ncrunch: no coverage
+					Rectangle.FromCenter(point, topTextBox.DrawArea.Size)).Add(new MouseMovementTrigger());
 		}
 	}
 }

@@ -11,10 +11,7 @@ namespace DeltaEngine.Rendering2D
 	/// </summary>
 	public class Entity2D : DrawableEntity
 	{
-		protected Entity2D()
-		{
-			LastDrawArea = Rectangle.Unused;
-		}
+		protected Entity2D() {}
 
 		public Entity2D(Rectangle drawArea)
 		{
@@ -115,7 +112,7 @@ namespace DeltaEngine.Rendering2D
 			return componentsForViewing;
 		}
 
-		public override sealed T Get<T>()
+		public override T Get<T>()
 		{
 			if (EntitiesRunner.Current.State == UpdateDrawState.Draw && typeof(T) == typeof(Rectangle))
 				return (T)(object)LastDrawArea.Lerp(DrawArea, EntitiesRunner.CurrentDrawInterpolation);
@@ -169,7 +166,7 @@ namespace DeltaEngine.Rendering2D
 				base.Contains<T>();
 		}
 
-		public override sealed Entity Add<T>(T component)
+		public override Entity Add<T>(T component)
 		{
 			if (typeof(T) == typeof(Rectangle) || typeof(T) == typeof(Color) ||
 				typeof(T) == typeof(float) || typeof(T) == typeof(Vector2D) || typeof(T) == typeof(int))
@@ -201,8 +198,6 @@ namespace DeltaEngine.Rendering2D
 			{
 				EntitiesRunner.Current.CheckIfInUpdateState();
 				DrawArea = (Rectangle)component;
-				if (LastDrawArea == Rectangle.Unused)
-					LastDrawArea = DrawArea;
 			}
 			else
 				base.Set(component);

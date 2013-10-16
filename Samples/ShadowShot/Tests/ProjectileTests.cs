@@ -1,10 +1,10 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Platforms;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
+using DeltaEngine.Rendering2D;
 
 namespace ShadowShot.Tests
 {

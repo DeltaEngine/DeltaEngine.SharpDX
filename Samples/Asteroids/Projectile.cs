@@ -4,10 +4,8 @@ using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.GameLogic;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering3D.Particles;
+using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
@@ -37,7 +35,7 @@ namespace Asteroids
 
 		private void AttachMissileEmitter()
 		{
-			var missileData = ContentLoader.Load<ParticleEmitterData>("MissileEmitter");
+			var missileData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Missile");
 			missileData.DoParticlesTrackEmitter = true;
 			var missileEmitter = new ParticleEmitter(missileData, new Vector3D(Center));
 			missileEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets + 1;
@@ -46,7 +44,7 @@ namespace Asteroids
 
 		private void AttachTrailEmitter()
 		{
-			var trailData = ContentLoader.Load<ParticleEmitterData>("PropulsionEmitter");
+			var trailData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Propulsion");
 			trailData.DoParticlesTrackEmitter = true;
 			var trailEmitter = new ParticleEmitter(trailData, new Vector3D(Center));
 			trailEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets;

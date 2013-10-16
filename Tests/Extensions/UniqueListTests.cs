@@ -140,6 +140,7 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.AreEqual(copiedUniqueList[2], 7);
 		}
 	}
+
 	public static class TestEnumerable
 	{
 		public static IEnumerable AsWeakEnumerable(this IEnumerable source)
@@ -148,9 +149,6 @@ namespace DeltaEngine.Tests.Extensions
 			{
 				yield return o;
 			}
-		}
+		} //ncrunch: no coverage
 	}
 }
-
-
-

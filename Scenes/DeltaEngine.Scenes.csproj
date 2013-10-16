@@ -59,10 +59,6 @@
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rendering2D\Graphs\DeltaEngine.Rendering2D.Graphs.csproj">
-      <Project>{BFD23A13-90D3-46FC-8EAB-78664F4FB37D}</Project>
-      <Name>DeltaEngine.Rendering2D.Graphs</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
@@ -76,11 +72,10 @@
     <Compile Include="UserInterfaces\EntityDebugger\EntitySelector.cs" />
     <Compile Include="UserInterfaces\EntityDebugger\EntityWriter.cs" />
     <Compile Include="UserInterfaces\Controls\BaseSlider.cs" />
-    <Compile Include="UserInterfaces\Controls\ColorGradient.cs" />
     <Compile Include="UserInterfaces\Controls\DropdownList.cs" />
     <Compile Include="UserInterfaces\Controls\Picture.cs" />
     <Compile Include="UserInterfaces\Controls\Scrollbar.cs" />
-    <Compile Include="UserInterfaces\Controls\Interact.cs" />
+    <Compile Include="UserInterfaces\Controls\ControlUpdater.cs" />
     <Compile Include="AutoArrangingMenu.cs" />
     <Compile Include="UserInterfaces\Controls\InteractiveState.cs" />
     <Compile Include="UserInterfaces\Controls\PercentageBar.cs" />

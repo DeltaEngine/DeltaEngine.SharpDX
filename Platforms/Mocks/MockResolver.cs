@@ -16,15 +16,11 @@ using DeltaEngine.Multimedia;
 using DeltaEngine.Multimedia.Mocks;
 using DeltaEngine.Networking;
 using DeltaEngine.Networking.Mocks;
-using DeltaEngine.Physics2D;
-using DeltaEngine.Physics2D.Farseer;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Mocks;
+using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Rendering3D.Cameras;
-using DeltaEngine.Rendering3D.Mocks;
-using DeltaEngine.Rendering3D.Particles;
-using DeltaEngine.Rendering3D.Shapes3D;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using DeltaEngine.ScreenSpaces;
 
@@ -109,10 +105,8 @@ namespace DeltaEngine.Platforms.Mocks
 			Register<MockImage>();
 			Register<MockShader>();
 			Register<MockGeometry>();
-			Register<MockMeshAnimation>();
 			Register<MockSound>();
 			Register<MockMusic>();
-			Register<MockVideo>();
 			Register<Font>();
 			Register<ParticleEmitterData>();
 		}
@@ -151,7 +145,6 @@ namespace DeltaEngine.Platforms.Mocks
 			RegisterSingleton<MockGamePad>();
 			device = RegisterMock(new MockDevice(Window));
 			drawing = RegisterMock(new Drawing(device, Window));
-			Camera.resolver = new AutofacCameraResolver(this);
 			ScreenSpace.resolver = new AutofacScreenSpaceResolver(this);
 			Register<RelativeScreenSpace>();
 			Register<PixelScreenSpace>();
@@ -176,10 +169,6 @@ namespace DeltaEngine.Platforms.Mocks
 
 		private object GetRegisteredInstance(Type baseType)
 		{
-			if (baseType == typeof(Device) || baseType == typeof(MockDevice))
-				return device;
-			if (baseType == typeof(Drawing))
-				return drawing;
 			if (baseType == typeof(SoundDevice) || baseType == typeof(MockSoundDevice))
 				return GetRegisteredMock<MockSoundDevice>();
 			if (baseType == typeof(Keyboard) || baseType == typeof(MockKeyboard))
@@ -196,16 +185,10 @@ namespace DeltaEngine.Platforms.Mocks
 				return GetRegisteredMock<MockSystemInformation>();
 			if (baseType == typeof(ScreenshotCapturer) || baseType == typeof(MockScreenshotCapturer))
 				return GetRegisteredMock<MockScreenshotCapturer>();
-			if (baseType.IsAssignableFrom(typeof(Camera)))
-				return AddAndReturn(new LookAtCamera(device, Window));
-			if (baseType == typeof(Physics) || baseType == typeof(FarseerPhysics))
-				return GetRegisteredMock<FarseerPhysics>();
 			if (baseType == typeof(QuadraticScreenSpace))
 				return AddAndReturn(new QuadraticScreenSpace(Window));
 			if (baseType == typeof(Line2DRenderer))
 				return AddAndReturn(new Line2DRenderer(drawing));
-			if (baseType == typeof(Line3DRenderer))
-				return AddAndReturn(new Line3DRenderer(drawing));
 			if (baseType == typeof(DrawPolygon2D))
 				return AddAndReturn(new DrawPolygon2D(drawing, Window));
 			if (baseType == typeof(SpriteBatchRenderer))
@@ -214,8 +197,8 @@ namespace DeltaEngine.Platforms.Mocks
 				return AddAndReturn(new VectorText.ProcessText());
 			if (baseType == typeof(VectorText.Render))
 				return AddAndReturn(new VectorText.Render(drawing));
-			if (baseType == typeof(Interact))
-				return AddAndReturn(new Interact());
+			if (baseType == typeof(ControlUpdater))
+				return AddAndReturn(new ControlUpdater());
 			return null;
 		}
 
@@ -250,8 +233,6 @@ namespace DeltaEngine.Platforms.Mocks
 				return new MockSound(customParameter as string, settings);
 			if (baseType == typeof(Music))
 				return new MockMusic(customParameter as string, Resolve<SoundDevice>(), settings);
-			if (baseType == typeof(Video))
-				return new MockVideo(customParameter as string, Resolve<SoundDevice>());
 			foreach (object mock in registeredMocks)
 				if (baseType.IsInstanceOfType(mock))
 					return mock;
@@ -281,8 +262,6 @@ namespace DeltaEngine.Platforms.Mocks
 				throw new ScreenSpaceWasNotDisposed(); //ncrunch: no coverage
 			if (Messaging.Current != null)
 				throw new MessagingWasNotDisposed(); //ncrunch: no coverage
-			if (Camera.IsInitialized)
-				throw new CameraWasNotDisposed(); //ncrunch: no coverage
 		}
 
 		public class EntitiesRunnerWasNotDisposed : Exception {}

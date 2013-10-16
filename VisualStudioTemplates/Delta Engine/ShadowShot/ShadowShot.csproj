@@ -48,9 +48,6 @@
     <Reference Include="DeltaEngine.Input">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Input.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Physics2D">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Physics2D.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine.Rendering2D">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
     </Reference>
@@ -78,6 +75,7 @@
     <Compile Include="PlayerShip.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projectile.cs" />
+    <Compile Include="Velocity2D.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

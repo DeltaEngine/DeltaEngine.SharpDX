@@ -44,14 +44,8 @@
     <Reference Include="DeltaEngine">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.GameLogic">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.GameLogic.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine.Input">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Physics2D">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Physics2D.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Rendering2D">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
@@ -59,8 +53,8 @@
     <Reference Include="DeltaEngine.Rendering2D.Fonts">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Fonts.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Rendering3D.Particles">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering3D.Particles.dll</HintPath>
+    <Reference Include="DeltaEngine.Rendering2D.Particles">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Particles.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.Scenes">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Scenes.dll</HintPath>

@@ -69,7 +69,7 @@ namespace ShadowShot
 			private static void CheckForShipAsteroidCollision(GameController gameController)
 			{
 				foreach (Asteroid asteroid in EntitiesRunner.Current.GetEntitiesOfType<Asteroid>())
-					if (gameController.ship.DrawArea.IsColliding(0.0f, asteroid.DrawArea, 0.0f))
+					if(gameController.ship.Center.DistanceTo(asteroid.Center) < 0.04f)
 						if (gameController.ShipCollidedWithAsteroid != null)
 							gameController.ShipCollidedWithAsteroid();
 			}

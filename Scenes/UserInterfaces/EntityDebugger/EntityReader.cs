@@ -30,7 +30,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 				return true;
 			for (int i = 0; i < componentList.Count; i++)
 				if (componentList[i].GetType() != latestComponentList[i].GetType())
-					return true;
+					return true; //ncrunch: no coverage
 			return false;
 		}
 

@@ -14,7 +14,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 {
 	public class TilemapTests : TestWithMocksOrVisually
 	{
-		//ncrunch: no coverage start
 		[Test, Category("Slow")]
 		public void RenderColoredLogoTilemap()
 		{
@@ -35,7 +34,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		private const float Top = 0.3f;
 		private const float Width = 0.4f;
 		private const float Height = 0.4f;
-		//ncrunch: no coverage end
 
 		private static void CreateBorder()
 		{
@@ -53,7 +51,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					BorderHeight), Color.Black) { RenderLayer = 1 };
 		}
 
-		//ncrunch: no coverage start
 		private static readonly float TileWidth = Center.Width / Map.Width;
 		private static readonly float TileHeight = Center.Height / Map.Height;
 		private static readonly float BorderWidth = (Map.Width + 3) * TileWidth;
@@ -68,7 +65,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 						tileMap.State.DragStart + "\nDragEnd:" + tileMap.State.DragEnd;
 			}
 		}
-		//ncrunch: no coverage end
 
 		[Test]
 		public void TestWithMouseDrag()
@@ -85,7 +81,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			new ColoredLogoTilemap(World, Map);
 			if (resolver.GetType() != typeof(MockResolver))
-				return;
+				return; //ncrunch: no coverage
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.A, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
@@ -95,6 +91,17 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			AdvanceTimeAndUpdateEntities();
 			keyboard.SetKeyboardState(Key.S, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test]
+		public void TestUpdate()
+		{
+			var tilemap = new ColoredLogoTilemap(World, Map);
+			tilemap.DrawArea = Rectangle.One;
+			tilemap.State.DragStart = new Vector2D(10.5f, 10.5f);
+			tilemap.State.DragEnd = new Vector2D(0.5f, 0.5f);
+			tilemap.Update();
+			Assert.AreEqual(new Vector2D(-10, -10), tilemap.State.DragDelta);
 		}
 
 		//ncrunch: no coverage start

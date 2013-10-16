@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E9A37628-13C4-467D-A802-D517A89920C3}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DeltaEngine.Scenes.Tests</RootNamespace>
     <AssemblyName>DeltaEngine.Scenes.Tests</AssemblyName>
@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>DeltaEngine.Scenes.Tests.Program</StartupObject>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
@@ -57,10 +54,6 @@
     <ProjectReference Include="..\..\Input\MOcks\DeltaEngine.Input.Mocks.csproj">
       <Project>{4E4D006D-9C6E-47DB-908D-674E0C8D98AA}</Project>
       <Name>DeltaEngine.Input.Mocks</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Physics2D\DeltaEngine.Physics2D.csproj">
-      <Project>{DC3AA434-09B9-43AD-8F43-431811FA054D}</Project>
-      <Name>DeltaEngine.Physics2D</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
@@ -109,13 +102,11 @@
     <Compile Include="UserInterfaces\EntityDebugger\EntitySelectorTests.cs" />
     <Compile Include="UserInterfaces\EntityDebugger\EntityWriterTests.cs" />
     <Compile Include="SceneTests.cs" />
-    <Compile Include="UserInterfaces\Controls\ColorGradientTests.cs" />
     <Compile Include="UserInterfaces\Controls\ComplexMenuTutorial.cs" />
     <Compile Include="UserInterfaces\Controls\DropdownListTests.cs" />
     <Compile Include="UserInterfaces\Controls\ScrollbarTests.cs" />
     <Compile Include="UserInterfaces\Controls\InteractiveButtonTests.cs" />
     <Compile Include="UserInterfaces\Controls\ButtonTests.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="UserInterfaces\Controls\PercentageBarTests.cs" />
     <Compile Include="UserInterfaces\Controls\SelectBoxTests.cs" />
     <Compile Include="UserInterfaces\Terminal\ConsoleTests.cs" />

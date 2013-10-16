@@ -115,12 +115,12 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		private static void CreateRubberBand()
 		{
 			var rectangle = new FilledRect(Rectangle.Unused, TransparentWhite);
-			new Command((start, end, done) =>
+			new Command((start, end, done) => //ncrunch: no coverage start
 			{
 				rectangle.DrawArea = Rectangle.FromCorners(start, end);
 				if (done)
 					rectangle.DrawArea = Rectangle.Unused;
-			}).Add(new MouseDragTrigger()).Add(new TouchDragTrigger());
+			}).Add(new MouseDragTrigger()).Add(new TouchDragTrigger()); //ncrunch: no coverage end
 		}
 
 		private static readonly Color TransparentWhite = new Color(1.0f, 1.0f, 1.0f, 0.3f);

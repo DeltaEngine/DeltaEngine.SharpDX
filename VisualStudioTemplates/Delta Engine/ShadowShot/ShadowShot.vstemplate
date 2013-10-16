@@ -24,6 +24,7 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="PlayerShip.cs">PlayerShip.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Projectile.cs">Projectile.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Velocity2D.cs">Velocity2D.cs</ProjectItem>
 			</Folder>
 			<Folder Name="Properties" TargetFolderName="Properties">
 				<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>

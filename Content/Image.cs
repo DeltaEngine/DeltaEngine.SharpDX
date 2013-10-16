@@ -68,7 +68,7 @@ namespace DeltaEngine.Content
 			try
 			{
 				LoadImage(fileData);
-			}
+			} // ncrunch: no coverage
 			catch (Exception ex)
 			{
 				Logger.Error(ex);
@@ -87,7 +87,7 @@ namespace DeltaEngine.Content
 		private void ProcessAtlas(string atlasImageName)
 		{
 			DisposeData();
-			AtlasImage = ContentLoader.Load<Image>(atlasImageName);
+			AtlasImage = ContentLoader.Load<Image>(atlasImageName);			
 			var uv = new Rectangle(MetaData.Get("UV", ""));
 			PixelSize = new Size(AtlasImage.PixelSize.Width * uv.Width,
 				AtlasImage.PixelSize.Height * uv.Height);

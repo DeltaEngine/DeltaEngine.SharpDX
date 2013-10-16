@@ -4,8 +4,8 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Graphics;
 using DeltaEngine.Input;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Platforms;
+using DeltaEngine.Rendering2D;
 using NUnit.Framework;
 
 namespace LogoApp.Tests

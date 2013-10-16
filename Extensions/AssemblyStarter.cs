@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using DeltaEngine.Core;
 
 namespace DeltaEngine.Extensions
 {
@@ -13,15 +14,46 @@ namespace DeltaEngine.Extensions
 	public class AssemblyStarter : IDisposable
 	{
 		//ncrunch: no coverage start
-		public AssemblyStarter(string assemblyFilePath)
+		public AssemblyStarter(string assemblyFilePath, bool copyToLocalFolderForExecution)
 		{
+			if (!File.Exists(assemblyFilePath))
+				throw new FileNotFoundException("Assembly not found, unable to start it", assemblyFilePath);
 			rememberedDirectory = Directory.GetCurrentDirectory();
 			string assemblyDirectory = Path.GetDirectoryName(assemblyFilePath);
-			if (assemblyDirectory.Length == 0)
-				assemblyDirectory = rememberedDirectory;
-			Directory.SetCurrentDirectory(assemblyDirectory);
+			if (copyToLocalFolderForExecution)
+				CopyAssemblyFileAndAllDependencies(assemblyDirectory);
+			else if (!string.IsNullOrEmpty(assemblyDirectory))
+				Directory.SetCurrentDirectory(assemblyDirectory);
 			domain = AppDomain.CreateDomain(DomainName, null, CreateDomainSetup(assemblyDirectory));
 			domain.SetData("EntryAssembly", Path.GetFullPath(assemblyFilePath));
+		}
+
+		private void CopyAssemblyFileAndAllDependencies(string assemblyDirectory)
+		{
+			if (rememberedDirectory == assemblyDirectory)
+				return;
+			var files = Directory.GetFiles(assemblyDirectory);
+			foreach (var file in files)
+			{
+				var filename = Path.GetFileName(file);
+				var targetFilePath = Path.Combine(rememberedDirectory, filename);
+				if (!File.Exists(targetFilePath) ||
+					File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFilePath))
+					TryToCopyDependencyFile(file, targetFilePath);
+			}
+		}
+
+		private static void TryToCopyDependencyFile(string file, string targetFilePath)
+		{
+			try
+			{
+				File.Copy(file, targetFilePath, true);
+			}
+			catch (Exception ex)
+			{
+				Logger.Warning("Unable to copy newer dependency file (" + file + "), " +
+					"file seems to be locked: " + ex);
+			}
 		}
 
 		[NonSerialized]
@@ -44,7 +76,14 @@ namespace DeltaEngine.Extensions
 			domain.SetData("EntryClass", className);
 			domain.SetData("EntryMethod", methodName);
 			domain.SetData("Parameters", parameters);
-			domain.DoCallBack(StartEntryPoint);
+			try
+			{
+				domain.DoCallBack(StartEntryPoint);
+			}
+			catch (TargetInvocationException ex)
+			{
+				throw ex.InnerException;
+			}
 		}
 
 		private static void StartEntryPoint()
@@ -68,10 +107,24 @@ namespace DeltaEngine.Extensions
 		{
 			var methods = type.GetMethods();
 			var instance = Activator.CreateInstance(type);
-			//TODO: also call SetUp and TearDown if needed with base class too
+			StackTraceExtensions.SetUnitTestName(type.FullName + "." + methodName, true);
+			RunMethodWithAttribute(instance, methods, SetUpAttribute);
 			foreach (var method in methods.Where(method => method.Name == methodName))
 				method.Invoke(instance, parameters);
+			RunMethodWithAttribute(instance, methods, TearDownAttribute);
 		}
+
+		private static void RunMethodWithAttribute(object classInstance, MethodInfo[] methods,
+			string attributeName)
+		{
+			foreach (var method in methods)
+				foreach (var attribute in method.GetCustomAttributes(true))
+					if (attribute.GetType().ToString() == attributeName)
+						method.Invoke(classInstance, null);
+		}
+
+		private const string SetUpAttribute = "NUnit.Framework.SetUpAttribute";
+		private const string TearDownAttribute = "NUnit.Framework.TearDownAttribute";
 
 		public string[] GetTestNames()
 		{
@@ -86,12 +139,29 @@ namespace DeltaEngine.Extensions
 			foreach (var type in assembly.GetTypes())
 				if (type.Name == "Program" || type.Name.EndsWith("Tests"))
 					foreach (var method in type.GetMethods())
-						if (method.Name != "ToString" && method.Name != "Equals" &&
-							method.Name != "GetHashCode" && method.Name != "GetType")
-							//TODO: exclude SetUp, TearDown, etc.
-							tests.Add(type.Name + "." + method.Name);
+						AddTestType(tests, method, type);
 			AppDomain.CurrentDomain.SetData("TestClassAndMethodNames", tests.ToArray());
 		}
+
+		private static void AddTestType(List<string> tests, MethodInfo method, Type type)
+		{
+			if (method.Name == "Main")
+			{
+				tests.Insert(0, type.Name + "." + method.Name);
+				return;
+			}
+			if (method.Name == "ToString" || method.Name == "Equals" || method.Name == "GetHashCode" ||
+				method.Name == "GetType")
+				return;
+			foreach (var attribute in method.GetCustomAttributes(true))
+				if (attribute.GetType().ToString() == TestAttribute)
+				{
+					tests.Add(type.Name + "." + method.Name);
+					return;
+				}
+		}
+
+		private const string TestAttribute = "NUnit.Framework.TestAttribute";
 
 		public void Dispose()
 		{

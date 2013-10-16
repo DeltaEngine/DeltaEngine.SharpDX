@@ -5,7 +5,7 @@
 	/// A Sprite can be stripped of its transparent borders when inserted into a texture atlas. 
 	/// PadLeft says how much was stripped from the left side etc
 	/// </summary>
-	internal struct AtlasRegion
+	public struct AtlasRegion
 	{
 		public Rectangle UV { get; set; }
 		public float PadLeft { get; set; }

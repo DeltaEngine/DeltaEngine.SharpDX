@@ -93,7 +93,7 @@ namespace $safeprojectname$
 
 		private void CreateCommands()
 		{
-			commands = new Command[7];
+			commands = new Command[9];
 			commands [0] = new Command(() => StartMovingBlockLeft());
 			commands [1] = new Command(() => 
 			{
@@ -110,6 +110,14 @@ namespace $safeprojectname$
 				Controller.IsFallingFast = true;
 			});
 			commands [6] = new Command(() => 
+			{
+				Controller.IsFallingFast = false;
+			});
+			commands [7] = new Command(position => 
+			{
+				Pressing(position);
+			});
+			commands [8] = new Command(() => 
 			{
 				Controller.IsFallingFast = false;
 			});
@@ -142,6 +150,8 @@ namespace $safeprojectname$
 
 		private void SetMouseEvents()
 		{
+			commands [7].Add(new MouseButtonTrigger());
+			commands [8].Add(new MouseButtonTrigger(MouseButton.Left, State.Releasing));
 		}
 
 		private void Pressing(Vector2D position)
@@ -158,6 +168,8 @@ namespace $safeprojectname$
 
 		private void SetTouchEvents()
 		{
+			commands [7].Add(new TouchPositionTrigger());
+			commands [8].Add(new TouchPositionTrigger(State.Releasing));
 		}
 	}
 }

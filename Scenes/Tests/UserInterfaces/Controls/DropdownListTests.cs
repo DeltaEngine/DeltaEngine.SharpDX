@@ -67,6 +67,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Assert.AreEqual(Center, dropdownList.DrawArea);
 			Assert.AreEqual(Color.White, dropdownList.Color);
 			Assert.AreEqual(3, dropdownList.selectBox.texts.Count);
+			Assert.IsFalse(dropdownList.IsPauseable);
+			Assert.AreEqual(3, dropdownList.MaxDisplayCount);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -225,8 +227,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			dropdownList.Values = new List<object> { "value 1", "value 2", "value 3", "value 4" };
 			new Command(
-				point => dropdownList.DrawArea = Rectangle.FromCenter(point, dropdownList.DrawArea.Size)).
-				Add(new MouseMovementTrigger());
+				point => dropdownList.DrawArea = //ncrunch: no coverage
+					Rectangle.FromCenter(point, dropdownList.DrawArea.Size)).Add(new MouseMovementTrigger());
 		}
 
 		[Test, CloseAfterFirstFrame]

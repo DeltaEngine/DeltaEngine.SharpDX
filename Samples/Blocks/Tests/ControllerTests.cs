@@ -67,8 +67,6 @@ namespace Blocks.Tests
 			controller.IsFallingFast = true;
 			controller.FallingBlock = new Block(displayMode, content, Vector2D.Zero);
 			controller.UpcomingBlock = new Block(displayMode, content, Vector2D.Zero);
-
-			AdvanceTimeAndUpdateEntities(0.1f);
 			Assert.AreEqual(0, CountBricks(grid));
 			AdvanceTimeAndUpdateEntities(1.4f);
 			Assert.AreEqual(4, CountBricks(grid), 1);
@@ -114,7 +112,7 @@ namespace Blocks.Tests
 			Assert.AreEqual(0, controller.FallingBlock.Left);
 		}
 
-		[Test, Category("Slow")]
+		[Test]
 		public void CanMoveLeftElsewhere()
 		{
 			Assert.IsFalse(sounds.BlockMoved.IsAnyInstancePlaying);
@@ -124,7 +122,7 @@ namespace Blocks.Tests
 			Assert.AreEqual(2, controller.FallingBlock.Left);
 		}
 
-		[Test, Category("Slow")]
+		[Test]
 		public void CantMoveRightAtRightWall()
 		{
 			Assert.IsFalse(sounds.BlockCouldntMove.IsAnyInstancePlaying);
@@ -134,7 +132,7 @@ namespace Blocks.Tests
 			Assert.IsTrue(sounds.BlockCouldntMove.IsAnyInstancePlaying);
 		}
 
-		[Test, Category("Slow")]
+		[Test]
 		public void CanMoveRightElsewhere()
 		{
 			Assert.IsFalse(sounds.BlockMoved.IsAnyInstancePlaying);
@@ -144,7 +142,7 @@ namespace Blocks.Tests
 			Assert.AreEqual(4, controller.FallingBlock.Left);
 		}
 
-		[Test, Category("Slow")]
+		[Test]
 		public void RotateClockwise()
 		{
 			Assert.IsFalse(sounds.BlockMoved.IsAnyInstancePlaying);
@@ -155,7 +153,7 @@ namespace Blocks.Tests
 			controller.RotateBlockAntiClockwiseIfPossible();
 		}
 
-		[Test, Category("Slow")]
+		[Test]
 		public void LoseIfIsBrickOnTopRow()
 		{
 			Assert.IsFalse(sounds.GameLost.IsAnyInstancePlaying);

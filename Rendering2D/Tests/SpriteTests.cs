@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -247,6 +248,37 @@ namespace DeltaEngine.Rendering2D.Tests
 			var sprite = new Sprite(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"),
 				Rectangle.FromCenter(new Vector2D(0.5f, 0.5f), new Size(0.2f)));
 			sprite.UV = new Rectangle(0, 0, 0.5f, 0.5f);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void AddingUVCalculatorResultsThrowsException()
+		{
+			var sprite = new Sprite("DeltaEngineLogo", Rectangle.One);
+			Assert.Throws<Entity.ComponentOfTheSameTypeAddedMoreThanOnce>(
+				() => sprite.Add(new UVCalculator.Results()));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SetDrawAreaWithoutInterpolation()
+		{
+			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
+			sprite.SetWithoutInterpolation(Rectangle.One);
+			Assert.AreEqual(Rectangle.One, sprite.DrawArea);
+			Assert.AreEqual(Rectangle.One, sprite.LastDrawArea);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void GetComponentsForViewingIncludesUvCalculatorResults()
+		{
+			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
+			Assert.IsTrue(sprite.GetComponentsForViewing().Any(c => c is UVCalculator.Results));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void GetComponentsForSavingIncludesUvCalculatorResults()
+		{
+			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
+			Assert.IsTrue(sprite.GetComponentsForSaving().Any(c => c is UVCalculator.Results));
 		}
 	}
 }

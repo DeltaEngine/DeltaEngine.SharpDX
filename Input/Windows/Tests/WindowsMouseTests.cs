@@ -10,6 +10,7 @@ namespace DeltaEngine.Input.Windows.Tests
 	[Category("Slow")]
 	internal class WindowsMouseTests : TestWithMocksOrVisually
 	{
+		//ncrunch: no coverage start
 		[SetUp]
 		public void CreateWindowsMouseExplicitly()
 		{

@@ -1,29 +1,35 @@
-﻿using DeltaEngine.Content;
-using DeltaEngine.Core;
-using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Core;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering3D.Particles;
 using NUnit.Framework;
 
 namespace Asteroids.Tests
 {
 	internal class GameTests : TestWithMocksOrVisually
 	{
-		[Test, CloseAfterFirstFrame]
-		public void GameOver()
+		private void CreateAndStartGame()
 		{
-			var game = new Game(Resolve<Window>());
+			game = new Game(Resolve<Window>());
 			game.StartGame();
+		}
+
+		private Game game;
+
+		[Test, CloseAfterFirstFrame]
+		public void GameOverResultsInSameStateEvenMultipleCalls()
+		{
+			CreateAndStartGame();
+			game.GameOver();
 			game.GameOver();
 			Assert.AreEqual(GameState.GameOver, game.GameState);
 			Assert.IsFalse(game.InteractionLogics.Player.IsActive);
 		}
 
-		[Test]
-		public void LoadExplosion()
+		[Test, CloseAfterFirstFrame]
+		public void RestartGameGivesRunningGameAgain()
 		{
-			var emitterData = ContentLoader.Load<ParticleEmitterData>("ExplosionSpaceship");
-			new ParticleEmitter(emitterData, Vector3D.Zero);
+			CreateAndStartGame();
+			game.RestartGame();
+			Assert.AreEqual(GameState.Playing, game.GameState);
 		}
 	}
 }

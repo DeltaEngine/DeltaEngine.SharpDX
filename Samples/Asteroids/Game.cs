@@ -30,8 +30,8 @@ namespace Asteroids
 
 		private void TryLoadingHighscores()
 		{
-			var highscorePath = Path.Combine("Content", "Highscores");
-			if(!File.Exists(highscorePath))
+			var highscorePath = GetHighscorePath();
+			if (!File.Exists(highscorePath))
 				return;
 			using (var stream = File.OpenRead(highscorePath))
 			{
@@ -40,16 +40,19 @@ namespace Asteroids
 			}
 		}
 
+		private static string GetHighscorePath()
+		{
+			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+					"DeltaEngine", "Asteroids", "Highscores");
+		}
+
 		private void GetHighscoresFromString(string highscoreString)
 		{
 			if (string.IsNullOrEmpty(highscoreString))
-			{
 				return;
-			}
-			var partitions = highscoreString.SplitAndTrim(new[]{',', ' '});
+			var partitions = highscoreString.SplitAndTrim(new[] { ',', ' ' });
 			highScores = new int[10];
 			for (int i = 0; i < partitions.Length; i++)
-			{
 				try
 				{
 					highScores[i] = int.Parse(partitions[i]);
@@ -58,7 +61,6 @@ namespace Asteroids
 				{
 					highScores[i] = 0;
 				}
-			}
 		}
 
 		public void StartGame()
@@ -99,7 +101,7 @@ namespace Asteroids
 
 		public void GameOver()
 		{
-			if(GameState == GameState.GameOver)
+			if (GameState == GameState.GameOver)
 				return;
 			RefreshHighScores();
 			InteractionLogics.PauseUpdate();
@@ -136,7 +138,7 @@ namespace Asteroids
 
 		private void AddLastScoreToHighscoreIfQualified()
 		{
-			if(score <= highScores[highScores.Length - 1])
+			if (score <= highScores[highScores.Length - 1])
 				return;
 			if (score > highScores[0])
 			{
@@ -144,10 +146,8 @@ namespace Asteroids
 				return;
 			}
 			for (int i = 0; i < highScores.Length - 2; i++)
-			{
-				if(highScores[i] > score && score > highScores[i+1])
+				if (highScores[i] > score && score > highScores[i + 1])
 					InsertNewScoreAt(i + 1);
-			}
 		}
 
 		private void InsertNewScoreAt(int index)
@@ -165,9 +165,7 @@ namespace Asteroids
 
 		private void SaveHighScore()
 		{
-			var highscoreFilePath = Path.Combine("Content", "Highscores");
-			if(!Directory.Exists("Content"))
-				return;
+			var highscoreFilePath = GetHighscorePath();
 			using (FileStream highscoreFile = File.Create(highscoreFilePath))
 			{
 				var writer = new StreamWriter(highscoreFile);
@@ -180,7 +178,7 @@ namespace Asteroids
 		{
 			var stringOfScores = highScores[0].ToString(CultureInfo.InvariantCulture);
 			for (int i = 1; i < highScores.Length; i++)
-				stringOfScores += ", "  + highScores[i].ToString(CultureInfo.InvariantCulture);
+				stringOfScores += ", " + highScores[i].ToString(CultureInfo.InvariantCulture);
 			return stringOfScores;
 		}
 	}

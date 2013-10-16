@@ -34,7 +34,6 @@ namespace DeltaEngine.Platforms
 			Register<SharpDXGeometry>();
 			Register<XAudioSound>();
 			Register<XAudioMusic>();
-			Register<SharpDXVideo>();
 		}
 	}
 }

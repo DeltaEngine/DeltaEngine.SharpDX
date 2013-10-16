@@ -37,7 +37,7 @@ namespace DeltaEngine.Multimedia.Tests
 		}
 
 		[Test]
-		public void TestIfPLayingMusic()
+		public void TestIfPlayingMusic()
 		{
 			var music = ContentLoader.Load<Music>("DefaultMusic");
 			music.Play();
@@ -57,6 +57,17 @@ namespace DeltaEngine.Multimedia.Tests
 			new FontText(Font.Default, "Click to Play", Rectangle.One);
 			var music = ContentLoader.Load<Music>("DefaultMusic");
 			new Command(() => { music.Play(1); }).Add(new MouseButtonTrigger());
+		}
+
+		[Test, Ignore]
+		public void PlayDifferentMusicOnClick()
+		{
+			new FontText(Font.Default, "Click to Play", Rectangle.One);
+			var music = ContentLoader.Load<Music>("DefaultMusic");
+			var music2 = ContentLoader.Load<Music>("DefaultMusicBackwards");
+			var musics = new[] { music, music2 };
+			int index = 0;
+			new Command(() => musics[(index++) % 2].Play(1f)).Add(new MouseButtonTrigger());
 		}
 
 		[Test, Ignore]

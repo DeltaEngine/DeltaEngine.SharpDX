@@ -5,6 +5,7 @@ namespace SideScroller
 {
 	internal class Program : App
 	{
+		//ncrunch: no coverage start
 		public Program()
 		{
 			new Game(Resolve<Window>());

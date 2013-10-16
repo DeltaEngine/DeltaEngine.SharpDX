@@ -47,10 +47,6 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\GameLogic\DeltaEngine.GameLogic.csproj">
-      <Project>{D21F79C7-DD85-4EED-9E3F-1A8C0FA65115}</Project>
-      <Name>DeltaEngine.GameLogic</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Graphics\DeltaEngine.Graphics.csproj">
       <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
       <Name>DeltaEngine.Graphics</Name>
@@ -96,7 +92,6 @@
     <Compile Include="SpriteSaveAndLoadTests.cs" />
     <Compile Include="SpriteSheetTests.cs" />
     <Compile Include="SpriteTests.cs" />
-    <Compile Include="Trigger2DTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

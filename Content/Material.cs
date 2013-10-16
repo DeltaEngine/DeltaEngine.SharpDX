@@ -53,7 +53,7 @@ namespace DeltaEngine.Content
 
 		public Shader Shader { get; private set; }
 		public Color DefaultColor { get; set; }
-		public UVCalculator UVCalculator { get; private set; }
+		public UVCalculator UVCalculator { get; set; }
 
 		public Image DiffuseMap
 		{
@@ -157,7 +157,7 @@ namespace DeltaEngine.Content
 				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1920));
 			if (renderSize == RenderSize.SettingsBased)
 				return GetRenderSizeBassedOnSettings(pixelSize);
-			return pixelSize;
+			return pixelSize; // ncrunch: no coverage
 		}
 
 		private static Size GetRenderSizeBassedOnSettings(Size pixelSize)

@@ -267,11 +267,11 @@ namespace DeltaEngine.Content.Online
 			return isContentReady;
 		}
 
-		public override ContentMetaData GetMetaData(string contentName,
-			Type contentClassType = null)
+		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
 			if (!isContentReady)
 				throw new ContentNotReady();
+
 			return metaData.ContainsKey(contentName) ? metaData[contentName] : null;
 		}
 

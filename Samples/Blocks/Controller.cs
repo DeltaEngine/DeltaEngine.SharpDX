@@ -24,18 +24,6 @@ namespace Blocks
 		public readonly BlocksContent content;
 		public readonly Orientation displayMode;
 
-		internal Grid Grid
-		{
-			get { return Get<Grid>(); }
-			set { Set(value); }
-		}
-
-		internal Soundbank Sounds
-		{
-			get { return Get<Soundbank>(); }
-			set { Set(value); }
-		}
-
 		public event Action<int> AddToScore;
 		public event Action Lose;
 

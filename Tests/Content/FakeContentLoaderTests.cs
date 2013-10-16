@@ -59,5 +59,15 @@ namespace DeltaEngine.Tests.Content
 				get { return true; }
 			}
 		}
+
+		[Test]
+		public void CreateDataIfAllowedAndNoContentFoundAndDispose()
+		{
+			var dummy = ContentLoader.Load<DynamicXmlMockContent>("Dummy");
+			Assert.IsTrue(dummy.InternalAllowCreationIfContentNotFound);
+			Assert.IsFalse(dummy.IsDisposed);
+			dummy.Dispose();
+			Assert.IsTrue(dummy.IsDisposed);
+		}
 	}
 }

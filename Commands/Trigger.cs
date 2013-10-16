@@ -38,8 +38,6 @@ namespace DeltaEngine.Commands
 			string triggerValue)
 		{
 			object triggerGenerated = null;
-			if (triggerType == null)
-				throw new UnableToCreateTriggerTypeIsUnknown(triggerName); //ncrunch: no coverage
 			try
 			{
 				triggerGenerated = Activator.CreateInstance(triggerType, triggerValue);
@@ -51,7 +49,7 @@ namespace DeltaEngine.Commands
 			return triggerGenerated;
 		}
 
-		private class UnableToCreateTriggerTypeIsUnknown : Exception
+		public class UnableToCreateTriggerTypeIsUnknown : Exception
 		{ //ncrunch: no coverage start
 			public UnableToCreateTriggerTypeIsUnknown(string name)
 				: base(name) { }

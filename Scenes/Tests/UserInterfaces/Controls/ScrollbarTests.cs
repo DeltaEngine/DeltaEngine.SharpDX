@@ -215,8 +215,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			scrollbar.Start<Spin>();
 			new Command(
-				point => scrollbar.DrawArea = Rectangle.FromCenter(point, scrollbar.DrawArea.Size)).Add(
-					new MouseMovementTrigger());
+				point => scrollbar.DrawArea =  //ncrunch: no coverage
+					Rectangle.FromCenter(point, scrollbar.DrawArea.Size)).Add(new MouseMovementTrigger());
 		}
 	}
 }

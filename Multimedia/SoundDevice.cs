@@ -12,27 +12,23 @@ namespace DeltaEngine.Multimedia
 		{
 			if (currentPlayingMusic != null)
 				currentPlayingMusic.Run();
-			if (currentPlayingVideo != null)
-				currentPlayingVideo.Update();
 		}
 
 		private Music currentPlayingMusic;
-		private Video currentPlayingVideo;
 
 		public bool IsPauseable { get { return true; } }
 
 		public void RegisterCurrentMusic(Music music)
 		{
-			if (music != null && currentPlayingMusic != null)
+			if (IsStopNeededForRegister(music, currentPlayingMusic))
 				currentPlayingMusic.Stop();
 			currentPlayingMusic = music;
 		}
 
-		public void RegisterCurrentVideo(Video video)
+		private static bool IsStopNeededForRegister<T>(T newInstance, T currentInstance)
+			where T : class
 		{
-			if (video != null && currentPlayingVideo != null)
-				currentPlayingVideo.Stop();
-			currentPlayingVideo = video;
+			return newInstance != null && currentInstance != null;
 		}
 
 		public virtual void Dispose()
@@ -40,9 +36,6 @@ namespace DeltaEngine.Multimedia
 			if (currentPlayingMusic != null)
 				currentPlayingMusic.Dispose();
 			currentPlayingMusic = null;
-			if (currentPlayingVideo != null)
-				currentPlayingVideo.Dispose();
-			currentPlayingVideo = null;
 		}
 	}
 }

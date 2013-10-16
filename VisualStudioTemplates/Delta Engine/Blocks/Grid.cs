@@ -3,9 +3,8 @@ using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering3D.Particles;
+using DeltaEngine.Rendering2D.Particles;
 
 namespace $safeprojectname$
 {

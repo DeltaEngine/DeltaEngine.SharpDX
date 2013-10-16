@@ -29,7 +29,7 @@ namespace DeltaEngine.Platforms.Windows
 				form.FormBorderStyle = FormBorderStyle.None;
 				form.TopMost = true;
 				form.StartPosition = FormStartPosition.Manual;
-				form.DesktopLocation = new System.Drawing.Point(0, 0);
+				form.DesktopLocation = new Point(0, 0);
 			}
 			else
 			{
@@ -98,7 +98,7 @@ namespace DeltaEngine.Platforms.Windows
 		}
 
 		public Orientation Orientation { get; private set; }
-		public event Action<Datatypes.Size> ViewportSizeChanged;
+		public event Action<Size> ViewportSizeChanged;
 		public event Action<Orientation> OrientationChanged;
 
 		public string Title
@@ -119,13 +119,13 @@ namespace DeltaEngine.Platforms.Windows
 
 		public Size ViewportPixelSize
 		{
-			get { return new Datatypes.Size(panel.ClientSize.Width, panel.ClientSize.Height); }
+			get { return new Size(panel.ClientSize.Width, panel.ClientSize.Height); }
 			set { SetResolution(value + (TotalPixelSize - ViewportPixelSize)); }
 		}
 
 		public Size TotalPixelSize
 		{
-			get { return new Datatypes.Size(panel.Width, panel.Height); }
+			get { return new Size(panel.Width, panel.Height); }
 		}
 		
 		public Vector2D PixelPosition
@@ -146,7 +146,7 @@ namespace DeltaEngine.Platforms.Windows
 		}
 		private Color color;
 
-		public virtual void SetFullscreen(Datatypes.Size setFullscreenViewportSize)
+		public virtual void SetFullscreen(Size setFullscreenViewportSize)
 		{
 			IsFullscreen = true;
 			rememberedWindowedSize = new Size(panel.Size.Width, panel.Size.Height);
@@ -155,7 +155,7 @@ namespace DeltaEngine.Platforms.Windows
 			{
 				form.TopMost = true;
 				form.StartPosition = FormStartPosition.Manual;
-				form.DesktopLocation = new System.Drawing.Point(0, 0);
+				form.DesktopLocation = new Point(0, 0);
 				form.WindowState = FormWindowState.Maximized;
 				form.FormBorderStyle = FormBorderStyle.None;
 				Cursor.Hide();
@@ -164,7 +164,7 @@ namespace DeltaEngine.Platforms.Windows
 			SetResolution(setFullscreenViewportSize);
 		}
 
-		private Datatypes.Size rememberedWindowedSize;
+		private Size rememberedWindowedSize;
 
 		private static void SetFullscreenNative(IntPtr hwnd, Size size)
 		{
@@ -175,14 +175,14 @@ namespace DeltaEngine.Platforms.Windows
 		private static extern void SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int left, int top,
 			int width, int height, uint flags);
 
-		private void SetResolution(Datatypes.Size displaySize)
+		private void SetResolution(Size displaySize)
 		{
 			ResizeCentered(displaySize);
 			if (FullscreenChanged != null)
 				FullscreenChanged(displaySize, IsFullscreen);
 		}
 
-		protected virtual void ResizeCentered(Datatypes.Size newSizeInPixels)
+		protected virtual void ResizeCentered(Size newSizeInPixels)
 		{
 			var xOffset = (int)((panel.Width - newSizeInPixels.Width) / 2.0f);
 			var yOffset = (int)((panel.Height - newSizeInPixels.Height) / 2.0f);
@@ -204,7 +204,7 @@ namespace DeltaEngine.Platforms.Windows
 		}
 
 		public bool IsFullscreen { get; private set; }
-		public event Action<Datatypes.Size, bool> FullscreenChanged;
+		public event Action<Size, bool> FullscreenChanged;
 
 		public virtual bool IsClosing
 		{

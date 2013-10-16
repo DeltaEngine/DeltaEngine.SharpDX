@@ -27,35 +27,35 @@ namespace Blocks.Tests
 		private JewelBlocksContent content;
 		private Material material;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Constructor()
 		{
 			var brick = new Brick(material, Vector2D.Half, displayMode);
 			Assert.AreEqual(Vector2D.Half, brick.Offset);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Constants()
 		{
 			Assert.AreEqual(new Vector2D(0.38f, 0.385f), Brick.OffsetLandscape);
 			Assert.AreEqual(0.02f, Brick.ZoomLandscape);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Offset()
 		{
 			var brick = new Brick(material, Vector2D.Zero, displayMode) { Offset = Vector2D.Half };
 			Assert.AreEqual(Vector2D.Half, brick.Offset);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void TopLeft()
 		{
 			var brick = new Brick(material, Vector2D.Zero, displayMode) { TopLeftGridCoord = Vector2D.Half };
 			Assert.AreEqual(Vector2D.Half, brick.TopLeftGridCoord);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Position()
 		{
 			var brick = new Brick(material, new Vector2D(0.1f, 0.2f), displayMode)
@@ -65,7 +65,7 @@ namespace Blocks.Tests
 			Assert.AreEqual(new Vector2D(0.5f, 1.0f), brick.Position);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void RenderBrick()
 		{
 			var brick = new Brick(material, new Vector2D(5, 5), displayMode);
@@ -73,10 +73,18 @@ namespace Blocks.Tests
 		}
 
 		[Test]
-		public void RenderBrickInPortrait()
+		public void RenderBrickInLandscapeMode()
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(600, 800);
-			var brick = new Brick(material, new Vector2D(5, 5), displayMode);
+			var brick = new Brick(material, new Vector2D(5, 5), Orientation.Landscape);
+			brick.UpdateDrawArea();
+		}
+
+		[Test]
+		public void RenderBrickInPortraitMode()
+		{
+			Resolve<Window>().ViewportPixelSize = new Size(600, 800);
+			var brick = new Brick(material, new Vector2D(5, 5), Orientation.Portrait);
 			brick.UpdateDrawArea();
 		}
 	}

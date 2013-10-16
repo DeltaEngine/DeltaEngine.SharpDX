@@ -134,6 +134,13 @@ namespace DeltaEngine.Tests.Entities
 		}
 
 		[Test]
+		public void CheckIfUpdateableEntityIsPausable()
+		{
+			var updateableEntity = new UpdateableEntity();
+			Assert.IsTrue(updateableEntity.IsPauseable);
+		}
+
+		[Test]
 		public void SaveAndLoadEmptyEntityFromMemoryStream()
 		{
 			var data = BinaryDataExtensions.SaveToMemoryStream(new MockEntity());

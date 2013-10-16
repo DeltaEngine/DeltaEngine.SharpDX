@@ -1,7 +1,7 @@
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering3D.Particles;
+using DeltaEngine.Rendering2D.Particles;
 
 namespace $safeprojectname$
 {

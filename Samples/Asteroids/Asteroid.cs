@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Physics2D;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.ScreenSpaces;
 
@@ -45,10 +45,11 @@ namespace Asteroids
 
 		private static Rectangle CreateDrawArea(Randomizer randomizer, int sizeModifier)
 		{
+			var rand = new Random();
 			var randomPosition =
 				new Vector2D(
-					randomizer.Get(-1, 1) > 0 ? ScreenSpace.Current.Left - .1f : ScreenSpace.Current.Right,
-					randomizer.Get(-1, 1) > 0 ? ScreenSpace.Current.Top - .1f : ScreenSpace.Current.Bottom);
+					rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Left - .1f : ScreenSpace.Current.Right,
+					rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Top - .1f : ScreenSpace.Current.Bottom);
 			var modifiedSize = new Size(.1f / sizeModifier);
 			return new Rectangle(randomPosition, modifiedSize);
 		}

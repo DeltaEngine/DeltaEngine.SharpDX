@@ -202,6 +202,9 @@ namespace DeltaEngine.Scenes.Tests
 			var button = CreateButton();
 			button.Start<ChangeSizeDynamically>();
 			scene.Add(button);
+			AdvanceTimeAndUpdateEntities();
+			button.State.IsPressed = true;
+
 		}
 
 		private static readonly Rectangle Small = Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f);
@@ -278,6 +281,15 @@ namespace DeltaEngine.Scenes.Tests
 		{
 			window.ViewportPixelSize = new Size(288, 512);
 			scene.SetViewportBackground("CheckerboardImage288x512");
+		}
+
+		[Test]
+		public void SetChangingViewport()
+		{
+			window.ViewportPixelSize = new Size(288, 512);
+			scene.SetViewportBackground("CheckerboardImage288x512");
+			window.ViewportPixelSize = new Size(512, 288);
+			scene.SetViewportBackground("CheckerboardImage512x288");
 		}
 	}
 }

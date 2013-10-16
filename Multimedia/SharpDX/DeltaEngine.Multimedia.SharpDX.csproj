@@ -74,17 +74,12 @@
       <Project>{769F9D01-D4A1-4C85-9F11-F721CDFC94DC}</Project>
       <Name>DeltaEngine.Multimedia.MusicStreams</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VideoStreams\DeltaEngine.Multimedia.VideoStreams.csproj">
-      <Project>{27487228-2ADB-447B-95D3-6F6053999281}</Project>
-      <Name>DeltaEngine.Multimedia.VideoStreams</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SharpDXVideo.cs" />
     <Compile Include="StreamBuffer.cs" />
     <Compile Include="XAudioDevice.cs" />
     <Compile Include="XAudioMusic.cs" />

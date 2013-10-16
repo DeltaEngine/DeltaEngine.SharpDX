@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B7E2C5AF-3EE2-4820-B2AE-62BC8D0FB7AC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DeltaEngine.Graphics.Tests</RootNamespace>
     <AssemblyName>DeltaEngine.Graphics.Tests</AssemblyName>
@@ -94,7 +94,6 @@
     <Compile Include="ImageTests.cs" />
     <Compile Include="DeviceTests.cs" />
     <Compile Include="DrawingTests.cs" />
-    <Compile Include="Program.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

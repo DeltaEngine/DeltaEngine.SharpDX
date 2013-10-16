@@ -79,7 +79,7 @@ namespace Blocks
 
 		private void CreateCommands()
 		{
-			commands = new Command[7];
+			commands = new Command[9];
 			commands[0] = new Command(() => StartMovingBlockLeft());
 			commands[1] = new Command(() => { Controller.isBlockMovingLeft = false; });
 			commands[2] = new Command(() => StartMovingBlockRight());
@@ -87,6 +87,8 @@ namespace Blocks
 			commands[4] = new Command(() => Controller.RotateBlockAntiClockwiseIfPossible());
 			commands[5] = new Command(() => { Controller.IsFallingFast = true; });
 			commands[6] = new Command(() => { Controller.IsFallingFast = false; });
+			commands[7] = new Command(position => {Pressing(position);});
+			commands[8] = new Command(() => { Controller.IsFallingFast = false; });
 		}
 
 		private Command[] commands;
@@ -116,8 +118,8 @@ namespace Blocks
 
 		private void SetMouseEvents()
 		{
-			//input.Add(MouseButton.Left, State.Pressing, mouse => Pressing(mouse.Position));
-			//input.Add(MouseButton.Left, State.Releasing, mouse => { Controller.IsFallingFast = false; });
+			commands[7].Add(new MouseButtonTrigger());
+			commands[8].Add(new MouseButtonTrigger(MouseButton.Left, State.Releasing));
 		}
 
 		private void Pressing(Vector2D position)
@@ -134,8 +136,8 @@ namespace Blocks
 
 		private void SetTouchEvents()
 		{
-			//input.Add(State.Pressing, touch => Pressing(touch.GetPosition(0)));
-			//input.Add(State.Releasing, touch => { Controller.IsFallingFast = false; });
+			commands[7].Add(new TouchPositionTrigger());
+			commands[8].Add(new TouchPositionTrigger(State.Releasing));
 		}
 	}
 }

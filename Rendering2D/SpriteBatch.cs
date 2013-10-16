@@ -11,23 +11,33 @@ namespace DeltaEngine.Rendering2D
 		public SpriteBatch(Sprite sprite)
 		{
 			key = new SpriteBatchKey(sprite);
+		}
+
+		public readonly SpriteBatchKey key;
+
+		public void Reset()
+		{
 			verticesUVBatchIndex = 0;
 			indicesUVIndex = 0;
 			verticesUVColorBatchIndex = 0;
 			indicesUVColorIndex = 0;
 		}
 
-		public readonly SpriteBatchKey key;
 		private int verticesUVBatchIndex;
 		private int indicesUVIndex;
 		private int verticesUVColorBatchIndex;
 		private int indicesUVColorIndex;
 
-		public bool MaxVerticesExceeded(bool hasColor)
+		public bool AreBuffersFull()
 		{
-			return hasColor
-				? short.MaxValue * 4 / 6 - verticesUVColorBatchIndex < 4
-				: short.MaxValue * 4 / 6 - verticesUVBatchIndex < 4;
+			return short.MaxValue - indicesUVIndex < IndicesPerSprite;
+		}
+
+		private const int IndicesPerSprite = 6;
+
+		public bool AreColorBuffersFull()
+		{
+			return short.MaxValue - indicesUVColorIndex < IndicesPerSprite;
 		}
 
 		public void AddVerticesAndIndicesToUVArray(Sprite sprite)
@@ -42,8 +52,6 @@ namespace DeltaEngine.Rendering2D
 		}
 
 		private readonly short[] indicesUVBatch = new short[short.MaxValue];
-		private readonly VertexPosition2DUV[] verticesUVBatch =
-			new VertexPosition2DUV[short.MaxValue * 4 / 6];
 
 		private void AddUVVertices(Sprite sprite)
 		{
@@ -81,6 +89,11 @@ namespace DeltaEngine.Rendering2D
 				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomLeft), uv.BottomLeft);
 		}
 
+		private readonly VertexPosition2DUV[] verticesUVBatch =
+			new VertexPosition2DUV[short.MaxValue * VerticesPerSprite / IndicesPerSprite];
+
+		private const int VerticesPerSprite = 4;
+
 		private void AddUVVerticesRotated(Vector2D rotationCenter)
 		{
 			verticesUVBatch[verticesUVBatchIndex++] =
@@ -113,8 +126,6 @@ namespace DeltaEngine.Rendering2D
 		}
 
 		private readonly short[] indicesUVColorBatch = new short[short.MaxValue];
-		private readonly VertexPosition2DColorUV[] verticesUVColorBatch =
-			new VertexPosition2DColorUV[short.MaxValue];
 
 		private void AddUVColorVertices(Sprite sprite)
 		{
@@ -141,6 +152,9 @@ namespace DeltaEngine.Rendering2D
 					color, uv.BottomLeft);
 		}
 
+		private readonly VertexPosition2DColorUV[] verticesUVColorBatch =
+			new VertexPosition2DColorUV[short.MaxValue * VerticesPerSprite / IndicesPerSprite];
+
 		private void AddUVColorVerticesRotated(Color color, Vector2D rotationCenter)
 		{
 			verticesUVColorBatch[verticesUVColorBatchIndex++] =
@@ -163,10 +177,10 @@ namespace DeltaEngine.Rendering2D
 
 		public void Draw(Drawing drawing)
 		{
-			if (verticesUVBatchIndex != 0)
+			if (verticesUVBatchIndex > 0)
 				drawing.Add(key.Material, key.BlendMode, verticesUVBatch, indicesUVBatch,
 					verticesUVBatchIndex, indicesUVIndex);
-			if (verticesUVColorBatchIndex != 0)
+			if (verticesUVColorBatchIndex > 0)
 				drawing.Add(key.Material, key.BlendMode, verticesUVColorBatch, indicesUVColorBatch,
 					verticesUVColorBatchIndex, indicesUVColorIndex);
 		}

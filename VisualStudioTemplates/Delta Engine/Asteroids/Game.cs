@@ -27,7 +27,7 @@ namespace $safeprojectname$
 
 		private void TryLoadingHighscores()
 		{
-			var highscorePath = Path.Combine("Content", "Highscores");
+			var highscorePath = GetHighscorePath();
 			if (!File.Exists(highscorePath))
 				return;
 
@@ -38,19 +38,23 @@ namespace $safeprojectname$
 			}
 		}
 
+		private static string GetHighscorePath()
+		{
+			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
+				"DeltaEngine", "Asteroids", "Highscores");
+		}
+
 		private void GetHighscoresFromString(string highscoreString)
 		{
 			if (string.IsNullOrEmpty(highscoreString))
-			{
 				return;
-			}
+
 			var partitions = highscoreString.SplitAndTrim(new[] {
 				',',
 				' '
 			});
 			highScores = new int[10];
 			for (int i = 0; i < partitions.Length; i++)
-			{
 				try
 				{
 					highScores [i] = int.Parse(partitions [i]);
@@ -59,7 +63,6 @@ namespace $safeprojectname$
 				{
 					highScores [i] = 0;
 				}
-			}
 		}
 
 		public void StartGame()
@@ -156,10 +159,8 @@ namespace $safeprojectname$
 				return;
 			}
 			for (int i = 0; i < highScores.Length - 2; i++)
-			{
 				if (highScores [i] > score && score > highScores [i + 1])
 					InsertNewScoreAt(i + 1);
-			}
 		}
 
 		private void InsertNewScoreAt(int index)
@@ -177,10 +178,7 @@ namespace $safeprojectname$
 
 		private void SaveHighScore()
 		{
-			var highscoreFilePath = Path.Combine("Content", "Highscores");
-			if (!Directory.Exists("Content"))
-				return;
-
+			var highscoreFilePath = GetHighscorePath();
 			using (FileStream highscoreFile = File.Create(highscoreFilePath))
 			{
 				var writer = new StreamWriter(highscoreFile);

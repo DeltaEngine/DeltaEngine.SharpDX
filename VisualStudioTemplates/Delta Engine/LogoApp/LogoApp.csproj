@@ -50,9 +50,6 @@
     <Reference Include="DeltaEngine.Input">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Input.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Physics2D">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Physics2D.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine.Rendering2D">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
     </Reference>

@@ -17,24 +17,13 @@ namespace EmptyGame.Tests
 			Assert.AreEqual(initialColor, game.NextColor);
 		}
 
-		//[Test]
-		//public void ChangeNextColorToFadeToAfterOneSecond()
-		//{
-		//	var game = new Game(Resolve<Window>());
-		//	Color initialCurrentColor = game.CurrentColor;
-		//	Color initialNextColor = game.NextColor;
-		//	resolver.AdvanceTimeAndRunEntities(1.0f);
-		//	Assert.IsTrue(game.FadePercentage > 0.9f);
-		//	resolver.AdvanceTimeAndRunEntities(0.1f);
-		//	Assert.AreEqual(initialCurrentColor, game.CurrentColor);
-		//	Assert.AreNotEqual(initialNextColor, game.NextColor);
-		//	Assert.IsTrue(game.FadePercentage < 0.1f);
-		//}
-
 		[Test]
 		public void ContinuouslyChangeBackgroundColor()
 		{
-			new Game(Resolve<Window>());
+			var game = new Game(Resolve<Window>());
+			var initialColor = new Color();
+			AdvanceTimeAndUpdateEntities(1.0f);
+			Assert.AreNotEqual(initialColor, game.NextColor);
 		}
 	}
 }

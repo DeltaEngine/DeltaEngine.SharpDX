@@ -12,7 +12,6 @@ using DeltaEngine.Graphics;
 using DeltaEngine.Logging;
 using DeltaEngine.Networking;
 using DeltaEngine.Networking.Tcp;
-using DeltaEngine.Rendering3D.Cameras;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Platforms
@@ -206,7 +205,6 @@ namespace DeltaEngine.Platforms
 			Register<PixelScreenSpace>();
 			Register<Camera2DScreenSpace>();
 			ScreenSpace.resolver = new AutofacScreenSpaceResolver(this);
-			Camera.resolver = new AutofacCameraResolver(this);
 		}
 
 		public virtual void Run()
@@ -300,8 +298,6 @@ namespace DeltaEngine.Platforms
 			ContentLoader.DisposeIfInitialized();
 			if (ScreenSpace.IsInitialized)
 				ScreenSpace.Current.Dispose();
-			if (Camera.IsInitialized)
-				Camera.Current.Dispose();
 		}
 	}
 }

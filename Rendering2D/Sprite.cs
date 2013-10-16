@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 
 namespace DeltaEngine.Rendering2D
 {
@@ -31,9 +33,71 @@ namespace DeltaEngine.Rendering2D
 				Start<UpdateImageAnimation>();
 			if (material.SpriteSheet != null)
 				Start<UpdateSpriteSheetAnimation>();
-			Add(Material.UVCalculator.GetUVAndDrawArea(Rectangle.One, drawArea, FlipMode.None));
+			uVCalculatorResults = Material.UVCalculator.GetUVAndDrawArea(Rectangle.One, drawArea,
+				FlipMode.None);
+			lastUVCalculatorResults = uVCalculatorResults;
 			Start<UpdateUVCalculations>();
 			IsPlaying = true;
+		}
+
+		private UVCalculator.Results uVCalculatorResults;
+		private UVCalculator.Results lastUVCalculatorResults;
+
+		public override sealed void Set(object component)
+		{
+			if (component is UVCalculator.Results)
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
+				uVCalculatorResults = (UVCalculator.Results)component;
+			}
+			else
+				base.Set(component);
+		}
+
+		public override sealed void SetWithoutInterpolation<T>(T component)
+		{
+			if (typeof(T) == typeof(UVCalculator.Results))
+			{
+				EntitiesRunner.Current.CheckIfInUpdateState();
+				uVCalculatorResults = (UVCalculator.Results)(object)component;
+				lastUVCalculatorResults = uVCalculatorResults;
+			}
+			else
+				base.SetWithoutInterpolation(component);
+		}
+
+		public override sealed Entity Add<T>(T component)
+		{
+			if (typeof(T) == typeof(UVCalculator.Results))
+				throw new ComponentOfTheSameTypeAddedMoreThanOnce();
+			return base.Add(component);
+		}
+
+		public override sealed T Get<T>()
+		{
+			if (EntitiesRunner.Current.State == UpdateDrawState.Draw && typeof(T) == typeof(UVCalculator.Results))
+				return (T)(object)lastUVCalculatorResults.Lerp(uVCalculatorResults, EntitiesRunner.CurrentDrawInterpolation);
+			if (typeof(T) == typeof(UVCalculator.Results))
+				return (T)(object)uVCalculatorResults;
+			return base.Get<T>();
+		}
+
+		protected internal override sealed List<object> GetComponentsForSaving()
+		{
+			List<object> componentsForSaving = base.GetComponentsForSaving(); 
+			componentsForSaving.Add(uVCalculatorResults);
+			return componentsForSaving;
+		}
+
+		protected internal override sealed List<object> GetComponentsForViewing()
+		{
+			return GetComponentsForSaving();
+		}
+
+		protected override sealed void NextUpdateStarted()
+		{
+			lastUVCalculatorResults = uVCalculatorResults;
+			base.NextUpdateStarted();
 		}
 
 		public Rectangle UV

@@ -32,11 +32,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var launchOptionsMenu = new InteractiveButton(new Rectangle(0.3f, 0.35f, 0.2f, 0.1f),
 				"Set Options") { RenderLayer = 1 };
-			launchOptionsMenu.Clicked += () =>
+			launchOptionsMenu.Clicked += () => //ncrunch: no coverage start
 			{
 				optionsMenu.Show();
 				mainMenu.ToBackground();
-			};
+			}; //ncrunch: no coverage end
 			mainMenu.Add(launchOptionsMenu);
 		}
 
@@ -46,11 +46,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var launchEulaMenu = new InteractiveButton(new Rectangle(0.3f, 0.5f, 0.2f, 0.1f),
 				"Read EULA") { RenderLayer = 1 };
-			launchEulaMenu.Clicked += () =>
+			launchEulaMenu.Clicked += () => //ncrunch: no coverage start
 			{
 				eulaMenu.Show();
 				mainMenu.ToBackground();
-			};
+			}; //ncrunch: no coverage end
 			mainMenu.Add(launchEulaMenu);
 		}
 
@@ -112,11 +112,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			{
 				RenderLayer = 4
 			};
-			exit.Clicked += () =>
+			exit.Clicked += () => //ncrunch: no coverage start
 			{
 				optionsMenu.Hide();
 				mainMenu.ToForeground();
-			};
+			}; //ncrunch: no coverage end
 			optionsMenu.Add(exit);
 		}
 
@@ -153,7 +153,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			{
 				RenderLayer = 4
 			};
-			exit.Clicked += () =>
+			exit.Clicked += () => //ncrunch: no coverage start
 			{
 				if (eula.WasRead)
 				{
@@ -165,7 +165,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					eulaMenu.ToBackground();
 					errorWindow.Show();
 				}
-			};
+			}; //ncrunch: no coverage end
 			eulaMenu.Add(exit);
 		}
 
@@ -175,11 +175,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			var exit = new InteractiveButton(new Rectangle(0.55f, 0.3f, 0.4f, 0.3f),
 				"Must read the EULA to the end!") { RenderLayer = 9 };
-			exit.Clicked += () =>
+			exit.Clicked += () => //ncrunch: no coverage start
 			{
 				errorWindow.Hide();
 				eulaMenu.ToForeground();
-			};
+			}; //ncrunch: no coverage end
 			errorWindow.Add(exit);
 			errorWindow.Hide();
 		}
@@ -198,11 +198,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				: base(firstLineDrawArea, values) {}
 
 			public override void Update()
-			{
+			{ //ncrunch: no coverage start
 				base.Update();
 				if (scrollbar.RightValue == scrollbar.MaxValue)
 					WasRead = true;
-			}
+			} //ncrunch: no coverage end
 
 			public bool WasRead { get; private set; }
 		}
