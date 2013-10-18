@@ -14,10 +14,10 @@ namespace DeltaEngine.Graphics.Tests
 		[Test, CloseAfterFirstFrame]
 		public void CreateCustomMaterial()
 		{
-			var shader =
-				ContentLoader.Create<Shader>(new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
-					ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11, 
-					ShaderCodeDX9.Position2DUVDX9, VertexFormat.Position2DUV));
+			var shader = ContentLoader.Create<Shader>(
+					new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
+						ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
+						ShaderCodeDX9.Position2DUVDX9, VertexFormat.Position2DUV));
 			var image = ContentLoader.Create<Image>(new ImageCreationData(new Size(4)));
 			var generatedMaterial = new Material(shader, image);
 			Assert.IsNotNull(generatedMaterial);
@@ -39,8 +39,8 @@ namespace DeltaEngine.Graphics.Tests
 		public void LoadSavedMaterialWithPadding()
 		{
 			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
-			loadedMaterial.UVCalculator =
-				new UVCalculator(new AtlasRegion
+			loadedMaterial.RenderingCalculator =
+				new RenderingCalculator(new AtlasRegion
 				{
 					PadLeft = 0.5f,
 					PadRight = 0.5f,
@@ -48,7 +48,7 @@ namespace DeltaEngine.Graphics.Tests
 					PadBottom = 0.5f,
 					IsRotated = false
 				});
-			var result = loadedMaterial.UVCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
+			var result = loadedMaterial.RenderingCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
 				Rectangle.One, FlipMode.None);
 			Assert.AreEqual(result.RequestedUserUV, Rectangle.HalfCentered);
 		}
@@ -57,8 +57,8 @@ namespace DeltaEngine.Graphics.Tests
 		public void LoadSavedMaterialWithClearPadding()
 		{
 			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
-			loadedMaterial.UVCalculator =
-				new UVCalculator(new AtlasRegion
+			loadedMaterial.RenderingCalculator =
+				new RenderingCalculator(new AtlasRegion
 				{
 					PadLeft = 0,
 					PadRight = 0,
@@ -66,7 +66,7 @@ namespace DeltaEngine.Graphics.Tests
 					PadBottom = 0,
 					IsRotated = false
 				});
-			var result = loadedMaterial.UVCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
+			var result = loadedMaterial.RenderingCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
 				Rectangle.One, FlipMode.None);
 			Assert.AreEqual(result.RequestedUserUV, Rectangle.HalfCentered);
 		}

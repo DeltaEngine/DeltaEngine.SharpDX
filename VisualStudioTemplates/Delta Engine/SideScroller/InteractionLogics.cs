@@ -5,7 +5,7 @@ using DeltaEngine.Rendering2D.Shapes;
 
 namespace $safeprojectname$
 {
-	internal class InteractionLogics : Entity
+	public class InteractionLogics : Entity
 	{
 		public void FireShotByPlayer(Vector2D startPosition)
 		{

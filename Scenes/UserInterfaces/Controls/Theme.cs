@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Content;
+﻿using System;
+using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D.Fonts;
@@ -37,23 +38,42 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		public struct Appearance
 		{
 			public Appearance(string materialName)
-				: this(new Material(Shader.Position2DColorUV, materialName)) {}
-
-			public Appearance(Material material)
 				: this()
 			{
-				Material = material;
+				this.materialName = materialName;
 				Color = Material.DefaultColor;
 			}
 
-			public Material Material { get; set; }
+			private readonly string materialName;
 			public Color Color { get; set; }
 
 			public Appearance(string materialName, Color color)
 				: this()
 			{
-				Material = new Material(Shader.Position2DColorUV, materialName);
+				this.materialName = materialName;
 				Color = color;
+			}
+
+			public Appearance(Material material)
+				: this()
+			{
+				materialName = material.Name;
+				this.material = material;
+				Color = Material.DefaultColor;
+			}
+
+			[NonSerialized]
+			private Material material;
+
+			public Material Material
+			{
+				get
+				{
+					if (material != null)
+						return material;
+					material = new Material(Shader.Position2DColorUV, materialName);
+					return material;
+				}
 			}
 		}
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 
-namespace DeltaEngine.GameLogic
+namespace DeltaEngine.Rendering2D.Particles
 {
 	public abstract class HierarchicalObject
 	{

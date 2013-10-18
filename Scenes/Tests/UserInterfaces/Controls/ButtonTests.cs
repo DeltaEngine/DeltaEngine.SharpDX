@@ -183,7 +183,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
 			var loadedButton = loadedScene.Controls[0] as Button;
 			Assert.AreEqual(2, loadedButton.GetActiveBehaviors().Count);
-			Assert.AreEqual("UpdateUVCalculations",
+			Assert.AreEqual("UpdateRenderingCalculations",
 				loadedButton.GetActiveBehaviors()[0].GetShortNameOrFullNameIfNotFound());
 			Assert.AreEqual("ControlUpdater",
 				loadedButton.GetActiveBehaviors()[1].GetShortNameOrFullNameIfNotFound());

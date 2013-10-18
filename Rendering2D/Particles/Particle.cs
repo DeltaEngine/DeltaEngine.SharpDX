@@ -4,10 +4,9 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics.Vertices;
-using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.ScreenSpaces;
 
-namespace DeltaEngine.Rendering3D.Particles
+namespace DeltaEngine.Rendering2D.Particles
 {
 	public struct Particle : Lerp<Particle>
 	{
@@ -93,14 +92,41 @@ namespace DeltaEngine.Rendering3D.Particles
 
 		public bool UpdateIfStillActive(ParticleEmitterData data)
 		{
+			if (!UpdateParticle(data))
+				return false;
+			Position += CurrentMovement * Time.Delta;
+			return true;
+		}
+
+		private bool UpdateParticle(ParticleEmitterData data)
+		{
 			ElapsedTime += Time.Delta;
 			if (ElapsedTime > data.LifeTime && data.LifeTime > 0.0f)
 				return IsActive = false;
 			CurrentMovement += Acceleration * Time.Delta;
-			Position += CurrentMovement * Time.Delta;
 			Rotation +=
 				data.RotationSpeed.GetInterpolatedValue(ElapsedTime / data.LifeTime).GetRandomValue() *
 					Time.Delta;
+			return true;
+		}
+
+		public bool UpdateEscapingParticleIfStillActive(ParticleEmitterData data, Vector3D position)
+		{
+			if (!UpdateParticle(data))
+				return false;	//ncrunch: no coverage
+			var magnitude = CurrentMovement.Length;
+			var vector = Vector3D.Normalize(Position - position);
+			Position += magnitude * vector * Time.Delta;
+			return true;
+		}
+
+		public bool UpdateRoundingParticleIfStillActive(ParticleEmitterData data, Vector3D position)
+		{
+			if (!UpdateParticle(data))
+				return false;	//ncrunch: no coverage
+			var axis = position.GetVector2D();
+			var vector = Position.GetVector2D().RotateAround(axis, CurrentMovement.Length * 10);
+			Position = vector;
 			return true;
 		}
 

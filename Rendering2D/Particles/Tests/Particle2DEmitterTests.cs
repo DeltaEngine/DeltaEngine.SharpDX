@@ -7,7 +7,6 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering3D.Particles;
 using NUnit.Framework;
 using Randomizer = DeltaEngine.Core.Randomizer;
 
@@ -242,7 +241,7 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 			var stream = BinaryDataExtensions.SaveToMemoryStream(emitterData);
 			var loaded = stream.CreateFromMemoryStream() as ParticleEmitterData;
 			File.WriteAllBytes("Test.test", stream.ToArray());
-			Assert.AreEqual(1001, stream.Length);
+			Assert.AreEqual(697, stream.Length);
 			Assert.AreEqual(emitterData.EmitterType, loaded.EmitterType);
 		}
 

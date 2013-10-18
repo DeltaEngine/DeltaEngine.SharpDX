@@ -14,11 +14,6 @@ namespace $safeprojectname$
 		public Vector2D velocity;
 		public readonly float maximumSpeed;
 
-		public void Accelerate(Vector2D acceleration2D)
-		{
-			Velocity += acceleration2D;
-		}
-
 		public Vector2D Velocity
 		{
 			get
@@ -43,11 +38,6 @@ namespace $safeprojectname$
 		{
 			Velocity = new Vector2D(velocity.X + MathExtensions.Sin(angle) * magnitude, velocity.Y - 
 				MathExtensions.Cos(angle) * magnitude);
-		}
-
-		public void Accelerate(float factor)
-		{
-			Velocity *= factor;
 		}
 	}
 }

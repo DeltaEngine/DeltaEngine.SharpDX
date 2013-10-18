@@ -21,7 +21,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			var material = new Material(Shader.Position2DUV, "DeltaEngineLogo");
 			components.Add(material);
 			components.Add(material.DiffuseMap.BlendMode);
-			components.Add(new UVCalculator.Results());
+			components.Add(new RenderingData());
 			var sprite = Activator.CreateInstance(typeof(Sprite),
 				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, Type.DefaultBinder,
 				null, CultureInfo.CurrentCulture) as Sprite;

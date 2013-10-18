@@ -55,7 +55,7 @@
     <Compile Include="SpriteBatchRenderer.cs" />
     <Compile Include="UpdateImageAnimation.cs" />
     <Compile Include="UpdateSpriteSheetAnimation.cs" />
-    <Compile Include="UpdateUVCalculations.cs" />
+    <Compile Include="UpdateRenderingCalculations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

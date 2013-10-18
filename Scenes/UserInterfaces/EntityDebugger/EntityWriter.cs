@@ -113,7 +113,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 		private void UpdateComponentIfValueHasChanged(Type componentType, TextBox textbox)
 		{
 			object newComponent = GetComponentFromString(componentType, textbox.Text);
-			List<object> oldComponents = Entity.GetComponentsForViewing();
+			List<object> oldComponents = Entity.GetComponentsForSaving();
 			foreach (var oldComponent in oldComponents)
 				if (oldComponent.GetType() == componentType &&
 					oldComponent.ToString() != newComponent.ToString())

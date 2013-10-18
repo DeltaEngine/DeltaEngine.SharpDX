@@ -85,7 +85,13 @@ namespace DeltaEngine.Content
 
 		protected Action ContentChanged;
 
-		public ContentMetaData MetaData { get; internal set; }
+		public ContentMetaData MetaData
+		{
+			get { return metaData; }
+			internal set { metaData = value; }
+		}
+		[NonSerialized]
+		private ContentMetaData metaData;
 
 		public override string ToString()
 		{

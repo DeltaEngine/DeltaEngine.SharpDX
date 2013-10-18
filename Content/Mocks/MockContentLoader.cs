@@ -26,8 +26,6 @@ namespace DeltaEngine.Content.Mocks
 				stream = new XmlFile(new XmlData("Texts").AddChild(GoLocalizationNode)).ToMemoryStream();
 			else if (content.Name.Contains("Verdana12") || content.Name.Contains("Tahoma30"))
 				stream = CreateFontXml().ToMemoryStream();
-			else if (content.Name == ("NewImageAnimation"))
-				stream = CreateImageAnimation();
 			else if (content.MetaData.Type == ContentType.Shader)
 				stream = SaveShader(content.Name);
 			else if (content.Name.Equals("EmptyScene"))
@@ -100,17 +98,6 @@ namespace DeltaEngine.Content.Mocks
 			font.AddAttribute("LineHeight", "16");
 			font.AddChild(bitmap).AddChild(glyphs).AddChild(kernings);
 			return new XmlFile(font);
-		}
-
-		private Stream CreateImageAnimation()
-		{
-			var array = new Image[2];
-			array[0] = Create<Image>(new ImageCreationData(new Size(8, 8)));
-			array[1] = Create<Image>(new ImageCreationData(new Size(8, 8)));
-			var imageAnimation = new ImageAnimation(array, 2);
-			var data = BinaryDataExtensions.SaveToMemoryStream(imageAnimation);
-			data.Seek(0, SeekOrigin.Begin);
-			return data;
 		}
 
 		private static MemoryStream SaveTestParticle()

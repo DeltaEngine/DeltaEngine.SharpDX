@@ -78,14 +78,16 @@ namespace DeltaEngine.Rendering2D.Tests
 		private static readonly Size MockContentSize = new Size(4, 4);
 
 		[Test, CloseAfterFirstFrame]
-		public void ChangeImage()
+		public void ChangingMaterialChangesImageAndBlendMode()
 		{
 			var sprite = new Sprite(logoMaterial, Rectangle.HalfCentered);
 			Assert.AreEqual("DeltaEngineLogo", sprite.Material.DiffuseMap.Name);
 			Assert.AreEqual(BlendMode.Normal, sprite.BlendMode);
-			sprite.Material = new Material(Shader.Position2DUV, "Verdana12Font");
+			var material = new Material(Shader.Position2DUV, "Verdana12Font");
+			material.DiffuseMap.BlendMode = BlendMode.Opaque;
+			sprite.Material = material;
 			Assert.AreEqual("Verdana12Font", sprite.Material.DiffuseMap.Name);
-			Assert.AreEqual(BlendMode.Normal, sprite.BlendMode);
+			Assert.AreEqual(BlendMode.Opaque, sprite.BlendMode);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -255,7 +257,7 @@ namespace DeltaEngine.Rendering2D.Tests
 		{
 			var sprite = new Sprite("DeltaEngineLogo", Rectangle.One);
 			Assert.Throws<Entity.ComponentOfTheSameTypeAddedMoreThanOnce>(
-				() => sprite.Add(new UVCalculator.Results()));
+				() => sprite.Add(new RenderingData()));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -268,17 +270,10 @@ namespace DeltaEngine.Rendering2D.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void GetComponentsForViewingIncludesUvCalculatorResults()
-		{
-			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
-			Assert.IsTrue(sprite.GetComponentsForViewing().Any(c => c is UVCalculator.Results));
-		}
-
-		[Test, CloseAfterFirstFrame]
 		public void GetComponentsForSavingIncludesUvCalculatorResults()
 		{
 			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
-			Assert.IsTrue(sprite.GetComponentsForSaving().Any(c => c is UVCalculator.Results));
+			Assert.IsTrue(sprite.GetComponentsForSaving().Any(c => c is RenderingData));
 		}
 	}
 }

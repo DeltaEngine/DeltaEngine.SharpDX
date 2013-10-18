@@ -40,7 +40,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 			row = 0;
 			scene.Clear();
 			componentControls.Clear();
-			componentList = entity.GetComponentsForViewing();
+			componentList = entity.GetComponentsForSaving();
 			foreach (object component in componentList)
 				AddComponentToScene(component);
 		}

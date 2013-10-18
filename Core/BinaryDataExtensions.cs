@@ -39,8 +39,9 @@ namespace DeltaEngine.Core
 		private static bool ShouldLoadTypes(Assembly assembly)
 		{
 			var name = assembly.GetName().Name;
-			return name == "DeltaEngine" || !name.StartsWith("nunit") &&
-				!name.EndsWith(".Xml") && assembly.IsAllowed() && !AssemblyExtensions.IsPlatformAssembly(name);
+			return name == "DeltaEngine" ||
+				!name.StartsWith("nunit") && !name.EndsWith(".Xml") && assembly.IsAllowed() &&
+				!AssemblyExtensions.IsPlatformAssembly(name);
 		}
 
 		private static void AddPrimitiveTypes()
@@ -300,9 +301,10 @@ namespace DeltaEngine.Core
 			return (DataType)BinaryDataLoader.TryCreateAndLoad(typeof(DataType), reader, version);
 		}
 
-		internal static bool DoNotNeedToSaveType(this Type fieldType)
+		internal static bool DoNotNeedToSaveType(this Type fieldType, FieldAttributes fieldAttributes)
 		{
-			return fieldType == typeof(Action) || fieldType == typeof(Action<>) ||
+			return fieldAttributes.HasFlag(FieldAttributes.NotSerialized) ||
+				fieldType == typeof(Action) || fieldType == typeof(Action<>) ||
 				fieldType.BaseType == typeof(MulticastDelegate) || fieldType == typeof(BinaryWriter) ||
 				fieldType == typeof(BinaryReader) || fieldType == typeof(Pointer) ||
 				fieldType == typeof(IntPtr) || fieldType == typeof(ISerializable);

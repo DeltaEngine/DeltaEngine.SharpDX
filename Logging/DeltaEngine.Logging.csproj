@@ -37,7 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DeltaEngine.csproj">
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
-      <Name>DeltaEngine</Name>
+      <Name>DeltaEngine %28DeltaEngine\DeltaEngine%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Networking\DeltaEngine.Networking.csproj">
       <Project>{5231706E-2955-43BF-9C06-291E12AF5C5C}</Project>

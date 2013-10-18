@@ -67,6 +67,14 @@
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
+      <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
+      <Name>DeltaEngine.Rendering2D.Shapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Scenes\DeltaEngine.Scenes.csproj">
+      <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
+      <Name>DeltaEngine.Scenes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SideScroller.csproj">
       <Project>{12547016-9E97-4ED8-942A-3379FF303D10}</Project>
       <Name>SideScroller</Name>
@@ -83,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnemyPlaneTests.cs" />
     <Compile Include="GameTests.cs" />
+    <Compile Include="InteractionLogicsTests.cs" />
     <Compile Include="BackgroundTests.cs" />
     <Compile Include="GameControlsTests.cs" />
     <Compile Include="PlaneTests.cs" />

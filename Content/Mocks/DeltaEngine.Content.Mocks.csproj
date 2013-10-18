@@ -47,8 +47,12 @@
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Rendering2D\Mocks\DeltaEngine.Rendering2D.Mocks.csproj">
+      <Project>{27C9A179-531F-41FB-8257-8396061C751B}</Project>
+      <Name>DeltaEngine.Rendering2D.Mocks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\Particles\DeltaEngine.Rendering2D.Particles.csproj">
-      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Project>{E3385412-7C8E-4A11-AA80-798F9FF89EFE}</Project>
       <Name>DeltaEngine.Rendering2D.Particles</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">

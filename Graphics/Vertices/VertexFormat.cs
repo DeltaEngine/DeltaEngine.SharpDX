@@ -5,7 +5,7 @@ using DeltaEngine.Extensions;
 namespace DeltaEngine.Graphics.Vertices
 {
 	/// <summary>
-	/// The format for a vertex. eg. it contains position, color and texture.
+	/// The format for a vertex, e.g. it contains position, color and texture.
 	/// </summary>
 	public class VertexFormat : IEquatable<VertexFormat>
 	{

@@ -38,16 +38,5 @@ namespace $safeprojectname$
 			if (speed > maximumSpeed)
 				velocity *= maximumSpeed / speed;
 		}
-
-		public void Accelerate(float magnitude, float angle)
-		{
-			Velocity = new Vector2D(velocity.X + MathExtensions.Sin(angle) * magnitude, velocity.Y - 
-				MathExtensions.Cos(angle) * magnitude);
-		}
-
-		public void Accelerate(float factor)
-		{
-			Velocity *= factor;
-		}
 	}
 }

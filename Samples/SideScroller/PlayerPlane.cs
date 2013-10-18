@@ -23,7 +23,7 @@ namespace SideScroller
 			verticalDecelerationFactor = 3.0f;
 			verticalAccelerationFactor = 1.5f;
 			RenderLayer = (int)DefRenderLayer.Player;
-			PlayerFiredShot += point => {};
+			PlayerFiredShot += point => { };
 			Add(new Velocity2D(Vector2D.Zero, MaximumSpeed));
 			Start<PlayerMovement>();
 			Start<MachineGunFire>();
@@ -36,61 +36,63 @@ namespace SideScroller
 				foreach (var entity in entities)
 				{
 					var playerPlane = entity as PlayerPlane;
-					var newRect = CalculateRectAfterMove(playerPlane);
-					MoveEntity(playerPlane, newRect);
+					CHeckIfHittingABorder(playerPlane);
+					if (!isHittingABorder)
+						CalculateRectAfterMove(playerPlane);
 					var velocity2D = playerPlane.Get<Velocity2D>();
 					velocity2D.velocity.Y -= velocity2D.velocity.Y * playerPlane.verticalDecelerationFactor *
 						Time.Delta;
 					playerPlane.Set(velocity2D);
-					playerPlane.Rotation = RotationAccordingToVerticalSpeed(velocity2D.velocity);
+					playerPlane.Rotation = RotationAccordingToVerticalSpeed();
 				}
 			}
 
-			private static Rectangle CalculateRectAfterMove(PlayerPlane entity)
+			private static void CalculateRectAfterMove(PlayerPlane entity)
 			{
 				var pointAfterVerticalMovement = new Vector2D(entity.Get<Rectangle>().TopLeft.X,
 					entity.Get<Rectangle>().TopLeft.Y + entity.Get<Velocity2D>().velocity.Y * Time.Delta);
-
-				return new Rectangle(pointAfterVerticalMovement, entity.Get<Rectangle>().Size);
+				entity.Set(new Rectangle(pointAfterVerticalMovement, entity.Get<Rectangle>().Size));
 			}
 
-			private void MoveEntity(PlayerPlane entity, Rectangle rect)
+			private static void CHeckIfHittingABorder(PlayerPlane entity)
 			{
-				StopAtBorderVertically(entity);
-				entity.Set(rect);
+				isHittingABorder = false;
+				drawArea = entity.Get<Rectangle>();
+				movementSpeed = entity.Get<Velocity2D>();
+				CheckStopTopBorder(ScreenSpace.Current.Viewport);
+				CheckStopBottomBorder(ScreenSpace.Current.Viewport);
+				entity.Set(drawArea);
+				entity.Set(movementSpeed);
 			}
 
-			private static void StopAtBorderVertically(PlayerPlane entity)
-			{
-				var rect = entity.Get<Rectangle>();
-				var vel = entity.Get<Velocity2D>();
-				CheckStopTopBorder(rect, vel, ScreenSpace.Current.Viewport);
-				CheckStopBottomBorder(rect, vel, ScreenSpace.Current.Viewport);
-				entity.Set(vel);
-				entity.Set(rect);
-			}
+			private static Rectangle drawArea;
+			private static Velocity2D movementSpeed;
 
-			private static void CheckStopTopBorder(Rectangle rect, Velocity2D vel, Rectangle borders)
+			private static void CheckStopTopBorder(Rectangle borders)
 			{
-				if (rect.Top <= borders.Top && vel.velocity.Y < 0)
+				if (drawArea.Top <= borders.Top && movementSpeed.velocity.Y < 0)
 				{
-					vel.velocity.Y = 0.02f;
-					rect.Top = borders.Top;
+					isHittingABorder = true;
+					movementSpeed.velocity.Y = 0.02f;
+					drawArea.Top = borders.Top;
 				}
 			}
 
-			private static void CheckStopBottomBorder(Rectangle rect, Velocity2D vel, Rectangle borders)
+			private static bool isHittingABorder;
+
+			private static void CheckStopBottomBorder(Rectangle borders)
 			{
-				if (rect.Bottom >= borders.Bottom && vel.velocity.Y > 0)
+				if (drawArea.Bottom >= borders.Bottom && movementSpeed.velocity.Y > 0)
 				{
-					vel.velocity.Y = -0.02f;
-					rect.Bottom = borders.Bottom;
+					isHittingABorder = true;
+					movementSpeed.velocity.Y = -0.02f;
+					drawArea.Bottom = borders.Bottom;
 				}
 			}
 
-			private static float RotationAccordingToVerticalSpeed(Vector2D vel)
+			private static float RotationAccordingToVerticalSpeed()
 			{
-				return 50 * vel.Y / MaximumSpeed;
+				return 50 * movementSpeed.velocity.Y / MaximumSpeed;
 			}
 		}
 

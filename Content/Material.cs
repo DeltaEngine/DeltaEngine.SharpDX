@@ -38,7 +38,7 @@ namespace DeltaEngine.Content
 				throw new UnableToCreateMaterialWithoutValidShaderName();
 			Shader = ContentLoader.Load<Shader>(shaderName);
 			DefaultColor = defaultColor;
-			UVCalculator = new UVCalculator();
+			RenderingCalculator = new RenderingCalculator();
 			if (String.IsNullOrEmpty(imageOrAnimationName))
 				return;
 			if (ContentLoader.Exists(imageOrAnimationName, ContentType.ImageAnimation))
@@ -53,7 +53,7 @@ namespace DeltaEngine.Content
 
 		public Shader Shader { get; private set; }
 		public Color DefaultColor { get; set; }
-		public UVCalculator UVCalculator { get; set; }
+		public RenderingCalculator RenderingCalculator { get; set; }
 
 		public Image DiffuseMap
 		{
@@ -71,7 +71,7 @@ namespace DeltaEngine.Content
 		{
 			diffuseMap = null;
 			pixelSize = Size.Zero;
-			UVCalculator = new UVCalculator();
+			RenderingCalculator = new RenderingCalculator();
 		}
 
 		private Image diffuseMap;
@@ -81,7 +81,7 @@ namespace DeltaEngine.Content
 		{
 			diffuseMap = value.AtlasImage ?? value;
 			pixelSize = value.PixelSize;
-			UVCalculator = value.UVCalculator;
+			RenderingCalculator = value.RenderingCalculator;
 		}
 
 		/// <summary>

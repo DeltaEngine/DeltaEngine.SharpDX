@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Particle2DTorusEmitterTests.cs" />
     <Compile Include="ParticleSystemTests.cs" />
     <Compile Include="Particle2DEmitterTests.cs" />
     <Compile Include="ValueRangeTests.cs" />

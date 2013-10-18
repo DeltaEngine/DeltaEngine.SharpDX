@@ -4,7 +4,6 @@ using DeltaEngine.Content;
 using DeltaEngine.Entities;
 using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Vertices;
-using DeltaEngine.Rendering3D.Particles;
 
 namespace DeltaEngine.Rendering2D.Particles
 {

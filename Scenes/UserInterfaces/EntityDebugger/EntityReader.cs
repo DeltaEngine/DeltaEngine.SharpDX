@@ -25,7 +25,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 
 		private bool HaveComponentsBeenAddedOrRemoved()
 		{
-			latestComponentList = Entity.GetComponentsForViewing();
+			latestComponentList = Entity.GetComponentsForSaving();
 			if (latestComponentList.Count != componentList.Count)
 				return true;
 			for (int i = 0; i < componentList.Count; i++)

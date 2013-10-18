@@ -1,9 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using DeltaEngine.Content;
-using DeltaEngine.Content.Mocks;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Mocks;
-using DeltaEngine.Platforms.Mocks;
 using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Content
@@ -24,11 +22,16 @@ namespace DeltaEngine.Tests.Content
 		[Test]
 		public void LoadDefaultImage()
 		{
-			using (var resolver = new MockResolver())
+			ContentLoader.resolver = new FakeImageResolver();
+			ContentLoader.Use<FakeImageContentLoader>();
+			ContentLoader.Load<MockFakeImage>("Verdana12Font");
+		}
+
+		public class FakeImageResolver : ContentLoaderResolver
+		{
+			public override ContentData Resolve(Type contentType, string contentName)
 			{
-				resolver.Register<MockFakeImage>();
-				ContentLoader.Use<FakeImageContentLoader>();
-				ContentLoader.Load<MockFakeImage>("Verdana12Font");
+				return new MockFakeImage(contentName);
 			}
 		}
 
@@ -41,6 +44,7 @@ namespace DeltaEngine.Tests.Content
 				: base(creationData) { }
 
 			protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) { }
+
 			protected override void LoadImage(Stream fileData) { }
 
 			public override void Fill(Color[] colors) { }

@@ -2,7 +2,6 @@
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering3D.Particles;
 using NUnit.Framework;
 
 namespace DeltaEngine.Rendering2D.Particles.Tests
@@ -98,7 +97,8 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 				emitterNames = new List<string>(new[] { "EmitterAlpha", "EmitterBeta" })
 			};
 			var createdParticleSystem = new ParticleSystem(particleSystemData);
-			Assert.AreEqual(particleSystemData.emitterNames.Count, createdParticleSystem.AttachedEmitters.Count);
+			Assert.AreEqual(particleSystemData.emitterNames.Count,
+				createdParticleSystem.AttachedEmitters.Count);
 		}
 
 

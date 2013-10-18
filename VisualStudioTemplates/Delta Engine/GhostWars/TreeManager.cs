@@ -26,6 +26,7 @@ namespace $safeprojectname$
 				0.25f), new Size(0.2f))) {
 				RenderLayer = 5
 			};
+			statusText.Color = Team.HumanYellow.ToColor();
 			new Sprite(new Material(Shader.Position2DUV, "Logo"), new Rectangle(0.02f, 0.205f, 0.15f, 
 				0.15f)) {
 				RenderLayer = -15
@@ -242,7 +243,11 @@ namespace $safeprojectname$
 			new Sprite(new Material(Shader.Position2DUV, "YouWin"), Vector2D.Half) {
 				RenderLayer = 4000
 			};
+			if (GameFinished != null)
+				GameFinished();
 		}
+
+		public event Action GameFinished;
 
 		private void HandleLostSituation()
 		{
@@ -251,7 +256,11 @@ namespace $safeprojectname$
 			new Sprite(new Material(Shader.Position2DUV, "GameOver"), Vector2D.Half) {
 				RenderLayer = 4000
 			};
+			if (GameLost != null)
+				GameLost();
 		}
+
+		public event Action GameLost;
 
 		private void HandleAi(Tree tree)
 		{

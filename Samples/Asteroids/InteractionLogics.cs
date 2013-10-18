@@ -12,8 +12,8 @@ namespace Asteroids
 	{
 		public InteractionLogics()
 		{
-			explosionData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Explosion");
-			shipExplosionData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Explosion");
+			explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
+			shipExplosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
 			IncreaseScore += i => { };
 		}
 

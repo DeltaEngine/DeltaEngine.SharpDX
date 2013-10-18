@@ -33,22 +33,22 @@ namespace DeltaEngine.Rendering2D
 				Start<UpdateImageAnimation>();
 			if (material.SpriteSheet != null)
 				Start<UpdateSpriteSheetAnimation>();
-			uVCalculatorResults = Material.UVCalculator.GetUVAndDrawArea(Rectangle.One, drawArea,
-				FlipMode.None);
-			lastUVCalculatorResults = uVCalculatorResults;
-			Start<UpdateUVCalculations>();
+			renderingCalculatorResults = Material.RenderingCalculator.GetUVAndDrawArea(Rectangle.One,
+				drawArea, FlipMode.None);
+			lastRenderingCalculatorResults = renderingCalculatorResults;
+			Start<UpdateRenderingCalculations>();
 			IsPlaying = true;
 		}
 
-		private UVCalculator.Results uVCalculatorResults;
-		private UVCalculator.Results lastUVCalculatorResults;
+		private RenderingData renderingCalculatorResults;
+		private RenderingData lastRenderingCalculatorResults;
 
 		public override sealed void Set(object component)
 		{
-			if (component is UVCalculator.Results)
+			if (component is RenderingData)
 			{
 				EntitiesRunner.Current.CheckIfInUpdateState();
-				uVCalculatorResults = (UVCalculator.Results)component;
+				renderingCalculatorResults = (RenderingData)component;
 			}
 			else
 				base.Set(component);
@@ -56,11 +56,11 @@ namespace DeltaEngine.Rendering2D
 
 		public override sealed void SetWithoutInterpolation<T>(T component)
 		{
-			if (typeof(T) == typeof(UVCalculator.Results))
+			if (typeof(T) == typeof(RenderingData))
 			{
 				EntitiesRunner.Current.CheckIfInUpdateState();
-				uVCalculatorResults = (UVCalculator.Results)(object)component;
-				lastUVCalculatorResults = uVCalculatorResults;
+				renderingCalculatorResults = (RenderingData)(object)component;
+				lastRenderingCalculatorResults = renderingCalculatorResults;
 			}
 			else
 				base.SetWithoutInterpolation(component);
@@ -68,54 +68,55 @@ namespace DeltaEngine.Rendering2D
 
 		public override sealed Entity Add<T>(T component)
 		{
-			if (typeof(T) == typeof(UVCalculator.Results))
+			if (typeof(T) == typeof(RenderingData))
 				throw new ComponentOfTheSameTypeAddedMoreThanOnce();
 			return base.Add(component);
 		}
 
 		public override sealed T Get<T>()
 		{
-			if (EntitiesRunner.Current.State == UpdateDrawState.Draw && typeof(T) == typeof(UVCalculator.Results))
-				return (T)(object)lastUVCalculatorResults.Lerp(uVCalculatorResults, EntitiesRunner.CurrentDrawInterpolation);
-			if (typeof(T) == typeof(UVCalculator.Results))
-				return (T)(object)uVCalculatorResults;
+			if (EntitiesRunner.Current.State == UpdateDrawState.Draw &&
+				typeof(T) == typeof(RenderingData))
+				return (T)(object)lastRenderingCalculatorResults.Lerp(renderingCalculatorResults,
+					EntitiesRunner.CurrentDrawInterpolation);
+			if (typeof(T) == typeof(RenderingData))
+				return (T)(object)renderingCalculatorResults;
 			return base.Get<T>();
 		}
 
 		protected internal override sealed List<object> GetComponentsForSaving()
 		{
 			List<object> componentsForSaving = base.GetComponentsForSaving(); 
-			componentsForSaving.Add(uVCalculatorResults);
+			componentsForSaving.Add(renderingCalculatorResults);
 			return componentsForSaving;
-		}
-
-		protected internal override sealed List<object> GetComponentsForViewing()
-		{
-			return GetComponentsForSaving();
 		}
 
 		protected override sealed void NextUpdateStarted()
 		{
-			lastUVCalculatorResults = uVCalculatorResults;
+			lastRenderingCalculatorResults = renderingCalculatorResults;
 			base.NextUpdateStarted();
 		}
 
 		public Rectangle UV
 		{
-			get { return Get<UVCalculator.Results>().RequestedUserUV; }
-			set { Set(Material.UVCalculator.GetUVAndDrawArea(value, DrawArea, FlipMode)); }
+			get { return Get<RenderingData>().RequestedUserUV; }
+			set { Set(Material.RenderingCalculator.GetUVAndDrawArea(value, DrawArea, FlipMode)); }
 		}
 
 		public FlipMode FlipMode
 		{
-			get { return Get<UVCalculator.Results>().FlipMode; }
-			set { Set(Material.UVCalculator.GetUVAndDrawArea(UV, DrawArea, value)); }
+			get { return Get<RenderingData>().FlipMode; }
+			set { Set(Material.RenderingCalculator.GetUVAndDrawArea(UV, DrawArea, value)); }
 		}
 
 		public Material Material
 		{
 			get { return Get<Material>(); }
-			set { Set(value); }
+			set
+			{
+				Set(value);
+				BlendMode = value.DiffuseMap.BlendMode;
+			}
 		}
 
 		public BlendMode BlendMode
@@ -126,7 +127,7 @@ namespace DeltaEngine.Rendering2D
 
 		public void SetUVWithoutInterpolation(Rectangle uv)
 		{
-			SetWithoutInterpolation(Material.UVCalculator.GetUVAndDrawArea(uv, DrawArea, FlipMode));
+			SetWithoutInterpolation(Material.RenderingCalculator.GetUVAndDrawArea(uv, DrawArea, FlipMode));
 		}
 
 		public float Elapsed { get; set; }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering3D.Particles;
 
 namespace DeltaEngine.Rendering2D.Particles
 {
@@ -42,7 +41,7 @@ namespace DeltaEngine.Rendering2D.Particles
 		{
 			int lastIndex = -1;
 			for (int index = 0; index < NumberOfActiveParticles; index++)
-				if (particles[index].UpdateIfStillActive(EmitterData))
+				if (UpdateParticle(index))
 				{
 					lastIndex = index;
 					UpdateParticleProperties(index);
@@ -51,8 +50,14 @@ namespace DeltaEngine.Rendering2D.Particles
 			lastFramePosition = Position;
 		}
 
-		public Particle[] particles;
 		public int NumberOfActiveParticles { get; protected set; }
+
+		protected virtual bool UpdateParticle(int index)
+		{
+			return particles[index].UpdateIfStillActive(EmitterData);
+		}
+
+		public Particle[] particles;
 
 		private void UpdateParticleProperties(int index)
 		{
@@ -180,7 +185,7 @@ namespace DeltaEngine.Rendering2D.Particles
 				? NumberOfActiveParticles++ : -1;
 		}
 
-		private Vector3D GetParticleSpawnPosition2D()
+		protected virtual Vector3D GetParticleSpawnPosition2D()
 		{
 			return (Rotation.Equals(Quaternion.Identity))
 				? Position + EmitterData.StartPosition.GetRandomValue()
@@ -192,13 +197,7 @@ namespace DeltaEngine.Rendering2D.Particles
 		{
 			return Vector3D.Zero;
 		}
-
 		//ncrunch: no coverage end
-
-		public void SetAcceleration(RangeGraph<Vector3D> accelerationRange)
-		{
-			EmitterData.Acceleration = accelerationRange;
-		}
 
 		public void SpawnAndDispose(int numberOfParticles = 1)
 		{

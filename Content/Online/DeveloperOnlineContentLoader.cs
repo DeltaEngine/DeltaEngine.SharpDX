@@ -242,6 +242,8 @@ namespace DeltaEngine.Content.Online
 		private void DeleteFiles(XmlData entry)
 		{
 			var localFilePath = entry.GetAttributeValue("LocalFilePath");
+			if (string.IsNullOrEmpty(localFilePath))
+				return;
 			if (NoContentEntryUsesFile(entry, localFilePath))
 				File.Delete(Path.Combine(contentPath, localFilePath));
 		}
@@ -271,7 +273,6 @@ namespace DeltaEngine.Content.Online
 		{
 			if (!isContentReady)
 				throw new ContentNotReady();
-
 			return metaData.ContainsKey(contentName) ? metaData[contentName] : null;
 		}
 

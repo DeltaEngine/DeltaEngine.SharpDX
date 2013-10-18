@@ -4,6 +4,9 @@ using DeltaEngine.Graphics;
 
 namespace DeltaEngine.Rendering2D
 {
+	/// <summary>
+	/// Batches Sprites by Material and BlendMode for rendering
+	/// </summary>
 	public class SpriteBatchRenderer : DrawBehavior
 	{
 		public SpriteBatchRenderer(Drawing drawing)
@@ -41,49 +44,49 @@ namespace DeltaEngine.Rendering2D
 		{
 			var key = new SpriteBatchKey(sprite);
 			var hasColor = (sprite.Material.Shader as ShaderWithFormat).Format.HasColor;
-			if (hasColor && WasNotAbleToAddToExistingColorSpriteBatch(sprite, key))
-				CreateNewColorSpriteBatch(sprite);
-			else if (!hasColor && WasNotAbleToAddToExistingSpriteBatch(sprite, key))
-				CreateNewSpriteBatch(sprite);
+			if (hasColor && WasNotAbleToAddToExistingColorSpriteBatch(key, sprite))
+				CreateNewColorSpriteBatch(key, sprite);
+			else if (!hasColor && WasNotAbleToAddToExistingSpriteBatch(key, sprite))
+				CreateNewSpriteBatch(key, sprite);
 		}
 
-		private bool WasNotAbleToAddToExistingColorSpriteBatch(Sprite sprite, SpriteBatchKey key)
+		private bool WasNotAbleToAddToExistingColorSpriteBatch(SpriteBatchKey key, Sprite sprite)
 		{
 			for (int i = 0; i < spriteBatchIndex; i++)
 			{
 				var vertices = spriteBatch[i];
 				if (vertices.key != key || vertices.AreColorBuffersFull())
 					continue;
-				vertices.AddVerticesToUVColorArray(sprite);
+				vertices.AddColorVerticesAndIndices(sprite);
 				return false;
 			}
 			return true;
 		}
 
-		private void CreateNewColorSpriteBatch(Sprite sprite)
+		private void CreateNewColorSpriteBatch(SpriteBatchKey key, Sprite sprite)
 		{
-			spriteBatch[spriteBatchIndex] = new SpriteBatch(sprite);
-			spriteBatch[spriteBatchIndex].AddVerticesToUVColorArray(sprite);
+			spriteBatch[spriteBatchIndex] = new SpriteBatch(key);
+			spriteBatch[spriteBatchIndex].AddColorVerticesAndIndices(sprite);
 			spriteBatchIndex++;
 		}
 
-		private bool WasNotAbleToAddToExistingSpriteBatch(Sprite sprite, SpriteBatchKey key)
+		private bool WasNotAbleToAddToExistingSpriteBatch(SpriteBatchKey key, Sprite sprite)
 		{
 			for (int i = 0; i < spriteBatchIndex; i++)
 			{
 				var vertices = spriteBatch[i];
 				if (vertices.key != key || vertices.AreBuffersFull())
 					continue;
-				vertices.AddVerticesAndIndicesToUVArray(sprite);
+				vertices.AddVerticesAndIndices(sprite);
 				return false;
 			}
 			return true;
 		}
 
-		private void CreateNewSpriteBatch(Sprite sprite)
+		private void CreateNewSpriteBatch(SpriteBatchKey key, Sprite sprite)
 		{
-			spriteBatch[spriteBatchIndex] = new SpriteBatch(sprite);
-			spriteBatch[spriteBatchIndex].AddVerticesAndIndicesToUVArray(sprite);
+			spriteBatch[spriteBatchIndex] = new SpriteBatch(key);
+			spriteBatch[spriteBatchIndex].AddVerticesAndIndices(sprite);
 			spriteBatchIndex++;
 		}
 	}

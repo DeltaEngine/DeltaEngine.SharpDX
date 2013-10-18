@@ -7,7 +7,6 @@
 	{
 		None,
 		Horizontal,
-		Vertical,
-		RotatedAntiClockwise90
+		Vertical
 	}
 }

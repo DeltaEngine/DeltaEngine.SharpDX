@@ -109,9 +109,15 @@ namespace $safeprojectname$
 		{
 			Clear();
 			Add(new Sprite("LevelSelectionBackground", ScreenSpace.Current.Viewport));
-			AddLevelSelection(1, Rectangle.FromCenter(0.25f, 0.66f, 0.19f, 0.19f));
-			AddLevelSelection(2, Rectangle.FromCenter(0.5f, 0.66f, 0.19f, 0.19f));
-			AddLevelSelection(3, Rectangle.FromCenter(0.75f, 0.66f, 0.19f, 0.19f));
+			var clickAreas = new[] {
+				Rectangle.FromCenter(0.25f, 0.66f, 0.19f, 0.19f),
+				Rectangle.FromCenter(0.5f, 0.66f, 0.19f, 0.19f),
+				Rectangle.FromCenter(0.75f, 0.66f, 0.19f, 0.19f)
+			};
+			AddLevelSelection(1, clickAreas [0]);
+			AddLevelSelection(2, clickAreas [1]);
+			AddLevelSelection(3, clickAreas [2]);
+			Add(new Command(Command.Click, position => SinglePlayerMenuClick(position, clickAreas)));
 		}
 
 		private void AddLevelSelection(int levelNumber, Rectangle mapDrawArea)
@@ -122,11 +128,19 @@ namespace $safeprojectname$
 			Add(levelText);
 			var map = new Sprite("GhostWarsLevel" + levelNumber, mapDrawArea);
 			Add(map);
-			Add(new Command(Command.Click, position => 
+		}
+
+		private void SinglePlayerMenuClick(Vector2D position, Rectangle[] clickAreas)
+		{
+			for (int i = 0; i < clickAreas.Length; i++)
 			{
-				if (levelText.DrawArea.Contains(position) || map.DrawArea.Contains(position))
-					StartGame(levelNumber);
-			}));
+				if (clickAreas [i].Contains(position))
+				{
+					StartGame(i + 1);
+					return;
+				}
+				CreateMainMenu();
+			}
 		}
 
 		private void StartGame(int level)
@@ -143,6 +157,8 @@ namespace $safeprojectname$
 				SetupLevel2Trees();
 			else
 				SetupLevel3Trees();
+			trees.GameFinished += CreateGameOverButtons;
+			trees.GameLost += CreateGameOverButtons;
 		}
 
 		private TreeManager trees;
@@ -227,6 +243,14 @@ namespace $safeprojectname$
 			{
 				return ContentLoader.Load<Font>("Tahoma30");
 			}
+		}
+
+		public void CreateGameOverButtons()
+		{
+		}
+
+		private void RestartGame()
+		{
 		}
 
 		public bool IsPauseable

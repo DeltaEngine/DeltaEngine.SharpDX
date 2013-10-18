@@ -22,7 +22,7 @@ namespace SideScroller.Tests
 			bool ascended = false;
 			gameControls.Ascend += () => { ascended = true; };
 			if (resolver.GetType() != typeof(MockResolver))
-				return;
+				return;//ncrunch: no coverage
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.W, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
@@ -36,7 +36,7 @@ namespace SideScroller.Tests
 			bool sinking = false;
 			gameControls.Sink += () => { sinking = true; };
 			if (resolver.GetType() != typeof(MockResolver))
-				return;
+				return;//ncrunch: no coverage
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.S, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
@@ -50,7 +50,7 @@ namespace SideScroller.Tests
 			bool accelerated = false;
 			gameControls.Accelerate += () => { accelerated = true; };
 			if (resolver.GetType() != typeof(MockResolver))
-				return;
+				return;//ncrunch: no coverage
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.D, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
@@ -64,7 +64,7 @@ namespace SideScroller.Tests
 			bool slowingDown = false;
 			gameControls.SlowDown += () => { slowingDown = true; };
 			if (resolver.GetType() != typeof(MockResolver))
-				return;
+				return;//ncrunch: no coverage
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.A, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
@@ -79,7 +79,7 @@ namespace SideScroller.Tests
 			gameControls.Fire += () => { fireing = true; };
 			gameControls.HoldFire += () => { fireing = false; };
 			if (resolver.GetType() != typeof(MockResolver))
-				return;
+				return;//ncrunch: no coverage
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.Space, State.Pressing);
 			AdvanceTimeAndUpdateEntities();

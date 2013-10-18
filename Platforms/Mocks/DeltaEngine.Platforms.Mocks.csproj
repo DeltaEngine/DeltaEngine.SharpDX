@@ -92,7 +92,7 @@
       <Name>DeltaEngine.Rendering2D.Mocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\Particles\DeltaEngine.Rendering2D.Particles.csproj">
-      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Project>{968AFCEE-73A7-4AFD-8BB6-BA352E586681}</Project>
       <Name>DeltaEngine.Rendering2D.Particles</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">

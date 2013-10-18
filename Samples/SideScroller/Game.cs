@@ -21,7 +21,7 @@ namespace SideScroller
 			mainMenu.QuitGame += window.CloseAfterFrame;
 		}
 
-		private readonly Menu mainMenu;
+		public readonly Menu mainMenu;
 
 		public void StartGame()
 		{
@@ -38,9 +38,9 @@ namespace SideScroller
 			Start<EnemySpawner>();
 		}
 
-		internal PlayerPlane player;
+		public PlayerPlane player;
 		internal GameControls controls;
-		internal InteractionLogics interact;
+		public InteractionLogics interact;
 		internal Material playerTexture;
 		internal Material enemyTexture;
 		private ParallaxBackground background;

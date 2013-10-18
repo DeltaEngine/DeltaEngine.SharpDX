@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Entities
 {
-	internal class DrawableEntityTest
+	internal class DrawableEntityTests
 	{
 		[SetUp]
 		public void InitializeEntitiesRunner()

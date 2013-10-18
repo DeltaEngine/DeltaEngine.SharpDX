@@ -39,6 +39,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Content\Disk\DeltaEngine.Content.Disk.csproj">
+      <Project>{EE9847E1-9C76-4ACE-B531-D3EA84F7D741}</Project>
+      <Name>DeltaEngine.Content.Disk</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
       <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
       <Name>DeltaEngine.Content.Xml</Name>

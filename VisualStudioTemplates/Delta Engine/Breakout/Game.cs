@@ -1,4 +1,5 @@
 using DeltaEngine.Commands;
+using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
@@ -19,9 +20,20 @@ namespace $safeprojectname$
 			menu.InitGame += InitGame;
 			menu.QuitGame += window.CloseAfterFrame;
 			window.ViewportPixelSize = new Size(900, 900);
+			soundTrack = ContentLoader.Load<Music>("BreakoutMusic");
+			soundTrack.Loop = true;
+			soundTrack.Play();
+			menu.SettingsChanged += UpdateMusicVolume;
 		}
 
 		private readonly MainMenu menu;
+		private readonly Music soundTrack;
+
+		private void UpdateMusicVolume()
+		{
+			soundTrack.Stop();
+			soundTrack.Play();
+		}
 
 		private void InitGame()
 		{

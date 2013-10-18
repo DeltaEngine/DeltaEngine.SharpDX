@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Runtime.InteropServices;
 using DeltaEngine.Extensions;
 
@@ -336,7 +335,11 @@ namespace DeltaEngine.Datatypes
 
 		public override int GetHashCode()
 		{
-			return (int)GetValues.Aggregate((a, b) => a.GetHashCode() ^ b.GetHashCode());
+			// ReSharper disable NonReadonlyFieldInGetHashCode
+			return m11.GetHashCode() ^ m12.GetHashCode() ^ m13.GetHashCode() ^ m14.GetHashCode() ^
+				m21.GetHashCode() ^ m22.GetHashCode() ^ m23.GetHashCode() ^ m24.GetHashCode() ^
+				m31.GetHashCode() ^ m32.GetHashCode() ^ m33.GetHashCode() ^ m34.GetHashCode() ^
+				m41.GetHashCode() ^ m42.GetHashCode() ^ m43.GetHashCode() ^ m44.GetHashCode();
 		}
 
 		public override bool Equals(object obj)

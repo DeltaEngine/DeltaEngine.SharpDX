@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using DeltaEngine.Content;
 using DeltaEngine.Entities;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Core
 {
@@ -61,11 +63,19 @@ namespace DeltaEngine.Core
 			}
 			if (type.Name.StartsWith("Xml"))
 				throw new DoNotSaveXmlDataAsBinaryData(data);
+			if (type.Name.StartsWith("Mock"))
+				throw new DoNotSaveMockTypes(data);
+			if (type.Name.EndsWith("Image"))
+				throw new DoNotSaveImagesAsBinaryData(data);
+			if (type.Name.EndsWith("Sound") || type.Name.EndsWith("Music") || type.Name.EndsWith("Video"))
+				throw new DoNotSaveMultimediaDataAsBinaryData(data);
 			if (data is Stream && !(data is MemoryStream))
 				throw new OnlyMemoryStreamSavingIsSupported(data);
 			if (SaveIfIsPrimitiveData(data, type, writer))
 				return;
-			if (type == typeof(MemoryStream))
+			if (type == typeof(Material))
+				SaveCustomMaterial(data, writer);
+			else if (type == typeof(MemoryStream))
 				SaveMemoryStream(data, writer);
 			else if (type == typeof(byte[]))
 				SaveByteArray(data, writer);
@@ -111,6 +121,24 @@ namespace DeltaEngine.Core
 		{
 			public DoNotSaveXmlDataAsBinaryData(object data)
 				: base(data.ToString()) {}
+		}
+
+		private class DoNotSaveMockTypes : Exception
+		{
+			public DoNotSaveMockTypes(object data)
+				: base(data.ToString()) { }
+		}
+
+		private class DoNotSaveImagesAsBinaryData : Exception
+		{
+			public DoNotSaveImagesAsBinaryData(object data)
+				: base(data.ToString()) { }
+		}
+
+		private class DoNotSaveMultimediaDataAsBinaryData : Exception
+		{
+			public DoNotSaveMultimediaDataAsBinaryData(object data)
+				: base(data.ToString()) { }
 		}
 
 		private class OnlyMemoryStreamSavingIsSupported : Exception
@@ -167,6 +195,27 @@ namespace DeltaEngine.Core
 				return true;
 			}
 			return false;
+		}
+
+		private static void SaveCustomMaterial(object data, BinaryWriter writer)
+		{
+			var material = data as Material;
+			writer.Write(material.Shader.Name);
+			var isCustomImage = material.DiffuseMap != null && material.DiffuseMap.Name.StartsWith("<");
+			writer.Write(isCustomImage);
+			if (isCustomImage)
+			{
+				writer.Write(material.DiffuseMap.PixelSize.Width);
+				writer.Write(material.DiffuseMap.PixelSize.Height);
+			}
+			else if (material.Animation != null)
+				writer.Write(material.Animation.Name);
+			else if (material.SpriteSheet != null)
+				writer.Write(material.SpriteSheet.Name);
+			else if (material.DiffuseMap != null)
+				writer.Write(material.DiffuseMap.Name);
+			writer.Write(material.DefaultColor.PackedRgba);
+			writer.Write(material.Duration);
 		}
 
 		private static void SaveMemoryStream(object data, BinaryWriter writer)
@@ -328,7 +377,7 @@ namespace DeltaEngine.Core
 			{
 				object fieldData = field.GetValue(data);
 				Type fieldType = field.FieldType;
-				if (fieldType.DoNotNeedToSaveType() || fieldType == type)
+				if (fieldType.DoNotNeedToSaveType(field.Attributes) || fieldType == type)
 					continue;
 				if (fieldType.IsClass)
 				{

@@ -34,7 +34,7 @@ namespace DeltaEngine.Entities
 					if (value)
 						Activate();
 					else
-						Inactivate();
+						Deactivate();
 			}
 		}
 
@@ -46,7 +46,7 @@ namespace DeltaEngine.Entities
 			EntitiesRunner.Current.Add(this);
 		}
 
-		protected void Inactivate()
+		protected void Deactivate()
 		{
 			isActive = false;
 			EntitiesRunner.Current.Remove(this);
@@ -54,14 +54,9 @@ namespace DeltaEngine.Entities
 
 		protected readonly List<object> components = new List<object>();
 
-		public class ComponentOfTheSameTypeAddedMoreThanOnce : Exception { }
+		public class ComponentOfTheSameTypeAddedMoreThanOnce : Exception {}
 
 		protected internal virtual List<object> GetComponentsForSaving()
-		{
-			return new List<object>(components);
-		}
-
-		protected internal virtual List<object> GetComponentsForViewing()
 		{
 			return new List<object>(components);
 		}
@@ -71,8 +66,9 @@ namespace DeltaEngine.Entities
 		/// </summary>
 		public virtual T Get<T>()
 		{
-			foreach (T component in components.OfType<T>())
-				return component;
+			foreach (var component in components)
+				if (component is T)
+					return (T)component;
 			throw new ComponentNotFound(typeof(T));
 		}
 
@@ -89,7 +85,10 @@ namespace DeltaEngine.Entities
 
 		public virtual bool Contains<T>()
 		{
-			return components.OfType<T>().Any();
+			foreach (var component in components)
+				if (component is T)
+					return true;
+			return false;
 		}
 
 		public virtual Entity Add<T>(T component)

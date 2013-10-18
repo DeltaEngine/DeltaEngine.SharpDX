@@ -309,7 +309,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void CalculateHashCode()
 		{
-			Assert.AreEqual(204607600, matrix.GetHashCode());
+			Assert.AreEqual(1069547520, matrix.GetHashCode());
 			Assert.AreEqual(0, new Matrix().GetHashCode());
 		}
 

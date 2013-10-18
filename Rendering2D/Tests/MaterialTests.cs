@@ -1,4 +1,5 @@
 ﻿using DeltaEngine.Content;
+using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -50,6 +51,14 @@ namespace DeltaEngine.Rendering2D.Tests
 			ContentLoader.Load<SpriteSheetAnimation>("MySpriteSheet");
 			var noImageMaterial = ContentLoader.Load<Material>("MaterialWithSpriteSheet");
 			Assert.IsNotNull(noImageMaterial.SpriteSheet);
+		}
+
+		[Test]
+		public void Load3DMaterial()
+		{
+			var material = ContentLoader.Load<Material>("3DMaterial");
+			var shader = material.Shader as ShaderWithFormat;
+			Assert.IsTrue(shader.Format.Is3D);
 		}
 	}
 }

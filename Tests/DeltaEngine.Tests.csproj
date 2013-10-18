@@ -55,18 +55,6 @@
       <Project>{BC9EE416-ABEC-4B61-801D-EBB5C699CB5D}</Project>
       <Name>DeltaEngine.Multimedia.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Platforms\DeltaEngine.Platforms.csproj">
-      <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
-      <Name>DeltaEngine.Platforms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Platforms\Mocks\DeltaEngine.Platforms.Mocks.csproj">
-      <Project>{BF968F20-246B-4F86-BB7B-377FD4B47A9F}</Project>
-      <Name>DeltaEngine.Platforms.Mocks</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -91,7 +79,7 @@
     <Compile Include="Datatypes\RayTests.cs" />
     <Compile Include="Datatypes\TimeRangeGraphTests.cs" />
     <Compile Include="Entities\CreatingEntitiesTests.cs" />
-    <Compile Include="Entities\DrawableEntityTest.cs" />
+    <Compile Include="Entities\DrawableEntityTests.cs" />
     <Compile Include="Entities\FilteredEntitiesTests.cs" />
     <Compile Include="Entities\TimeTests.cs" />
     <Compile Include="Entities\UpdateAndDrawThreadsTests.cs" />

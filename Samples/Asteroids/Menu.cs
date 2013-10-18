@@ -18,7 +18,9 @@ namespace Asteroids
 			AddStartButton();
 			AddHowToPlay();
 			AddQuitButton();
-			AddHighScores();
+			AddHighscores();
+			SetQuadraticBackground("AsteroidsMainMenuBackground");
+			AddMenuLogo();
 		}
 
 		private void CreateMenuTheme()
@@ -28,24 +30,26 @@ namespace Asteroids
 			menuTheme.ButtonMouseover = new Theme.Appearance(ContentLoader.Load<Material>("ButtonHover"));
 			menuTheme.ButtonPressed = new Theme.Appearance(ContentLoader.Load<Material>("ButtonPressed"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
-			SetQuadraticBackground("AsteroidsMainMenuBackground");
-			AddMenuLogo();
+
 		}
 
 		private void AddMenuLogo()
 		{
 			var material = new Material(Shader.Position2DColorUV, "AsteroidsMainMenuLogo");
-			Add(new Sprite(material,
-				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.16f, 0.8f, 0.2f)));
+			var gameLogo= new Sprite(material,
+				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.1f, 0.8f, 0.2f));
+			gameLogo.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
+			Add(gameLogo);
 		}
 
 		private Theme menuTheme;
 
 		private void AddStartButton()
 		{
-			var startButton = new InteractiveButton(menuTheme,
-				new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.3f, 0.4f, 0.08f), "Start Game");
+			var startButton = new Button(menuTheme,
+				new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.4f, 0.4f, 0.08f), "Start Game");
 			startButton.Clicked += TryInvokeGameStart;
+			startButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(startButton);
 		}
 
@@ -59,23 +63,25 @@ namespace Asteroids
 
 		private void AddHowToPlay()
 		{
-			var howToButton = new InteractiveButton(menuTheme,
-				new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.2f, 0.4f, 0.08f), "How To Play");
+			var howToButton = new Button(menuTheme,
+				new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.3f, 0.4f, 0.08f), "How To Play");
 			howToButton.Clicked += ShowHowToPlaySubMenu;
+			howToButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(howToButton);
 		}
 
 		private void ShowHowToPlaySubMenu()
 		{
 			if (howToPlay == null)
-				howToPlay = new HowToPlaySubMenu(this, menuTheme, (int)AsteroidsRenderLayer.UserInterface + 10);
+				howToPlay = new HowToPlaySubMenu(this, menuTheme,
+					(int)AsteroidsRenderLayer.UserInterface + 10);
 			howToPlay.Show();
 			Hide();
 		}
 
 		private HowToPlaySubMenu howToPlay;
 
-		private class HowToPlaySubMenu : Scene
+		private sealed class HowToPlaySubMenu : Scene
 		{
 			public HowToPlaySubMenu(Scene parent, Theme menuTheme, int renderLayer)
 			{
@@ -89,8 +95,8 @@ namespace Asteroids
 			}
 
 			private readonly Theme menuTheme;
-			private int renderLayer;
-			private Scene parent;
+			private readonly int renderLayer;
+			private readonly Scene parent;
 
 			private void AddControlDescription()
 			{
@@ -100,24 +106,91 @@ namespace Asteroids
 				descriptionText += "Turn Right - D, cursor right or left analogue stick right\n\n";
 				descriptionText += "Fire Missiles - Hold Space or the key A on a controller";
 				var howToDisplayText = new FontText(Font.Default, descriptionText, Vector2D.Half);
+				howToDisplayText.RenderLayer = renderLayer + 2;
 				Add(howToDisplayText);
 			}
 
 			private void AddBackButton()
 			{
-				var backButton = new InteractiveButton(menuTheme,
+				var backButton = new Button(menuTheme,
 					new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.15f, 0.4f, 0.08f), "Back");
 				backButton.RenderLayer = renderLayer + 1;
-				backButton.Clicked += () => { Hide(); parent.Show(); };
+				backButton.Clicked += () =>
+				{
+					Hide();
+					parent.Show();
+				};
+				Add(backButton);
+			}
+		}
+
+		private void AddHighscores()
+		{
+			var highscoreButton = new Button(menuTheme,
+				new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.2f, 0.4f, 0.08f), "Highscores");
+			highscoreButton.Clicked += ShowHighScoresSubMenu;
+			highscoreButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
+			Add(highscoreButton);
+		}
+
+		private void ShowHighScoresSubMenu()
+		{
+			if (highscore == null)
+				highscore = new HighscoreSubMenu(this, menuTheme,
+					(int)AsteroidsRenderLayer.UserInterface + 10);
+			highscore.UpdateScoreText(ScoreboardText);
+			highscore.Show();
+			Hide();
+		}
+
+		private HighscoreSubMenu highscore;
+
+		private sealed class HighscoreSubMenu : Scene
+		{
+			public HighscoreSubMenu(Scene parent, Theme menuTheme, int renderLayer)
+			{
+				this.parent = parent;
+				this.menuTheme = menuTheme;
+				this.renderLayer = renderLayer;
+				SetQuadraticBackground("AsteroidsMainMenuBackground");
+				scoreboard = new FontText(Font.Default, "", Vector2D.Half);
+				scoreboard.RenderLayer = renderLayer + 2;
+				Add(scoreboard);
+				AddBackButton();
+				Hide();
+			}
+
+			private readonly Theme menuTheme;
+			private readonly int renderLayer;
+			private readonly Scene parent;
+			private readonly FontText scoreboard;
+
+			public void UpdateScoreText(string text)
+			{
+				if(scoreboard != null)
+				scoreboard.Text = text;
+			}
+
+			private void AddBackButton()
+			{
+				var backButton = new Button(menuTheme,
+					new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.1f, 0.4f, 0.08f), "Back");
+				backButton.RenderLayer = renderLayer + 1;
+				backButton.Clicked += () =>
+				{
+					Hide();
+					parent.Show();
+				};
 				Add(backButton);
 			}
 		}
 
 		private void AddQuitButton()
 		{
-			var quitButton = new InteractiveButton(menuTheme,
+			var quitButton = new Button(menuTheme,
 				new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.1f, 0.4f, 0.08f), "Quit Game");
 			quitButton.Clicked += TryInvokeQuit;
+			quitButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(quitButton);
 		}
 
@@ -129,22 +202,14 @@ namespace Asteroids
 
 		public event Action QuitGame;
 
-		private void AddHighScores()
-		{
-			scoreBoard = new FontText(ContentLoader.Load<Font>("Verdana12"), " ",
-				new Vector2D(0.8f, 0.6f));
-			Add(scoreBoard);
-		}
-
-		private FontText scoreBoard;
-
 		public void UpdateHighscoreDisplay(int[] highscores)
 		{
-			var scoreboardText = "Highscores";
+			ScoreboardText = "Highscores";
 			for (int i = 0; i < highscores.Length; i++)
-				scoreboardText += "\n" + (i + 1).ToString(CultureInfo.InvariantCulture) + ": " +
+				ScoreboardText += "\n" + (i + 1).ToString(CultureInfo.InvariantCulture) + ": " +
 					highscores[i];
-			scoreBoard.Text = scoreboardText;
 		}
+
+		public string ScoreboardText { get; private set; }
 	}
 }

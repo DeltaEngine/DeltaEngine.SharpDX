@@ -38,13 +38,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Content\RenderingData.cs" />
     <Compile Include="Commands\InputTrigger.cs" />
     <Compile Include="Commands\ZoomTrigger.cs" />
     <Compile Include="Commands\DragTrigger.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\PositionTrigger.cs" />
     <Compile Include="Commands\Trigger.cs" />
-    <Compile Include="Content\UVCalculator.cs" />
+    <Compile Include="Content\RenderingCalculator.cs" />
     <Compile Include="Core\ConsoleCommandAttribute.cs" />
     <Compile Include="Content\ImageAnimation.cs" />
     <Compile Include="Content\ContentCreationData.cs" />

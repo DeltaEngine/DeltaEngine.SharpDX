@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using DeltaEngine.Content;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 
 namespace DeltaEngine.Core
@@ -27,14 +28,14 @@ namespace DeltaEngine.Core
 			{
 				throw new Exception(
 					"Failed to load inner type of '" + typeToCreate + "' (Version " + dataVersion + "). " +
-						"Your data might be outdated '" + subTypeToCreate + "'. Try to delete your local content",
+					"Your data might be outdated '" + subTypeToCreate + "'. Try to delete your local content",
 					ex);
 			} //ncrunch: no coverage end
 			catch (MissingMethodException ex)
 			{
 				throw new MissingMethodException(
 					"Failed to load '" + typeToCreate + "' (Version " + dataVersion + "). " +
-						"Could not create default instance of '" + subTypeToCreate + "'", ex);
+					"Could not create default instance of '" + subTypeToCreate + "'", ex);
 			}
 			catch (Exception ex)
 			{
@@ -110,7 +111,9 @@ namespace DeltaEngine.Core
 			}
 			if (LoadPrimitiveData(ref data, type, reader))
 				return;
-			if (type == typeof(MemoryStream))
+			if (type == typeof(Material))
+				data = LoadCustomMaterial(reader);
+			else if (type == typeof(MemoryStream))
 				data = LoadMemoryStream(reader);
 			else if (type == typeof(byte[]))
 				data = LoadByteArray(reader);
@@ -214,6 +217,25 @@ namespace DeltaEngine.Core
 				return true;
 			}
 			return false;
+		}
+
+		private static Material LoadCustomMaterial(BinaryReader reader)
+		{
+			var shaderName = reader.ReadString();
+			var isCustomImage = reader.ReadBoolean();
+			var pixelSize = isCustomImage
+				? new Size(reader.ReadSingle(), reader.ReadSingle()) : Size.Zero;
+			var imageOrAnimationName = isCustomImage ? "" : reader.ReadString();
+			var color = new Color(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(),
+				reader.ReadByte());
+			var duration = reader.ReadSingle();
+			var material = isCustomImage
+				? new Material(ContentLoader.Load<Shader>(shaderName),
+					ContentLoader.Create<Image>(new ImageCreationData(pixelSize)))
+				: new Material(shaderName, imageOrAnimationName);
+			material.DefaultColor = color;
+			material.Duration = duration;
+			return material;
 		}
 
 		private static MemoryStream LoadMemoryStream(BinaryReader reader)
@@ -353,7 +375,7 @@ namespace DeltaEngine.Core
 			foreach (FieldInfo field in GetBackingFields(type))
 			{
 				Type fieldType = field.FieldType;
-				if (fieldType.DoNotNeedToSaveType() || fieldType == type)
+				if (fieldType.DoNotNeedToSaveType(field.Attributes) || fieldType == type)
 					continue;
 				if (field.FieldType.IsClass)
 				{

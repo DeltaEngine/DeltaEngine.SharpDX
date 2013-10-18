@@ -4,7 +4,6 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering3D.Particles;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -69,10 +68,10 @@ namespace $safeprojectname$
 
 		private void MoveUpdate()
 		{
-			var nextRect = CalculateRectAfterMove(Time.Delta);
-			MoveEntity(nextRect);
 			var velocity2D = Get<Velocity2D>();
 			velocity2D.velocity -= velocity2D.velocity * PlayerDecelFactor * Time.Delta;
+			var nextRect = CalculateRectAfterMove(Time.Delta);
+			MoveEntity(nextRect);
 			Set(velocity2D);
 		}
 
@@ -83,24 +82,22 @@ namespace $safeprojectname$
 
 		private void MoveEntity(Rectangle rect)
 		{
-			StopAtBorder();
+			StopAtBorder(rect);
 			Set(rect);
 		}
 
-		private void StopAtBorder()
+		private void StopAtBorder(Rectangle rect)
 		{
-			var drawArea = DrawArea;
 			var vel = Get<Velocity2D>();
 			var borders = ScreenSpace.Current.Viewport;
-			CheckStopRightBorder(ref drawArea, vel, borders);
-			CheckStopLeftBorder(ref drawArea, vel, borders);
-			CheckStopTopBorder(ref drawArea, vel, borders);
-			CheckStopBottomBorder(ref drawArea, vel, borders);
+			CheckStopRightBorder(rect, vel, borders);
+			CheckStopLeftBorder(rect, vel, borders);
+			CheckStopTopBorder(rect, vel, borders);
+			CheckStopBottomBorder(rect, vel, borders);
 			Set(vel);
-			Set(drawArea);
 		}
 
-		private static void CheckStopRightBorder(ref Rectangle rect, Velocity2D vel, Rectangle borders)
+		private static void CheckStopRightBorder(Rectangle rect, Velocity2D vel, Rectangle borders)
 		{
 			if (rect.Right <= borders.Right)
 				return;
@@ -109,7 +106,7 @@ namespace $safeprojectname$
 			rect.Right = borders.Right;
 		}
 
-		private static void CheckStopLeftBorder(ref Rectangle rect, Velocity2D vel, Rectangle borders)
+		private static void CheckStopLeftBorder(Rectangle rect, Velocity2D vel, Rectangle borders)
 		{
 			if (rect.Left >= borders.Left)
 				return;
@@ -118,7 +115,7 @@ namespace $safeprojectname$
 			rect.Left = borders.Left;
 		}
 
-		private static void CheckStopTopBorder(ref Rectangle rect, Velocity2D vel, Rectangle borders)
+		private static void CheckStopTopBorder(Rectangle rect, Velocity2D vel, Rectangle borders)
 		{
 			if (rect.Top >= borders.Top)
 				return;
@@ -127,7 +124,7 @@ namespace $safeprojectname$
 			rect.Top = borders.Top;
 		}
 
-		private static void CheckStopBottomBorder(ref Rectangle rect, Velocity2D vel, Rectangle borders)
+		private static void CheckStopBottomBorder(Rectangle rect, Velocity2D vel, Rectangle borders)
 		{
 			if (rect.Bottom <= borders.Bottom)
 				return;

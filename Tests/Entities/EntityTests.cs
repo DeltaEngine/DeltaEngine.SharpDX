@@ -348,7 +348,7 @@ namespace DeltaEngine.Tests.Entities
 		{
 			var entityWithComponent = new MockEntityWithStringComponent();
 			entityWithComponent.Add(entityWithTags);
-			List<object> components = entityWithComponent.GetComponentsForViewing();
+			List<object> components = entityWithComponent.GetComponentsForSaving();
 			Assert.AreEqual(2, components.Count);
 			Assert.AreEqual("Hello", components[0]);
 			Assert.AreEqual(entityWithTags, components[1]);

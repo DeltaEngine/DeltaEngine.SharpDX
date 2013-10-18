@@ -9,19 +9,13 @@ namespace $safeprojectname$
 		public GameControls()
 		{
 			commands = new Command[7];
-			usedCommands = 0;
 			SetControlsToState();
 		}
 
 		private readonly Command[] commands;
-		private readonly int usedCommands;
 
 		public void SetControlsToState()
 		{
-			for (int i = 0; i < usedCommands; i++)
-			{
-				commands [i].IsActive = false;
-			}
 			CreateIngameControls();
 		}
 

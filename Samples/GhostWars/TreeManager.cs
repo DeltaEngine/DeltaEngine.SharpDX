@@ -23,6 +23,7 @@ namespace GhostWars
 				MainMenu.State = GameState.Game;
 			statusText = new FontText(MainMenu.Font, "",
 				Rectangle.FromCenter(new Vector2D(0.5f, 0.25f), new Size(0.2f))) { RenderLayer = 5 };
+			statusText.Color = Team.HumanYellow.ToColor();
 			new Sprite(new Material(Shader.Position2DUV, "Logo"),
 				new Rectangle(0.02f, 0.205f, 0.15f, 0.15f)) { RenderLayer = -15 };
 			CreateArrowSelectionAndBars();
@@ -214,14 +215,22 @@ namespace GhostWars
 			statusText.Text = "";
 			MainMenu.State = GameState.GameOver;
 			new Sprite(new Material(Shader.Position2DUV, "YouWin"), Vector2D.Half) { RenderLayer = 4000 };
+			if (GameFinished != null)
+				GameFinished();
 		}
+
+		public event Action GameFinished;
 
 		private void HandleLostSituation()
 		{
 			statusText.Text = "You Lost!";
 			MainMenu.State = GameState.GameOver;
 			new Sprite(new Material(Shader.Position2DUV, "GameOver"), Vector2D.Half) { RenderLayer = 4000 };
+			if (GameLost != null)
+				GameLost();
 		}
+
+		public event Action GameLost;
 
 		private void HandleAi(Tree tree)
 		{

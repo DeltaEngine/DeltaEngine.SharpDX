@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Content;
-using DeltaEngine.GameLogic;
 
 namespace DeltaEngine.Rendering2D.Particles
 {

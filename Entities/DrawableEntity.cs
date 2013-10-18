@@ -54,6 +54,13 @@ namespace DeltaEngine.Entities
 
 		public const int DefaultRenderLayer = 0;
 
+		protected internal override List<object> GetComponentsForSaving()
+		{
+			var componentsForSaving = base.GetComponentsForSaving();
+			componentsForSaving.Add(RenderLayer);
+			return componentsForSaving;
+		}
+
 		internal void InvokeNextUpdateStarted()
 		{
 			NextUpdateStarted();
@@ -103,22 +110,28 @@ namespace DeltaEngine.Entities
 			if (EntitiesRunner.Current.State == UpdateDrawState.Draw &&
 				typeof(Lerp).IsAssignableFrom(typeof(T)))
 				if (typeof(Lerp<T>).IsAssignableFrom(typeof(T)))
-					foreach (T previous in lastTickLerpComponents.OfType<T>())
-						return ((Lerp<T>)previous).Lerp(base.Get<T>(), EntitiesRunner.CurrentDrawInterpolation);
+					foreach (var previous in lastTickLerpComponents)
+						if (previous is T)
+							return ((Lerp<T>)previous).Lerp(base.Get<T>(), EntitiesRunner.CurrentDrawInterpolation);
 			return base.Get<T>();
 		}
 
 		public List<T> GetInterpolatedList<T>() where T : Lerp
 		{
 			EntitiesRunner.Current.CheckIfInDrawState();
-			foreach (var list in lastTickLerpComponents.OfType<IEnumerable<T>>())
-				if (list.GetType().IsGenericType && list.GetType().GetGenericArguments()[0] == typeof(T))
-				{
-					foreach (var current in components.OfType<IEnumerable<T>>())
+			foreach (var previous in lastTickLerpComponents)
+			{
+				var previousList = previous as IEnumerable<T>;
+				if (previousList != null && previousList.GetType().IsGenericType &&
+					previousList.GetType().GetGenericArguments()[0] == typeof(T))
+					foreach (var component in components)
 					{
-						var returnValue = new List<T>(list);
+						var currentList = component as IEnumerable<T>;
+						if (currentList == null)
+							continue;
+						var returnValue = new List<T>(previousList);
 						int index = 0;
-						foreach (var currentItem in current)
+						foreach (var currentItem in currentList)
 						{
 							returnValue[index] = ((Lerp<T>)returnValue[index]).Lerp(currentItem,
 								EntitiesRunner.CurrentDrawInterpolation);
@@ -126,7 +139,7 @@ namespace DeltaEngine.Entities
 						}
 						return returnValue;
 					}
-				} //ncrunch: no coverage 
+			}
 			throw new ListWithLerpElementsForInterpolationWasNotFound(typeof(T));
 		}
 
@@ -139,21 +152,25 @@ namespace DeltaEngine.Entities
 		public T[] GetInterpolatedArray<T>(int arrayCopyLimit = -1) where T : Lerp
 		{
 			EntitiesRunner.Current.CheckIfInDrawState();
-			foreach (var array in lastTickLerpComponents.OfType<T[]>())
-				if (array.GetType().GetElementType() == typeof(T))
-				{
-					foreach (var current in components.OfType<T[]>())
+			foreach (var previous in lastTickLerpComponents)
+			{
+				var previousArray = previous as T[];
+				if (previousArray != null && previousArray.GetType().GetElementType() == typeof(T))
+					foreach (var component in components)
 					{
-						var length = Math.Min(array.Length, current.Length);
+						var currentArray = component as T[];
+						if (currentArray == null)
+							continue;
+						var length = Math.Min(previousArray.Length, currentArray.Length);
 						if (arrayCopyLimit > 0 && length > arrayCopyLimit)
 							length = arrayCopyLimit;
 						var returnValue = new T[length];
 						for (int index = 0; index < length; index++)
-							returnValue[index] = ((Lerp<T>)array[index]).Lerp(current[index],
+							returnValue[index] = ((Lerp<T>)previousArray[index]).Lerp(currentArray[index],
 								EntitiesRunner.CurrentDrawInterpolation);
 						return returnValue;
 					}
-				} //ncrunch: no coverage 
+			}
 			throw new ArrayWithLerpElementsForInterpolationWasNotFound(typeof(T));
 		}
 

@@ -1,7 +1,6 @@
 ﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Mocks;
-using DeltaEngine.Platforms;
 using NUnit.Framework;
 using ProfilingMode = DeltaEngine.Core.ProfilingMode;
 

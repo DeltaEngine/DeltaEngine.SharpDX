@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HierarchicalObject.cs" />
+    <Compile Include="Particle2DTorusEmitter.cs" />
     <Compile Include="ParticleSystem.cs" />
     <Compile Include="ParticleSystemData.cs" />
     <Compile Include="Particle.cs" />

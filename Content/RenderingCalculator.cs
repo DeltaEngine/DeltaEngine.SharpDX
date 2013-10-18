@@ -7,20 +7,21 @@ namespace DeltaEngine.Content
 	/// Given an AtlasRegion and desired UV, DrawArea and FlipMode, it will return the true UV
 	/// and DrawArea.
 	/// </summary>
-	public class UVCalculator
+	public class RenderingCalculator
 	{
-		internal UVCalculator()
+		internal RenderingCalculator()
 			: this(new AtlasRegion { UV = Rectangle.One }) {}
 
-		public UVCalculator(AtlasRegion region)
+		public RenderingCalculator(AtlasRegion region)
 		{
 			uv = region.UV;
 			padLeft = region.PadLeft;
 			padRight = region.PadRight;
 			padTop = region.PadTop;
 			padBottom = region.PadBottom;
+			isRotated = region.IsRotated;
 			hasNoPadding = padLeft == 0 && padRight == 0 && padTop == 0 && padBottom == 0;
-			hasNoAtlas = uv == Rectangle.One && hasNoPadding;
+			hasNoAtlas = uv == Rectangle.One && hasNoPadding && !isRotated;
 			originalWidth = uv.Size.Width + padLeft + padRight;
 			originalHeight = uv.Size.Height + padTop + padBottom;
 		}
@@ -34,20 +35,21 @@ namespace DeltaEngine.Content
 		private readonly bool hasNoAtlas;
 		private readonly float originalWidth;
 		private readonly float originalHeight;
+		private readonly bool isRotated;
 
-		public Results GetUVAndDrawArea(Rectangle userUV, Rectangle drawArea, FlipMode flipMode)
+		public RenderingData GetUVAndDrawArea(Rectangle userUV, Rectangle drawArea, FlipMode flipMode)
 		{
 			if (hasNoAtlas)
 				return GetUVAndDrawAreaWhenNoAtlas(userUV, drawArea, flipMode);
-			if (hasNoPadding)
-				return GetUVAndDrawAreaWhenNoPadding(userUV, drawArea, flipMode);
-			return GetUVAndDrawAreaWhenHasPadding(userUV, drawArea, flipMode);
+			if (!isRotated)
+				return GetUVAndDrawAreaWhenNotRotated(userUV, drawArea, flipMode);
+			return GetUVAndDrawAreaWhenRotated(userUV, drawArea, flipMode);
 		}
 
-		private static Results GetUVAndDrawAreaWhenNoAtlas(Rectangle userUV, Rectangle drawArea,
+		private static RenderingData GetUVAndDrawAreaWhenNoAtlas(Rectangle userUV, Rectangle drawArea,
 			FlipMode flipMode)
 		{
-			return new Results
+			return new RenderingData
 			{
 				RequestedUserUV = userUV,
 				RequestedDrawArea = drawArea,
@@ -67,10 +69,18 @@ namespace DeltaEngine.Content
 			return uv;
 		}
 
-		private Results GetUVAndDrawAreaWhenNoPadding(Rectangle userUV, Rectangle drawArea,
+		public RenderingData GetUVAndDrawAreaWhenNotRotated(Rectangle userUV, Rectangle drawArea,
 			FlipMode flipMode)
 		{
-			return new Results
+			if (hasNoPadding)
+				return GetUVAndDrawAreaWhenNoPaddingAndNotRotated(userUV, drawArea, flipMode);
+			return GetUVAndDrawAreaWhenHasPaddingButNotRotated(userUV, drawArea, flipMode);
+		}
+
+		private RenderingData GetUVAndDrawAreaWhenNoPaddingAndNotRotated(Rectangle userUV,
+			Rectangle drawArea, FlipMode flipMode)
+		{
+			return new RenderingData
 			{
 				RequestedUserUV = userUV,
 				RequestedDrawArea = drawArea,
@@ -81,20 +91,16 @@ namespace DeltaEngine.Content
 			};
 		}
 
-		private Results GetUVAndDrawAreaWhenHasPadding(Rectangle userUV, Rectangle drawArea,
-			FlipMode flipMode)
+		private RenderingData GetUVAndDrawAreaWhenHasPaddingButNotRotated(Rectangle userUV,
+			Rectangle drawArea, FlipMode flipMode)
 		{
 			Rectangle expandedUV = GetExpandedUV();
 			Rectangle expandedUserUV = GetExpandedUserUV(userUV, expandedUV);
 			if (HasNoRendering(expandedUserUV))
-				return new Results // ncrunch: no coverage
-				{
-					RequestedUserUV = userUV,
-					RequestedDrawArea = drawArea,
-					FlipMode = flipMode,
-				};
+				return new RenderingData // ncrunch: no coverage
+				{ RequestedUserUV = userUV, RequestedDrawArea = drawArea, FlipMode = flipMode, };
 			Rectangle culledUserUV = GetCulledUserUV(expandedUserUV);
-			return new Results
+			return new RenderingData
 			{
 				RequestedUserUV = userUV,
 				RequestedDrawArea = drawArea,
@@ -172,27 +178,14 @@ namespace DeltaEngine.Content
 				paddedDrawAreaRight - paddedDrawAreaLeft, paddedDrawAreaBottom - paddedDrawAreaTop);
 		}
 
-		public struct Results : Lerp<Results>
+		private RenderingData GetUVAndDrawAreaWhenRotated(Rectangle userUV, Rectangle drawArea,
+			FlipMode flipMode)
 		{
-			public Rectangle RequestedUserUV { get; internal set; }
-			public Rectangle RequestedDrawArea { get; internal set; }
-			public FlipMode FlipMode { get; internal set; }
-			public Rectangle AtlasUV { get; internal set; }
-			public Rectangle DrawArea { get; internal set; }
-			public bool HasSomethingToRender { get; internal set; }
-
-			public Results Lerp(Results other, float interpolation)
-			{
-				return new Results
-				{
-					RequestedUserUV = RequestedUserUV.Lerp(other.RequestedUserUV, interpolation),
-					RequestedDrawArea = RequestedDrawArea.Lerp(other.RequestedDrawArea, interpolation),
-					FlipMode = FlipMode,
-					AtlasUV = AtlasUV.Lerp(other.AtlasUV, interpolation),
-					DrawArea = DrawArea.Lerp(other.DrawArea, interpolation),
-					HasSomethingToRender = HasSomethingToRender && other.HasSomethingToRender
-				};
-			}
+			var rotatedUserUV = new Rectangle(userUV.Top, 1 - userUV.Left - userUV.Width, userUV.Height,
+				userUV.Width);
+			var data = GetUVAndDrawAreaWhenNotRotated(rotatedUserUV, drawArea, flipMode);
+			data.IsAtlasRotated = true;
+			return data;
 		}
 	}
 }

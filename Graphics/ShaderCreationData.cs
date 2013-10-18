@@ -5,7 +5,7 @@ namespace DeltaEngine.Graphics
 {
 	/// <summary>
 	/// Creates a shader directly from vertex and fragment shader code for OpenGL frameworks plus
-	/// Hlsl code for DirectX frameworks. If you only provide shader code for a specific framework, 
+	/// HLSL code for DirectX frameworks. If you only provide shader code for a specific framework, 
 	/// it breaks multiplatform compatibility. Use this only for testing and use content normally. 
 	/// </summary>
 	public class ShaderCreationData : ContentCreationData

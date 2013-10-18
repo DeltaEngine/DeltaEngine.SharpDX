@@ -194,12 +194,9 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void GetComponentsForEntityDebugger()
 		{
 			var entityWithComponent = new Entity2D(Rectangle.HalfCentered);
-			List<object> components = entityWithComponent.GetComponentsForViewing();
-			Assert.AreEqual(5, components.Count);
+			List<object> components = entityWithComponent.GetComponentsForSaving();
+			Assert.AreEqual(2, components.Count);
 			Assert.AreEqual(Rectangle.HalfCentered, GetComponent<Rectangle>(components));
-			Assert.AreEqual(Color.White, GetComponent<Color>(components));
-			Assert.AreEqual(Vector2D.Half, GetComponent<Vector2D>(components));
-			Assert.AreEqual(0, GetComponent<float>(components));
 			Assert.IsTrue(GetComponent<bool>(components));
 		}
 

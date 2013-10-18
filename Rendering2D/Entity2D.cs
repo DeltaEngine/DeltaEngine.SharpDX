@@ -91,25 +91,18 @@ namespace DeltaEngine.Rendering2D
 		protected internal override List<object> GetComponentsForSaving()
 		{
 			var componentsForSaving = new List<object> { DrawArea, IsVisible };
+			if (Color != DefaultColor)
+				componentsForSaving.Add(Color);
+			if (Rotation != DefaultRotation)
+				componentsForSaving.Add(Rotation);
+			if (RotationCenter != DrawArea.Center)
+				componentsForSaving.Add(RotationCenter);
 			foreach (var component in base.GetComponentsForSaving())
 				if (!component.GetType().Name.Contains("Theme") &&
-					!component.GetType().Name.Contains("Font"))
+					!component.GetType().Name.Contains("Font") && !(component is Color) &&
+					!(component is float) && !(component is Vector2D) && !(component is int))
 					componentsForSaving.Add(component);
 			return componentsForSaving;
-		}
-
-		protected internal override List<object> GetComponentsForViewing()
-		{
-			var componentsForViewing = base.GetComponentsForViewing();
-			componentsForViewing.Add(DrawArea);
-			componentsForViewing.Add(IsVisible);
-			if (!componentsForViewing.Any(c => c is Color))
-				componentsForViewing.Add(Color);
-			if (!componentsForViewing.Any(c => c is float))
-				componentsForViewing.Add(Rotation);
-			if (!componentsForViewing.Any(c => c is Vector2D))
-				componentsForViewing.Add(RotationCenter);
-			return componentsForViewing;
 		}
 
 		public override T Get<T>()

@@ -1,6 +1,7 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
+using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
 namespace SideScroller.Tests
@@ -69,6 +70,22 @@ namespace SideScroller.Tests
 		public void HittingTopBorder()
 		{
 			InitPlayerPlane();
+			playerPlane.DrawArea = new Rectangle(new Vector2D(playerPlane.DrawArea.Left, -0.5f),
+				playerPlane.DrawArea.Size);
+			playerPlane.Set(new Velocity2D(new Vector2D(0, -0.1f), 0.5f));
+			AdvanceTimeAndUpdateEntities();
+			Assert.AreEqual(ScreenSpace.Current.Viewport.Top, playerPlane.DrawArea.Top);
+		}
+
+		[Test]
+		public void HittingBottomBorder()
+		{
+			InitPlayerPlane();
+			playerPlane.DrawArea = new Rectangle(new Vector2D(playerPlane.DrawArea.Left, 1.5f),
+				playerPlane.DrawArea.Size);
+			playerPlane.Set(new Velocity2D(new Vector2D(0, 0.1f), 0.5f));
+			AdvanceTimeAndUpdateEntities();
+			Assert.AreEqual(ScreenSpace.Current.Viewport.Bottom, playerPlane.DrawArea.Bottom);
 		}
 
 		[Test]

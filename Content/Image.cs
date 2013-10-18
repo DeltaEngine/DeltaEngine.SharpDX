@@ -23,7 +23,7 @@ namespace DeltaEngine.Content
 			UseMipmaps = data.UseMipmaps;
 			AllowTiling = data.AllowTiling;
 			DisableLinearFiltering = data.DisableLinearFiltering;
-			UVCalculator = new UVCalculator();
+			RenderingCalculator = new RenderingCalculator();
 		}
 
 		public Size PixelSize { get; private set; }
@@ -32,7 +32,7 @@ namespace DeltaEngine.Content
 		public bool UseMipmaps { get; private set; }
 		public bool AllowTiling { get; private set; }
 		public bool DisableLinearFiltering { get; private set; }
-		public UVCalculator UVCalculator { get; private set; }
+		public RenderingCalculator RenderingCalculator { get; private set; }
 
 		protected override bool AllowCreationIfContentNotFound { get { return !Debugger.IsAttached; } }
 
@@ -49,7 +49,7 @@ namespace DeltaEngine.Content
 		{
 			ExtractMetaData();
 			SetSamplerStateAndTryToLoadImage(fileData);
-			UVCalculator = new UVCalculator();
+			RenderingCalculator = new RenderingCalculator();
 		}
 
 		private void ExtractMetaData()
@@ -98,8 +98,8 @@ namespace DeltaEngine.Content
 
 		private void CreateUVCalculator(Rectangle uv)
 		{
-			UVCalculator =
-				new UVCalculator(new AtlasRegion
+			RenderingCalculator =
+				new RenderingCalculator(new AtlasRegion
 				{
 					UV = uv,
 					PadLeft = GetFloatOrZero("PadLeft"),
@@ -136,7 +136,7 @@ namespace DeltaEngine.Content
 			PixelSize = DefaultTextureSize;
 			DisableLinearFiltering = true;
 			BlendMode = BlendMode.Opaque;
-			Fill(checkerMapColors);
+			Fill(CheckerMapColors);
 			SetSamplerState();
 		}
 
@@ -156,7 +156,7 @@ namespace DeltaEngine.Content
 				: base(pixelSize.Width + "*" + pixelSize.Height + "*4") {}
 		}
 
-		private readonly Color[] checkerMapColors =
+		private static readonly Color[] CheckerMapColors =
 		{
 			Color.LightGray, Color.DarkGray, Color.LightGray, Color.DarkGray, 
 			Color.DarkGray, Color.LightGray, Color.DarkGray, Color.LightGray, 

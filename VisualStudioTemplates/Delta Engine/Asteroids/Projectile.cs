@@ -30,7 +30,7 @@ namespace $safeprojectname$
 
 		private void AttachMissileEmitter()
 		{
-			var missileData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Missile");
+			var missileData = ContentLoader.Load<ParticleEmitterData>("MissileEmitter");
 			missileData.DoParticlesTrackEmitter = true;
 			var missileEmitter = new ParticleEmitter(missileData, new Vector3D(Center));
 			missileEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets + 1;
@@ -39,7 +39,7 @@ namespace $safeprojectname$
 
 		private void AttachTrailEmitter()
 		{
-			var trailData = ContentLoader.Load<ParticleEmitterData>("SpecialM5Propulsion");
+			var trailData = ContentLoader.Load<ParticleEmitterData>("PropulsionEmitter");
 			trailData.DoParticlesTrackEmitter = true;
 			var trailEmitter = new ParticleEmitter(trailData, new Vector3D(Center));
 			trailEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets;

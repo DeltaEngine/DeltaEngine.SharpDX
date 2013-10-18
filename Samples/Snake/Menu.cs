@@ -1,9 +1,11 @@
 ﻿using System;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.ScreenSpaces;
 
 namespace Snake
 {
@@ -15,6 +17,7 @@ namespace Snake
 			gameColors = new[] { Color.Black, Color.PaleGreen, Color.Green, Color.Gold };
 			AddStartButton();
 			AddColorsButton();
+			AddHowToPlay();
 			AddQuitButton();
 		}
 
@@ -22,17 +25,21 @@ namespace Snake
 		{
 			SetQuadraticBackground("SnakeMainMenuBackground");
 			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonDefault"));
+			menuTheme.Button =
+				new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonDefault"));
 			menuTheme.ButtonDisabled = new Theme.Appearance();
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonPressed"));
+			menuTheme.ButtonMouseover =
+				new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonHover"));
+			menuTheme.ButtonPressed =
+				new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonPressed"));
 		}
 
 		private Theme menuTheme;
 
 		private void AddStartButton()
 		{
-			var startButton = new InteractiveButton(menuTheme,new Rectangle(0.3f, 0.3f, 0.4f, 0.15f), "Start Game");
+			var startButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.1f, 0.4f, 0.15f),
+				"Start Game");
 			startButton.Clicked += TryInvokeGameStart;
 			Add(startButton);
 		}
@@ -48,7 +55,8 @@ namespace Snake
 
 		private void AddQuitButton()
 		{
-			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.7f, 0.4f, 0.15f), "Quit");
+			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.7f, 0.4f, 0.15f),
+				"Quit");
 			quitButton.Clicked += TryInvokeQuit;
 			Add(quitButton);
 		}
@@ -63,7 +71,7 @@ namespace Snake
 
 		private void AddColorsButton()
 		{
-			var colorButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.5f, 0.4f, 0.15f),
+			var colorButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.3f, 0.4f, 0.15f),
 				"ChooseColours");
 			colorButton.Clicked += () =>
 			{
@@ -109,8 +117,8 @@ namespace Snake
 
 			private void AddGameElementSelection()
 			{
-				var backgroundButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.2f, 0.2f, 0.12f, 0.07f),
-					"Background") { RenderLayer = 5 };
+				var backgroundButton = new InteractiveButton(parentMenu.menuTheme,
+					new Rectangle(0.2f, 0.2f, 0.12f, 0.07f), "Background") { RenderLayer = 5 };
 				backgroundButton.Clicked += () =>
 				{
 					currentColorIndex = 0;
@@ -119,10 +127,8 @@ namespace Snake
 				};
 				Add(backgroundButton);
 
-				var borderButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.35f, 0.2f, 0.12f, 0.07f), "Border")
-				{
-					RenderLayer = 5
-				};
+				var borderButton = new InteractiveButton(parentMenu.menuTheme,
+					new Rectangle(0.35f, 0.2f, 0.12f, 0.07f), "Border") { RenderLayer = 5 };
 				borderButton.Clicked += () =>
 				{
 					currentColorIndex = 1;
@@ -131,10 +137,8 @@ namespace Snake
 				};
 				Add(borderButton);
 
-				var snakeButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.5f, 0.2f, 0.12f, 0.07f), "Snake")
-				{
-					RenderLayer = 5
-				};
+				var snakeButton = new InteractiveButton(parentMenu.menuTheme,
+					new Rectangle(0.5f, 0.2f, 0.12f, 0.07f), "Snake") { RenderLayer = 5 };
 				snakeButton.Clicked += () =>
 				{
 					currentColorIndex = 2;
@@ -143,10 +147,8 @@ namespace Snake
 				};
 				Add(snakeButton);
 
-				var chunkButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.65f, 0.2f, 0.12f, 0.07f), "Chunk")
-				{
-					RenderLayer = 5
-				};
+				var chunkButton = new InteractiveButton(parentMenu.menuTheme,
+					new Rectangle(0.65f, 0.2f, 0.12f, 0.07f), "Chunk") { RenderLayer = 5 };
 				chunkButton.Clicked += () =>
 				{
 					currentColorIndex = 3;
@@ -206,10 +208,8 @@ namespace Snake
 
 			private void AddDoneButton()
 			{
-				var doneButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.4f, 0.72f, 0.2f, 0.1f), "Done!")
-				{
-					RenderLayer = 5
-				};
+				var doneButton = new InteractiveButton(parentMenu.menuTheme,
+					new Rectangle(0.4f, 0.72f, 0.2f, 0.1f), "Done!") { RenderLayer = 5 };
 				doneButton.Clicked += () =>
 				{
 					Hide();
@@ -233,6 +233,62 @@ namespace Snake
 
 			private int currentColorIndex;
 			private FilledRect currentColorShown;
+		}
+
+		private void AddHowToPlay()
+		{
+			var howToButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.5f, 0.4f, 0.15f),
+				"How To Play");
+			howToButton.Clicked += ShowHowToPlaySubMenu;
+			Add(howToButton);
+		}
+
+		private void ShowHowToPlaySubMenu()
+		{
+			if(howToPlay == null)
+				howToPlay = new HowToPlaySubMenu(this, menuTheme);
+			howToPlay.Show();
+			Hide();
+		}
+
+		private HowToPlaySubMenu howToPlay;
+
+		private sealed class HowToPlaySubMenu : Scene
+		{
+			public HowToPlaySubMenu(Scene parent, Theme menuTheme)
+			{
+				this.parent = parent;
+				this.menuTheme = menuTheme;
+				SetQuadraticBackground("SnakeMainMenuBackground");
+				AddControlDescription();
+				AddBackButton();
+			}
+
+			private readonly Scene parent;
+			private readonly Theme menuTheme;
+
+			private void AddControlDescription()
+			{
+				const string DescriptionText = "Snake - Manual\n\n" +
+					"Move Left - Cursor left or click an area left next to the Snake\n" +
+					"Move Right - Cursor right or click an area right next to the Snake\n" +
+					"Move Up - Cursor up or click an area above the Snake\n" +
+					"Move Down - Cursor down or click an area below the Snake";
+				var howToDisplayText = new FontText(Font.Default, DescriptionText, Vector2D.Half);
+				Add(howToDisplayText);
+			}
+
+			private void AddBackButton()
+			{
+				var backButton = new InteractiveButton(menuTheme,
+					new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.15f, 0.4f, 0.1f), "Back");
+				backButton.Clicked += () =>
+				{
+					Hide();
+					parent.Show();
+				};
+				Add(backButton);
+			}
 		}
 	}
 }

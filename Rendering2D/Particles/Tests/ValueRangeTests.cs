@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Core;
-using DeltaEngine.Rendering3D.Particles;
 using NUnit.Framework;
 using Randomizer = DeltaEngine.Core.Randomizer;
 
