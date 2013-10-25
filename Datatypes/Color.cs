@@ -40,7 +40,7 @@ namespace DeltaEngine.Datatypes
 		public Color(string colorAsString)
 			: this()
 		{
-			string[] components = colorAsString.SplitAndTrim(',', '(', ')');
+			string[] components = colorAsString.SplitAndTrim('(', ',', ')');
 			if (components.Length != 4)
 				throw new InvalidNumberOfComponents();
 			R = FindComponentValue(components, "R");
@@ -252,7 +252,7 @@ namespace DeltaEngine.Datatypes
 
 		public override string ToString()
 		{
-			return "(R=" + R + ", G=" + G + ", B=" + B + ", A=" + A + ")";
+			return "R=" + R + ", G=" + G + ", B=" + B + ", A=" + A;
 		}
 	}
 }

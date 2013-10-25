@@ -92,7 +92,7 @@
     <Compile Include="MockEntity2D.cs" />
     <Compile Include="PerformanceTests.cs" />
     <Compile Include="Entity2DTests.cs" />
-    <Compile Include="SpriteBatchKeyTests.cs" />
+    <Compile Include="SimplePhysicsTests.cs" />
     <Compile Include="SpriteSaveAndLoadTests.cs" />
     <Compile Include="SpriteSheetTests.cs" />
     <Compile Include="SpriteTests.cs" />

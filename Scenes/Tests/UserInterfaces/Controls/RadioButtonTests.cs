@@ -28,7 +28,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			new RadioButton(Bottom, "Hey");
 			centerButton.IsEnabled = false;
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(Color.Gray, centerButton.Color);
+			Assert.AreEqual(Color.DarkGray, centerButton.Color);
 		}
 
 		private static readonly Rectangle Top = Rectangle.FromCenter(0.5f, 0.4f, 0.5f, 0.1f);
@@ -38,7 +38,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void DefaultsToEnabled()
 		{
 			Assert.IsTrue(centerButton.IsEnabled);
-			Assert.AreEqual(Color.White, centerButton.Color);
+			Assert.AreEqual(Color.Gray, centerButton.Color);
 		}
 
 		[Test]

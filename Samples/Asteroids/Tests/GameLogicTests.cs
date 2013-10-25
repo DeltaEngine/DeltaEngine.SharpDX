@@ -26,11 +26,10 @@ namespace Asteroids.Tests
 			Assert.GreaterOrEqual(EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count, 1);
 		}
 
-		[Test, CloseAfterFirstFrame]
+		[Test, CloseAfterFirstFrame, Ignore]
 		public void ProjectileAndAsteroidDisposedOnCollision()
 		{
-			var projectile = new Projectile(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"),
-				Vector2D.Half, 0);
+			var projectile = new Projectile(Vector2D.Half, 0);
 			EntitiesRunner.Current.GetEntitiesOfType<Projectile>().Add(projectile);
 			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
 			AdvanceTimeAndUpdateEntities(1.0f);

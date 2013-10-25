@@ -53,7 +53,7 @@ namespace Asteroids
 			MoveUpdate();
 			if (!IsFiring || !(GlobalTime.Current.Milliseconds - 1 / CadenceShotsPerMilliSec > timeLastShot))
 				return;
-			new Projectile(projectileMaterial, DrawArea.Center, Rotation);
+			new Projectile(DrawArea.Center, Rotation);
 			timeLastShot = GlobalTime.Current.Milliseconds;
 			if (ProjectileFired != null)
 				ProjectileFired.Invoke();

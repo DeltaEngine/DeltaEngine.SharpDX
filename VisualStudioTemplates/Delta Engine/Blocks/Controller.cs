@@ -7,9 +7,9 @@ using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
-	public class Controller : Entity2D
+	public class Controller : Entity
 	{
-		public Controller(Orientation displayMode, BlocksContent content) : base(Rectangle.Zero)
+		public Controller(Orientation displayMode, BlocksContent content)
 		{
 			this.content = content;
 			this.displayMode = displayMode;

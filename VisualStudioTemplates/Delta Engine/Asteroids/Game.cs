@@ -1,29 +1,40 @@
 using System;
 using System.Globalization;
 using System.IO;
-using DeltaEngine.Content;
 using DeltaEngine.Core;
-using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
-using DeltaEngine.Rendering2D;
+using DeltaEngine.Scenes;
+using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
-	public class Game
+	public class Game : Scene
 	{
 		public Game(Window window)
 		{
+			this.window = window;
+			screenSpace = new Camera2DScreenSpace(window);
+			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1) ? 1 / 
+				window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
 			highScores = new int[10];
 			TryLoadingHighscores();
+			SetUpBackground();
 			mainMenu = new Menu();
 			mainMenu.InitGame += StartGame;
 			mainMenu.QuitGame += window.CloseAfterFrame;
 			InteractionLogics = new InteractionLogics();
 			mainMenu.UpdateHighscoreDisplay(highScores);
+			window.ViewportSizeChanged += size => 
+			{
+				if (GameState == GameState.MainMenu)
+					screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio;
+			};
 		}
 
 		private int[] highScores;
 		private readonly Menu mainMenu;
+		private readonly Camera2DScreenSpace screenSpace;
+		private readonly Window window;
 
 		private void TryLoadingHighscores()
 		{
@@ -68,9 +79,10 @@ namespace $safeprojectname$
 		public void StartGame()
 		{
 			mainMenu.Hide();
+			Show();
+			screenSpace.Zoom = 1.0f;
 			controls = new Controls(this);
 			score = 0;
-			SetUpBackground();
 			GameState = GameState.Playing;
 			InteractionLogics.BeginGame();
 			SetUpEvents();
@@ -103,11 +115,9 @@ namespace $safeprojectname$
 		public GameState GameState;
 		private HudInterface hudInterface;
 
-		private static void SetUpBackground()
+		private void SetUpBackground()
 		{
-			var background = new Sprite(new Material(Shader.Position2DColorUV, "AsteroidsBackground"), 
-				new Rectangle(Vector2D.Zero, new Size(1)));
-			background.RenderLayer = (int)AsteroidsRenderLayer.Background;
+			SetQuadraticBackground("AsteroidsBackground");
 		}
 
 		public void GameOver()
@@ -135,9 +145,12 @@ namespace $safeprojectname$
 
 		public void BackToMenu()
 		{
+			Hide();
 			InteractionLogics.DisposeObjects();
 			controls.SetControlsToState(GameState.MainMenu);
 			hudInterface.Dispose();
+			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1) ? 1 / 
+				window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
 			mainMenu.Show();
 		}
 

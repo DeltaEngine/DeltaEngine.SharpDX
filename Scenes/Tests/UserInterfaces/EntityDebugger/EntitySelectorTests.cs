@@ -24,7 +24,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
 		private MockMouse mouse;
 
 		[Test]
-		public void BouncingLogosThatCanBeObserved()
+		public void BouncingLogosThatCanBeObservedByRightClicking()
 		{
 			selector.Add(ellipse);
 			for (int i = 0; i < NumberOfLogos; i++)
@@ -34,7 +34,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
 		private const int NumberOfLogos = 3;
 
 		[Test]
-		public void BouncingLogosThatCanBeEdited()
+		public void BouncingLogosThatCanBeEditedByRightClicking()
 		{
 			selector.EditorMode = EditorMode.Write;
 			selector.Add(ellipse);

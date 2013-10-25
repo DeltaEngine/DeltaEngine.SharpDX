@@ -2,11 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using DeltaEngine.Content;
 using DeltaEngine.Entities;
-using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Core
 {
@@ -201,19 +199,19 @@ namespace DeltaEngine.Core
 		{
 			var material = data as Material;
 			writer.Write(material.Shader.Name);
-			var isCustomImage = material.DiffuseMap != null && material.DiffuseMap.Name.StartsWith("<");
-			writer.Write(isCustomImage);
+			var isCustomImage = material.DiffuseMap == null || material.DiffuseMap.Name.StartsWith("<");
+			writer.Write((byte)(material.DiffuseMap == null ? 2 : isCustomImage ? 1 : 0));
 			if (isCustomImage)
 			{
-				writer.Write(material.DiffuseMap.PixelSize.Width);
-				writer.Write(material.DiffuseMap.PixelSize.Height);
+				writer.Write(material.pixelSize.Width);
+				writer.Write(material.pixelSize.Height);
 			}
 			else if (material.Animation != null)
 				writer.Write(material.Animation.Name);
 			else if (material.SpriteSheet != null)
 				writer.Write(material.SpriteSheet.Name);
-			else if (material.DiffuseMap != null)
-				writer.Write(material.DiffuseMap.Name);
+			else
+				writer.Write(material.DiffuseMap != null ? material.DiffuseMap.Name : "");
 			writer.Write(material.DefaultColor.PackedRgba);
 			writer.Write(material.Duration);
 		}

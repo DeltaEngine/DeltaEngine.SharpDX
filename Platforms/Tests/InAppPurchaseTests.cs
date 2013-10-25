@@ -3,12 +3,12 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Platforms.Tests
 {
-	class InAppPurchaseTests
+	class InAppPurchaseTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void RequestProductInformtaion()
+		public void RequestProductInformation()
 		{
-			var inAppPurchase = new MockInAppPurchase();
+			var inAppPurchase = Resolve<InAppPurchase>();
 			inAppPurchase.OnReceivedProductInformation += ReceivedProductInformation;
 			Assert.IsTrue(inAppPurchase.RequestProductInformationAsync(new[] { 0 }));
 		}

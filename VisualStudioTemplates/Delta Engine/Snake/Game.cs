@@ -13,13 +13,16 @@ namespace $safeprojectname$
 	{
 		public Game(Window window)
 		{
-			new RelativeScreenSpace(window);
+			screenSpace = new Camera2DScreenSpace(window);
+			screenSpace.Zoom = 1 / window.ViewportPixelSize.AspectRatio;
 			gridSize = 25;
 			blockSize = 1.0f / gridSize;
 			this.window = window;
 			menu = new Menu();
 			menu.InitGame += StartGame;
 			menu.Quit += window.CloseAfterFrame;
+			window.ViewportSizeChanged += size => screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / 
+				size.AspectRatio : size.AspectRatio;
 		}
 
 		public void StartGame()
@@ -35,12 +38,18 @@ namespace $safeprojectname$
 		private readonly float blockSize;
 		private readonly Window window;
 		private readonly Menu menu;
+		public Camera2DScreenSpace screenSpace;
 
 		private void SetupPlayArea()
 		{
 			window.Title = "Snake - Let's go";
-			window.BackgroundColor = menu.gameColors [1];
-			new FilledRect(CalculateBackgroundDrawArea(), menu.gameColors [0]);
+			window.BackgroundColor = menu.gameColors [0];
+			new FilledRect(Rectangle.One, menu.gameColors [1]) {
+				RenderLayer = 0
+			};
+			new FilledRect(CalculateBackgroundDrawArea(), menu.gameColors [0]) {
+				RenderLayer = 1
+			};
 		}
 
 		private Rectangle CalculateBackgroundDrawArea()
@@ -57,14 +66,13 @@ namespace $safeprojectname$
 			new Command(MoveDown).Add(new KeyTrigger(Key.CursorDown));
 			new Command(MoveAccordingToTouchPosition).Add(new TouchPressTrigger()).Add(new 
 				MouseButtonTrigger());
+			new Command(MoveAnalogue).Add(new GamePadAnalogTrigger(GamePadAnalog.LeftThumbStick));
 		}
 
 		public void MoveLeft()
 		{
-			if (GetDirection().X > 0)
-				return;
-
-			snakeBody.Direction = new Vector2D(-blockSize, 0);
+			if (!(GetDirection().X > 0))
+				snakeBody.Direction = new Vector2D(-blockSize, 0);
 		}
 
 		private Vector2D GetDirection()
@@ -74,36 +82,31 @@ namespace $safeprojectname$
 
 			var snakeHead = snakeBody.BodyParts [0];
 			var partNextToSnakeHead = snakeBody.BodyParts [1];
-			var direction = new Vector2D(snakeHead.DrawArea.Left - partNextToSnakeHead.DrawArea.Left, 
-				snakeHead.DrawArea.Top - partNextToSnakeHead.DrawArea.Top);
+			var direction = new Vector2D(snakeHead.DrawArea.Left - 
+				partNextToSnakeHead.DrawArea.Left, snakeHead.DrawArea.Top - 
+					partNextToSnakeHead.DrawArea.Top);
 			return direction;
 		}
 
 		public void MoveRight()
 		{
-			if (GetDirection().X < 0)
-				return;
-
-			snakeBody.Direction = new Vector2D(blockSize, 0);
+			if (!(GetDirection().X < 0))
+				snakeBody.Direction = new Vector2D(blockSize, 0);
 		}
 
 		public void MoveUp()
 		{
-			if (GetDirection().Y > 0)
-				return;
-
-			snakeBody.Direction = new Vector2D(0, -blockSize);
+			if (!(GetDirection().Y > 0))
+				snakeBody.Direction = new Vector2D(0, -blockSize);
 		}
 
 		public void MoveDown()
 		{
-			if (GetDirection().Y < 0)
-				return;
-
-			snakeBody.Direction = new Vector2D(0, blockSize);
+			if (!(GetDirection().Y < 0))
+				snakeBody.Direction = new Vector2D(0, blockSize);
 		}
 
-		private void MoveAccordingToTouchPosition(Vector2D position)
+		public void MoveAccordingToTouchPosition(Vector2D position)
 		{
 			var comparison = snakeBody.HeadPosition;
 			CheckTouchHorizontal(position, comparison);
@@ -134,6 +137,21 @@ namespace $safeprojectname$
 				if (deltaX < 0)
 					MoveLeft();
 			}
+		}
+
+		public void MoveAnalogue(Vector2D direction)
+		{
+			if (direction.Y > 0)
+				MoveUp();
+
+			if (direction.Y < 0)
+				MoveDown();
+
+			if (direction.X > 0)
+				MoveRight();
+
+			if (direction.X < 0)
+				MoveLeft();
 		}
 
 		private void InitializeSnake()
@@ -171,7 +189,9 @@ namespace $safeprojectname$
 			var snakeBodyParts = snakeBody.BodyParts;
 			var tail = snakeBodyParts [snakeBodyParts.Count - 1].DrawArea.TopLeft;
 			var newBodyPart = new FilledRect(CalculateTrailDrawArea(trailingVector, tail), 
-				menu.gameColors [2]);
+				menu.gameColors [2]) {
+				RenderLayer = 3
+			};
 			snakeBodyParts.Add(newBodyPart);
 			window.Title = "Snake - Length: " + snakeBodyParts.Count;
 		}
@@ -215,7 +235,7 @@ namespace $safeprojectname$
 		private FontText gameOverMsg;
 		private FontText restartMsg;
 
-		private void RestartGame()
+		public void RestartGame()
 		{
 			yesCommand.IsActive = false;
 			noCommand.IsActive = false;
@@ -225,7 +245,7 @@ namespace $safeprojectname$
 			SpawnFirstChunk();
 		}
 
-		private void CloseGame()
+		public void CloseGame()
 		{
 			window.CloseAfterFrame();
 		}

@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Datatypes;
+﻿using System;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Content
@@ -7,7 +8,7 @@ namespace DeltaEngine.Content
 	/// Given an AtlasRegion and desired UV, DrawArea and FlipMode, it will return the true UV
 	/// and DrawArea.
 	/// </summary>
-	public class RenderingCalculator
+	public class RenderingCalculator : IEquatable<RenderingCalculator>
 	{
 		internal RenderingCalculator()
 			: this(new AtlasRegion { UV = Rectangle.One }) {}
@@ -37,13 +38,14 @@ namespace DeltaEngine.Content
 		private readonly float originalHeight;
 		private readonly bool isRotated;
 
-		public RenderingData GetUVAndDrawArea(Rectangle userUV, Rectangle drawArea, FlipMode flipMode)
+		public RenderingData GetUVAndDrawArea(Rectangle userUV, Rectangle drawArea, 
+			FlipMode flipMode = FlipMode.None)
 		{
 			if (hasNoAtlas)
 				return GetUVAndDrawAreaWhenNoAtlas(userUV, drawArea, flipMode);
-			if (!isRotated)
-				return GetUVAndDrawAreaWhenNotRotated(userUV, drawArea, flipMode);
-			return GetUVAndDrawAreaWhenRotated(userUV, drawArea, flipMode);
+			if (isRotated)
+				return GetUVAndDrawAreaWhenRotated(userUV, drawArea, flipMode);
+			return GetUVAndDrawAreaWhenNotRotated(userUV, drawArea, flipMode);
 		}
 
 		private static RenderingData GetUVAndDrawAreaWhenNoAtlas(Rectangle userUV, Rectangle drawArea,
@@ -186,6 +188,11 @@ namespace DeltaEngine.Content
 			var data = GetUVAndDrawAreaWhenNotRotated(rotatedUserUV, drawArea, flipMode);
 			data.IsAtlasRotated = true;
 			return data;
+		}
+
+		public bool Equals(RenderingCalculator other)
+		{
+			return uv == other.uv;
 		}
 	}
 }

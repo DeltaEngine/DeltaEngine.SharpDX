@@ -23,10 +23,8 @@ namespace $safeprojectname$
 		{
 			var image = content.Load<Image>("Background");
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image);
-			Add(new Sprite(material, Rectangle.One) {
-				RenderLayer = Background
-			});
+			var material = new Material(shader, image, image.PixelSize);
+			SetViewportBackground(material);
 		}
 
 		private const int Background = (int)RenderLayer.Background;
@@ -35,7 +33,7 @@ namespace $safeprojectname$
 		{
 			var image = content.Load<Image>("Grid");
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image);
+			var material = new Material(shader, image, image.PixelSize);
 			grid = new Sprite(material, GetGridDrawArea()) {
 				RenderLayer = Background
 			};
@@ -62,7 +60,7 @@ namespace $safeprojectname$
 		{
 			var image = content.Load<Image>("ScoreWindow");
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image);
+			var material = new Material(shader, image, image.PixelSize);
 			scoreWindow = new Sprite(material, GetScoreWindowDrawArea(material.DiffuseMap.PixelSize));
 			scoreWindow.RenderLayer = Background;
 			Add(scoreWindow);

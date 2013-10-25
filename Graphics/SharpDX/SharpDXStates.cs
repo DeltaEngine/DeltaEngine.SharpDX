@@ -57,7 +57,7 @@ namespace DeltaEngine.Graphics.SharpDX
 				//makes some GPUs crash CreateWithSwapChain with E_INVALIDARG
 				//settings.AntiAliasingSamples, settings.AntiAliasingSamples > 1 ? 1 : 0),
 				SwapEffect = SwapEffect.Discard,
-				Usage = Usage.RenderTargetOutput,
+				Usage = Usage.RenderTargetOutput
 			};
 		}
 

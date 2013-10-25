@@ -107,7 +107,7 @@ namespace $safeprojectname$
 			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
 			var image = content.Load<Image>(filename + "_Top");
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image);
+			var material = new Material(shader, image, image.PixelSize);
 			AddFallingBrick(brick, material);
 		}
 
@@ -116,7 +116,7 @@ namespace $safeprojectname$
 			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
 			var image = content.Load<Image>(filename + "_Bottom");
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image);
+			var material = new Material(shader, image, image.PixelSize);
 			AddFallingBrick(brick, material);
 		}
 

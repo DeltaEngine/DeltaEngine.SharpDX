@@ -17,7 +17,7 @@ namespace DeltaEngine.Scenes.Tests
 		{
 			menu = new AutoArrangingMenu(ButtonSize, BaseRenderLayer);
 			menu.SetQuadraticBackground(new Material(Shader.Position2DColorUV, "SimpleSubMenuBackground"));
-			text = new FontText(Font.Default, "", new Rectangle(0.4f, 0.7f, 0.2f, 0.1f));
+			text = new FontText(Font.Default, "Nothing pressed", new Rectangle(0.4f, 0.6f, 0.2f, 0.1f));
 		}
 
 		private AutoArrangingMenu menu;
@@ -35,9 +35,9 @@ namespace DeltaEngine.Scenes.Tests
 		public class MenuXml : AutoArrangingMenu
 		{
 			public MenuXml(string contentName)
-				: base(contentName) { }
+				: base(contentName) {}
 
-			protected override void LoadData(Stream fileData) { }
+			protected override void LoadData(Stream fileData) {}
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -60,24 +60,12 @@ namespace DeltaEngine.Scenes.Tests
 		[Test]
 		public void ShowMenuWithThreeTextButtons()
 		{
-			var theme = CreateTextTheme();
-			menu.AddMenuOption(theme, () => { text.Text = "Clicked Top Button"; },
-				"Top Button");
-			menu.AddMenuOption(theme, () => { text.Text = "Clicked Middle Button"; },
+			menu.AddMenuOption(Theme.Default, () => { text.Text = "Clicked Top Button"; }, "Top Button");
+			menu.AddMenuOption(Theme.Default, () => { text.Text = "Clicked Middle Button"; },
 				"Middle Button");
-			menu.AddMenuOption(theme, () => { text.Text = "Clicked Bottom Button"; },
+			menu.AddMenuOption(Theme.Default, () => { text.Text = "Clicked Bottom Button"; },
 				"Bottom Button");
 			menu.Show();
-		}
-
-		private static Theme CreateTextTheme()
-		{
-			return new Theme
-			{
-				Button = new Theme.Appearance("DefaultSliderBackground", Color.LightGray),
-				ButtonMouseover = new Theme.Appearance("DefaultSliderBackground"),
-				ButtonPressed = new Theme.Appearance("DefaultSliderBackground", Color.Red)
-			};
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -108,7 +96,7 @@ namespace DeltaEngine.Scenes.Tests
 			menu.AddMenuOption(() => { });
 			Assert.AreEqual(2, menu.Controls.Count);
 			var button = (Button)menu.Controls[1];
-			Assert.AreEqual(Theme.Default.Button.Material, button.Material);
+			Assert.AreEqual(Theme.Default.Button, button.Material);
 			Assert.IsTrue(button.DrawArea.IsNearlyEqual(new Rectangle(0.45f, 0.55f, 0.3f, 0.1f)));
 		}
 
@@ -136,7 +124,7 @@ namespace DeltaEngine.Scenes.Tests
 		private class TestControl : Control
 		{
 			public TestControl()
-				: base(Datatypes.Rectangle.HalfCentered)
+				: base(Rectangle.HalfCentered)
 			{
 				AddChild(this);
 				AddChild(this);

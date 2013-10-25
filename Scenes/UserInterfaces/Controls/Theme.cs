@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -9,8 +10,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// <summary>
 	/// Holds a set of materials and colors for Scenes UI controls, as well as the font to be used.
 	/// </summary>
-	public class Theme
-		//TODO: needs to be ContentData, otherwise we cannot reload it for each control!
+	public class Theme : ContentData
 	{
 		public static Theme Default
 		{
@@ -20,11 +20,12 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		private static Theme defaultTheme;
 
 		public Theme()
+			: base("<GeneratedDefaultTheme>")
 		{
 			DefaultButtonAppearance();
 			DefaultDropdownListAppearance();
 			Font = Font.Default;
-			Label = new Appearance(CreateDefaultMaterial(new Size(128, 32), Color.White));
+			Label = new Material(new Size(4, 1), Color.Gray);
 			DefaultRadioButtonAppearance();
 			DefaultScrollbarAppearance();
 			DefaultSelectBoxAppearance();
@@ -32,172 +33,117 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			DefaultTextBoxAppearance();
 		}
 
-		public Font Font { get; set; }
-		public Appearance Label { get; set; }
-
-		public struct Appearance
+		public Font Font
 		{
-			public Appearance(string materialName)
-				: this()
-			{
-				this.materialName = materialName;
-				Color = Material.DefaultColor;
-			}
-
-			private readonly string materialName;
-			public Color Color { get; set; }
-
-			public Appearance(string materialName, Color color)
-				: this()
-			{
-				this.materialName = materialName;
-				Color = color;
-			}
-
-			public Appearance(Material material)
-				: this()
-			{
-				materialName = material.Name;
-				this.material = material;
-				Color = Material.DefaultColor;
-			}
-
-			[NonSerialized]
-			private Material material;
-
-			public Material Material
-			{
-				get
-				{
-					if (material != null)
-						return material;
-					material = new Material(Shader.Position2DColorUV, materialName);
-					return material;
-				}
-			}
+			get { return font; }
+			set { font = value; }
 		}
 
-		private static Material CreateDefaultMaterial(Size imageSize, Color defaultColor)
-		{
-			var imageData = new ImageCreationData(imageSize);
-			var createdImage = ContentLoader.Create<Image>(imageData);
-			var material = new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUV),
-				createdImage);
-			material.DefaultColor = defaultColor;
-			material.SetRenderSize(RenderSize.PixelBased);
-			return material;
-		}
+		[NonSerialized]
+		private Font font;
+
+		public Material Label { get; set; }
 
 		private void DefaultButtonAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(256, 64), Color.LightGray);
-			Button = new Appearance(material);
-			material.DefaultColor = Color.Gray;
-			ButtonDisabled = new Appearance(material);
-			material.DefaultColor = Color.White;
-			ButtonMouseover = new Appearance(material);
-			material.DefaultColor = Color.LightBlue;
-			ButtonPressed = new Appearance(material);
+			Button = new Material(new Size(4, 1), Color.Gray);
+			ButtonDisabled = new Material(new Size(4, 1), Color.DarkGray);
+			ButtonMouseover = new Material(new Size(4, 1), Color.LightGray);
+			ButtonPressed = new Material(new Size(4, 1), Color.LightBlue);
 		}
 
-		public Appearance Button { get; set; }
-		public Appearance ButtonDisabled { get; set; }
-		public Appearance ButtonMouseover { get; set; }
-		public Appearance ButtonPressed { get; set; }
+		public Material Button { get; set; }
+		public Material ButtonDisabled { get; set; }
+		public Material ButtonMouseover { get; set; }
+		public Material ButtonPressed { get; set; }
 
 		private void DefaultDropdownListAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(128, 32), Color.White);
-			DropdownListBox = new Appearance(material);
-			material.DefaultColor = Color.Gray;
-			DropdownListBoxDisabled = new Appearance(material);
+			DropdownListBox = new Material(new Size(4, 1), Color.Gray);
+			DropdownListBoxDisabled = new Material(new Size(4, 1), Color.DarkGray);
 		}
 
-		public Appearance DropdownListBox { get; set; }
-		public Appearance DropdownListBoxDisabled { get; set; }
+		public Material DropdownListBox { get; set; }
+		public Material DropdownListBoxDisabled { get; set; }
 
 		private void DefaultRadioButtonAppearance()
 		{
-			RadioButtonBackground =
-				new Appearance(CreateDefaultMaterial(new Size(128, 32), Color.White));
-			RadioButtonBackgroundDisabled =
-				new Appearance(CreateDefaultMaterial(new Size(128, 32), Color.Gray));
-			RadioButtonDisabled = new Appearance(CreateDefaultMaterial(new Size(32), Color.Gray));
-			RadioButtonNotSelected =
-				new Appearance(CreateDefaultMaterial(new Size(32), Color.LightGray));
-			RadioButtonNotSelectedMouseover =
-				new Appearance(CreateDefaultMaterial(new Size(32), Color.VeryLightGray));
-			RadioButtonSelected = new Appearance(CreateDefaultMaterial(new Size(32), Color.White));
-			RadioButtonSelectedMouseover =
-				new Appearance(CreateDefaultMaterial(new Size(32), Color.LightBlue));
+			RadioButtonBackground = new Material(new Size(4, 1), Color.Gray);
+			RadioButtonBackgroundDisabled = new Material(new Size(4, 1), Color.DarkGray);
+			RadioButtonDisabled = new Material(new Size(1, 1), Color.Gray);
+			RadioButtonNotSelected = new Material(new Size(1, 1), Color.LightGray);
+			RadioButtonNotSelectedMouseover = new Material(new Size(1, 1), Color.VeryLightGray);
+			RadioButtonSelected = new Material(new Size(1, 1), Color.White);
+			RadioButtonSelectedMouseover = new Material(new Size(1, 1), Color.LightBlue);
 		}
 
-		public Appearance RadioButtonBackground { get; set; }
-		public Appearance RadioButtonBackgroundDisabled { get; set; }
-		public Appearance RadioButtonDisabled { get; set; }
-		public Appearance RadioButtonNotSelected { get; set; }
-		public Appearance RadioButtonNotSelectedMouseover { get; set; }
-		public Appearance RadioButtonSelected { get; set; }
-		public Appearance RadioButtonSelectedMouseover { get; set; }
+		public Material RadioButtonBackground { get; set; }
+		public Material RadioButtonBackgroundDisabled { get; set; }
+		public Material RadioButtonDisabled { get; set; }
+		public Material RadioButtonNotSelected { get; set; }
+		public Material RadioButtonNotSelectedMouseover { get; set; }
+		public Material RadioButtonSelected { get; set; }
+		public Material RadioButtonSelectedMouseover { get; set; }
 
 		private void DefaultScrollbarAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(256, 64), Color.White);
-			Scrollbar = new Appearance(material);
-			ScrollbarPointerMouseover = new Appearance(material);
-			material.DefaultColor = Color.Gray;
-			ScrollbarPointerDisabled = new Appearance(material);
-			ScrollbarDisabled = new Appearance(material);
-			material.DefaultColor = Color.LightGray;
-			ScrollbarPointer = new Appearance(material);
+			Scrollbar = new Material(new Size(4, 1), Color.Gray);
+			ScrollbarDisabled = new Material(new Size(4, 1), Color.DarkGray);
+			ScrollbarPointerMouseover = new Material(new Size(1, 1), Color.LightBlue);
+			ScrollbarPointerDisabled = new Material(new Size(1, 1), Color.Gray);
+			ScrollbarPointer = new Material(new Size(1, 1), Color.LightGray);
 		}
 
-		public Appearance Scrollbar { get; set; }
-		public Appearance ScrollbarDisabled { get; set; }
-		public Appearance ScrollbarPointer { get; set; }
-		public Appearance ScrollbarPointerDisabled { get; set; }
-		public Appearance ScrollbarPointerMouseover { get; set; }
+		public Material Scrollbar { get; set; }
+		public Material ScrollbarDisabled { get; set; }
+		public Material ScrollbarPointer { get; set; }
+		public Material ScrollbarPointerDisabled { get; set; }
+		public Material ScrollbarPointerMouseover { get; set; }
 
 		private void DefaultSelectBoxAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(128, 32), Color.White);
-			SelectBox = new Appearance(material);
-			material.DefaultColor = Color.Gray;
-			SelectBoxDisabled = new Appearance(material);
+			SelectBox = new Material(new Size(4, 1), Color.Gray);
+			SelectBoxDisabled = new Material(new Size(4, 1), Color.DarkGray);
 		}
 
-		public Appearance SelectBox { get; set; }
-		public Appearance SelectBoxDisabled { get; set; }
+		public Material SelectBox { get; set; }
+		public Material SelectBoxDisabled { get; set; }
 
 		private void DefaultSliderAppearance()
 		{
-			Slider = new Appearance(CreateDefaultMaterial(new Size(256, 64), Color.White));
-			SliderDisabled = new Appearance(CreateDefaultMaterial(new Size(256, 64), Color.Gray));
-			SliderPointer = new Appearance(CreateDefaultMaterial(new Size(16, 32), Color.White));
-			SliderPointerDisabled =
-				new Appearance(CreateDefaultMaterial(new Size(16, 32), Color.Gray));
-			SliderPointerMouseover =
-				new Appearance(CreateDefaultMaterial(new Size(16, 32), Color.White));
+			Slider = new Material(new Size(4, 1), Color.Gray);
+			SliderDisabled = new Material(new Size(4, 1), Color.DarkGray);
+			SliderPointer = new Material(new Size(1, 2), Color.LightGray);
+			SliderPointerDisabled = new Material(new Size(1, 2), Color.Gray);
+			SliderPointerMouseover = new Material(new Size(1, 2), Color.LightBlue);
 		}
 
-		public Appearance Slider { get; set; }
-		public Appearance SliderDisabled { get; set; }
-		public Appearance SliderPointer { get; set; }
-		public Appearance SliderPointerDisabled { get; set; }
-		public Appearance SliderPointerMouseover { get; set; }
+		public Material Slider { get; set; }
+		public Material SliderDisabled { get; set; }
+		public Material SliderPointer { get; set; }
+		public Material SliderPointerDisabled { get; set; }
+		public Material SliderPointerMouseover { get; set; }
 
 		private void DefaultTextBoxAppearance()
 		{
-			var material = CreateDefaultMaterial(new Size(128, 32), Color.White);
-			TextBoxFocused = new Appearance(material);
-			material.DefaultColor = Color.LightGray;
-			TextBox = new Appearance(material);
-			material.DefaultColor = Color.Gray;
-			TextBoxDisabled = new Appearance(material);
+			TextBox = new Material(new Size(4, 1), Color.Gray);
+			TextBoxFocused = new Material(new Size(4, 1), Color.LightGray);
+			TextBoxDisabled = new Material(new Size(4, 1), Color.DarkGray);
 		}
 
-		public Appearance TextBox { get; set; }
-		public Appearance TextBoxDisabled { get; set; }
-		public Appearance TextBoxFocused { get; set; }
+		public Material TextBox { get; set; }
+		public Material TextBoxDisabled { get; set; }
+		public Material TextBoxFocused { get; set; }
+
+		protected override void DisposeData() {}
+
+		protected override void LoadData(Stream fileData)
+		{
+			var theme = (Theme)new BinaryReader(fileData).Create();
+			Button = theme.Button;
+			ButtonDisabled = theme.ButtonDisabled;
+			ButtonMouseover = theme.ButtonMouseover;
+			ButtonPressed = theme.ButtonPressed;
+		}
 	}
 }

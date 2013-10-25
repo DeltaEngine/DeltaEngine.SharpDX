@@ -39,7 +39,7 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 		[Test]
 		public void ValueRangeToString()
 		{
-			Assert.AreEqual("[0.2, 0.3]", valueRange.ToString());
+			Assert.AreEqual("0.2, 0.3", valueRange.ToString());
 		}
 	}
 }

@@ -114,7 +114,7 @@ namespace DeltaEngine.Tests.Datatypes
 			var v = new Vector2D(2f, 2f);
 			var s = new Size(1f, 1f);
 			var rect = new Rectangle(v, s);
-			Assert.AreEqual("2 2 1 1", rect.ToString());
+			Assert.AreEqual("2, 2, 1, 1", rect.ToString());
 		}
 
 		[Test]
@@ -123,16 +123,23 @@ namespace DeltaEngine.Tests.Datatypes
 			var rect = new Rectangle(2.12f, 2.12f, 1.12f, 1.12f);
 			string rectString = rect.ToString();
 			Assert.AreEqual(rect, new Rectangle(rectString));
-			Assert.AreEqual(Rectangle.One, new Rectangle("0 0 1 1"));
+			Assert.AreEqual(Rectangle.One, new Rectangle("0, 0, 1, 1"));
 			Assert.Throws<Rectangle.InvalidNumberOfComponents>(() => new Rectangle("abc"));
 		}
 
 		[Test]
-		public static void FromInvariantStringWithDatatypes()
+		public void FromInvariantStringWithDatatypes()
 		{
 			Assert.AreEqual(Size.Zero, "0,0".Convert<Size>());
 			Assert.AreEqual(Vector2D.UnitX, "1,0".Convert<Vector2D>());
-			Assert.AreEqual(new Rectangle(1, 1, 2, 2), "1 1 2 2".Convert<Rectangle>());
+			Assert.AreEqual(new Rectangle(1, 1, 2, 2), "1, 1, 2, 2".Convert<Rectangle>());
+		}
+
+		[Test]
+		public  void TryingToConvertFromInvalidStringThrows()
+		{
+			Assert.Throws<Rectangle.InvalidNumberOfComponents>(() => { new Rectangle("1, 2, 2"); });
+			Assert.Throws<Rectangle.TypeInStringNotEqualToInitializedType>(() => { new Rectangle("a, s, d, f"); });
 		}
 
 		[Test]

@@ -65,7 +65,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Assert.AreEqual(Values, dropdownList.Values);
 			Assert.AreEqual(Values[0], dropdownList.SelectedValue);
 			Assert.AreEqual(Center, dropdownList.DrawArea);
-			Assert.AreEqual(Color.White, dropdownList.Color);
+			Assert.AreEqual(Color.Gray, dropdownList.Color);
 			Assert.AreEqual(3, dropdownList.selectBox.texts.Count);
 			Assert.IsFalse(dropdownList.IsPauseable);
 			Assert.AreEqual(3, dropdownList.MaxDisplayCount);

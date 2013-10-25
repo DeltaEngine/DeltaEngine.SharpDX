@@ -16,7 +16,11 @@ namespace $safeprojectname$
 			Add(new SimplePhysics.Data {
 				RotationSpeed = random.Get(-50, 50),
 				Velocity = new Vector2D(random.Get(-0.4f, 0.4f), random.Get(-0.4f, 0.4f)),
-				Bounced = () => sound.Play(0.1f)
+				Bounced = () => 
+				{
+					if (sound.NumberOfPlayingInstances < 4)
+						sound.Play(0.1f);
+				}
 			});
 			Start<SimplePhysics.BounceIfAtScreenEdge>();
 			Start<SimplePhysics.Rotate>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace DeltaEngine.Extensions
@@ -61,19 +62,19 @@ namespace DeltaEngine.Extensions
 
 		private static bool IsThirdPartyLibrary(string name)
 		{
-			return name == "OpenAL32" || name == "wrap_oal" || name == "libEGL" || name == "libgles" ||
-				name == "libGLESv2" || name == "csogg" || name == "csvorbis" || name == "Autofac" ||
-				name == "Moq" || name == "OpenTK" || name == "Newtonsoft.Json" || name == "NVorbis" ||
-				name.StartsWith("libvlc") || name.StartsWith("DynamicProxyGen") ||
-				name.StartsWith("Anonymously Hosted") || name.StartsWith("Pencil.Gaming") ||
-				name.StartsWith("AvalonDock") || name.StartsWith("Farseer") || name.StartsWith("MvvmLight") ||
-				name.StartsWith("SharpDX") || name.StartsWith("SlimDX") || name.StartsWith("ToyMp3") ||
-				name.StartsWith("EntityFramework") || name.StartsWith("NHibernate") ||
-				name.StartsWith("Approval") || name.StartsWith("System.IO.Abstractions") ||
-				name.StartsWith("AsfMojo") || name.StartsWith("SharpCompress") ||
-				name.StartsWith("WPFLocalizeExtension") || name.StartsWith("XAMLMarkupExtensions") ||
-				name.StartsWith("Glfw") || name.StartsWith("Glfw") || name.StartsWith("MonoGame");
+			return ThirdPartyLibsFullNames.Contains(name) ||
+				ThirdPartyLibsPartialNames.Any(name.StartsWith);
 		}
+
+		private static readonly string[] ThirdPartyLibsFullNames = new[] { "OpenAL32", "wrap_oal",
+			"libEGL", "libgles", "libGLESv2", "csogg", "csvorbis", "Autofac", "Moq", "OpenTK",
+			"Newtonsoft.Json", "NVorbis", "Ionic.Zip" };
+
+		private static readonly string[] ThirdPartyLibsPartialNames = new[] { "libvlc",
+			"DynamicProxyGen", "Anonymously Hosted", "Pencil.Gaming", "AvalonDock", "Farseer",
+			"MvvmLight", "SharpDX", "SlimDX", "ToyMp3", "EntityFramework", "NHibernate", "Approval",
+			"System.IO.Abstractions", "AsfMojo", "SharpCompress", "WPFLocalizeExtension",
+			"XAMLMarkupExtensions", "Glfw", "MonoGame" };
 
 		public static bool IsAllowed(this Assembly assembly)
 		{

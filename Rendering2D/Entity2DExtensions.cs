@@ -8,6 +8,7 @@ namespace DeltaEngine.Rendering2D
 	/// </summary>
 	public static class Entity2DExtensions
 	{
+		//ncrunch: no coverage start
 		public static void StartRotating(this Entity2D entity, float rotationSpeed)
 		{
 			AddSimplePhysicsDataIfNeeded(entity);

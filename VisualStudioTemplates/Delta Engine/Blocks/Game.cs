@@ -2,25 +2,34 @@ using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
-using DeltaEngine.Multimedia;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
 	public class Game
 	{
-		public Game(Window window, BlocksContent content, SoundDevice soundDevice)
+		public Game(Window window, BlocksContent content)
 		{
 			this.window = window;
+			screenSpace = new Camera2DScreenSpace(window);
 			this.content = content;
-			var menu = new MainMenu();
-			window.ViewportPixelSize = new Size(800, 800);
+			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1) ? 1 / 
+				window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
+			var menu = new MainMenu(content);
 			menu.InitGame += () => 
 			{
 				menu.Hide();
 				StartGame();
 			};
 			menu.QuitGame += window.CloseAfterFrame;
+			window.ViewportSizeChanged += size => 
+			{
+				if (IsInGame)
+					screenSpace.Zoom = (size.AspectRatio > 1) ? 1.8f / size.AspectRatio : 1.8f * 
+						size.AspectRatio;
+				else
+					screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio;
+			};
 		}
 
 		public UserInterface UserInterface
@@ -35,15 +44,23 @@ namespace $safeprojectname$
 			private set;
 		}
 
+		public bool IsInGame
+		{
+			get;
+			set;
+		}
+
 		private readonly Window window;
 		private readonly BlocksContent content;
+		private readonly Camera2DScreenSpace screenSpace;
 
 		public void StartGame()
 		{
 			UserInterface = new UserInterface(content);
 			Controller = new Controller(DisplayMode, content);
-			ScreenSpace.Current.ViewportSizeChanged += () => 
-				ShowCorrectSceneForAspect(window.ViewportPixelSize);
+			window.ViewportSizeChanged += ShowCorrectSceneForAspect;
+			IsInGame = true;
+			screenSpace.Zoom *= 1.8f;
 			Initialize();
 		}
 
@@ -57,8 +74,7 @@ namespace $safeprojectname$
 
 		private void SetDisplayMode()
 		{
-			window.ViewportPixelSize = new Size(700, 700);
-			window.Title = "Sample Blocks Game";
+			window.Title = "Fruit Blocks";
 			var aspectRatio = ScreenSpace.Current.Viewport.Aspect;
 			DisplayMode = aspectRatio >= 1.0f ? Orientation.Landscape : Orientation.Portrait;
 		}
@@ -132,6 +148,7 @@ namespace $safeprojectname$
 			commands [2].Add(new KeyTrigger(Key.CursorRight));
 			commands [3].Add(new KeyTrigger(Key.CursorRight, State.Releasing));
 			commands [4].Add(new KeyTrigger(Key.CursorUp));
+			commands [4].Add(new KeyTrigger(Key.Space));
 			commands [5].Add(new KeyTrigger(Key.CursorDown));
 			commands [6].Add(new KeyTrigger(Key.CursorDown, State.Releasing));
 		}

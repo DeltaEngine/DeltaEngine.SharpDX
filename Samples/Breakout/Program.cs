@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Core;
-using DeltaEngine.Multimedia;
 using DeltaEngine.Platforms;
 
 namespace Breakout
@@ -9,10 +8,11 @@ namespace Breakout
 	/// </summary>
 	public class Program : App
 	{
+		//ncrunch: no coverage start
 		public Program()
 		{
 			Resolve<Settings>().UpdatesPerSecond = 60;
-			new Game(Resolve<Window>(), Resolve<SoundDevice>());
+			new Game(Resolve<Window>());
 		}
 
 		public static void Main()

@@ -37,11 +37,16 @@ namespace DeltaEngine.Platforms
 		[TearDown]
 		public void RunTestAndDisposeResolverWhenDone()
 		{
-			if (StackTraceExtensions.StartedFromProgramMain ||
-				TestContext.CurrentContext.Result.Status == TestStatus.Passed)
-				resolver.Run();
-			else
+			try
+			{
+				if (StackTraceExtensions.StartedFromProgramMain ||
+					TestContext.CurrentContext.Result.Status == TestStatus.Passed)
+					resolver.Run();
+			}
+			finally
+			{
 				resolver.Dispose();
+			}
 		}
 
 		protected T Resolve<T>() where T : class

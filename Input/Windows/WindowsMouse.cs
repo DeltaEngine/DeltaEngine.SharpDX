@@ -10,6 +10,7 @@ namespace DeltaEngine.Input.Windows
 	/// </summary>
 	public class WindowsMouse : Mouse
 	{
+		//ncrunch: no coverage start
 		public WindowsMouse(CursorPositionTranslater positionTranslater)
 		{
 			hook = new MouseHook();
@@ -29,7 +30,7 @@ namespace DeltaEngine.Input.Windows
 		public override bool IsAvailable
 		{
 			get { return mouseCounter.GetNumberOfAvailableMice() > 0; }
-			protected set { } //ncrunch: no coverage (senseless regarding the "get" part)
+			protected set {} //ncrunch: no coverage (senseless regarding the "get" part)
 		}
 
 		public override void SetPosition(Vector2D position)

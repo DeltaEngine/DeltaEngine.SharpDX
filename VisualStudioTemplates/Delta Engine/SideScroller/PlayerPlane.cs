@@ -36,8 +36,8 @@ namespace $safeprojectname$
 						CalculateRectAfterMove(playerPlane);
 
 					var velocity2D = playerPlane.Get<Velocity2D>();
-					velocity2D.velocity.Y -= velocity2D.velocity.Y * playerPlane.verticalDecelerationFactor 
-						* Time.Delta;
+					velocity2D.velocity.Y -= velocity2D.velocity.Y * 
+						playerPlane.verticalDecelerationFactor * Time.Delta;
 					playerPlane.Set(velocity2D);
 					playerPlane.Rotation = RotationAccordingToVerticalSpeed();
 				}

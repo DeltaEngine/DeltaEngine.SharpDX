@@ -141,6 +141,20 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void ConvertBackFromString()
+		{
+			var quaternionFromString = new Quaternion("6, 3, 4, 6");
+			Assert.AreEqual(new Quaternion(6, 3, 4, 6), quaternionFromString);
+		}
+
+		[Test]
+		public void TryingToConvertFromInvalidStringThrows()
+		{
+			Assert.Throws<Quaternion.InvalidNumberOfComponents>(() => { new Quaternion("asdf"); });
+			Assert.Throws<Quaternion.InvalidStringFormat>(() => { new Quaternion("a, s, d, f"); });
+		}
+
+		[Test]
 		public void ToEuler()
 		{
 			VerifyEuler(new EulerAngles(-5, -40, 10));

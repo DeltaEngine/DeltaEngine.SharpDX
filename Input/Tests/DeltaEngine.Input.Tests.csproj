@@ -89,10 +89,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="KeyboardMessagesTests.cs" />
+    <Compile Include="MouseMessageTests.cs" />
     <Compile Include="CommandTests.cs" />
+    <Compile Include="RemoteInputMessagesTests.cs" />
     <Compile Include="TouchDualDragTriggerTests.cs" />
     <Compile Include="MouseFlickTriggerTests.cs" />
     <Compile Include="MouseZoomTriggerTests.cs" />
+    <Compile Include="TouchMessageTests.cs" />
     <Compile Include="TouchPinchTriggerTests.cs" />
     <Compile Include="TouchRotateTriggerTests.cs" />
     <Compile Include="MouseDoubleClickTriggerTests.cs" />

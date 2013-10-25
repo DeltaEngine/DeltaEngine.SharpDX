@@ -1,8 +1,8 @@
-﻿using System;
-using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using NUnit.Framework;
 
 namespace Breakout.Tests
@@ -10,7 +10,7 @@ namespace Breakout.Tests
 	public class PaddleTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void Draw(Type type)
+		public void Draw()
 		{
 			var ball = Resolve<TestBall>();
 			var paddle = Resolve<Paddle>();
@@ -22,6 +22,8 @@ namespace Breakout.Tests
 		[Test]
 		public void ControlPaddleVirtuallyWithKeyboard()
 		{
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			Resolve<TestBall>();
 			var paddle = Resolve<Paddle>();
 			var keyboard = Resolve<MockKeyboard>();
@@ -36,22 +38,21 @@ namespace Breakout.Tests
 		{
 			Assert.AreEqual(0.5f, paddle.Position.X);
 			AdvanceTimeAndUpdateEntities(0.1f);
-			Assert.IsTrue(paddle.Position.X < 0.5f);
-			Assert.IsTrue(paddle.Position.Y > 0.75f);
+			Assert.Less(paddle.Position.X, 0.5f);
+			Assert.Greater(paddle.Position.Y, 0.75f);
 		}
 
-		// ReSharper disable UnusedParameter.Local
 		private void AssertPaddleMovesRightCorrectly(Paddle paddle)
 		{
 			AdvanceTimeAndUpdateEntities(0.2f);
 			Assert.IsTrue(paddle.Position.X > 0.5f);
 		}
 
-		// ReSharper restore UnusedParameter.Local
-
-		[Test, Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void ControlPaddleVirtuallyWithGamePad()
 		{
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			var paddle = Resolve<Paddle>();
 			var gamePad = Resolve<MockGamePad>();
 			gamePad.SetGamePadState(GamePadButton.Left, State.Pressed);
@@ -61,43 +62,41 @@ namespace Breakout.Tests
 			AssertPaddleMovesRightCorrectly(paddle);
 		}
 
-		[Test, Ignore]
-		public void ControlPaddleVirtuallyWithMouseAndTouch()
+		[Test, CloseAfterFirstFrame]
+		public void ControlPaddleVirtuallyWithMouse()
 		{
-			Resolve<TestBall>();
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			var paddle = Resolve<Paddle>();
 			var mouse = Resolve<MockMouse>();
-			mouse.SetPosition(Vector2D.Zero);
-			mouse.SetButtonState(MouseButton.Left, State.Pressed);
+			SetMousePositionAndState(mouse, State.Pressed, new Vector2D(0.1f, 0.8f));
 			AssertPaddleMovesLeftCorrectly(paddle);
-			mouse.SetButtonState(MouseButton.Left, State.Released);
-			mouse.SetPosition(Vector2D.One);
-			mouse.SetButtonState(MouseButton.Left, State.Pressed);
+			SetMousePositionAndState(mouse, State.Released, Vector2D.One);
+			SetMousePositionAndState(mouse, State.Pressed, Vector2D.One);
 			AssertPaddleMovesRightCorrectly(paddle);
 		}
 
-		[Test]
+		private void SetMousePositionAndState(MockMouse mouse, State state, Vector2D position)
+		{
+			mouse.SetPosition(position);
+			mouse.SetButtonState(MouseButton.Left, state);
+			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void IsBallReleasedAfterSpacePressed()
 		{
 			var ball = Resolve<TestBall>();
 			Resolve<Paddle>();
 			PressSpaceOneSecond();
-			AssertBallIsReleasedAndPaddleStay(ball);
+			Assert.IsFalse(ball.IsCurrentlyOnPaddle);
+			Assert.AreNotEqual(0.5f, ball.Position.X);
 		}
 
 		private void PressSpaceOneSecond()
 		{
 			Resolve<MockKeyboard>().SetKeyboardState(Key.Space, State.Pressing);
 			AdvanceTimeAndUpdateEntities(1);
-		}
-
-		private static void AssertBallIsReleasedAndPaddleStay(TestBall remBall)
-		{
-			if (remBall != null)
-			{
-				Assert.IsFalse(remBall.IsCurrentlyOnPaddle);
-				Assert.AreNotEqual(0.5f, remBall.Position.X);
-			}
 		}
 	}
 }

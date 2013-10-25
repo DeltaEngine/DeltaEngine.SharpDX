@@ -17,33 +17,46 @@ namespace DeltaEngine.Content.Mocks
 	/// </summary>
 	public class MockContentLoader : ContentLoader
 	{
+		//ncrunch: no coverage start (for performance reasons)
 		protected override Stream GetContentDataStream(ContentData content)
 		{
 			var stream = Stream.Null;
-			if (content.MetaData.Type == ContentType.Xml && content.Name.Equals("Test"))
-				stream = new XmlFile(new XmlData("Root").AddChild(new XmlData("Hi"))).ToMemoryStream();
-			else if (content.MetaData.Type == ContentType.Xml && content.Name.Equals("Texts"))
+			if (content.MetaData.Type == ContentType.Xml && content.Name.Equals("Texts"))
 				stream = new XmlFile(new XmlData("Texts").AddChild(GoLocalizationNode)).ToMemoryStream();
 			else if (content.Name.Contains("Verdana12") || content.Name.Contains("Tahoma30"))
 				stream = CreateFontXml().ToMemoryStream();
+			else if (content.MetaData.Type == ContentType.Xml && content.Name != "NonExisting")
+				stream = new XmlFile(new XmlData("Root").AddChild(new XmlData("Hi"))).ToMemoryStream();
 			else if (content.MetaData.Type == ContentType.Shader)
 				stream = SaveShader(content.Name);
 			else if (content.Name.Equals("EmptyScene"))
 				stream = SaveEmptyScene();
 			else if (content.Name.Equals("SceneWithAButton"))
 				stream = SaveSceneWithAButton();
+			else if (content.Name.Equals("SceneWithAButtonWithChangedMaterial"))
+				stream = SaveSceneWithAButtonWithMaterial();
+			else if (content.Name.Equals("SceneWithAButtonWithDifferentFontText"))
+				stream = SaveSceneWithAButtonWithFontText();
 			else if (content.Name.Equals("TestMenuXml"))
 				stream = SaveTestMenu();
 			else if (content.Name.Equals("3DMaterial"))
 				stream = Save3DMaterial();
-			else if (content.Name.Equals("PointEmitter3D"))
-				stream = CreateEmitter3D("PointEmitter");
-			else if (content.Name.Equals("LineEmitter3D"))
-				stream = CreateEmitter3D("LineEmitter");
-			else if (content.Name.Equals("BoxEmitter3D"))
-				stream = CreateEmitter3D("BoxEmitter");
-			else if (content.Name.Equals("SphericalEmitter3D"))
-				stream = CreateEmitter3D("SphericalEmitter");
+			else if (content.Name.Contains("PointEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.Point);
+			else if (content.Name.Contains("LineEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.Line);
+			else if (content.Name.Contains("BoxEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.Box);
+			else if (content.Name.Contains("SphereEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.Sphere);
+			else if (content.Name.Contains("SphereBorderEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.SphereBorder);
+			else if (content.Name.Contains("CircleAroundCenterEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.CircleAroundCenter);
+			else if (content.Name.Contains("CircleEscapingEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.CircleEscaping);
+			else if (content.Name.Contains("MeshEmitter3D"))
+				stream = CreateEmitter3D(ParticleEmitterPositionType.Mesh);
 			else if (content.MetaData.Type == ContentType.ParticleEmitter)
 				stream = SaveTestParticle();
 			return stream;
@@ -103,9 +116,8 @@ namespace DeltaEngine.Content.Mocks
 		private static MemoryStream SaveTestParticle()
 		{
 			var particleEmitterData = new ParticleEmitterData();
-			var shader = Load<Shader>(Shader.Position2DColorUV);
-			particleEmitterData.ParticleMaterial = new Material(shader,
-				Create<Image>(new ImageCreationData(new Size(8, 8))));
+			var shader = Load<Shader>(Shader.Position2DColor);
+			particleEmitterData.ParticleMaterial = new Material(shader, null, new Size(8, 8));
 			particleEmitterData.Size = new RangeGraph<Size>(new Size(0.1f, 0.1f));
 			particleEmitterData.MaximumNumberOfParticles = 256;
 			particleEmitterData.LifeTime = 5.0f;
@@ -159,6 +171,29 @@ namespace DeltaEngine.Content.Mocks
 			return data;
 		}
 
+		private static Stream SaveSceneWithAButtonWithMaterial()
+		{
+			var scene = new Scene();
+			scene.Controls.Add(new Button(Theme.Default, Rectangle.One, "Hello"));
+			var material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			scene.Controls[0].Get<Theme>().Button = material;
+			scene.Controls[0].Get<Theme>().ButtonDisabled = material;
+			scene.Controls[0].Get<Theme>().ButtonMouseover = material;
+			scene.Controls[0].Get<Theme>().ButtonPressed = material;
+			var data = BinaryDataExtensions.SaveToMemoryStream(scene);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;
+		}
+
+		private static Stream SaveSceneWithAButtonWithFontText()
+		{
+			var scene = new Scene();
+			scene.Controls.Add(new Button(Theme.Default, Rectangle.One, "Hello"));
+			var data = BinaryDataExtensions.SaveToMemoryStream(scene);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;
+		}
+
 		private static MemoryStream SaveTestMenu()
 		{
 			var emptyScene = new AutoArrangingMenu(Size.One);
@@ -175,11 +210,11 @@ namespace DeltaEngine.Content.Mocks
 			return data;
 		}
 
-		private Stream CreateEmitter3D(string ParticleType)
+		private static Stream CreateEmitter3D(ParticleEmitterPositionType positionType)
 		{
 			var pointEmitter = new ParticleEmitterData();
 			pointEmitter.ParticleMaterial = new Material(Shader.Position3DColorUV, "DeltaEngineLogo");
-			pointEmitter.EmitterType = ParticleType;
+			pointEmitter.PositionType = positionType;
 			var data = BinaryDataExtensions.SaveToMemoryStream(pointEmitter);
 			data.Seek(0, SeekOrigin.Begin);
 			return data;
@@ -205,7 +240,7 @@ namespace DeltaEngine.Content.Mocks
 				return CreateSpriteSheetAnimationMetaData(contentName);
 			if (contentName == "ImageAnimationNoImages")
 				return CreateImageAnimationNoImagesMetaData(contentName);
-			if (contentName == ("ImageAnimation") || contentType == ContentType.ImageAnimation)
+			if (contentName.EndsWith("ImageAnimation") || contentType == ContentType.ImageAnimation)
 				return CreateImageAnimationMetaData(contentName);
 			if (contentType == ContentType.Image)
 				return CreateImageMetaData(contentName);
@@ -258,6 +293,10 @@ namespace DeltaEngine.Content.Mocks
 				return ContentType.Geometry;
 			if (typeName.Contains("ModelData"))
 				return ContentType.Model;
+			if(typeName.Contains("ParticleEmitterData"))
+				return ContentType.ParticleEmitter;
+			if (typeName.Contains("ParticleSystemData"))
+				return ContentType.ParticleSystem;
 			foreach (var contentType in EnumExtensions.GetEnumValues<ContentType>())
 				if (contentType != ContentType.Image && contentType != ContentType.Mesh &&
 					typeName.Contains(contentType.ToString()))
@@ -349,7 +388,7 @@ namespace DeltaEngine.Content.Mocks
 		
 		private static ContentMetaData CreateParticleSystemMetaData(string contentName)
 		{
-			var metaData = new ContentMetaData()
+			var metaData = new ContentMetaData
 			{
 				Name = contentName,
 				Type = ContentType.ParticleSystem

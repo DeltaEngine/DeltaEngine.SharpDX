@@ -36,6 +36,7 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DeltaEngine.csproj">
@@ -45,6 +46,14 @@
     <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Input\Mocks\DeltaEngine.Input.Mocks.csproj">
+      <Project>{4E4D006D-9C6E-47DB-908D-674E0C8D98AA}</Project>
+      <Name>DeltaEngine.Input.Mocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Mocks\DeltaEngine.Mocks.csproj">
+      <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
+      <Name>DeltaEngine.Mocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Platforms\DeltaEngine.Platforms.csproj">
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
@@ -61,6 +70,10 @@
     <ProjectReference Include="..\..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Scenes\DeltaEngine.Scenes.csproj">
+      <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
+      <Name>DeltaEngine.Scenes</Name>
     </ProjectReference>
     <ProjectReference Include="..\Snake.csproj">
       <Project>{EBE1547D-25CE-4DBE-AF9E-D901C97681B3}</Project>

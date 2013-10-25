@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Grid2DTests.cs" />
     <Compile Include="EllipseTests.cs" />
     <Compile Include="FilledRectTests.cs" />
     <Compile Include="GradientFilledRectTests.cs" />

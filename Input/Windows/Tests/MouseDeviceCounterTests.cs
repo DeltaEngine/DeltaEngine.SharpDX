@@ -1,11 +1,12 @@
 ﻿using DeltaEngine.Platforms.Mocks;
-using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Windows.Tests
 {
+	[Category("Slow")]
 	public class MouseDeviceCounterTests
 	{
+		//ncrunch: no coverage start
 		[Test]
 		public void GetNumberOfAvailableMice()
 		{

@@ -16,12 +16,12 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
 			ellipse = new Ellipse(Center, RadiusX, RadiusY, Color);
 			ellipse.Add(new Name("name"));
 			writer = new EntityWriter(ellipse);
-			colorRSlider = writer.scene.Controls[1] as Slider;
-			colorGSlider = writer.scene.Controls[3] as Slider;
-			colorBSlider = writer.scene.Controls[5] as Slider;
-			colorASlider = writer.scene.Controls[7] as Slider;
-			nameBox = writer.scene.Controls[9] as TextBox;
-			drawAreaBox = writer.scene.Controls[11] as TextBox;
+			drawAreaBox = writer.scene.Controls[1] as TextBox;
+			colorRSlider = writer.scene.Controls[3] as Slider;
+			colorGSlider = writer.scene.Controls[5] as Slider;
+			colorBSlider = writer.scene.Controls[7] as Slider;
+			colorASlider = writer.scene.Controls[9] as Slider;
+			nameBox = writer.scene.Controls[11] as TextBox;
 			rotationBox = writer.scene.Controls[13] as TextBox;
 			rotationCenterBox = writer.scene.Controls[15] as TextBox;
 		}

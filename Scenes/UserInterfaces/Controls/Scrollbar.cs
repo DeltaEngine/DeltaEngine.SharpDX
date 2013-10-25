@@ -31,17 +31,17 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		protected override void UpdateSliderAppearance()
 		{
-			SetAppearance(IsEnabled ? theme.Scrollbar : theme.ScrollbarDisabled);
+			SetAppearance(IsEnabled ? Theme.Scrollbar : Theme.ScrollbarDisabled);
 		}
 
 		protected override void UpdatePointerAppearance()
 		{
 			if (!Pointer.IsEnabled)
-				Pointer.SetAppearance(theme.ScrollbarPointerDisabled);
+				Pointer.SetAppearance(Theme.ScrollbarPointerDisabled);
 			else if (Pointer.State.IsInside || Pointer.State.IsPressed)
-				Pointer.SetAppearance(theme.ScrollbarPointerMouseover);
+				Pointer.SetAppearance(Theme.ScrollbarPointerMouseover);
 			else
-				Pointer.SetAppearance(theme.ScrollbarPointer);
+				Pointer.SetAppearance(Theme.ScrollbarPointer);
 		}
 
 		protected override void UpdatePointerValue()

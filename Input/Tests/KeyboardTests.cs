@@ -22,6 +22,12 @@ namespace DeltaEngine.Input.Tests
 		private Keyboard keyboard;
 		private MockKeyboard mockKeyboard;
 
+		[TearDown]
+		public void Dispose()
+		{
+			keyboard.Dispose();
+		}
+
 		[Test]
 		public void PressKeyToShowCircle()
 		{
@@ -155,8 +161,8 @@ namespace DeltaEngine.Input.Tests
 			var textBox = new TextBox(Rectangle.One, "test");
 			textBox.IsEnabled = true;
 			textBox.State.HasFocus = true;
-			new Command(() => textBox.Text = keyboard.HandleInput(textBox.Text)).Add(new KeyTrigger(Key.None,
-				State.Released));
+			new Command(() => textBox.Text = keyboard.HandleInput(textBox.Text)).Add(
+				new KeyTrigger(Key.None, State.Released));
 		}
 	}
 }

@@ -48,7 +48,7 @@ namespace DeltaEngine.Content.Xml
 				case ".deltageometry":
 					return ContentType.Geometry;
 				case ".deltascene":
-					return ContentType.Scene;
+					return ContentType.Scene; //ncrunch: no coverage
 			}
 			Logger.Warning("Unknown content type, unable to proceed : " +
 				Path.GetFileName(fileName));

@@ -23,7 +23,12 @@ namespace DeltaEngine.Platforms
 			foreach (Assembly assembly in assemblies)
 			{
 				var name = assembly.GetName().Name;
-				if (AssemblyExtensions.IsPlatformAssembly(name) || !assembly.IsAllowed())
+				if (AssemblyExtensions.IsPlatformAssembly(name) || !assembly.IsAllowed() ||
+					name == "DeltaEngine.Graphics" || name == "DeltaEngine.Input" ||
+					name == "DeltaEngine.Physics2D" || name == "DeltaEngine.Physics3D" ||
+					name == "DeltaEngine.Logging" || name == "DeltaEngine.Networking" ||
+					name.StartsWith("DeltaEngine.Content") && !name.EndsWith(".Tests") ||
+					name.EndsWith(".Mocks"))
 					continue;
 				Type[] assemblyTypes = TryToGetAssemblyTypes(assembly);
 				if (assemblyTypes == null)
@@ -71,13 +76,12 @@ namespace DeltaEngine.Platforms
 		}
 
 		/// <summary>
-		/// Needed in Windows 8.1 since Windows.Storage (referenced by Windows.Foundation) cannot be loaded.
+		/// Needed in Win 8.1 since Windows.Storage (referenced by Windows.Foundation) cannot be loaded.
 		/// </summary>
 		private static bool IsConflictingDependency(AssemblyName dependency)
 		{
 			return dependency.Name == "Windows.Storage";
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private static Type[] TryToGetAssemblyTypes(Assembly assembly)
 		{

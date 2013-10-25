@@ -1,7 +1,5 @@
-﻿using System;
-using DeltaEngine.Core;
+﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
@@ -70,8 +68,8 @@ namespace Breakout.Tests
 			}
 		}
 
-		[Test,CloseAfterFirstFrame]
-		public void GetBrickAtScreenPosition(Type type)
+		[Test, CloseAfterFirstFrame]
+		public void GetBrickAtScreenPosition()
 		{
 			var level = Resolve<Level>();
 			Assert.Null(level.GetBrickAt(0f, 0.6f));
@@ -79,8 +77,8 @@ namespace Breakout.Tests
 			Assert.NotNull(level.GetBrickAt(0.25f, 0.25f));
 		}
 
-		[Test]
-		public void CheckEmptyLevel(Type type)
+		[Test, CloseAfterFirstFrame]
+		public void CheckEmptyLevel()
 		{
 			Resolve<Paddle>();
 			var level = Resolve<EmptyLevel>();
@@ -90,19 +88,19 @@ namespace Breakout.Tests
 			Assert.AreEqual(0, level.BricksLeft);
 		}
 
-		[Test]
-		public void RemoveBrick(Type type)
+		[Test, CloseAfterFirstFrame]
+		public void RemoveBrick()
 		{
 			var level = Resolve<Level>();
 			Assert.AreEqual(4, level.BricksLeft);
 			var brick = level.GetBrickAt(0.25f, 0.25f);
-			Assert.IsTrue(brick.IsVisible == true);
+			Assert.IsTrue(brick.IsVisible);
 			brick.IsVisible = false;
 			Assert.AreEqual(3, level.BricksLeft);
 			Assert.IsNull(level.GetBrickAt(0.25f, 0.25f));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateGameWithBallReleased()
 		{
 			var remBall = Resolve<TestBall>();
@@ -111,6 +109,30 @@ namespace Breakout.Tests
 			AdvanceTimeAndUpdateEntities(0.1f);
 			if (remBall != null)
 				Assert.IsFalse(remBall.IsCurrentlyOnPaddle);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void LifeLostLeadsToGameOver()
+		{
+			bool lost = false;
+			var score = new Score();
+			score.GameOver += () => lost = true;
+			var level = new Level(score);
+			level.LifeLost();
+			level.LifeLost();
+			level.LifeLost();
+			Assert.True(lost);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void BricksLeft()
+		{
+			var level = Resolve<Level>();
+			level.GetBrickAt(0.25f, 0.125f).IsVisible = false;
+			level.GetBrickAt(0.75f, 0.125f).IsVisible = false;
+			level.GetBrickAt(0.25f, 0.375f).IsVisible = false;
+			level.GetBrickAt(0.75f, 0.375f).IsVisible = false;
+			Assert.AreEqual(0, level.BricksLeft);
 		}
 	}
 }

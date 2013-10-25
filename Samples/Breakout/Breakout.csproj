@@ -89,7 +89,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ball.cs" />
-    <Compile Include="Background.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Game.cs" />

@@ -23,7 +23,7 @@ namespace DeltaEngine.ScreenSpaces
 		private static ScreenSpace current;
 		internal static ScreenSpaceResolver resolver;
 
-		public static bool IsInitialized
+		internal static bool IsInitialized
 		{
 			get { return current != null; }
 		}

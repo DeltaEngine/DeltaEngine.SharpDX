@@ -37,11 +37,15 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		private Rectangle GetButtonDrawArea(int position)
 		{
 			float height = DrawArea.Height / (buttons.Count);
-			float aspectRatio = theme.RadioButtonBackground.Material.MaterialRenderSize.AspectRatio;
+			float aspectRatio = theme.RadioButtonBackground.DiffuseMap != null
+				? theme.RadioButtonBackground.DiffuseMap.PixelSize.AspectRatio
+				: DefaultRadioButtonAspectRatio;
 			float width = height * aspectRatio;
-			var d = new Rectangle(DrawArea.Left, DrawArea.Top + position * height, width, height);
-			return d;
+			var rectangle = new Rectangle(DrawArea.Left, DrawArea.Top + position * height, width, height);
+			return rectangle;
 		}
+
+		private const float DefaultRadioButtonAspectRatio = 4.0f;
 
 		private void ButtonClicked(RadioButton clicked)
 		{

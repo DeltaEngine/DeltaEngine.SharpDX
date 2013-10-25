@@ -104,6 +104,14 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void CreateScale()
+		{
+			matrix = Matrix.CreateScale(Vector3D.One*2);
+			var expected = new Matrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1);
+			Assert.AreEqual(expected, matrix);
+		}
+
+		[Test]
 		public void CreateScaleFromThreeScalar()
 		{
 			matrix = Matrix.CreateScale(3, 4, 7);

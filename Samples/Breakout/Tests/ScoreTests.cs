@@ -1,23 +1,28 @@
-﻿using System;
-using DeltaEngine.Platforms;
+﻿using DeltaEngine.Platforms;
 using NUnit.Framework;
 
 namespace Breakout.Tests
 {
 	public class ScoreTests : TestWithMocksOrVisually
 	{
-		[Test]
-		public void IncreasePoints(Type type)
+		[SetUp, CloseAfterFirstFrame]
+		public void Init()
 		{
-			var score = Resolve<Score>();
+			score = Resolve<Score>();
+		}
+
+		private Score score;
+
+		[Test]
+		public void IncreasePoints()
+		{
 			Assert.IsTrue(score.ToString().Contains("Score: 0"), score.ToString());
 			score.IncreasePoints();
 		}
 
 		[Test]
-		public void NextLevelWithoutInitialization(Type type)
+		public void NextLevelWithoutInitialization()
 		{
-			var score = Resolve<Score>();
 			bool isGameOver = false;
 			score.GameOver += () => isGameOver = true;
 			Assert.AreEqual(1, score.Level);
@@ -27,9 +32,8 @@ namespace Breakout.Tests
 		}
 
 		[Test]
-		public void NextLevelWithLevelInitialization(Type type)
+		public void NextLevelWithLevelInitialization()
 		{
-			var score = Resolve<Score>();
 			Resolve<Level>();
 			bool isGameOver = false;
 			score.GameOver += () => isGameOver = true;
@@ -40,9 +44,8 @@ namespace Breakout.Tests
 		}
 
 		[Test]
-		public void LoseLivesUntilGameOver(Type type)
+		public void LoseLivesUntilGameOver()
 		{
-			var score = Resolve<Score>();
 			bool isGameOver = false;
 			score.GameOver += () => isGameOver = true;
 			score.LifeLost();

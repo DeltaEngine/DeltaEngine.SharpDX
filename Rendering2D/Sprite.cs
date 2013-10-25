@@ -24,8 +24,9 @@ namespace DeltaEngine.Rendering2D
 		public Sprite(Material material, Rectangle drawArea)
 			: base(drawArea)
 		{
-			Add(material);
-			Add(material.DiffuseMap.BlendMode);
+			Add(cachedMaterial = material);
+			Add(cachedBlendMode =
+				material.DiffuseMap != null ? material.DiffuseMap.BlendMode : BlendMode.Normal);
 			if (material.DefaultColor != DefaultColor)
 				Color = material.DefaultColor;
 			OnDraw<SpriteBatchRenderer>();
@@ -33,25 +34,28 @@ namespace DeltaEngine.Rendering2D
 				Start<UpdateImageAnimation>();
 			if (material.SpriteSheet != null)
 				Start<UpdateSpriteSheetAnimation>();
-			renderingCalculatorResults = Material.RenderingCalculator.GetUVAndDrawArea(Rectangle.One,
-				drawArea, FlipMode.None);
-			lastRenderingCalculatorResults = renderingCalculatorResults;
+			lastRenderingData = renderingData =
+				Material.RenderingCalculator.GetUVAndDrawArea(Rectangle.One, drawArea);
 			Start<UpdateRenderingCalculations>();
 			IsPlaying = true;
 		}
 
-		private RenderingData renderingCalculatorResults;
-		private RenderingData lastRenderingCalculatorResults;
+		internal RenderingData renderingData;
+		internal RenderingData lastRenderingData;
 
 		public override sealed void Set(object component)
 		{
 			if (component is RenderingData)
 			{
 				EntitiesRunner.Current.CheckIfInUpdateState();
-				renderingCalculatorResults = (RenderingData)component;
+				renderingData = (RenderingData)component;
+				return;
 			}
-			else
-				base.Set(component);
+			if (component is Material)
+				cachedMaterial = component as Material;
+			if (component is BlendMode)
+				cachedBlendMode = (BlendMode)component;
+			base.Set(component);
 		}
 
 		public override sealed void SetWithoutInterpolation<T>(T component)
@@ -59,8 +63,8 @@ namespace DeltaEngine.Rendering2D
 			if (typeof(T) == typeof(RenderingData))
 			{
 				EntitiesRunner.Current.CheckIfInUpdateState();
-				renderingCalculatorResults = (RenderingData)(object)component;
-				lastRenderingCalculatorResults = renderingCalculatorResults;
+				renderingData = (RenderingData)(object)component;
+				lastRenderingData = renderingData;
 			}
 			else
 				base.SetWithoutInterpolation(component);
@@ -77,23 +81,23 @@ namespace DeltaEngine.Rendering2D
 		{
 			if (EntitiesRunner.Current.State == UpdateDrawState.Draw &&
 				typeof(T) == typeof(RenderingData))
-				return (T)(object)lastRenderingCalculatorResults.Lerp(renderingCalculatorResults,
+				return (T)(object)lastRenderingData.Lerp(renderingData,
 					EntitiesRunner.CurrentDrawInterpolation);
 			if (typeof(T) == typeof(RenderingData))
-				return (T)(object)renderingCalculatorResults;
+				return (T)(object)renderingData;
 			return base.Get<T>();
 		}
 
 		protected internal override sealed List<object> GetComponentsForSaving()
 		{
 			List<object> componentsForSaving = base.GetComponentsForSaving(); 
-			componentsForSaving.Add(renderingCalculatorResults);
+			componentsForSaving.Add(renderingData);
 			return componentsForSaving;
 		}
 
 		protected override sealed void NextUpdateStarted()
 		{
-			lastRenderingCalculatorResults = renderingCalculatorResults;
+			lastRenderingData = renderingData;
 			base.NextUpdateStarted();
 		}
 
@@ -111,19 +115,27 @@ namespace DeltaEngine.Rendering2D
 
 		public Material Material
 		{
-			get { return Get<Material>(); }
+			get
+			{
+				return cachedMaterial;
+			}
 			set
 			{
 				Set(value);
-				BlendMode = value.DiffuseMap.BlendMode;
+				if (value.DiffuseMap != null)
+					BlendMode = value.DiffuseMap.BlendMode;
 			}
 		}
 
+		private Material cachedMaterial;
+
 		public BlendMode BlendMode
 		{
-			get { return Get<BlendMode>(); }
+			get { return cachedBlendMode; }
 			set { Set(value); }
 		}
+
+		private BlendMode cachedBlendMode;
 
 		public void SetUVWithoutInterpolation(Rectangle uv)
 		{

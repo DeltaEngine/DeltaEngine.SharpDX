@@ -19,24 +19,24 @@ namespace $safeprojectname$
 			AddHowToPlay();
 			AddQuitButton();
 			AddHighscores();
-			SetQuadraticBackground("AsteroidsMainMenuBackground");
+			SetViewportBackground("AsteroidsMainMenuBackground");
 			AddMenuLogo();
 		}
 
 		private void CreateMenuTheme()
 		{
-			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(ContentLoader.Load<Material>("ButtonDefault"));
-			menuTheme.ButtonMouseover = new Theme.Appearance(ContentLoader.Load<Material>("ButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(ContentLoader.Load<Material>("ButtonPressed"));
-			menuTheme.ButtonDisabled = new Theme.Appearance();
+			menuTheme = new Theme {
+				Button = ContentLoader.Load<Material>("ButtonDefault"),
+				ButtonMouseover = ContentLoader.Load<Material>("ButtonHover"),
+				ButtonPressed = ContentLoader.Load<Material>("ButtonPressed")
+			};
 		}
 
 		private void AddMenuLogo()
 		{
 			var material = new Material(Shader.Position2DColorUV, "AsteroidsMainMenuLogo");
 			var gameLogo = new Sprite(material, Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 
-				0.1f, 0.8f, 0.2f));
+				0.2f, 0.8f, 0.2f));
 			gameLogo.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(gameLogo);
 		}
@@ -45,8 +45,8 @@ namespace $safeprojectname$
 
 		private void AddStartButton()
 		{
-			var startButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom - 
-				0.4f, 0.4f, 0.08f), "Start Game");
+			var startButton = new Button(menuTheme, new Rectangle(0.25f, ScreenSpace.Current.Top + 
+				0.34f, 0.5f, 0.12f), "Start Game");
 			startButton.Clicked += TryInvokeGameStart;
 			startButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(startButton);
@@ -62,8 +62,8 @@ namespace $safeprojectname$
 
 		private void AddHowToPlay()
 		{
-			var howToButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom - 
-				0.3f, 0.4f, 0.08f), "How To Play");
+			var howToButton = new Button(menuTheme, new Rectangle(0.25f, ScreenSpace.Current.Top + 
+				0.46f, 0.5f, 0.12f), "How To Play");
 			howToButton.Clicked += ShowHowToPlaySubMenu;
 			howToButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(howToButton);
@@ -72,8 +72,8 @@ namespace $safeprojectname$
 		private void ShowHowToPlaySubMenu()
 		{
 			if (howToPlay == null)
-				howToPlay = new HowToPlaySubMenu(this, menuTheme, (int)AsteroidsRenderLayer.UserInterface 
-					+ 10);
+				howToPlay = new HowToPlaySubMenu(this, menuTheme, 
+					(int)AsteroidsRenderLayer.UserInterface + 10);
 
 			howToPlay.Show();
 			Hide();
@@ -87,7 +87,7 @@ namespace $safeprojectname$
 				this.parent = parent;
 				this.menuTheme = menuTheme;
 				this.renderLayer = renderLayer;
-				SetQuadraticBackground("AsteroidsMainMenuBackground");
+				SetViewportBackground("AsteroidsMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
 				Hide();
@@ -111,8 +111,8 @@ namespace $safeprojectname$
 
 			private void AddBackButton()
 			{
-				var backButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom - 
-					0.15f, 0.4f, 0.08f), "Back");
+				var backButton = new Button(menuTheme, new Rectangle(0.25f, 
+					ScreenSpace.Current.Bottom - 0.2f, 0.5f, 0.12f), "Back");
 				backButton.RenderLayer = renderLayer + 1;
 				backButton.Clicked += () => 
 				{
@@ -124,8 +124,8 @@ namespace $safeprojectname$
 		}
 		private void AddHighscores()
 		{
-			var highscoreButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom 
-				- 0.2f, 0.4f, 0.08f), "Highscores");
+			var highscoreButton = new Button(menuTheme, new Rectangle(0.25f, ScreenSpace.Current.Top 
+				+ 0.58f, 0.5f, 0.12f), "Highscores");
 			highscoreButton.Clicked += ShowHighScoresSubMenu;
 			highscoreButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(highscoreButton);
@@ -134,8 +134,8 @@ namespace $safeprojectname$
 		private void ShowHighScoresSubMenu()
 		{
 			if (highscore == null)
-				highscore = new HighscoreSubMenu(this, menuTheme, (int)AsteroidsRenderLayer.UserInterface 
-					+ 10);
+				highscore = new HighscoreSubMenu(this, menuTheme, 
+					(int)AsteroidsRenderLayer.UserInterface + 10);
 
 			highscore.UpdateScoreText(ScoreboardText);
 			highscore.Show();
@@ -150,7 +150,7 @@ namespace $safeprojectname$
 				this.parent = parent;
 				this.menuTheme = menuTheme;
 				this.renderLayer = renderLayer;
-				SetQuadraticBackground("AsteroidsMainMenuBackground");
+				SetViewportBackground("AsteroidsMainMenuBackground");
 				scoreboard = new FontText(Font.Default, "", Vector2D.Half);
 				scoreboard.RenderLayer = renderLayer + 2;
 				Add(scoreboard);
@@ -171,8 +171,8 @@ namespace $safeprojectname$
 
 			private void AddBackButton()
 			{
-				var backButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom - 
-					0.1f, 0.4f, 0.08f), "Back");
+				var backButton = new Button(menuTheme, new Rectangle(0.25f, 
+					ScreenSpace.Current.Bottom - 0.2f, 0.5f, 0.12f), "Back");
 				backButton.RenderLayer = renderLayer + 1;
 				backButton.Clicked += () => 
 				{
@@ -184,8 +184,8 @@ namespace $safeprojectname$
 		}
 		private void AddQuitButton()
 		{
-			var quitButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom - 
-				0.1f, 0.4f, 0.08f), "Quit Game");
+			var quitButton = new Button(menuTheme, new Rectangle(0.25f, ScreenSpace.Current.Top + 
+				0.7f, 0.5f, 0.12f), "Quit Game");
 			quitButton.Clicked += TryInvokeQuit;
 			quitButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(quitButton);
@@ -201,7 +201,7 @@ namespace $safeprojectname$
 
 		public void UpdateHighscoreDisplay(int[] highscores)
 		{
-			ScoreboardText = "Highscores";
+			ScoreboardText = "Highscores\n";
 			for (int i = 0; i < highscores.Length; i++)
 				ScoreboardText += "\n" + (i + 1).ToString(CultureInfo.InvariantCulture) + ": " + 
 					highscores [i];

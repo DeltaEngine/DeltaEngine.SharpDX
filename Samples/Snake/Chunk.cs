@@ -21,6 +21,7 @@ namespace Snake
 		{
 			this.gridSize = gridSize;
 			this.blockSize = blockSize;
+			RenderLayer = 2;
 			random = new PseudoRandom();
 		}
 

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Rendering2D.Particles
 {
@@ -19,16 +22,30 @@ namespace DeltaEngine.Rendering2D.Particles
 			Position = spawnPosition;
 			Rotation = Quaternion.Identity;
 			lastFramePosition = spawnPosition;
+			CreateImageAnimationMaterials();
 			OnDraw<Particle2DRenderer>();
 		}
 
+		public ParticleEmitterData EmitterData { get; private set; }
+		public float ElapsedSinceLastSpawn { get; set; }
 		public Vector3D Position { get; set; }
 		public Quaternion Rotation { get; set; }
 		private Vector3D lastFramePosition;
-		public ParticleEmitterData EmitterData { get; private set; }
-		public float ElapsedSinceLastSpawn { get; set; }
 
 		public class UnableToCreateWithoutMaterial : Exception {}
+
+		private void CreateImageAnimationMaterials()
+		{
+			ImageAnimation animation = EmitterData.ParticleMaterial.Animation;
+			if (animation == null)
+				return;
+			animationMaterials = new Material[animation.Frames.Length];
+			for (int i = 0; i < animation.Frames.Length; i++)
+				animationMaterials[i] = new Material(EmitterData.ParticleMaterial.Shader,
+					animation.Frames[i], animation.Frames[i].PixelSize);
+		}
+
+		private Material[] animationMaterials;
 
 		public void Update()
 		{
@@ -38,6 +55,49 @@ namespace DeltaEngine.Rendering2D.Particles
 		}
 
 		private void UpdateAndLimitNumberOfActiveParticles()
+		{
+			if (EmitterData.PositionType == ParticleEmitterPositionType.CircleAroundCenter)
+			{
+				UpdateParticlesTracingCircularOutline();
+				return;
+			}
+			if (EmitterData.PositionType == ParticleEmitterPositionType.CircleEscaping)
+			{
+				UpdateParticlesRadialEscape();
+				return;
+			}
+			UpdateParticlesBasic();
+		}
+
+		public Particle[] particles;
+
+		private void UpdateParticlesTracingCircularOutline()
+		{
+			int lastIndex = -1;
+			for (int index = 0; index < NumberOfActiveParticles; index++)
+				if (particles[index].UpdateRoundingParticleIfStillActive(EmitterData, Position))
+				{
+					lastIndex = index;
+					UpdateParticleProperties(index);
+				}
+			NumberOfActiveParticles = lastIndex + 1;
+			lastFramePosition = Position;
+		}
+
+		private void UpdateParticlesRadialEscape()
+		{
+			int lastIndex = -1;
+			for (int index = 0; index < NumberOfActiveParticles; index++)
+				if (particles[index].UpdateEscapingParticleIfStillActive(EmitterData, Position))
+				{
+					lastIndex = index;
+					UpdateParticleProperties(index);
+				}
+			NumberOfActiveParticles = lastIndex + 1;
+			lastFramePosition = Position;
+		}
+
+		private void UpdateParticlesBasic()
 		{
 			int lastIndex = -1;
 			for (int index = 0; index < NumberOfActiveParticles; index++)
@@ -52,12 +112,10 @@ namespace DeltaEngine.Rendering2D.Particles
 
 		public int NumberOfActiveParticles { get; protected set; }
 
-		protected virtual bool UpdateParticle(int index)
+		private bool UpdateParticle(int index)
 		{
 			return particles[index].UpdateIfStillActive(EmitterData);
 		}
-
-		public Particle[] particles;
 
 		private void UpdateParticleProperties(int index)
 		{
@@ -87,7 +145,7 @@ namespace DeltaEngine.Rendering2D.Particles
 				particles[index].CurrentFrame =
 					(int)(animation.Frames.Length * particles[index].ElapsedTime / duration) %
 						animation.Frames.Length;
-				particles[index].Material.DiffuseMap = animation.Frames[particles[index].CurrentFrame];
+				particles[index].Material = animationMaterials[particles[index].CurrentFrame];
 			}
 		}
 
@@ -106,16 +164,17 @@ namespace DeltaEngine.Rendering2D.Particles
 		private void SpawnNewParticles()
 		{
 			ElapsedSinceLastSpawn += Time.Delta;
-			if (EmitterData.SpawnInterval <= 0.0f || IsAnyPhysicsNull())
+			if (EmitterData.SpawnInterval <= 0.0f || IsAnyEmitterDataNull())
 				return;
 			while (ElapsedSinceLastSpawn >= EmitterData.SpawnInterval)
 				DoIntervalSpawn();
 		}
 
-		private bool IsAnyPhysicsNull()
+		private bool IsAnyEmitterDataNull()
 		{
 			return EmitterData.Acceleration == null || EmitterData.Size == null ||
-				EmitterData.StartVelocity == null || EmitterData.StartPosition == null;
+				EmitterData.StartVelocity == null || EmitterData.StartPosition == null ||
+				EmitterData.ParticleMaterial.DiffuseMap == null;
 		}
 
 		private void DoIntervalSpawn()
@@ -128,9 +187,12 @@ namespace DeltaEngine.Rendering2D.Particles
 		public void Spawn(int numberOfParticles = 1)
 		{
 			CreateParticleArrayIfNecessary();
+			lastFreeSpot = -1;
 			for (int i = 0; i < numberOfParticles; i++)
 				SpawnOneParticle();
 		}
+
+		private int lastFreeSpot;
 
 		private void CreateParticleArrayIfNecessary()
 		{
@@ -150,11 +212,6 @@ namespace DeltaEngine.Rendering2D.Particles
 
 		public const int MaxParticles = 1024;
 
-		public class MaximumNumberOfParticlesExceeded : Exception
-		{
-			public MaximumNumberOfParticlesExceeded(int specified, int maxAllowed)
-				: base("Specified=" + specified + ", Maximum allowed=" + maxAllowed) {}
-		}
 
 		private void SpawnOneParticle()
 		{
@@ -163,7 +220,7 @@ namespace DeltaEngine.Rendering2D.Particles
 				return;
 			particles[freeSpot].IsActive = true;
 			particles[freeSpot].ElapsedTime = 0;
-			Vector3D position = GetParticleSpawnPosition2D();
+			Vector3D position = GetParticleSpawnPosition();
 			particles[freeSpot].Position = position;
 			particles[freeSpot].SetStartVelocityRandomizedFromRange(EmitterData.StartVelocity.Start,
 				EmitterData.StartVelocity.End);
@@ -176,28 +233,119 @@ namespace DeltaEngine.Rendering2D.Particles
 			particles[freeSpot].Material = EmitterData.ParticleMaterial;
 		}
 
-		private int FindFreeSpot()
+		public class MaximumNumberOfParticlesExceeded : Exception
 		{
-			for (int index = 0; index < NumberOfActiveParticles; index++)
-				if (!particles[index].IsActive)
-					return index; //ncrunch: no coverage
-			return NumberOfActiveParticles < EmitterData.MaximumNumberOfParticles
-				? NumberOfActiveParticles++ : -1;
+			public MaximumNumberOfParticlesExceeded(int specified, int maxAllowed)
+				: base("Specified=" + specified + ", Maximum allowed=" + maxAllowed) {}
 		}
 
-		protected virtual Vector3D GetParticleSpawnPosition2D()
+
+		private int FindFreeSpot()
+		{
+			for (int index = lastFreeSpot + 1; index < NumberOfActiveParticles; index++)
+				if (!particles[index].IsActive)
+					return lastFreeSpot = index; //ncrunch: no coverage
+			if (NumberOfActiveParticles < EmitterData.MaximumNumberOfParticles)
+				return lastFreeSpot = NumberOfActiveParticles++;
+			lastFreeSpot = NumberOfActiveParticles;
+			return -1;
+		}
+
+		protected virtual Vector3D GetParticleSpawnPosition()
+		{
+			switch (EmitterData.PositionType)
+			{
+			case ParticleEmitterPositionType.Point:
+				return GetSpawnPositionPoint();
+			case ParticleEmitterPositionType.Line:
+				return GetSpawnPositionLine();
+			case ParticleEmitterPositionType.Box:
+				return GetSpawnPositionBox();
+			case ParticleEmitterPositionType.Sphere:
+				return GetSpawnPositionSphere();
+			case ParticleEmitterPositionType.SphereBorder:
+				return GetSpawnPositionSphereBorder();
+			case ParticleEmitterPositionType.CircleAroundCenter:
+			case ParticleEmitterPositionType.CircleEscaping:
+				return GetSpawnPositionCircleOutline();
+			default:
+				return GetSpawnPositionPoint();
+			}
+		}
+
+		protected Vector3D GetSpawnPositionPoint()
+		{
+			return (Rotation.Equals(Quaternion.Identity))
+				? Position + EmitterData.StartPosition.Start
+				: Position + EmitterData.StartPosition.Start.Transform(Rotation);
+		}
+
+		protected Vector3D GetSpawnPositionLine()
 		{
 			return (Rotation.Equals(Quaternion.Identity))
 				? Position + EmitterData.StartPosition.GetRandomValue()
 				: Position + EmitterData.StartPosition.GetRandomValue().Transform(Rotation);
 		}
 
-		//ncrunch: no coverage start
-		protected virtual Vector3D GetParticleSpawnPosition3D()
+		protected Vector3D GetSpawnPositionBox()
 		{
-			return Vector3D.Zero;
+			var insideTheBox =
+				new Vector3D(
+					EmitterData.StartPosition.Start.X.Lerp(EmitterData.StartPosition.End.X,
+						Randomizer.Current.Get()),
+					EmitterData.StartPosition.Start.Y.Lerp(EmitterData.StartPosition.End.Y,
+						Randomizer.Current.Get()),
+					EmitterData.StartPosition.Start.Z.Lerp(EmitterData.StartPosition.End.Z,
+						Randomizer.Current.Get()));
+			return (Rotation.Equals(Quaternion.Identity))
+				? Position + insideTheBox : Position + insideTheBox.Transform(Rotation);
 		}
-		//ncrunch: no coverage end
+
+		protected Vector3D GetSpawnPositionSphere()
+		{
+			var insideSphere =
+				new Vector3D(
+					EmitterData.StartPosition.Start.X.Lerp(EmitterData.StartPosition.End.X,
+						Randomizer.Current.Get()),
+					EmitterData.StartPosition.Start.Y.Lerp(EmitterData.StartPosition.End.Y,
+						Randomizer.Current.Get()),
+					EmitterData.StartPosition.Start.Z.Lerp(EmitterData.StartPosition.End.Z,
+						Randomizer.Current.Get()));
+			insideSphere.Normalize();
+			insideSphere *=
+				0.0f.Lerp(EmitterData.StartPosition.Start.Distance(EmitterData.StartPosition.End) * 0.5f,
+					Randomizer.Current.Get());
+			return Position + insideSphere;
+		}
+
+		protected Vector3D GetSpawnPositionSphereBorder()
+		{
+			var onSphereOutline =
+				new Vector3D(
+					EmitterData.StartPosition.Start.X.Lerp(EmitterData.StartPosition.End.X,
+						Randomizer.Current.Get()),
+					EmitterData.StartPosition.Start.Y.Lerp(EmitterData.StartPosition.End.Y,
+						Randomizer.Current.Get()),
+					EmitterData.StartPosition.Start.Z.Lerp(EmitterData.StartPosition.End.Z,
+						Randomizer.Current.Get()));
+			onSphereOutline.Normalize();
+			onSphereOutline *= EmitterData.StartPosition.Start.Distance(EmitterData.StartPosition.End) *
+				0.5f;
+			return Position + onSphereOutline;
+		}
+
+		private Vector3D GetSpawnPositionCircleOutline()
+		{
+			var startPosition = EmitterData.StartPosition;
+			var onCircleOutline = new Vector3D( 
+				startPosition.Start.X + Randomizer.Current.Get(-1.0f) * startPosition.End.X,
+				startPosition.Start.Y + Randomizer.Current.Get(-1.0f) * startPosition.End.Y, 0.0f);
+			onCircleOutline.Normalize();
+			var diameter = Math.Max(startPosition.Start.Length, startPosition.End.Length);
+			onCircleOutline *= diameter * 0.5f;
+			return (Rotation.Equals(Quaternion.Identity))
+				? Position + onCircleOutline : Position + onCircleOutline.Transform(Rotation);
+		}
 
 		public void SpawnAndDispose(int numberOfParticles = 1)
 		{
@@ -233,8 +381,7 @@ namespace DeltaEngine.Rendering2D.Particles
 
 		internal struct Duration
 		{
-			public Duration(float duration)
-				: this()
+			public Duration(float duration) : this()
 			{
 				Value = duration;
 			}

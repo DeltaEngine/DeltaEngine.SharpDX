@@ -1,7 +1,9 @@
-﻿using System;
-using DeltaEngine.Core;
-using DeltaEngine.Entities;
+﻿using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
+using DeltaEngine.Input;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
@@ -10,14 +12,14 @@ namespace Breakout.Tests
 	public class GameTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void Draw(Type type)
+		public void Draw()
 		{
 			Resolve<Paddle>();
 			Resolve<RelativeScreenSpace>();
-			Resolve<Game>();
+			new Game(Resolve<Window>());
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void RemoveBallIfGameIsOver()
 		{
 			var score = Resolve<Score>();
@@ -29,14 +31,7 @@ namespace Breakout.Tests
 			Assert.IsTrue(isGameOver);
 		}
 
-		[Test, Ignore]
-		public void UpdateScore()
-		{
-			AdvanceTimeAndUpdateEntities(0.2f);
-			Assert.IsTrue(Resolve<Window>().Title.Contains("Breakout Level:"));
-		}
-
-		[Test, Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void KillingAllBricksShouldAdvanceToNextLevel()
 		{
 			bool isGameOver = false;
@@ -58,16 +53,5 @@ namespace Breakout.Tests
 					if (level.GetBrickAt(x, y) != null)
 						level.GetBrickAt(x, y).IsVisible = false;
 		}
-
-		//[Test]
-		//public void GoFullscreen()
-		//{
-		//	Resolve<Game>();
-		//	var fullscreenResolution = new Size(1920, 1080);
-		//	Window.SetFullscreen(fullscreenResolution);
-		//	Assert.IsTrue(Window.IsFullscreen);
-		//	Assert.AreEqual(fullscreenResolution, Window.TotalPixelSize);
-		//	Window.CloseAfterFrame();
-		//}
 	}
 }

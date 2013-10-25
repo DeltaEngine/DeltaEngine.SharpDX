@@ -29,6 +29,25 @@ namespace DeltaEngine.Rendering2D.Tests
 			new Sprite(logoMaterial, Rectangle.HalfCentered);
 		}
 
+		[Test]
+		public void RenderManySprites()
+		{
+			var random = Core.Randomizer.Current;
+			for (int num = 0; num < 20; num++)
+				new Sprite(logoMaterial,
+					new Rectangle(random.Get(0.0f, 0.8f), random.Get(0.2f, 0.8f), 0.2f, 0.2f));
+		}
+
+		[Test]
+		public void RenderManyNonImageGrayColoredSprites()
+		{
+			var nonImageMaterial = new Material(new Size(4), Color.Gray);
+			var random = Core.Randomizer.Current;
+			for (int num = 0; num < 20; num++)
+				new Sprite(nonImageMaterial,
+					new Rectangle(random.Get(0.0f, 0.8f), random.Get(0.2f, 0.8f), 0.2f, 0.2f));
+		}
+
 		[Test, ApproveFirstFrameScreenshot]
 		public void RenderSpriteWithImageName()
 		{
@@ -275,5 +294,19 @@ namespace DeltaEngine.Rendering2D.Tests
 			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
 			Assert.IsTrue(sprite.GetComponentsForSaving().Any(c => c is RenderingData));
 		}
+
+		// ncrunch: no coverage start
+		// Ignored because setting Time.IsPaused can mess up tests being run in parallel
+		[Test, Ignore]
+		public void ChangingDrawAreaWhenPausedDrawsCorrectly()
+		{
+			Time.IsPaused = true;
+			var sprite = new Sprite(logoMaterial, new Rectangle(0.1f, 0.1f, 0.2f, 0.2f));
+			sprite.Center = new Vector2D(0.6f, 0.6f);
+			AdvanceTimeAndUpdateEntities();
+			Assert.AreEqual(new Vector2D(0.6f, 0.6f), sprite.Get<RenderingData>().DrawArea.Center);
+			Time.IsPaused = false;
+		}
+		// ncrunch: no coverage end
 	}
 }

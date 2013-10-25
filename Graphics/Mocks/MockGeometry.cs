@@ -7,6 +7,7 @@ namespace DeltaEngine.Graphics.Mocks
 	/// </summary>
 	public class MockGeometry : Geometry
 	{
+		//ncrunch: no coverage start
 		public MockGeometry(string contentName, Device device)
 			: base(contentName) {}
 

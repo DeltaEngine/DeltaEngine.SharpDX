@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using DeltaEngine.Content;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
@@ -21,6 +22,29 @@ namespace DeltaEngine.Datatypes
 			Z = z;
 			W = w;
 		}
+
+		public Quaternion(string quaternionAsString)
+			: this()
+		{
+			var partitions = quaternionAsString.SplitAndTrim(new []{',', ' '});
+			if (partitions.Length != 4)
+				throw new InvalidNumberOfComponents();
+			try
+			{
+				X = float.Parse(partitions[0]);
+				Y = float.Parse(partitions[1]);
+				Z = float.Parse(partitions[2]);
+				W = float.Parse(partitions[3]);
+			}
+			catch
+			{
+				throw new InvalidStringFormat();
+			}
+		}
+
+		public class InvalidNumberOfComponents:Exception{}
+
+		public class InvalidStringFormat:Exception{}
 
 		public float X { get; set; }
 		public float Y { get; set; }
@@ -134,9 +158,9 @@ namespace DeltaEngine.Datatypes
 			var sin = MathExtensions.Sqrt((1.0f - cos * cos).Abs());
 			var angle = MathExtensions.Atan2(sin, cos);
 			var reciprocalSin = 1.0f / sin;
-			var coefficent0 = MathExtensions.Sin((1 - interpolation) * angle) * reciprocalSin;
-			var coefficent1 = MathExtensions.Sin(interpolation * angle) * reciprocalSin;
-			return (this * coefficent0) + (other * coefficent1);
+			var coefficient0 = MathExtensions.Sin((1 - interpolation) * angle) * reciprocalSin;
+			var coefficient1 = MathExtensions.Sin(interpolation * angle) * reciprocalSin;
+			return (this * coefficient0) + (other * coefficient1);
 		}
 
 		public float Dot(Quaternion other)
@@ -154,7 +178,8 @@ namespace DeltaEngine.Datatypes
 
 		public override string ToString()
 		{
-			return X + ", " + Y + ", " + Z + ", " + W;
+			return X.ToInvariantString() + ", " + Y.ToInvariantString() + ", " + Z.ToInvariantString() +
+				", " + W.ToInvariantString();
 		}
 
 		// Derived from: http://stackoverflow.com/questions/1031005/is-there-an-algorithm-for-converting-quaternion-rotations-to-euler-angle-rotatio/2070899#2070899

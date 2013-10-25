@@ -98,41 +98,6 @@ namespace DeltaEngine.Rendering2D.Tests
 			});
 		}
 
-		[Test]
-		public void RenderThreeFrameAnimationButResetAfterSecondFrame()
-		{
-			var animation = new Sprite(material, Vector2D.Half);
-			RunAfterFirstFrame(() =>
-			{
-				if (animation.CurrentFrame != 2)
-					return;
-				animation.Reset();
-				Assert.AreEqual(0, animation.CurrentFrame);
-				Assert.AreEqual(0, animation.Elapsed);
-			});
-		}
-
-		[Test, CloseAfterFirstFrame]
-		public void AdvancingTillLastFrameGivesEvent()
-		{
-			var animation = new Sprite(material, Vector2D.Half);
-			bool endReached = false;
-			animation.AnimationEnded += () => { endReached = true; };
-			AdvanceTimeAndUpdateEntities(animation.Material.Duration + 0.1f);
-			Assert.IsTrue(endReached, animation.ToString());
-		}
-
-		[Test]
-		public void FramesWillNotAdvanceIfIsPlayingFalse()
-		{
-			var animation = new Sprite(material, Vector2D.Half);
-			bool endReached = false;
-			animation.AnimationEnded += () => { endReached = true; };
-			animation.IsPlaying = false;
-			AdvanceTimeAndUpdateEntities(animation.Material.Duration);
-			Assert.IsFalse(endReached);
-		}
-
 		[Test, ApproveFirstFrameScreenshot]
 		public void CreateAnimationWithNewTextures()
 		{
@@ -141,9 +106,8 @@ namespace DeltaEngine.Rendering2D.Tests
 				CreateImageWithColor(Color.Red), CreateImageWithColor(Color.CornflowerBlue),
 				CreateImageWithColor(Color.Purple)
 			};
-			var newMaterial =
-				new ImageAnimation(imageList, 3).CreateMaterial(
-					ContentLoader.Load<Shader>(Shader.Position2DUV));
+			var newMaterial = new ImageAnimation(imageList, 3).CreateMaterial(
+				ContentLoader.Load<Shader>(Shader.Position2DUV));
 			new Sprite(newMaterial, new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
 		}
 
@@ -171,6 +135,27 @@ namespace DeltaEngine.Rendering2D.Tests
 		{
 			new Sprite(material, Rectangle.One) { IsVisible = false };
 			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
+		}
+
+		[Test, ApproveFirstFrameScreenshot]
+		public void AdvancingTillLastFrameGivesEvent()
+		{
+			var animation = new Sprite(material, Vector2D.Half);
+			bool endReached = false;
+			animation.AnimationEnded += () => { endReached = true; };
+			AdvanceTimeAndUpdateEntities(animation.Material.Duration + 0.1f);
+			Assert.IsTrue(endReached, animation.ToString());
+		}
+
+		[Test, ApproveFirstFrameScreenshot]
+		public void FramesWillNotAdvanceIfIsPlayingFalse()
+		{
+			var animation = new Sprite(material, Vector2D.Half);
+			bool endReached = false;
+			animation.AnimationEnded += () => { endReached = true; };
+			animation.IsPlaying = false;
+			AdvanceTimeAndUpdateEntities(animation.Material.Duration);
+			Assert.IsFalse(endReached);
 		}
 	}
 }

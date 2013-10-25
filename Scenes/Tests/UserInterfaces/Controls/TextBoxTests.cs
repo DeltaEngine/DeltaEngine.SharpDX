@@ -86,8 +86,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			PressAndReleaseMouse(Bottom.Center);
 			Assert.IsFalse(topTextBox.State.HasFocus);
 			Assert.IsTrue(bottomTextBox.State.HasFocus);
-			Assert.AreEqual(Color.LightGray, topTextBox.Color);
-			Assert.AreEqual(Color.White, bottomTextBox.Color);
+			Assert.AreEqual(Color.Gray, topTextBox.Color);
+			Assert.AreEqual(Color.LightGray, bottomTextBox.Color);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -136,8 +136,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			bottomTextBox.IsEnabled = false;
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(topTextBox.Color, Color.LightGray);
-			Assert.AreEqual(bottomTextBox.Color, Color.Gray);
+			Assert.AreEqual(Color.Gray, topTextBox.Color);
+			Assert.AreEqual(Color.DarkGray, bottomTextBox.Color);
 		}
 
 		[Test, CloseAfterFirstFrame]

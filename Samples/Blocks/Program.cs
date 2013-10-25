@@ -9,15 +9,17 @@ namespace Blocks
 	/// </summary>
 	public class Program : App
 	{
+		//ncrunch: no coverage start
 		public Program()
 		{
 			var blocksContent = new FruitBlocksContent();
-			new Game(Resolve<Window>(), blocksContent, Resolve<SoundDevice>());
+			new Game(Resolve<Window>(), blocksContent);
 		}
 
 		public static void Main()
 		{
 			new Program().Run();
 		}
+		//ncrunch: no coverage end
 	}
 }

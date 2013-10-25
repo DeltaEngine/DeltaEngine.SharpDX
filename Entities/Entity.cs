@@ -167,7 +167,7 @@ namespace DeltaEngine.Entities
 			return activeBehaviors.Contains(updateBehavior);
 		}
 
-		internal bool ContainsBehavior<T>() where T : UpdateBehavior
+	  public bool ContainsBehavior<T>() where T : UpdateBehavior
 		{
 			return activeBehaviors.Any(behavior => behavior.GetType() == typeof(T));
 		}

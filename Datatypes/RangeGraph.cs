@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
 {
@@ -17,7 +19,25 @@ namespace DeltaEngine.Datatypes
 		public RangeGraph(List<T> values)
 			: base(values) {}
 
-		public RangeGraph(T[] values): base(values) {} 
+		public RangeGraph(T[] values)
+			: base(values) {}
+
+		public RangeGraph(string stringRangeGraph)
+		{
+			var partitions = stringRangeGraph.SplitAndTrim(new[] { '{', '}' });
+			if (partitions.Length < 5 || (partitions.Length - 1) % 2 != 0)
+				throw new InvalidStringFormat();
+			Values = new T[partitions.Length / 2];
+			try
+			{
+				for (int i = 1; i < partitions.Length; i += 2)
+					Values[i / 2] = (T)Activator.CreateInstance(typeof(T), partitions[i]);
+			}
+			catch (Exception)
+			{
+				throw new TypeInStringNotEqualToInitializedType();
+			}
+		}
 
 		public override T GetInterpolatedValue(float interpolation)
 		{
@@ -65,10 +85,10 @@ namespace DeltaEngine.Datatypes
 		[Pure]
 		public override string ToString()
 		{
-			string stringOfValues = "{" + Start;
+			string stringOfValues = "({" + Start + "}";
 			for (int i = 1; i < Values.Length; i++)
-				stringOfValues += ", " + Values[i];
-			stringOfValues += "}";
+				stringOfValues += ", {" + Values[i] + "}";
+			stringOfValues += ")";
 			return stringOfValues;
 		}
 	}

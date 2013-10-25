@@ -7,7 +7,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Button : Label
 	{
-		protected Button() {}
+		protected Button()
+		{}
 
 		public Button(Rectangle drawArea, string text = "")
 			: this(Theme.Default, drawArea, text) {}
@@ -21,13 +22,13 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		public override void Update()
 		{
 			if (!IsEnabled)
-				SetAppearance(theme.ButtonDisabled);
+				SetAppearance(Theme.ButtonDisabled);
 			else if (State.IsInside && State.IsPressed)
-				SetAppearance(theme.ButtonPressed);
+				SetAppearance(Theme.ButtonPressed);
 			else if (State.IsInside)
-				SetAppearance(theme.ButtonMouseover);
+				SetAppearance(Theme.ButtonMouseover);
 			else
-				SetAppearance(theme.Button);
+				SetAppearance(Theme.Button);
 			base.Update();
 		}
 	}

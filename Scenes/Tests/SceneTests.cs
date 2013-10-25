@@ -38,9 +38,25 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void LoadSceneWithAButton()
 		{
-			//TODO: Theme is ContentData and all control saving and loading bugs have been fixed (lots of little tests needed in each class)
 			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
 			Assert.AreEqual("SceneWithAButton", loadedScene.Name);
+			Assert.AreEqual(1, loadedScene.Controls.Count);
+			Assert.AreEqual(typeof(Button), loadedScene.Controls[0].GetType());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void LoadSceneWithAButtonAndChangeTheMaterial()
+		{
+			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButtonWithChangedMaterial");
+			Assert.AreEqual("SceneWithAButtonWithChangedMaterial", loadedScene.Name);
+			Assert.AreEqual(1, loadedScene.Controls.Count);
+			Assert.AreEqual(typeof(Button), loadedScene.Controls[0].GetType());
+		}
+		[Test, CloseAfterFirstFrame]
+		public void LoadSceneWithAButtonAndCHangeTheFontText()
+		{
+			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButtonWithDifferentFontText");
+			Assert.AreEqual("SceneWithAButtonWithDifferentFontText", loadedScene.Name);
 			Assert.AreEqual(1, loadedScene.Controls.Count);
 			Assert.AreEqual(typeof(Button), loadedScene.Controls[0].GetType());
 		}
@@ -143,7 +159,7 @@ namespace DeltaEngine.Scenes.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void ControlsDontRespondToInputWhenSceneIsHidden()
+		public void ControlsDoNotRespondToInputWhenSceneIsHidden()
 		{
 			var button = CreateButton();
 			scene.Add(button);
@@ -158,9 +174,15 @@ namespace DeltaEngine.Scenes.Tests
 		{
 			var theme = new Theme
 			{
-				Button = new Theme.Appearance("DeltaEngineLogo", NormalColor),
-				ButtonMouseover = new Theme.Appearance("DeltaEngineLogo", MouseoverColor),
-				ButtonPressed = new Theme.Appearance("DeltaEngineLogo", PressedColor)
+				Button =
+					new Material(Shader.Position2DColorUV, "DeltaEngineLogo") { DefaultColor = NormalColor },
+				ButtonMouseover =
+					new Material(Shader.Position2DColorUV, "DeltaEngineLogo")
+					{
+						DefaultColor = MouseoverColor
+					},
+				ButtonPressed =
+					new Material(Shader.Position2DColorUV, "DeltaEngineLogo") { DefaultColor = PressedColor }
 			};
 			return new Button(theme, Small);
 		}
@@ -176,7 +198,7 @@ namespace DeltaEngine.Scenes.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void ControlsDontRespondToInputWhenInBackground()
+		public void ControlsDoNotRespondToInputWhenInBackground()
 		{
 			var button = CreateButton();
 			scene.Add(button);
@@ -204,7 +226,6 @@ namespace DeltaEngine.Scenes.Tests
 			scene.Add(button);
 			AdvanceTimeAndUpdateEntities();
 			button.State.IsPressed = true;
-
 		}
 
 		private static readonly Rectangle Small = Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f);

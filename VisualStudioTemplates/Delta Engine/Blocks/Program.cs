@@ -9,7 +9,7 @@ namespace $safeprojectname$
 		public Program()
 		{
 			var blocksContent = new FruitBlocksContent();
-			new Game(Resolve<Window>(), blocksContent, Resolve<SoundDevice>());
+			new Game(Resolve<Window>(), blocksContent);
 		}
 
 		public static void Main()

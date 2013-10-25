@@ -17,14 +17,14 @@ namespace $safeprojectname$
 		{
 		}
 
-		public Asteroid(Vector2D position, InteractionLogics interactionLogics, int sizeModifier = 1) 
-			: this(Rectangle.FromCenter(position, new Size(0.1f / sizeModifier)), interactionLogics, 
-				sizeModifier)
+		public Asteroid(Vector2D position, InteractionLogics interactionLogics, int sizeModifier = 
+			1) : this(Rectangle.FromCenter(position, new Size(0.1f / sizeModifier)), 
+				interactionLogics, sizeModifier)
 		{
 		}
 
-		private Asteroid(Rectangle drawArea, InteractionLogics interactionLogics, int sizeModifier) : 
-			base(new Material(Shader.Position2DColorUV, "Asteroid"), drawArea)
+		private Asteroid(Rectangle drawArea, InteractionLogics interactionLogics, int sizeModifier) 
+			: base(new Material(Shader.Position2DColorUV, "Asteroid"), drawArea)
 		{
 			var randomizer = Randomizer.Current;
 			this.interactionLogics = interactionLogics;
@@ -43,9 +43,9 @@ namespace $safeprojectname$
 		private static Rectangle CreateDrawArea(Randomizer randomizer, int sizeModifier)
 		{
 			var rand = new Random();
-			var randomPosition = new Vector2D(rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Left - .1f 
-				: ScreenSpace.Current.Right, rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Top - .1f : 
-					ScreenSpace.Current.Bottom);
+			var randomPosition = new Vector2D(rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Left - 
+				.1f : ScreenSpace.Current.Right, rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Top - 
+					.1f : ScreenSpace.Current.Bottom);
 			var modifiedSize = new Size(.1f / sizeModifier);
 			return new Rectangle(randomPosition, modifiedSize);
 		}
@@ -93,26 +93,20 @@ namespace $safeprojectname$
 				return;
 
 			if (DrawArea.Right < borders.Left && velocity.X < 0)
-				SetDrawAreaNoInterpolation(new Rectangle(borders.Right, DrawArea.Top, DrawArea.Width, 
+				SetWithoutInterpolation(new Rectangle(borders.Right, DrawArea.Top, DrawArea.Width, 
 					DrawArea.Height));
 
 			if (DrawArea.Left > borders.Right && velocity.X > 0)
-				SetDrawAreaNoInterpolation(new Rectangle(borders.Left - DrawArea.Width, DrawArea.Top, 
+				SetWithoutInterpolation(new Rectangle(borders.Left - DrawArea.Width, DrawArea.Top, 
 					DrawArea.Width, DrawArea.Height));
 
 			if (DrawArea.Bottom < borders.Top && velocity.Y < 0)
-				SetDrawAreaNoInterpolation(new Rectangle(DrawArea.Left, borders.Bottom, DrawArea.Width, 
+				SetWithoutInterpolation(new Rectangle(DrawArea.Left, borders.Bottom, DrawArea.Width, 
 					DrawArea.Height));
 
 			if (DrawArea.Top > borders.Bottom && velocity.Y > 0)
-				SetDrawAreaNoInterpolation(new Rectangle(DrawArea.Left, borders.Top - DrawArea.Height, 
+				SetWithoutInterpolation(new Rectangle(DrawArea.Left, borders.Top - DrawArea.Height, 
 					DrawArea.Width, DrawArea.Height));
-		}
-
-		internal void SetDrawAreaNoInterpolation(Rectangle newDrawArea)
-		{
-			LastDrawArea = newDrawArea;
-			DrawArea = newDrawArea;
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace Blocks.Tests
 			content = new JewelBlocksContent();
 			var image = content.Load<Image>("Block1");
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			material = new Material(shader, image);
+			material = new Material(shader, image, image.PixelSize);
 		}
 
 		private Orientation displayMode;

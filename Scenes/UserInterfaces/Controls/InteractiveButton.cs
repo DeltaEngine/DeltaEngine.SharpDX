@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Content;
+using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {

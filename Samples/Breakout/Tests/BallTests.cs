@@ -1,6 +1,4 @@
-﻿using System;
-using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
+﻿using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
@@ -11,18 +9,25 @@ namespace Breakout.Tests
 	public class BallTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void Draw(Type type)
+		public void Draw()
 		{
-			Resolve<Paddle>();
-			Resolve<EmptyLevel>();
 			Resolve<TestBall>();
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
+		public void DisposeBall()
+		{
+			var ball = Resolve<Ball>();
+			Assert.IsTrue(ball.IsVisible);
+			ball.Dispose();
+			Assert.IsFalse(ball.IsVisible);
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void FireBall()
 		{
 			var ball = Resolve<Ball>();
-			Assert.IsTrue(ball.IsVisible == true);
+			Assert.IsTrue(ball.IsVisible);
 			AdvanceTimeAndUpdateEntities(0.1f);
 			var initialBallPosition = new Vector2D(0.5f, 0.86f);
 			Assert.AreEqual(initialBallPosition, ball.Position);
@@ -31,7 +36,7 @@ namespace Breakout.Tests
 			Assert.AreNotEqual(initialBallPosition, ball.Position);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ReflectBall()
 		{
 			var ball = Resolve<Ball>();
@@ -43,7 +48,7 @@ namespace Breakout.Tests
 			Assert.AreNotEqual(0.5f, ball.Position.X);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void BallShouldFollowPaddle()
 		{
 			var ball = Resolve<Ball>();
@@ -56,53 +61,48 @@ namespace Breakout.Tests
 			Assert.AreEqual(ball.Position.X, paddle.Position.X);
 		}
 
-		[Test, Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void BounceOnRightSideToMoveLeft()
 		{
-			var ball = Resolve<TestBall>();
-			Resolve<Paddle>();
-			ball.CurrentVelocity = new Vector2D(0.5f, 0f);
+			var paddle = Resolve<Paddle>();
+			var ball = new TestBall(paddle) { CurrentVelocity = new Vector2D(0.5f, 0f) };
 			Assert.AreEqual(new Vector2D(0.5f, 0f), ball.CurrentVelocity);
 			ball.SetPosition(new Vector2D(1, 0.5f));
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.AreEqual(new Vector2D(-0.5f, 0f), ball.CurrentVelocity);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void BallSize()
 		{
 			Assert.AreEqual(new Size(0.04f), Ball.BallSize);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void BounceOnLeftSideToMoveRight()
 		{
 			var paddle = Resolve<Paddle>();
-			var ball = new TestBall(paddle);
-			
-			ball.CurrentVelocity = new Vector2D(0.5f, 0.1f);
+			var ball = new TestBall(paddle) { CurrentVelocity = new Vector2D(-0.5f, 0.1f) };
 			ball.SetPosition(new Vector2D(0, 0.5f));
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.AreEqual(new Vector2D(0.5f, 0.1f), ball.CurrentVelocity);
 		}
 
-		[Test,Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void BounceOnTopSideToMoveDown()
 		{
-			var ball = Resolve<TestBall>();
-			Resolve<Paddle>();
-			ball.CurrentVelocity = new Vector2D(-0.5f, -0.5f);
+			var paddle = Resolve<Paddle>();
+			var ball = new TestBall(paddle) { CurrentVelocity = new Vector2D(-0.5f, -0.5f) };
 			ball.SetPosition(new Vector2D(0.5f, 0));
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.AreEqual(new Vector2D(-0.5f, 0.5f), ball.CurrentVelocity);
 		}
 
-		[Test, Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void BounceOnBottomSideToLoseBall()
 		{
-			var ball = Resolve<TestBall>();
-			Resolve<Paddle>();
-			ball.CurrentVelocity = new Vector2D(-0.5f, -0.5f);
+			var paddle = Resolve<Paddle>();
+			var ball = new TestBall(paddle) { CurrentVelocity = new Vector2D(-0.5f, 0.5f) };
 			ball.SetPosition(new Vector2D(0.5f, 1.0f));
 			Assert.IsFalse(ball.IsCurrentlyOnPaddle);
 			AdvanceTimeAndUpdateEntities(0.01f);
@@ -110,7 +110,7 @@ namespace Breakout.Tests
 			Assert.AreEqual(Vector2D.Zero, ball.CurrentVelocity);
 		}
 
-		[Test, Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void PaddleCollision()
 		{
 			var ball = Resolve<TestBall>();
@@ -123,7 +123,7 @@ namespace Breakout.Tests
 			Assert.AreEqual(new Vector2D(0f, -0.1015f), ball.CurrentVelocity);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ReleaseBallTwice()
 		{
 			var ball = Resolve<TestBall>();
@@ -135,14 +135,14 @@ namespace Breakout.Tests
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.AreEqual(velocity, ball.CurrentVelocity);
 		}
-
-		[Test, Ignore]
+		
+		[Test, CloseAfterFirstFrame]
 		public void GetDrawPosition()
 		{
 			var ball = Resolve<TestBall>();
 			Resolve<Paddle>();
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(new Rectangle(0.48f, 0.84f, 0.04f, 0.04f), ball.DrawArea);
+			Assert.IsTrue(new Rectangle(0.48f, 0.84f, 0.04f, 0.04f).IsNearlyEqual(ball.DrawArea));
 		}
 	}
 }

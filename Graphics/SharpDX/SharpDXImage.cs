@@ -51,9 +51,10 @@ namespace DeltaEngine.Graphics.SharpDX
 				throw new InvalidNumberOfColors(PixelSize);
 			Utilities.Pin(colors, ptr =>
 			{
-			  NativeTexture = new Texture2D(device.NativeDevice,
-			    CreateTextureDescription(), new DataRectangle(ptr, 16));
+			  NativeTexture = new Texture2D(device.NativeDevice, CreateTextureDescription(),
+					new DataRectangle(ptr, 16));
 			});
+			SetSamplerState();
 		}
 
 		private Texture2DDescription CreateTextureDescription()
@@ -77,9 +78,8 @@ namespace DeltaEngine.Graphics.SharpDX
 				throw new InvalidNumberOfBytes(PixelSize);
 			Utilities.Pin(colors, ptr =>
 			{
-			  NativeTexture = new Texture2D(device.NativeDevice,
-			    CreateTextureDescription(),
-			    new DataRectangle(ptr, (int)PixelSize.Width * 4));
+			  NativeTexture = new Texture2D(device.NativeDevice, CreateTextureDescription(),
+					new DataRectangle(ptr, (int)PixelSize.Width * 4));
 			});
 			SetSamplerState();
 		}

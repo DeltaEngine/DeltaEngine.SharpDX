@@ -51,7 +51,6 @@
     <Compile Include="SimplePhysics.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="SpriteBatch.cs" />
-    <Compile Include="SpriteBatchKey.cs" />
     <Compile Include="SpriteBatchRenderer.cs" />
     <Compile Include="UpdateImageAnimation.cs" />
     <Compile Include="UpdateSpriteSheetAnimation.cs" />

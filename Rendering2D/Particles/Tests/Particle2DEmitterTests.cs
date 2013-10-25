@@ -7,6 +7,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
+using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
 using Randomizer = DeltaEngine.Core.Randomizer;
 
@@ -15,18 +16,29 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 	internal class Particle2DEmitterTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void CreateEmitterAndKeepRunning()
+		public void Render1000Particles()
 		{
-			CreateDataAndEmitter(512, 0.01f, 5);
+			CreateDataAndEmitter(1000, 0.01f, 10);
 			emitter.Position = new Vector2D(0.5f, 0.4f);
+			new FpsDisplay(emitter, FpsDrawArea1);
 		}
 
-		private ParticleEmitter emitter;
+		private static readonly Rectangle FpsDrawArea1 = Rectangle.FromCenter(0.5f, 0.25f, 0.2f, 0.2f);
 
 		private void CreateDataAndEmitter(int maxParticles = 1, float spawnInterval = 0.01f,
 			float lifeTime = 0.002f)
 		{
-			emitterData = new ParticleEmitterData
+			emitterData = CreateData(maxParticles, spawnInterval, lifeTime);
+			emitter = new ParticleEmitter(emitterData, Vector2D.Half);
+		}
+
+		private ParticleEmitterData emitterData;
+		private ParticleEmitter emitter;
+
+		private static ParticleEmitterData CreateData(int maxParticles = 1,
+			float spawnInterval = 0.01f, float lifeTime = 0.002f)
+		{
+			return new ParticleEmitterData
 			{
 				MaximumNumberOfParticles = maxParticles,
 				SpawnInterval = spawnInterval,
@@ -44,13 +56,50 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 					new RangeGraph<ValueRange>(new ValueRange(20f, 100f), new ValueRange(60f, 300f)),
 				RotationSpeed = new RangeGraph<ValueRange>(new ValueRange(0, 10), new ValueRange(55, 75)),
 				ParticleMaterial = new Material(Shader.Position2DColorUV, "DeltaEngineLogo"),
+				PositionType = ParticleEmitterPositionType.Point,
 				StartPosition =
 					new RangeGraph<Vector3D>(new Vector2D(-0.1f, -0.1f), new Vector2D(0.1f, 0.1f))
 			};
-			emitter = new ParticleEmitter(emitterData, Vector2D.Half);
 		}
 
-		private ParticleEmitterData emitterData;
+		public class FpsDisplay : FontText, Updateable
+		{
+			public FpsDisplay(ParticleEmitter emitter, Rectangle drawArea)
+				: base(Font.Default, "", drawArea)
+			{
+				this.emitter = emitter;
+			}
+
+			private readonly ParticleEmitter emitter;
+
+			public void Update()
+			{
+				Text = "Fps = " + GlobalTime.Current.Fps + "  Count = " + emitter.NumberOfActiveParticles;
+			}
+
+			public bool IsPauseable
+			{
+				get { return true; } //ncrunch: no coverage
+			}
+		}
+
+		[Test]
+		public void Render2000Particles()
+		{
+			new FpsDisplay(new ParticleEmitter(CreateData(1000, 0.01f, 10), new Vector2D(0.3f, 0.5f)),
+				FpsDrawArea1);
+			Rectangle fpsDrawArea2 = Rectangle.FromCenter(0.5f, 0.3f, 0.2f, 0.2f);
+			new FpsDisplay(new ParticleEmitter(CreateData(1000, 0.01f, 10), new Vector2D(0.7f, 0.5f)),
+				fpsDrawArea2);
+		}
+
+
+		[Test]
+		public void ParticlesAreEmittedAtMousePosition()
+		{
+			CreateDataAndEmitter(1024, 0.01f, 5);
+			new Command(position => emitter.Position = position).Add(new MouseMovementTrigger());
+		}
 
 		[Test]
 		public void InactiveEmitterDoesNothing()
@@ -135,7 +184,6 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 		{
 			emitter = new ParticleEmitter(CreateDataAndEmitterWithAnimation("ImageAnimation"),
 				Vector2D.Half) { Position = new Vector2D(0.5f, 0.7f) };
-			AdvanceTimeAndUpdateEntities();
 		}
 
 		private ParticleEmitterData CreateDataAndEmitterWithAnimation(string contentName)
@@ -192,9 +240,16 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 		[Test, CloseAfterFirstFrame]
 		public void Spawn()
 		{
-			CreateDataAndEmitter(512, 0.01f, 5);
+			CreateDataAndEmitter(512, 0.0f, 1);
 			emitter.Spawn(20);
 			Assert.AreEqual(20, emitter.NumberOfActiveParticles);
+		}
+
+		[Test]
+		public void Spawn500OnMouseClick()
+		{
+			CreateDataAndEmitter(512, 0.0f, 1);
+			new Command(() => emitter.Spawn(500)).Add(new MouseButtonTrigger());
 		}
 
 		[Test]
@@ -211,8 +266,9 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 		{
 			emitterData = CreateDataAndEmitterWithAnimation("DeltaEngineLogo");
 			emitter = new ParticleEmitter(emitterData, Vector2D.Half);
-			emitter.DisposeAfterSeconds(0.2f);
+			emitter.DisposeAfterSeconds(0.1f);
 			AdvanceTimeAndUpdateEntities(0.25f);
+			emitter.DisposeAfterSeconds(0.1f);
 			Assert.IsFalse(emitter.IsActive);
 		}
 
@@ -241,16 +297,8 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 			var stream = BinaryDataExtensions.SaveToMemoryStream(emitterData);
 			var loaded = stream.CreateFromMemoryStream() as ParticleEmitterData;
 			File.WriteAllBytes("Test.test", stream.ToArray());
-			Assert.AreEqual(697, stream.Length);
-			Assert.AreEqual(emitterData.EmitterType, loaded.EmitterType);
-		}
-
-		[Test]
-		public void ParticlesAreEmittedAtMousePosition()
-		{
-			emitterData = CreateDataAndEmitterWithAnimation("ImageAnimation");
-			emitter = new ParticleEmitter(emitterData, Vector2D.Half);
-			new Command(position => emitter.Position = position).Add(new MouseMovementTrigger());
+			Assert.AreEqual(695, stream.Length);
+			Assert.AreEqual(emitterData.PositionType, loaded.PositionType);
 		}
 
 		[Test]
@@ -316,6 +364,7 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 			emitter = new ParticleEmitter(emitterData, new Vector2D(0.2f, 0.5f));
 			emitter.Start<MoveAcrossScreen>();
 			emitter.DisposeAfterSeconds(4);
+			AdvanceTimeAndUpdateEntities();
 		}
 
 		private class MoveAcrossScreen : UpdateBehavior
@@ -342,6 +391,74 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 				emitterChanging.EmitterData.Acceleration.Values);
 			Assert.AreNotEqual(emitterStayingSame.EmitterData.Color.Values,
 				emitterChanging.EmitterData.Color.Values);
+		}
+
+		[Test]
+		public void CreatePointEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.Point);
+		}
+
+		private static void CreateVariableTypeEmitter(ParticleEmitterPositionType type)
+		{
+			var createdEmitterData = CreateData(100, 0.05f, 1.0f);
+			createdEmitterData.PositionType = type;
+			new ParticleEmitter(createdEmitterData, new Vector3D(0.5f, 0.5f, 0.5f));
+		}
+
+		[Test]
+		public void CreateLineEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.Line);
+		}
+
+		[Test]
+		public void CreateBoxEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.Box);
+		}
+
+		[Test]
+		public void CreateSphereEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.Sphere);
+		}
+
+		[Test]
+		public void CreateSphereBorderEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.SphereBorder);
+		}
+
+		[Test]
+		public void CreateCircleAroundCenterEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.CircleAroundCenter);
+			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test]
+		public void CreateCircleEscapingEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.CircleEscaping);
+			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test]
+		public void CreateMeshEmitter()
+		{
+			CreateVariableTypeEmitter(ParticleEmitterPositionType.Mesh);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void ExceedingMaximumIsAvoided()
+		{
+			Assert.Throws<ParticleEmitter.MaximumNumberOfParticlesExceeded>(() =>
+			{
+				emitter = new ParticleEmitter(CreateData(3000), Vector3D.Zero);
+				AdvanceTimeAndUpdateEntities();
+			});
+			emitter.IsActive = false;
 		}
 	}
 }

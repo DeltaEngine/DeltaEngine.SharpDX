@@ -88,7 +88,7 @@ namespace DeltaEngine.Platforms
 						compareBitmap.Width + "x" + compareBitmap.Height);
 				else
 					difference = CompareImageContent(approvedBitmap, compareBitmap);
-			if (difference < 0.05f)
+			if (difference < 0.06f)
 				ApprovalTestSucceeded(difference);
 			else
 				ImagesAreDifferent("Difference " + difference.ToString("0.00") + "%");

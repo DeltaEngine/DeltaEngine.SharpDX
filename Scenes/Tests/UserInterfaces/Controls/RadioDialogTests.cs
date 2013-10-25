@@ -56,8 +56,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			var buttons = dialog.Get<List<RadioButton>>();
 			buttons[1].IsEnabled = false;
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(Color.White, buttons[0].Color);
-			Assert.AreEqual(Color.Gray, buttons[1].Color);
+			Assert.AreEqual(Color.Gray, buttons[0].Color);
+			Assert.AreEqual(Color.DarkGray, buttons[1].Color);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]

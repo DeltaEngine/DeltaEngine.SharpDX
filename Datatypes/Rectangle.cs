@@ -33,13 +33,20 @@ namespace DeltaEngine.Datatypes
 		public Rectangle(string rectangleAsString)
 			: this()
 		{
-			string[] componentStrings = rectangleAsString.Split(' ');
+			string[] componentStrings = rectangleAsString.SplitAndTrim(' ', ',');
 			if (componentStrings.Length != 4)
 				throw new InvalidNumberOfComponents();
-			Left = componentStrings[0].Convert<float>();
-			Top = componentStrings[1].Convert<float>();
-			Width = componentStrings[2].Convert<float>();
-			Height = componentStrings[3].Convert<float>();
+			try
+			{
+				Left = componentStrings[0].Convert<float>();
+				Top = componentStrings[1].Convert<float>();
+				Width = componentStrings[2].Convert<float>();
+				Height = componentStrings[3].Convert<float>();
+			}
+			catch (System.FormatException)
+			{
+				throw new TypeInStringNotEqualToInitializedType();
+			}
 		}
 
 		public static Rectangle FromPoints(IEnumerable<Vector2D> points)
@@ -73,6 +80,8 @@ namespace DeltaEngine.Datatypes
 		}
 
 		public class InvalidNumberOfComponents : Exception {}
+
+		public class TypeInStringNotEqualToInitializedType : Exception {} 
 
 		public static readonly Rectangle Zero = new Rectangle();
 		public static readonly Rectangle One = new Rectangle(Vector2D.Zero, Size.One);
@@ -130,8 +139,9 @@ namespace DeltaEngine.Datatypes
 		[Pure]
 		public Rectangle Lerp(Rectangle other, float interpolation)
 		{
-			return new Rectangle(TopLeft.Lerp(other.TopLeft, interpolation),
-				Size.Lerp(other.Size, interpolation));
+			return new Rectangle(Left.Lerp(other.Left, interpolation),
+				Top.Lerp(other.Top, interpolation), Width.Lerp(other.Width, interpolation),
+				Height.Lerp(other.Height, interpolation));
 		}
 
 		public static Rectangle FromCenter(float x, float y, float width, float height)
@@ -240,8 +250,8 @@ namespace DeltaEngine.Datatypes
 		[Pure]
 		public override string ToString()
 		{
-			return Left.ToInvariantString() + " " + Top.ToInvariantString() + " " +
-				Width.ToInvariantString() + " " + Height.ToInvariantString();
+			return Left.ToInvariantString() + ", " + Top.ToInvariantString() + ", " +
+				Width.ToInvariantString() + ", " + Height.ToInvariantString();
 		}
 
 		[Pure]

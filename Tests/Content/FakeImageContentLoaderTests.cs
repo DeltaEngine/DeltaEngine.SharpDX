@@ -9,9 +9,7 @@ namespace DeltaEngine.Tests.Content
 	public class FakeImageContentLoaderTests
 	{
 		[SetUp]
-		public void CreateContentLoader()
-		{
-		}
+		public void CreateContentLoader() {}
 
 		[TearDown]
 		public void DisposeContentLoader()
@@ -38,20 +36,16 @@ namespace DeltaEngine.Tests.Content
 		public sealed class MockFakeImage : Image
 		{
 			public MockFakeImage(string contentName)
-				: base(contentName) { }
+				: base(contentName) {}
 
-			public MockFakeImage(ImageCreationData creationData)
-				: base(creationData) { }
+			protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) {}
 
-			protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) { }
-
-			protected override void LoadImage(Stream fileData) { }
-
-			public override void Fill(Color[] colors) { }
-
-			public override void Fill(byte[] colors) { }
-
-			protected override void SetSamplerState() { }
+			//ncrunch: no coverage start
+			protected override void LoadImage(Stream fileData) {}
+			public override void Fill(Color[] colors) {}
+			public override void Fill(byte[] colors) {}
+			protected override void SetSamplerState() {}
+			//ncrunch: no coverage end
 
 			protected override void DisposeData()
 			{

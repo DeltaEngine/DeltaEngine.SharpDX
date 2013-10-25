@@ -15,14 +15,14 @@ namespace Asteroids
 	/// </summary>
 	public class Projectile : Entity2D
 	{
-		public Projectile(Material missileMaterial, Vector2D startPosition, float angle)
+		public Projectile(Vector2D startPosition, float angle)
 			: base(Rectangle.FromCenter(startPosition, new Size(.02f)))
 		{
 			Rotation = angle;
 			RenderLayer = (int)AsteroidsRenderLayer.Rockets;
-			missileAndTrails = new ParticleSystem();
-			AttachMissileEmitter();
-			AttachTrailEmitter();
+			missileAndTrails = new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MissileEffect"));
+			missileAndTrails.AttachedEmitters[0].EmitterData.DoParticlesTrackEmitter = true;
+			missileAndTrails.AttachedEmitters[1].EmitterData.DoParticlesTrackEmitter = true;
 			Add(new SimplePhysics.Data
 			{
 				Gravity = Vector2D.Zero,
@@ -31,25 +31,6 @@ namespace Asteroids
 						-MathExtensions.Cos(angle) * ProjectileVelocity)
 			});
 			Start<MoveAndDisposeOnBorderCollision>();
-		}
-
-		private void AttachMissileEmitter()
-		{
-			var missileData = ContentLoader.Load<ParticleEmitterData>("MissileEmitter");
-			missileData.DoParticlesTrackEmitter = true;
-			var missileEmitter = new ParticleEmitter(missileData, new Vector3D(Center));
-			missileEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets + 1;
-			missileAndTrails.AttachEmitter(missileEmitter);
-		}
-
-		private void AttachTrailEmitter()
-		{
-			var trailData = ContentLoader.Load<ParticleEmitterData>("PropulsionEmitter");
-			trailData.DoParticlesTrackEmitter = true;
-			var trailEmitter = new ParticleEmitter(trailData, new Vector3D(Center));
-			trailEmitter.RenderLayer = (int)AsteroidsRenderLayer.Rockets;
-			trailEmitter.EmitterData.StartRotation.Start = new ValueRange(Rotation);
-			missileAndTrails.AttachEmitter(trailEmitter);
 		}
 
 		private const float ProjectileVelocity = .5f;

@@ -77,8 +77,8 @@ namespace $safeprojectname$
 
 		public void Update()
 		{
-			if (Team == Team.None || MainMenu.State != GameState.Game || !Time.CheckEvery(Level == 1 ? 
-				1.5f : Level == 2 ? 1.0f : 0.75f))
+			if (Team == Team.None || MainMenu.State != GameState.Game || !Time.CheckEvery(Level == 1 
+				? 1.5f : Level == 2 ? 1.0f : 0.75f))
 				return;
 
 			NumberOfGhosts++;
@@ -90,8 +90,8 @@ namespace $safeprojectname$
 		{
 			Material = new Material(Shader.Position2DColorUV, TreeImageName [Level - 1]);
 			Color = Team.ToColor();
-			DrawArea = Rectangle.FromCenter(Center, GameLogic.TreeSize * Material.DiffuseMap.PixelSize 
-				/ 1920.0f);
+			DrawArea = Rectangle.FromCenter(Center, GameLogic.TreeSize * 
+				Material.DiffuseMap.PixelSize / 1920.0f);
 			NumberText.Center = Center + NumberTextPositionPerLevel [Level - 1];
 		}
 
@@ -145,8 +145,8 @@ namespace $safeprojectname$
 		private void ShowAttackEffects(int numberOfAttackerGhosts)
 		{
 			for (int num = 0; num < numberOfAttackerGhosts; num++)
-				Effects.CreateDeathEffect(Center + new Vector2D(Randomizer.Current.Get(-0.03f, 0.03f), 
-					Randomizer.Current.Get(-0.03f, 0.03f)));
+				Effects.CreateDeathEffect(Center + new Vector2D(Randomizer.Current.Get(-0.03f, 
+					0.03f), Randomizer.Current.Get(-0.03f, 0.03f)));
 
 			Effects.CreateHitEffect(Center);
 		}

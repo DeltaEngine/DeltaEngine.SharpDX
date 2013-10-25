@@ -105,7 +105,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			int count = DisplayCount;
 			for (int i = 0; i < count; i++)
 			{
-				var font = new FontText(theme.Font, "", Rectangle.Unused)
+				var font = new FontText(Theme.Font, "", Rectangle.Unused)
 				{
 					HorizontalAlignment = HorizontalAlignment.Left,
 					IsVisible = IsVisible
@@ -138,7 +138,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			base.Update();
 			firstLineDrawArea = new Rectangle(DrawArea.Left, DrawArea.Top, DrawArea.Width,
 				DrawArea.Height / DisplayCount);
-			SetAppearance(IsEnabled ? theme.SelectBox : theme.SelectBoxDisabled);
+			SetAppearance(IsEnabled ? Theme.SelectBox : Theme.SelectBoxDisabled);
 			UpdateTexts();
 			UpdateScrollbar();
 		}

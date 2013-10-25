@@ -56,6 +56,21 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		}
 
 		[Test]
+		public void RenderSelectBoxAttachedToMouse()
+		{
+			selectBox.Values = new List<object> { "value 1", "value 2", "value 3", "value 4" };
+			new Command(
+				point => selectBox.DrawArea = Rectangle.FromCenter(point, selectBox.DrawArea.Size)).Add(
+					new MouseMovementTrigger());
+		}
+
+		[Test]
+		public void SetValuesAsNull()
+		{			
+			Assert.Throws<SelectBox.MustBeAtLeastOneValue>(() => selectBox.Values = null);
+		}
+
+		[Test]
 		public void RenderGrowingSelectBox()
 		{
 			selectBox.Values = new List<object> { "value 1", "value 2", "value 3", "value 4" };
@@ -76,23 +91,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					selectBox.DrawArea = Rectangle.FromCenter(center, size);
 				}
 			}
-		}
-
-		//ncrunch: no coverage end
-
-		[Test]
-		public void RenderSelectBoxAttachedToMouse()
-		{
-			selectBox.Values = new List<object> { "value 1", "value 2", "value 3", "value 4" };
-			new Command(
-				point => selectBox.DrawArea = Rectangle.FromCenter(point, selectBox.DrawArea.Size)).Add(
-					new MouseMovementTrigger());
-		}
-
-		[Test]
-		public void SetValuesAsNull()
-		{			
-			Assert.Throws<SelectBox.MustBeAtLeastOneValue>(() => selectBox.Values = null);
 		}
 	}
 }

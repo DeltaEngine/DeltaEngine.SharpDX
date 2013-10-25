@@ -34,9 +34,9 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 
 		private ParticleEmitter CreateAndAttachEmitter(Vector3D emitterPosition)
 		{
-			var textureData = new ImageCreationData(new Size(32.0f));
+			var textureData = new ImageCreationData(new Size(32));
 			var material = new Material(ContentLoader.Load<Shader>(Shader.Position3DColorUV),
-				ContentLoader.Create<Image>(textureData));
+				ContentLoader.Create<Image>(textureData), new Size(32));
 			var emitterData = new ParticleEmitterData { ParticleMaterial = material };
 			var emitter = new ParticleEmitter(emitterData, emitterPosition);
 			particleSystem.AttachEmitter(emitter);
@@ -89,12 +89,12 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 			Assert.AreEqual(particleSystem.Rotation, emitter.Rotation);
 		}
 
-		[Test, CloseAfterFirstFrame]
+		[Test, CloseAfterFirstFrame, Category("Slow")]
 		public void SystemCanBeCreatedFromDataOfEmitterNames()
 		{
 			var particleSystemData = new ParticleSystemData
 			{
-				emitterNames = new List<string>(new[] { "EmitterAlpha", "EmitterBeta" })
+				emitterNames = new List<string>(new[] { "PointEmitter3D", "PointEmitter3D" })
 			};
 			var createdParticleSystem = new ParticleSystem(particleSystemData);
 			Assert.AreEqual(particleSystemData.emitterNames.Count,

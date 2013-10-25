@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Content;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D.Fonts;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
@@ -10,7 +11,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	{
 		protected Label()
 		{
-			fontText = new FontText(theme.Font, "", GetFontTextDrawArea());
+			fontText = new FontText(Theme.Font, "", GetFontTextDrawArea());
 			Add(fontText);
 			// Text needs to be extracted
 		}
@@ -33,15 +34,15 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				if (fontText.Text == value)
 					return;
 				PreviousText = fontText.Text;
-				fontText.Text = value; 
+				fontText.Text = value;
 			}
 		}
 
-		protected readonly FontText fontText;
+		protected FontText fontText;
 		public string PreviousText { get; private set; }
-		
-		internal Label(Theme theme, Theme.Appearance appearance, Rectangle drawArea)
-			: base(theme, appearance, drawArea)
+
+		internal Label(Theme theme, Material material, Rectangle drawArea)
+			: base(theme, material, drawArea)
 		{
 			fontText = new FontText(theme.Font, "", GetFontTextDrawArea());
 			Add(fontText);
@@ -59,6 +60,12 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		{
 			base.Update();
 			fontText.DrawArea = GetFontTextDrawArea();
+		}
+
+		public void SetFontText()
+		{
+			fontText = new FontText(Theme.Font, Text, GetFontTextDrawArea());
+			Set(fontText);
 		}
 	}
 }

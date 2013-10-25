@@ -48,7 +48,7 @@ namespace $safeprojectname$
 
 		private void FireBallFromPaddle()
 		{
-			if (!isOnPaddle || IsVisible != true)
+			if (!isOnPaddle || !IsVisible)
 				return;
 
 			isOnPaddle = false;
@@ -154,8 +154,8 @@ namespace $safeprojectname$
 		private bool IsInAreaOfPaddle()
 		{
 			if (Position.Y + Radius > paddle.Position.Y && velocity.Y > 0)
-				return Position.X + Radius > paddle.Position.X - Paddle.HalfWidth && Position.X - Radius 
-					< paddle.Position.X + Paddle.HalfWidth;
+				return Position.X + Radius > paddle.Position.X - Paddle.HalfWidth && Position.X - 
+					Radius < paddle.Position.X + Paddle.HalfWidth;
 
 			return false;
 		}

@@ -1,69 +1,134 @@
-﻿using DeltaEngine.Content;
+﻿using System;
+using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Vertices;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Rendering2D
 {
-	internal class SpriteBatch
+	/// <summary>
+	/// For rendering sprites in batches
+	/// </summary>
+	public class SpriteBatch
 	{
-		public SpriteBatch(SpriteBatchKey key)
+		public SpriteBatch(Material material, BlendMode blendMode, 
+			int minimumNumberOfSprites = MinNumberOfSprites)
 		{
-			this.key = key;
+			this.material = material;
+			this.blendMode = blendMode;
+			minimumNumberOfSprites = MathExtensions.Max(minimumNumberOfSprites, MinNumberOfSprites);
+			var shader = material.Shader as ShaderWithFormat;
+			hasUV = shader.Format.HasUV;
+			hasColor = shader.Format.HasColor;
+			indices = new short[minimumNumberOfSprites * IndicesPerSprite];
+			if (!hasUV)
+				verticesColor = new VertexPosition2DColor[minimumNumberOfSprites * VerticesPerSprite];
+			else if (hasColor)
+				verticesColorUV = new VertexPosition2DColorUV[minimumNumberOfSprites * VerticesPerSprite];
+			else
+				verticesUV = new VertexPosition2DUV[minimumNumberOfSprites * VerticesPerSprite];
 		}
 
-		public readonly SpriteBatchKey key;
+		public readonly Material material;
+		public readonly BlendMode blendMode;
+		private readonly bool hasUV;
+		private readonly bool hasColor;
+		private short[] indices;
+		private const int MinNumberOfSprites = 16;
+		private const int IndicesPerSprite = 6;
+		private const int VerticesPerSprite = 4;
+		private VertexPosition2DColor[] verticesColor;
+		public VertexPosition2DColorUV[] verticesColorUV;
+		private VertexPosition2DUV[] verticesUV;
 
 		public void Reset()
 		{
-			verticesUVBatchIndex = 0;
-			indicesUVIndex = 0;
-			verticesUVColorBatchIndex = 0;
-			indicesUVColorIndex = 0;
+			verticesIndex = 0;
+			indicesIndex = 0;
 		}
 
-		private int verticesUVBatchIndex;
-		private int indicesUVIndex;
-		private int verticesUVColorBatchIndex;
-		private int indicesUVColorIndex;
+		public int verticesIndex;
+		private int indicesIndex;
 
-		public bool AreBuffersFull()
+		public bool IsBufferFullAndResizeIfPossible(int numberOfQuadsToAdd = 1)
 		{
-			return short.MaxValue - indicesUVIndex < IndicesPerSprite;
+			bool isBufferFull = IsBufferFull(indices.Length, numberOfQuadsToAdd);
+			if (!isBufferFull || indices.Length >= MaxNumberOfIndices)
+				return isBufferFull;
+			GrowIndicesAndVerticesToSmallestPowerOfTwoThatFits(numberOfQuadsToAdd);
+			return IsBufferFull(indices.Length, numberOfQuadsToAdd);
+		}
+		private const int MaxNumberOfIndices = short.MaxValue;
+
+		private bool IsBufferFull(int length, int numberOfQuadsToAdd)
+		{
+			return length - indicesIndex < IndicesPerSprite * numberOfQuadsToAdd;
 		}
 
-		private const int IndicesPerSprite = 6;
-
-		public bool AreColorBuffersFull()
+		private void GrowIndicesAndVerticesToSmallestPowerOfTwoThatFits(int numberOfQuadsToAdd)
 		{
-			return short.MaxValue - indicesUVColorIndex < IndicesPerSprite;
+			int newNumberOfIndices = indices.Length * 2;
+			while (IsBufferFull(newNumberOfIndices, numberOfQuadsToAdd))
+				newNumberOfIndices *= 2; //ncrunch: no coverage
+			ResizeIndicesAndVertices(newNumberOfIndices);
 		}
 
-		public void AddVerticesAndIndices(Sprite sprite)
+		private void ResizeIndicesAndVertices(int newNumberOfIndices)
 		{
-			indicesUVBatch[indicesUVIndex ++] = (short)verticesUVBatchIndex;
-			indicesUVBatch[indicesUVIndex ++] = (short)(verticesUVBatchIndex + 1);
-			indicesUVBatch[indicesUVIndex ++] = (short)(verticesUVBatchIndex + 2);
-			indicesUVBatch[indicesUVIndex ++] = (short)verticesUVBatchIndex;
-			indicesUVBatch[indicesUVIndex ++] = (short)(verticesUVBatchIndex + 2);
-			indicesUVBatch[indicesUVIndex ++] = (short)(verticesUVBatchIndex + 3);
+			if (newNumberOfIndices > MaxNumberOfIndices)
+				newNumberOfIndices = MaxNumberOfIndices; //ncrunch: no coverage
+			var newIndices = new short[newNumberOfIndices];
+			Array.Copy(indices, newIndices, indices.Length);
+			indices = newIndices;
+			int newNumberOfVertices = newNumberOfIndices * VerticesPerSprite / IndicesPerSprite;
+			if (!hasUV)
+				ResizeColorVertices(newNumberOfVertices);
+			else if (hasColor)
+				ResizeColorUVVertices(newNumberOfVertices);
+			else
+				ResizeUVVertices(newNumberOfVertices);
+		}
+
+		private void ResizeColorVertices(int newNumberOfVertices)
+		{
+			var newVerticesColor = new VertexPosition2DColor[newNumberOfVertices];
+			Array.Copy(verticesColor, newVerticesColor, verticesColor.Length);
+			verticesColor = newVerticesColor;
+		}
+
+		private void ResizeColorUVVertices(int newNumberOfVertices)
+		{
+			var newVerticesColorUV = new VertexPosition2DColorUV[newNumberOfVertices];
+			Array.Copy(verticesColorUV, newVerticesColorUV, verticesColorUV.Length);
+			verticesColorUV = newVerticesColorUV;
+		}
+
+		private void ResizeUVVertices(int newNumberOfVertices)
+		{
+			var newVerticesUV = new VertexPosition2DUV[newNumberOfVertices];
+			Array.Copy(verticesUV, newVerticesUV, verticesUV.Length);
+			verticesUV = newVerticesUV;
+		}
+
+		public void AddIndicesAndVertices(Sprite sprite)
+		{
+			if (!HasSomethingToRender(sprite))
+				return; //ncrunch: no coverage
+			AddIndices();
 			AddVertices(sprite);
 		}
 
-		private readonly short[] indicesUVBatch = new short[short.MaxValue];
-
-		private void AddVertices(Sprite sprite)
+		public void AddIndices()
 		{
-			if (HasSomethingToRender(sprite))
-				if (isAtlasRotated && rotation == 0)
-					AddVerticesAtlasRotated();
-				else if (isAtlasRotated)
-					AddVerticesAtlasAndDrawAreaRotated(sprite.RotationCenter);
-				else if (rotation == 0)
-					AddVerticesNotRotated();
-				else
-					AddVerticesRotated(sprite.RotationCenter);
+			indices[indicesIndex++] = (short)verticesIndex;
+			indices[indicesIndex++] = (short)(verticesIndex + 1);
+			indices[indicesIndex++] = (short)(verticesIndex + 2);
+			indices[indicesIndex++] = (short)verticesIndex;
+			indices[indicesIndex++] = (short)(verticesIndex + 2);
+			indices[indicesIndex++] = (short)(verticesIndex + 3);
 		}
 
 		private bool HasSomethingToRender(Sprite sprite)
@@ -83,180 +148,213 @@ namespace DeltaEngine.Rendering2D
 		private ScreenSpace screen;
 		private float rotation;
 
-		private void AddVerticesAtlasRotated()
+		private void AddVertices(Sprite sprite)
 		{
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopLeft), uv.BottomLeft);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopRight), uv.TopLeft);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomRight), uv.TopRight);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomLeft), uv.BottomRight);
+			if (isAtlasRotated && rotation == 0)
+				AddVerticesAtlasRotated(sprite); //ncrunch: no coverage
+			else if (isAtlasRotated)
+				AddVerticesAtlasAndDrawAreaRotated(sprite, sprite.RotationCenter); //ncrunch: no coverage
+			else if (rotation == 0)
+				AddVerticesNotRotated(sprite);
+			else
+				AddVerticesRotated(sprite, sprite.RotationCenter);
 		}
 
-		private readonly VertexPosition2DUV[] verticesUVBatch =
-			new VertexPosition2DUV[short.MaxValue * VerticesPerSprite / IndicesPerSprite];
-
-		private const int VerticesPerSprite = 4;
-
-		private void AddVerticesAtlasAndDrawAreaRotated(Vector2D rotationCenter)
+		//ncrunch: no coverage start
+		private void AddVerticesAtlasRotated(Sprite sprite)
 		{
-			verticesUVBatch[verticesUVBatchIndex++] = new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.TopLeft.RotateAround(rotationCenter, rotation)),
+			if (!hasUV)
+			{
+				var color = sprite.Color;
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopRight), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+						ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomRight), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft), color);
+			}
+			else if (hasColor)
+			{
+				var color = sprite.Color;
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft), color, uv.BottomLeft);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopRight), color, uv.TopLeft);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomRight), color, uv.TopRight);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft), color, uv.BottomRight);
+			}
+			else
+			{
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopLeft), uv.BottomLeft);
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopRight), uv.TopLeft);
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomRight), uv.TopRight);
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomLeft), uv.BottomRight);
+			}
+		}
+
+		private void AddVerticesAtlasAndDrawAreaRotated(Sprite sprite, Vector2D rotationCenter)
+		{
+			float sin = MathExtensions.Sin(rotation);
+			float cos = MathExtensions.Cos(rotation);
+			if (!hasUV)
+			{
+				var color = sprite.Color;
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopLeft.RotateAround(rotationCenter, sin, cos)), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopRight.RotateAround(rotationCenter, sin, cos)), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+						ScreenSpace.Current.ToPixelSpaceRounded(
+						drawArea.BottomRight.RotateAround(rotationCenter, sin, cos)), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.BottomLeft.RotateAround(rotationCenter, sin, cos)), color);
+			}
+			else if (hasColor)
+			{
+				var color = sprite.Color;
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopLeft.RotateAround(rotationCenter, sin, cos)), color, uv.BottomLeft);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopRight.RotateAround(rotationCenter, sin, cos)), color, uv.TopLeft);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.BottomRight.RotateAround(rotationCenter, sin, cos)), color, uv.TopRight);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.BottomLeft.RotateAround(rotationCenter, sin, cos)), color, uv.BottomRight);
+			}
+			else
+			{
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.TopLeft.RotateAround(rotationCenter, sin, cos)),
 					uv.BottomLeft);
-			verticesUVBatch[verticesUVBatchIndex++] = new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.TopRight.RotateAround(rotationCenter, rotation)),
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.TopRight.RotateAround(rotationCenter, sin, cos)),
 					uv.TopLeft);
-			verticesUVBatch[verticesUVBatchIndex++] = new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomRight.RotateAround(rotationCenter, rotation)),
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.BottomRight.RotateAround(rotationCenter, sin, cos)),
 					uv.TopRight);
-			verticesUVBatch[verticesUVBatchIndex++] = new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomLeft.RotateAround(rotationCenter, rotation)),
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.BottomLeft.RotateAround(rotationCenter, sin, cos)),
 					uv.BottomRight);
+			}
+		} //ncrunch: no coverage end
+
+		private void AddVerticesNotRotated(Sprite sprite)
+		{
+			if (!hasUV)
+			{
+				var color = sprite.Color;
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopRight), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomRight), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft), color);
+			}
+			else if (hasColor)
+			{
+				var color = sprite.Color;
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft), color, uv.TopLeft);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopRight), color, uv.TopRight);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomRight), color, uv.BottomRight);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft), color, uv.BottomLeft);
+			}
+			else
+			{
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopLeft), uv.TopLeft);
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopRight), uv.TopRight);
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomRight), uv.BottomRight);
+				verticesUV[verticesIndex++] =
+					new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomLeft), uv.BottomLeft);
+			}
 		}
 
-		private void AddVerticesNotRotated()
+		private void AddVerticesRotated(Sprite sprite, Vector2D rotationCenter)
 		{
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopLeft), uv.TopLeft);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.TopRight), uv.TopRight);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomRight), uv.BottomRight);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(screen.ToPixelSpaceRounded(drawArea.BottomLeft), uv.BottomLeft);
-		}
-
-		private void AddVerticesRotated(Vector2D rotationCenter)
-		{
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.TopLeft.RotateAround(rotationCenter, rotation)),
+			float sin = MathExtensions.Sin(rotation);
+			float cos = MathExtensions.Cos(rotation);
+			if (!hasUV)
+			{
+				var color = sprite.Color;
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopLeft.RotateAround(rotationCenter, sin, cos)), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopRight.RotateAround(rotationCenter, sin, cos)), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+						ScreenSpace.Current.ToPixelSpaceRounded(
+						drawArea.BottomRight.RotateAround(rotationCenter, sin, cos)), color);
+				verticesColor[verticesIndex++] = new VertexPosition2DColor(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.BottomLeft.RotateAround(rotationCenter, sin, cos)), color);
+			}
+			else if (hasColor)
+			{
+				var color = sprite.Color;
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopLeft.RotateAround(rotationCenter, sin, cos)), color, uv.TopLeft);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.TopRight.RotateAround(rotationCenter, sin, cos)), color, uv.TopRight);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.BottomRight.RotateAround(rotationCenter, sin, cos)), color, uv.BottomRight);
+				verticesColorUV[verticesIndex++] = new VertexPosition2DColorUV(
+					ScreenSpace.Current.ToPixelSpaceRounded(
+					drawArea.BottomLeft.RotateAround(rotationCenter, sin, cos)), color, uv.BottomLeft);
+			}
+			else
+			{
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.TopLeft.RotateAround(rotationCenter, sin, cos)),
 					uv.TopLeft);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.TopRight.RotateAround(rotationCenter, rotation)),
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.TopRight.RotateAround(rotationCenter, sin, cos)),
 					uv.TopRight);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomRight.RotateAround(rotationCenter, rotation)),
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.BottomRight.RotateAround(rotationCenter, sin, cos)),
 					uv.BottomRight);
-			verticesUVBatch[verticesUVBatchIndex++] =
-				new VertexPosition2DUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomLeft.RotateAround(rotationCenter, rotation)),
+				verticesUV[verticesIndex++] = new VertexPosition2DUV(
+					screen.ToPixelSpaceRounded(drawArea.BottomLeft.RotateAround(rotationCenter, sin, cos)),
 					uv.BottomLeft);
-		}
-
-		public void AddColorVerticesAndIndices(Sprite sprite)
-		{
-			indicesUVColorBatch[indicesUVColorIndex++] = (short)verticesUVColorBatchIndex;
-			indicesUVColorBatch[indicesUVColorIndex++] = (short)(verticesUVColorBatchIndex + 1);
-			indicesUVColorBatch[indicesUVColorIndex++] = (short)(verticesUVColorBatchIndex + 2);
-			indicesUVColorBatch[indicesUVColorIndex++] = (short)verticesUVColorBatchIndex;
-			indicesUVColorBatch[indicesUVColorIndex++] = (short)(verticesUVColorBatchIndex + 2);
-			indicesUVColorBatch[indicesUVColorIndex++] = (short)(verticesUVColorBatchIndex + 3);
-			AddColorVertices(sprite);
-		}
-
-		private readonly short[] indicesUVColorBatch = new short[short.MaxValue];
-
-		private void AddColorVertices(Sprite sprite)
-		{
-			if (HasSomethingToRender(sprite))
-				if (isAtlasRotated && rotation == 0)
-					AddColorVerticesAtlasRotated(sprite.Color);
-				else if (isAtlasRotated)
-					AddColorVerticesAtlasAndDrawAreaRotated(sprite.Color, sprite.RotationCenter);
-				else if (rotation == 0)
-					AddColorVerticesNotRotated(sprite.Color);
-				else
-					AddColorVerticesRotated(sprite.Color, sprite.RotationCenter);
-		}
-
-		private void AddColorVerticesAtlasRotated(Color color)
-		{
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft),
-					color, uv.BottomLeft);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopRight),
-					color, uv.TopLeft);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomRight),
-					color, uv.TopRight);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft),
-					color, uv.BottomRight);
-		}
-
-		private void AddColorVerticesAtlasAndDrawAreaRotated(Color color, Vector2D rotationCenter)
-		{
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.TopLeft.RotateAround(rotationCenter, rotation)), color,
-					uv.BottomLeft);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.TopRight.RotateAround(rotationCenter, rotation)),
-					color, uv.TopLeft);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomRight.RotateAround(rotationCenter, rotation)),
-					color, uv.TopRight);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomLeft.RotateAround(rotationCenter, rotation)),
-					color, uv.BottomRight);
-		}
-
-		private void AddColorVerticesNotRotated(Color color)
-		{
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft),
-					color, uv.TopLeft);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopRight),
-					color, uv.TopRight);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomRight),
-					color, uv.BottomRight);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft),
-					color, uv.BottomLeft);
-		}
-
-		private readonly VertexPosition2DColorUV[] verticesUVColorBatch =
-			new VertexPosition2DColorUV[short.MaxValue * VerticesPerSprite / IndicesPerSprite];
-
-		private void AddColorVerticesRotated(Color color, Vector2D rotationCenter)
-		{
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.TopLeft.RotateAround(rotationCenter, rotation)), color,
-					uv.TopLeft);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.TopRight.RotateAround(rotationCenter, rotation)),
-					color, uv.TopRight);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomRight.RotateAround(rotationCenter, rotation)),
-					color, uv.BottomRight);
-			verticesUVColorBatch[verticesUVColorBatchIndex++] =
-				new VertexPosition2DColorUV(
-					screen.ToPixelSpaceRounded(drawArea.BottomLeft.RotateAround(rotationCenter, rotation)),
-					color, uv.BottomLeft);
+			}
 		}
 
 		public void Draw(Drawing drawing)
 		{
-			if (verticesUVBatchIndex > 0)
-				drawing.Add(key.Material, key.BlendMode, verticesUVBatch, indicesUVBatch,
-					verticesUVBatchIndex, indicesUVIndex);
-			if (verticesUVColorBatchIndex > 0)
-				drawing.Add(key.Material, key.BlendMode, verticesUVColorBatch, indicesUVColorBatch,
-					verticesUVColorBatchIndex, indicesUVColorIndex);
+			if (indicesIndex == 0)
+				return;
+			if (verticesUV != null)
+				drawing.Add(material, blendMode, verticesUV, indices, verticesIndex, indicesIndex);
+			else if (verticesColorUV != null)
+				drawing.Add(material, blendMode, verticesColorUV, indices, verticesIndex, indicesIndex);
+			else if (verticesColor != null)
+				drawing.Add(material, blendMode, verticesColor, indices, verticesIndex, indicesIndex);
 		}
 	}
 }

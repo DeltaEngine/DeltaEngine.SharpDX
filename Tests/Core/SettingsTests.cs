@@ -27,7 +27,7 @@ namespace DeltaEngine.Tests.Core
 			Assert.AreEqual(4, settings.AntiAliasingSamples);
 			Assert.AreEqual(0, settings.LimitFramerate);
 			Assert.AreEqual(20, settings.UpdatesPerSecond);
-			Assert.AreEqual(60, settings.RapidUpdatesPerSecond);
+			Assert.AreEqual(20, settings.RapidUpdatesPerSecond);
 		}
 
 		[Test]

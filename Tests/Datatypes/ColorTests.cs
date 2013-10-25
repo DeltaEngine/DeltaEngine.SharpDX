@@ -257,8 +257,8 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public new void ToString()
 		{
-			Assert.AreEqual("(R=10, G=20, B=30, A=40)", new Color(10, 20, 30, 40).ToString());
-			Assert.AreEqual("(R=255, G=255, B=255, A=255)", Color.White.ToString());
+			Assert.AreEqual("R=10, G=20, B=30, A=40", new Color(10, 20, 30, 40).ToString());
+			Assert.AreEqual("R=255, G=255, B=255, A=255", Color.White.ToString());
 		}
 	}
 }

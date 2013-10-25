@@ -11,6 +11,7 @@ namespace DeltaEngine.Content.Disk.Tests
 			File.Delete(Path.Combine("Content", "ContentMetaData.xml"));
 			ContentLoader.Use<DiskContentLoader>();
 			Assert.IsTrue(ContentLoader.Exists("ImageAnimation", ContentType.ImageAnimation));
+			ContentLoader.DisposeIfInitialized();
 		}
 	}
 }

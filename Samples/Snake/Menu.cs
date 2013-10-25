@@ -9,7 +9,7 @@ using DeltaEngine.ScreenSpaces;
 
 namespace Snake
 {
-	internal class Menu : Scene
+	public class Menu : Scene
 	{
 		public Menu()
 		{
@@ -23,15 +23,13 @@ namespace Snake
 
 		private void CreateMenuTheme()
 		{
-			SetQuadraticBackground("SnakeMainMenuBackground");
-			menuTheme = new Theme();
-			menuTheme.Button =
-				new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonDefault"));
-			menuTheme.ButtonDisabled = new Theme.Appearance();
-			menuTheme.ButtonMouseover =
-				new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonHover"));
-			menuTheme.ButtonPressed =
-				new Theme.Appearance(new Material(Shader.Position2DUV, "SnakeButtonPressed"));
+			SetViewportBackground("SnakeMainMenuBackground");
+			menuTheme = new Theme
+			{
+				Button = new Material(Shader.Position2DUV, "SnakeButtonDefault"),
+				ButtonMouseover = new Material(Shader.Position2DUV, "SnakeButtonHover"),
+				ButtonPressed = new Material(Shader.Position2DUV, "SnakeButtonPressed")
+			};
 		}
 
 		private Theme menuTheme;
@@ -44,12 +42,14 @@ namespace Snake
 			Add(startButton);
 		}
 
+		//ncrunch: no coverage start
 		private void TryInvokeGameStart()
 		{
 			colorOptions.Hide();
 			if (InitGame != null)
 				InitGame();
 		}
+		//ncrunch: no coverage end
 
 		public event Action InitGame;
 
@@ -61,14 +61,17 @@ namespace Snake
 			Add(quitButton);
 		}
 
+		//ncrunch: no coverage start
 		private void TryInvokeQuit()
 		{
 			if (Quit != null)
 				Quit();
 		}
+		//ncrunch: no coverage end
 
 		public event Action Quit;
 
+		//ncrunch: no coverage start
 		private void AddColorsButton()
 		{
 			var colorButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.3f, 0.4f, 0.15f),
@@ -81,6 +84,7 @@ namespace Snake
 			Add(colorButton);
 			CreateColorOptions();
 		}
+		//ncrunch: no coverage end
 
 		public Color[] gameColors;
 
@@ -96,6 +100,7 @@ namespace Snake
 			public ColorOptionsMenu(Menu parentMenu)
 			{
 				this.parentMenu = parentMenu;
+				SetViewportBackground("SnakeMainMenuBackground");
 				AddBackgroundAndColorDisplay();
 				AddGameElementSelection();
 				AddColorSliders();
@@ -115,6 +120,7 @@ namespace Snake
 				Add(currentColorShown);
 			}
 
+			//ncrunch: no coverage start
 			private void AddGameElementSelection()
 			{
 				var backgroundButton = new InteractiveButton(parentMenu.menuTheme,
@@ -234,6 +240,7 @@ namespace Snake
 			private int currentColorIndex;
 			private FilledRect currentColorShown;
 		}
+		//ncrunch: no coverage end
 
 		private void AddHowToPlay()
 		{
@@ -243,6 +250,7 @@ namespace Snake
 			Add(howToButton);
 		}
 
+		//ncrunch: no coverage start
 		private void ShowHowToPlaySubMenu()
 		{
 			if(howToPlay == null)
@@ -259,7 +267,7 @@ namespace Snake
 			{
 				this.parent = parent;
 				this.menuTheme = menuTheme;
-				SetQuadraticBackground("SnakeMainMenuBackground");
+				SetViewportBackground("SnakeMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
 			}
@@ -269,12 +277,17 @@ namespace Snake
 
 			private void AddControlDescription()
 			{
-				const string DescriptionText = "Snake - Manual\n\n" +
-					"Move Left - Cursor left or click an area left next to the Snake\n" +
-					"Move Right - Cursor right or click an area right next to the Snake\n" +
-					"Move Up - Cursor up or click an area above the Snake\n" +
-					"Move Down - Cursor down or click an area below the Snake";
-				var howToDisplayText = new FontText(Font.Default, DescriptionText, Vector2D.Half);
+				const string DescriptionText = "Collect the chunks lying around separately\n" +
+					"by moving the head of the snake over them\n" + 
+					" so they can be attached to the end\n\n" +
+					"Now - How to move around...\n\n" +
+						"You can either use cursor keys or a gamepad controller,\n" +
+						"in case you have one at your disposal,\n\n" +
+						"or you may click / tap on a position that,\n" +
+						"relatively to the foremost part of the snake,\n" +
+						"is towards your desired movement direction";
+				var howToDisplayText = new FontText(Font.Default, DescriptionText, Vector2D.Half){Color = Color.Black};
+
 				Add(howToDisplayText);
 			}
 
@@ -290,5 +303,6 @@ namespace Snake
 				Add(backButton);
 			}
 		}
+		//ncrunch: no coverage end
 	}
 }

@@ -50,8 +50,8 @@ namespace $safeprojectname$
 					if (gameEntity.FadePercentage >= 1.0f)
 						gameEntity.SwitchToNextRandomColor();
 
-					gameEntity.window.BackgroundColor = gameEntity.CurrentColor.Lerp(gameEntity.NextColor, 
-						gameEntity.FadePercentage);
+					gameEntity.window.BackgroundColor = 
+						gameEntity.CurrentColor.Lerp(gameEntity.NextColor, gameEntity.FadePercentage);
 				}
 			}
 		}

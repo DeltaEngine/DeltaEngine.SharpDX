@@ -9,34 +9,41 @@ namespace DeltaEngine.Mocks
 	/// </summary>
 	public class MockSettings : Settings
 	{
+		public MockSettings()
+		{
+			values = new Dictionary<string, string>();
+			Current = this;
+			RapidUpdatesPerSecond = 20;
+			wasChanged = false;
+		}
+
+		private readonly Dictionary<string, string> values;
+
 		public override void Save() {}
 
-		protected override T GetValue<T>(string key, T defaultValue)
+		public override T GetValue<T>(string name, T defaultValue)
 		{
 			string value;
-			if (values.TryGetValue(key, out value))
-				return value.Convert<T>();
-			return defaultValue;
+			return values.TryGetValue(name, out value) ? value.Convert<T>() : defaultValue;
 		}
 
-		private readonly Dictionary<string, string> values = new Dictionary<string, string>();
-
-		protected override void SetValue(string key, object value)
+		public override void SetValue(string name, object value)
 		{
-			if (values.ContainsKey(key))
-				values[key] = StringExtensions.ToInvariantString(value);
+			if (values.ContainsKey(name))
+				values[name] = StringExtensions.ToInvariantString(value);
 			else
-				values.Add(key, StringExtensions.ToInvariantString(value));
-		}
-
-		public void SetAsCurrent()
-		{
-			Settings.Current = this;
+				values.Add(name, StringExtensions.ToInvariantString(value));
+			Change();
 		}
 
 		public void Change()
 		{
 			wasChanged = true;
+		}
+
+		public bool AreChanged
+		{
+			get { return wasChanged; }
 		}
 	}
 }

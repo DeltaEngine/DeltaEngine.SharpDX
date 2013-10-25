@@ -23,6 +23,18 @@ namespace DeltaEngine.Content.Tests
 		}
 
 		[Test]
+		public void FillImageWithColor()
+		{
+			var imageCreationData = new ImageCreationData(new Size(12, 12));
+			var image = ContentLoader.Create<MockImage>(imageCreationData);
+			image.Fill(Color.Blue);
+			image.CallCompareActualSizeMetadataSizeMethod(new Size(12, 12));
+			// For some reason LogWarningIfTheActualSizeIsDifferentFromTheMetadataPixelSize does not cover
+			image.CallCompareActualSizeMetadataSizeMethod(new Size(16, 16));
+		}
+
+
+		[Test]
 		public void LoadContentViaCreationData()
 		{
 			var imageCreationData = new ImageCreationData(new Size(12, 12));

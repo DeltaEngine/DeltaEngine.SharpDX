@@ -139,7 +139,7 @@ namespace $safeprojectname$
 				var bricksAlive = 0;
 				for (int x = 0; x < rows; x++)
 					for (int y = 0; y < columns; y++)
-						if (bricks [x, y].IsVisible == true)
+						if (bricks [x, y].IsVisible)
 							bricksAlive++;
 
 				return bricksAlive;
@@ -150,8 +150,8 @@ namespace $safeprojectname$
 		{
 			var brickIndexX = (int)(x / brickWidth);
 			var brickIndexY = (int)(y / brickHeight);
-			if (brickIndexX < 0 || brickIndexX >= rows || brickIndexY < 0 || brickIndexY >= columns || 
-				bricks [brickIndexX, brickIndexY].IsVisible != true)
+			if (brickIndexX < 0 || brickIndexX >= rows || brickIndexY < 0 || brickIndexY >= columns 
+				|| bricks [brickIndexX, brickIndexY].IsVisible != true)
 				return null;
 
 			return bricks [brickIndexX, brickIndexY];

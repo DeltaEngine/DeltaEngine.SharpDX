@@ -124,6 +124,11 @@ namespace DeltaEngine.Scenes
 		{
 			var sceneData = (Scene)new BinaryReader(fileData).Create();
 			controls = sceneData.Controls;
+			foreach (var control in controls)
+			{
+				if (control.GetType() == typeof(Label) || control.GetType() == typeof(Button))
+					(control as Label).SetFontText();
+			}
 			background = sceneData.background;
 		}
 	}

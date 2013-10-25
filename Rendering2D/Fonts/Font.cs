@@ -22,6 +22,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 
 		private const string DefaultFontName = "Verdana12";
 
+		//ncrunch: no coverage start
 		protected override void LoadData(Stream fileData)
 		{
 			base.LoadData(fileData);
@@ -30,7 +31,6 @@ namespace DeltaEngine.Rendering2D.Fonts
 
 		protected override void DisposeData() { }
 
-		//ncrunch: no coverage start
 		protected override bool AllowCreationIfContentNotFound
 		{
 			get { return true; }

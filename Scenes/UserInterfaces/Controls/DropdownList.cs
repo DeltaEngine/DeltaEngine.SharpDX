@@ -71,7 +71,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		public override void Update()
 		{
 			base.Update();
-			SetAppearance(IsEnabled ? theme.DropdownListBox : theme.DropdownListBoxDisabled);
+			SetAppearance(IsEnabled ? Theme.DropdownListBox : Theme.DropdownListBoxDisabled);
 			if (selectBox == null)
 				return;
 			selectBox.DrawArea = new Rectangle(DrawArea.Left, DrawArea.Top + DrawArea.Height,

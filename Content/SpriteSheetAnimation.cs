@@ -67,7 +67,7 @@ namespace DeltaEngine.Content
 
 		public Material CreateMaterial(Shader shader)
 		{
-			return new Material(shader, null) { SpriteSheet = this };
+			return new Material(shader, null, SubImageSize) { SpriteSheet = this };
 		}
 	}
 }

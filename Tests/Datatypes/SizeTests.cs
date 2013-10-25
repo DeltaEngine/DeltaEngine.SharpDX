@@ -27,6 +27,21 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void CreateFromString()
+		{
+			var size = new Size("1.2, 2.4");
+			Assert.AreEqual(1.2f, size.Width);
+			Assert.AreEqual(2.4f, size.Height);
+		}
+
+		[Test]
+		public void CreateFromInvalidStringCrashes()
+		{
+			Assert.Throws<Size.InvalidNumberOfComponents>(() => new Size("1"));
+			Assert.Throws<FormatException>(() => new Size("a, b"));
+		}
+
+		[Test]
 		public void ChangeSize()
 		{
 			var size = new Size(1.0f, 1.0f) { Height = 2.1f, Width = 2.1f };
@@ -151,7 +166,9 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void SizeToString()
 		{
-			Assert.AreEqual("{2.23, 3.45}", new Size(2.23f, 3.45f).ToString());
+			var testSize = new Size(2.23f, 3.45f);
+			Assert.AreEqual("2.23, 3.45", testSize.ToString());
+			Assert.AreEqual(testSize, new Size(testSize.ToString()));
 		}
 
 		[Test]

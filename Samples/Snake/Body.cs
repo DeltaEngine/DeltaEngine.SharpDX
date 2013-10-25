@@ -42,7 +42,7 @@ namespace Snake
 		private void PlaceSnakeHead()
 		{
 			var startPosition = blockSize * (float)Math.Floor(gridSize / 2.0f);
-			var firstPart = new FilledRect(CalculateHeadDrawArea(startPosition), color);
+			var firstPart = new FilledRect(CalculateHeadDrawArea(startPosition), color) {RenderLayer = 3};
 			BodyParts.Add(firstPart);
 		}
 
@@ -54,7 +54,7 @@ namespace Snake
 		public void AddSnakeBody()
 		{
 			var snakeHead = BodyParts[BodyParts.Count - 1].DrawArea;
-			var newTail = new FilledRect(CalculateBodyDrawArea(snakeHead), color);
+			var newTail = new FilledRect(CalculateBodyDrawArea(snakeHead), color){RenderLayer = 3};
 			BodyParts.Add(newTail);
 		}
 

@@ -12,8 +12,7 @@ namespace Asteroids
 	{
 		public InteractionLogics()
 		{
-			explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
-			shipExplosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEmitter");
+			explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEffectEmitter0");
 			IncreaseScore += i => { };
 		}
 
@@ -25,7 +24,6 @@ namespace Asteroids
 
 		public PlayerShip Player { get; private set; }
 		private ParticleEmitterData explosionData;
-		private ParticleEmitterData shipExplosionData;
 		private bool gameRunning;
 
 		public void CreateRandomAsteroids(int howMany, int sizeMod = 1)
@@ -41,7 +39,7 @@ namespace Asteroids
 			for (int asteroidCount = 0; asteroidCount < howMany; asteroidCount++)
 			{
 				var asteroid = new Asteroid(this, sizeMod);
-				asteroid.SetDrawAreaNoInterpolation(new Rectangle(position, asteroid.DrawArea.Size));
+				asteroid.SetWithoutInterpolation(new Rectangle(position, asteroid.DrawArea.Size));
 			}
 		}
 
@@ -66,7 +64,7 @@ namespace Asteroids
 				if (Player.IsActive && ObjectsInHitRadius(Player, asteroid, 0.06f / asteroid.sizeModifier))
 				{
 					Player.IsActive = false;
-					var explosionEmitter = new ParticleEmitter(shipExplosionData, new Vector3D(Player.Center));
+					var explosionEmitter = new ParticleEmitter(explosionData, new Vector3D(Player.Center));
 					explosionEmitter.RenderLayer = 10;
 					explosionEmitter.DisposeAfterSeconds(0.5f);
 					if(GameOver != null)

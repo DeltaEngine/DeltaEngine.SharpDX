@@ -10,6 +10,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Delta Engine 2013")]
 [assembly: ComVisible(false)]
 [assembly: Guid("c06a550e-a1e3-495f-ac6f-8ad5104916e6")]
-[assembly: AssemblyVersion("0.9.9.7")]
-[assembly: AssemblyFileVersion("0.9.9.7")]
+[assembly: AssemblyVersion("0.9.9.8")]
+[assembly: AssemblyFileVersion("0.9.9.8")]
 [assembly: InternalsVisibleTo("DeltaEngine.Platforms.Mocks")]

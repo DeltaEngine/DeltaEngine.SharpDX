@@ -91,7 +91,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; //ncrunch: no coverage
 			mouse.SetPosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
-			AdvanceTimeAndUpdateEntities();
+			AdvanceTimeAndUpdateEntities(0.1f);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -111,7 +111,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			PressAndReleaseMouse(new Vector2D(0.53f, 0.52f), new Vector2D(0.53f, 0.52f));
 			Assert.IsTrue(clicked);
 			Assert.IsTrue(button.State.RelativePointerPosition.IsNearlyEqual(new Vector2D(0.6f, 0.7f)));
-			Assert.AreEqual(Color.White, button.Color);
+			Assert.AreEqual(Color.LightGray, button.Color);
 			Assert.IsFalse(button.State.IsPressed);
 		}
 
@@ -153,7 +153,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Assert.IsFalse(clicked);
 			Assert.IsFalse(button.State.IsInside);
 			Assert.AreEqual(Vector2D.Zero, button.State.RelativePointerPosition);
-			Assert.AreEqual(Color.Gray, button.Color);
+			Assert.AreEqual(Color.DarkGray, button.Color);
 		}
 
 		[Test, CloseAfterFirstFrame]

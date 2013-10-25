@@ -7,7 +7,7 @@ namespace DeltaEngine.Rendering2D
 	internal class UpdateRenderingCalculations : UpdateBehavior
 	{
 		public UpdateRenderingCalculations()
-			: base(Priority.Last) {}
+			: base(Priority.Last, false) {}
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
@@ -17,10 +17,15 @@ namespace DeltaEngine.Rendering2D
 
 		private static void UpdateSpriteRenderingCalculations(Sprite sprite)
 		{
-			var data = sprite.Get<RenderingData>();
+			RenderingData data = sprite.renderingData;
 			if (data.RequestedDrawArea != sprite.DrawArea)
-				sprite.Set(sprite.Material.RenderingCalculator.GetUVAndDrawArea(data.RequestedUserUV,
-					sprite.DrawArea, data.FlipMode));
+				sprite.renderingData = sprite.Material.RenderingCalculator.GetUVAndDrawArea(data.RequestedUserUV,
+					sprite.DrawArea, data.FlipMode);
+			RenderingData lastData = sprite.lastRenderingData;
+			if (lastData.RequestedDrawArea != sprite.LastDrawArea)
+				sprite.lastRenderingData =
+					sprite.Material.RenderingCalculator.GetUVAndDrawArea(lastData.RequestedUserUV,
+						sprite.LastDrawArea, lastData.FlipMode);
 		}
 	}
 }

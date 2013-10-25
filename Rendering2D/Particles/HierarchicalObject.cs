@@ -11,12 +11,6 @@ namespace DeltaEngine.Rendering2D.Particles
 			Rotation = Quaternion.Identity;
 		}
 
-		protected HierarchicalObject(Vector3D position, Quaternion rotation)
-		{
-			Position = position;
-			Rotation = rotation;
-		}
-
 		public Vector3D Position
 		{
 			get { return position; }
@@ -24,14 +18,14 @@ namespace DeltaEngine.Rendering2D.Particles
 			{
 				position = value;
 				foreach (var child in Children)
-					child.UpdateAbsolutePositionAndRotationFromParent();
+					child.UpdateAbsolutePositionAndRotationFromParent(); //ncrunch: no coverage
 				OnPositionChange();
 			}
 		}
 
 		private Vector3D position;
 
-		protected virtual void OnPositionChange() {}
+		protected virtual void OnPositionChange() { } //ncrunch: no coverage
 
 		public Quaternion Rotation
 		{
@@ -40,21 +34,22 @@ namespace DeltaEngine.Rendering2D.Particles
 			{
 				rotation = value;
 				foreach (var child in Children)
-					child.UpdateAbsolutePositionAndRotationFromParent();
+					child.UpdateAbsolutePositionAndRotationFromParent(); //ncrunch: no coverage
 				OnRotationChange();
 			}
 		}
 
 		private Quaternion rotation;
 
-		protected virtual void OnRotationChange() { }
+		protected virtual void OnRotationChange() {} //ncrunch: no coverage
 
 		public virtual Vector3D PositionRelativeToParent { get; set; }
 		public HierarchicalObject Parent { get; set; }
 		public List<HierarchicalObject> Children { get { return children; } }
 
-		private readonly List<HierarchicalObject> children; 
+		private readonly List<HierarchicalObject> children;
 
+		//ncrunch: no coverage start
 		public void AddChild(HierarchicalObject child)
 		{
 			Children.Add(child);

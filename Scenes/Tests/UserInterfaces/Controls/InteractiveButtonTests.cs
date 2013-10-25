@@ -46,15 +46,13 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void RenderDisabledInteractiveButton()
 		{
 			button.IsEnabled = false;
-			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(Color.Gray, button.Color);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void DefaultsToEnabled()
 		{
 			Assert.IsTrue(button.IsEnabled);
-			Assert.AreEqual(Color.LightGray, button.Color);
+			Assert.AreEqual(Color.Gray, button.Color);
 		}
 
 		[Test, CloseAfterFirstFrame]

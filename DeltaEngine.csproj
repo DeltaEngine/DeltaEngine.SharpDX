@@ -53,7 +53,7 @@
     <Compile Include="Content\Image.cs" />
     <Compile Include="Content\Material.cs" />
     <Compile Include="Content\SpriteSheetAnimationCreationData.cs" />
-    <Compile Include="Core\RenderSize.cs" />
+    <Compile Include="Content\RenderSizeMode.cs" />
     <Compile Include="Datatypes\AtlasRegion.cs" />
     <Compile Include="Datatypes\BaseRangeGraph.cs" />
     <Compile Include="Datatypes\EulerAngles.cs" />

@@ -40,10 +40,10 @@ namespace DeltaEngine.Datatypes
 		public static readonly Vector2D UnitX = new Vector2D(1, 0);
 		public static readonly Vector2D UnitY = new Vector2D(0, 1);
 		public static readonly Vector2D Unused = new Vector2D(-1, -1);
-		public static readonly Vector2D Left = new Vector2D(-1, 0);
-		public static readonly Vector2D Right = new Vector2D(1, 0);
-		public static readonly Vector2D Up = new Vector2D(0, -1);
-		public static readonly Vector2D Down = new Vector2D(0, 1);
+		public static readonly Vector2D ScreenLeft = new Vector2D(-1, 0);
+		public static readonly Vector2D ScreenRight = new Vector2D(1, 0);
+		public static readonly Vector2D ScreenUp = new Vector2D(0, -1);
+		public static readonly Vector2D ScreenDown = new Vector2D(0, 1);
 		public static readonly int SizeInBytes = Marshal.SizeOf(typeof(Vector2D));
 
 		public static Vector2D operator +(Vector2D vector1, Vector2D vector2)

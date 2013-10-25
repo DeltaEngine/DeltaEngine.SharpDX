@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 
 namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
@@ -12,7 +12,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 	/// </summary>
 	public class EntityReader : EntityEditor
 	{
-		public EntityReader(Entity entity)
+		public EntityReader(Entity2D entity)
 			: base(entity) {}
 
 		public override void Update()
@@ -25,7 +25,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 
 		private bool HaveComponentsBeenAddedOrRemoved()
 		{
-			latestComponentList = Entity.GetComponentsForSaving();
+			latestComponentList = Entity.GetComponentsForEditing();
 			if (latestComponentList.Count != componentList.Count)
 				return true;
 			for (int i = 0; i < componentList.Count; i++)

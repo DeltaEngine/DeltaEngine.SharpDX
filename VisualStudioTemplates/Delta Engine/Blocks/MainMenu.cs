@@ -1,6 +1,7 @@
 using System;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
@@ -10,33 +11,39 @@ namespace $safeprojectname$
 {
 	internal class MainMenu : Scene
 	{
-		public MainMenu()
+		public MainMenu(BlocksContent content)
 		{
-			CreateMenuTheme();
+			this.content = content;
+			CreateMenuThemeAndBackgroundElements();
 			AddStartButton();
 			AddHowToPlay();
 			AddQuitButton();
 		}
 
-		private void CreateMenuTheme()
+		private void CreateMenuThemeAndBackgroundElements()
 		{
-			SetQuadraticBackground("BlocksMainMenuBackground");
-			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUV, 
-				"BlocksButtonDefault"));
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUV, 
-				"BlocksButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUV, 
-				"BlocksButtonPressed"));
-			menuTheme.ButtonDisabled = new Theme.Appearance();
+			var backgroundImage = content.Load<Image>("Background");
+			var backgroundMaterial = new Material(ContentLoader.Load<Shader>(Shader.Position2DUV), 
+				backgroundImage, backgroundImage.PixelSize);
+			SetViewportBackground(backgroundMaterial);
+			var gameLogoImage = content.Load<Image>("GameLogo");
+			var gameLogoMaterial = new Material(ContentLoader.Load<Shader>(Shader.Position2DUV), 
+				gameLogoImage, gameLogoImage.PixelSize);
+			Add(new Sprite(gameLogoMaterial, Rectangle.FromCenter(0.5f, 0.2f, 0.6f, 0.32f)));
+			menuTheme = new Theme {
+				Button = new Material(Shader.Position2DUV, "BlocksButtonDefault"),
+				ButtonMouseover = new Material(Shader.Position2DUV, "BlocksButtonHover"),
+				ButtonPressed = new Material(Shader.Position2DUV, "BlocksButtonPressed")
+			};
 		}
 
 		private Theme menuTheme;
+		private readonly BlocksContent content;
 
 		private void AddStartButton()
 		{
-			var startButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.4f, 0.4f, 0.15f), 
-				"Start Game");
+			var startButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.4f, 0.4f, 
+				0.15f), "Start Game");
 			startButton.Clicked += TryInvokeGameStart;
 			Add(startButton);
 		}
@@ -73,7 +80,7 @@ namespace $safeprojectname$
 			{
 				this.parent = parent;
 				this.menuTheme = menuTheme;
-				SetQuadraticBackground("BlocksMainMenuBackground");
+				SetViewportBackground("BlocksMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
 				Hide();
@@ -84,17 +91,21 @@ namespace $safeprojectname$
 
 			private void AddControlDescription()
 			{
-				const string DescriptionText = "Fruit Blocks - Manual\n\n" + "Move Block Left - Cursor " +
-					"left or click left next to the playing field\n" + "Move Block Right - Cursor right or " +
-					"click right next to the playing field\n" + "Move Block Down - Cursor down or click " +
-					"below the Fruit Block\n" + "Turn Block - Cursor up or click above the Fuit Block\n";
-				Add(new FontText(Font.Default, DescriptionText, Vector2D.Half));
+				const string DescriptionText = "Quite likely this won't be much of a surprise - here " +
+					"we expect you\n" + "to arrange the random falling blocks to horizontal rows.\n\n" 
+					+ "- Controls -\n\n" + "You can move the current block to either side by pressing " +
+						"the left and right cursor keys\n" + "or click / tap on the corresponding " +
+						"side.\n" + "Rotate the block by click / tap above or by pressing cursor up or " +
+						"space.\n" + "To make the block fall faster, click / tap below or press cursor down!";
+				Add(new FontText(Font.Default, DescriptionText, Vector2D.Half) {
+					Color = Color.Gray
+				});
 			}
 
 			private void AddBackButton()
 			{
-				var backButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom - 
-					0.15f, 0.4f, 0.08f), "Back");
+				var backButton = new Button(menuTheme, new Rectangle(0.3f, ScreenSpace.Current.Bottom 
+					- 0.15f, 0.4f, 0.08f), "Back");
 				backButton.Clicked += () => 
 				{
 					Hide();
@@ -105,8 +116,8 @@ namespace $safeprojectname$
 		}
 		private void AddQuitButton()
 		{
-			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.8f, 0.4f, 0.15f), 
-				"Quit Game");
+			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.8f, 0.4f, 
+				0.15f), "Quit Game");
 			quitButton.Clicked += TryInvokeQuit;
 			Add(quitButton);
 		}

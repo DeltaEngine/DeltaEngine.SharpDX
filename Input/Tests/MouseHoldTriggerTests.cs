@@ -77,8 +77,9 @@ namespace DeltaEngine.Input.Tests
 		public void HoldMouseHovering()
 		{
 			var drawArea = new Rectangle(0.25f, 0.25f, 0.5f, 0.25f);
-			new FilledRect(drawArea, Color.Blue);
+			var rect = new FilledRect(drawArea, Color.Blue);
 			var trigger = new MouseHoldTrigger(drawArea);
+			trigger.Invoked += () => rect.Color = Color.Red;
 			trigger.Position = new Vector2D(0.3f, 0.3f);
 			Assert.IsFalse(trigger.IsHovering());
 			AdvanceTimeAndUpdateEntities(1.05f);

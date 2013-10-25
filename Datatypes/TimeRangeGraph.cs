@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Globalization;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
 {
@@ -23,6 +25,28 @@ namespace DeltaEngine.Datatypes
 		{
 			SetDefaultInterpolations(interpolationValues.Count);
 		}
+
+		public TimeRangeGraph(string timeRangeString)
+		{
+			var partitions = timeRangeString.SplitAndTrim(new[] {'{', '}'});
+			if (partitions.Length < 5 || (partitions.Length - 1) % 2 != 0)
+				throw new Range<T>.InvalidStringFormat();
+			Percentages = new float[partitions.Length /2];
+			Values = new T[partitions.Length / 2];
+			try
+			{
+				for (int i = 1; i < partitions.Length; i += 2)
+				{
+					Values[i / 2] = (T)Activator.CreateInstance(typeof(T), partitions[i]);
+					Percentages[i / 2] = float.Parse(partitions[i - 1].Trim(new[] { ':', '(', '(', ',' }),
+						CultureInfo.InvariantCulture);
+				}
+			}
+			catch (Exception)
+			{
+				throw new TypeInStringNotEqualToInitializedType();
+			}
+		} 
 
 		private void SetDefaultInterpolations(int number)
 		{
@@ -137,10 +161,10 @@ namespace DeltaEngine.Datatypes
 		[Pure]
 		public override string ToString()
 		{
-			string stringOfValues = "{" + Percentages[0] + ": " + Start;
+			string stringOfValues = "(" + Percentages[0].ToInvariantString() + ": {" + Start + "}";
 			for (int i = 1; i < Values.Length; i++)
-				stringOfValues += ", " + Percentages[i] + ": " + Values[i];
-			stringOfValues += "}";
+				stringOfValues += ", " + Percentages[i].ToInvariantString() + ": {" + Values[i] + "}";
+			stringOfValues += ")";
 			return stringOfValues;
 		}
 	}

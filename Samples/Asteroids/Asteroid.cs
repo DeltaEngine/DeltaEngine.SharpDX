@@ -96,23 +96,17 @@ namespace Asteroids
 			if (DrawArea.Width >= borders.Width || DrawArea.Height >= borders.Height)
 				return;
 			if (DrawArea.Right < borders.Left && velocity.X < 0)
-				SetDrawAreaNoInterpolation(new Rectangle(borders.Right, DrawArea.Top, DrawArea.Width,
+				SetWithoutInterpolation(new Rectangle(borders.Right, DrawArea.Top, DrawArea.Width,
 					DrawArea.Height));
 			if (DrawArea.Left > borders.Right && velocity.X > 0)
-				SetDrawAreaNoInterpolation(new Rectangle(borders.Left - DrawArea.Width, DrawArea.Top,
+				SetWithoutInterpolation(new Rectangle(borders.Left - DrawArea.Width, DrawArea.Top,
 					DrawArea.Width, DrawArea.Height));
 			if (DrawArea.Bottom < borders.Top && velocity.Y < 0)
-				SetDrawAreaNoInterpolation(new Rectangle(DrawArea.Left, borders.Bottom, DrawArea.Width,
+				SetWithoutInterpolation(new Rectangle(DrawArea.Left, borders.Bottom, DrawArea.Width,
 					DrawArea.Height));
 			if (DrawArea.Top > borders.Bottom && velocity.Y > 0)
-				SetDrawAreaNoInterpolation(new Rectangle(DrawArea.Left, borders.Top - DrawArea.Height,
+				SetWithoutInterpolation(new Rectangle(DrawArea.Left, borders.Top - DrawArea.Height,
 					DrawArea.Width, DrawArea.Height));
-		}
-
-		internal void SetDrawAreaNoInterpolation(Rectangle newDrawArea)
-		{
-			LastDrawArea = newDrawArea;
-			DrawArea = newDrawArea;
 		}
 	}
 }

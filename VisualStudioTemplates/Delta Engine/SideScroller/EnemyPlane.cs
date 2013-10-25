@@ -31,8 +31,8 @@ namespace $safeprojectname$
 			private static Rectangle CalculateRectAfterMove(Entity entity)
 			{
 				var pointAfterVerticalMovement = new Vector2D(entity.Get<Rectangle>().TopLeft.X + 
-					entity.Get<Velocity2D>().velocity.X * Time.Delta, entity.Get<Rectangle>().TopLeft.Y + 
-						entity.Get<Velocity2D>().velocity.Y * Time.Delta);
+					entity.Get<Velocity2D>().velocity.X * Time.Delta, 
+						entity.Get<Rectangle>().TopLeft.Y + entity.Get<Velocity2D>().velocity.Y * Time.Delta);
 				return new Rectangle(pointAfterVerticalMovement, entity.Get<Rectangle>().Size);
 			}
 
@@ -70,8 +70,8 @@ namespace $safeprojectname$
 					var newRect = CalculateRectAfterMove(enemy);
 					MoveEntity(enemy, newRect);
 					var velocity2D = enemy.Get<Velocity2D>();
-					velocity2D.velocity.Y -= velocity2D.velocity.Y * enemy.verticalDecelerationFactor * 
-						Time.Delta;
+					velocity2D.velocity.Y -= velocity2D.velocity.Y * enemy.verticalDecelerationFactor 
+						* Time.Delta;
 					enemy.Set(velocity2D);
 					enemy.Rotation = RotationAccordingToVerticalSpeed(velocity2D.velocity);
 					if (enemy.DrawArea.Right < ScreenSpace.Current.Viewport.Left)

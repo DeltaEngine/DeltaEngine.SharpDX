@@ -142,7 +142,7 @@ namespace DeltaEngine.Datatypes
 		[Pure]
 		public override string ToString()
 		{
-			return "{" + Width.ToInvariantString() + ", " + Height.ToInvariantString() + "}";
+			return Width.ToInvariantString() + ", " + Height.ToInvariantString();
 		}
 	}
 }

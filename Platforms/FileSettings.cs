@@ -11,6 +11,7 @@ namespace DeltaEngine.Platforms
 	/// </summary>
 	public class FileSettings : Settings
 	{
+		//ncrunch: no coverage start
 		public FileSettings()
 		{
 			filePath = Path.Combine(AssemblyExtensions.GetMyDocumentsAppFolder(), SettingsFilename);
@@ -41,17 +42,17 @@ namespace DeltaEngine.Platforms
 			new XmlFile(data).Save(filePath);
 		}
 
-		protected override T GetValue<T>(string key, T defaultValue)
+		public override T GetValue<T>(string name, T defaultValue)
 		{
-			return data == null ? defaultValue : data.GetChildValue(key, defaultValue);
+			return data == null ? defaultValue : data.GetChildValue(name, defaultValue);
 		}
 
-		protected override void SetValue(string key, object value)
+		public override void SetValue(string name, object value)
 		{
-			if (data.GetChild(key) == null)
-				data.AddChild(key, StringExtensions.ToInvariantString(value)); //ncrunch: no coverage
+			if (data.GetChild(name) == null)
+				data.AddChild(name, StringExtensions.ToInvariantString(value)); //ncrunch: no coverage
 			else
-				data.GetChild(key).Value = StringExtensions.ToInvariantString(value);
+				data.GetChild(name).Value = StringExtensions.ToInvariantString(value);
 			wasChanged = true;
 		}
 	}

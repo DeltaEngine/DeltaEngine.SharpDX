@@ -42,7 +42,6 @@ namespace Blocks.Tests
 			controller.IsFallingFast = false;
 			controller.FallingBlock = new Block(displayMode, content, Vector2D.Zero);
 			controller.UpcomingBlock = new Block(displayMode, content, Vector2D.Zero);
-
 			AdvanceTimeAndUpdateEntities(0.1f);
 			Assert.AreEqual(0, CountBricks(grid));
 			AdvanceTimeAndUpdateEntities(1.5f);
@@ -57,7 +56,6 @@ namespace Blocks.Tests
 			foreach (var brick in grid.bricks)
 				if (brick != null)
 					count++;
-
 			return count;
 		}
 
@@ -163,6 +161,12 @@ namespace Blocks.Tests
 			AdvanceTimeAndUpdateEntities(0.1f);
 			Assert.IsTrue(lost);
 			Assert.IsTrue(sounds.GameLost.IsAnyInstancePlaying);
+		}
+
+		[Test]
+		public void NoValidStartingPosoition()
+		{
+			
 		}
 	}
 }

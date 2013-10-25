@@ -210,7 +210,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void VectorToString()
 		{
-			Assert.AreEqual("{3, 4, 5}", new Vector3D(3, 4, 5).ToString());
+			Assert.AreEqual("3, 4, 5", new Vector3D(3, 4, 5).ToString());
 		}
 
 		[Test]

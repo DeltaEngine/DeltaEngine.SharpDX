@@ -184,13 +184,12 @@ namespace DeltaEngine.Graphics.Tests
 		public void LineMaterialShouldNotUseDiffuseMap()
 		{
 			var drawing = Resolve<Drawing>();
-			var shader =
-				ContentLoader.Create<Shader>(
-					new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
-						ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
-						ShaderCodeDX11.PositionUVDX11, VertexFormat.Position2DUV));
-			var image = ContentLoader.Create<Image>(new ImageCreationData(new Size(4)));
-			var generatedMaterial = new Material(shader, image);
+			var shader = ContentLoader.Create<Shader>(
+				new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
+					ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
+					ShaderCodeDX11.PositionUVDX11, VertexFormat.Position2DUV));
+			var image = ContentLoader.Create<Image>(new ImageCreationData(Size.One));
+			var generatedMaterial = new Material(shader, image, image.PixelSize);
 			Assert.Throws<Drawing.LineMaterialShouldNotUseDiffuseMap>(
 				() => drawing.AddLines(generatedMaterial, new VertexPosition2DColor[4]));
 		}

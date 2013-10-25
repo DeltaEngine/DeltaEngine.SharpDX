@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FontRenderer.cs" />
     <Compile Include="FontDescription.cs" />
     <Compile Include="FontText.cs" />
     <Compile Include="Font.cs" />

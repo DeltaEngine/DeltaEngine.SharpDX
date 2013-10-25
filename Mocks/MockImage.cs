@@ -13,7 +13,7 @@ namespace DeltaEngine.Mocks
 			: base(creationData) {}
 
 		protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) {}
-		protected override void LoadImage(Stream fileData) {}
+		protected override void LoadImage(Stream fileData) {} //ncrunch: no coverage
 
 		public override void Fill(Color[] colors)
 		{

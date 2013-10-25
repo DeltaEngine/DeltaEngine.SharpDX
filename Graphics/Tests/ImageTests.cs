@@ -30,7 +30,8 @@ namespace DeltaEngine.Graphics.Tests
 		{
 			public Sprite(Image image)
 			{
-				material = new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUV), image);
+				material = new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUV), image,
+					image.PixelSize);
 				OnDraw<DrawSprite>();
 			}
 
@@ -51,14 +52,14 @@ namespace DeltaEngine.Graphics.Tests
 						drawing.Add(sprite.material, QuadVertices, QuadIndices);
 				}
 
-				private static readonly VertexPosition2DColorUV[] QuadVertices = new[]
+				private static readonly VertexPosition2DColorUV[] QuadVertices =
 				{
 					new VertexPosition2DColorUV(new Vector2D(175, 25), Color.Yellow, Vector2D.Zero),
 					new VertexPosition2DColorUV(new Vector2D(475, 25), Color.Red, Vector2D.UnitX),
 					new VertexPosition2DColorUV(new Vector2D(475, 325), Color.Blue, Vector2D.One),
 					new VertexPosition2DColorUV(new Vector2D(175, 325), Color.Teal, Vector2D.UnitY)
 				};
-				private static readonly short[] QuadIndices = new short[] { 0, 1, 2, 0, 2, 3 };
+				private static readonly short[] QuadIndices = { 0, 1, 2, 0, 2, 3 };
 			}
 		}
 
@@ -92,7 +93,7 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
-		public void DrawCustomImage()
+		public void DrawCustomImageFromColors()
 		{
 			var customImage = ContentLoader.Create<Image>(new ImageCreationData(new Size(8, 8)));
 			var colors = new Color[8 * 8];
@@ -103,7 +104,24 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
-		public void FillCustomImageWitDiffrentSizeThanImageCausesException()
+		public void DrawCustomImageFromBytes()
+		{
+			var customImage = ContentLoader.Create<Image>(new ImageCreationData(new Size(8, 8)));
+			var bytes = new byte[8 * 8 * Color.SizeInBytes];
+			var color = Color.Purple;
+			for (int i = 0; i < 8 * 8; i++)
+			{
+				bytes[i * Color.SizeInBytes] = color.B;
+				bytes[i * Color.SizeInBytes + 1] = color.G;
+				bytes[i * Color.SizeInBytes + 2] = color.R;
+				bytes[i * Color.SizeInBytes + 3] = color.A;
+			}
+			customImage.Fill(bytes);
+			new Sprite(customImage);
+		}
+
+		[Test, ApproveFirstFrameScreenshot]
+		public void FillCustomImageWitDifferentSizeThanImageCausesException()
 		{
 			var customImage = ContentLoader.Create<Image>(new ImageCreationData(new Size(8, 9)));
 			var colors = new Color[8 * 8];			

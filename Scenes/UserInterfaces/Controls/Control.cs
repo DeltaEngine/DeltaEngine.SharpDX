@@ -17,17 +17,10 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		protected Control() {}
 
 		protected Control(Rectangle drawArea)
-			: base(CreateTransparentMaterial(), drawArea)
+			: base(Material.EmptyTransparentMaterial, drawArea)
 		{
 			Add(new InteractiveState());
 			Start<ControlUpdater>();
-		}
-
-		private static Material CreateTransparentMaterial()
-		{
-			var background = ContentLoader.Create<Image>(new ImageCreationData(Size.One));
-			background.Fill(new[] { Color.TransparentBlack });
-			return new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUV), background);
 		}
 
 		protected void AddChild(Entity2D entity)

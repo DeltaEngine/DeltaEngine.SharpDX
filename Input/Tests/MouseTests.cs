@@ -34,6 +34,7 @@ namespace DeltaEngine.Input.Tests
 			AdvanceTimeAndUpdateEntities();
 			Assert.IsTrue(isClicked);
 			Assert.IsTrue(mockMouse.IsAvailable);
+			mockMouse.Dispose();
 		}
 
 		[Test, CloseAfterFirstFrame]

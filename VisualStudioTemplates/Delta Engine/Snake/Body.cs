@@ -53,7 +53,9 @@ namespace $safeprojectname$
 		private void PlaceSnakeHead()
 		{
 			var startPosition = blockSize * (float)Math.Floor(gridSize / 2.0f);
-			var firstPart = new FilledRect(CalculateHeadDrawArea(startPosition), color);
+			var firstPart = new FilledRect(CalculateHeadDrawArea(startPosition), color) {
+				RenderLayer = 3
+			};
 			BodyParts.Add(firstPart);
 		}
 
@@ -65,7 +67,9 @@ namespace $safeprojectname$
 		public void AddSnakeBody()
 		{
 			var snakeHead = BodyParts [BodyParts.Count - 1].DrawArea;
-			var newTail = new FilledRect(CalculateBodyDrawArea(snakeHead), color);
+			var newTail = new FilledRect(CalculateBodyDrawArea(snakeHead), color) {
+				RenderLayer = 3
+			};
 			BodyParts.Add(newTail);
 		}
 
@@ -133,8 +137,8 @@ namespace $safeprojectname$
 		private bool SnakeCollidesWithBorders(FilledRect snakeHead)
 		{
 			if ((snakeHead.DrawArea.Left < blockSize - 0.01f || snakeHead.DrawArea.Top < blockSize - 
-				0.01f || snakeHead.DrawArea.Left > 1 - blockSize - 0.01f || snakeHead.DrawArea.Top > 1 - 
-					blockSize - 0.01f))
+				0.01f || snakeHead.DrawArea.Left > 1 - blockSize - 0.01f || snakeHead.DrawArea.Top > 
+					1 - blockSize - 0.01f))
 				return true;
 
 			return false;

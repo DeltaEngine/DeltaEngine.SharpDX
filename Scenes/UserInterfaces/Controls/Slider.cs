@@ -31,17 +31,17 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		protected override void UpdateSliderAppearance()
 		{
-			SetAppearance(IsEnabled ? theme.Slider : theme.SliderDisabled);
+			SetAppearance(IsEnabled ? Theme.Slider : Theme.SliderDisabled);
 		}
 
 		protected override void UpdatePointerAppearance()
 		{
 			if (!Pointer.IsEnabled)
-				Pointer.SetAppearance(theme.SliderPointerDisabled);
+				Pointer.SetAppearance(Theme.SliderPointerDisabled);
 			else if (Pointer.State.IsInside || Pointer.State.IsPressed)
-				Pointer.SetAppearance(theme.SliderPointerMouseover);
+				Pointer.SetAppearance(Theme.SliderPointerMouseover);
 			else
-				Pointer.SetAppearance(theme.SliderPointer);
+				Pointer.SetAppearance(Theme.SliderPointer);
 		}
 
 		protected override void UpdatePointerValue()
@@ -49,10 +49,11 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			if (!State.IsPressed)
 				return;
 			float percentage = State.RelativePointerPosition.X.Clamp(0.0f, 1.0f);
-			float aspectRatio = Pointer.Material.MaterialRenderSize.AspectRatio;
+			float aspectRatio = Pointer.Material.DiffuseMap != null
+				? Pointer.Material.DiffuseMap.PixelSize.AspectRatio : DefaultPointerAspectRatio;
 			float unusable = aspectRatio / DrawArea.Aspect;
 			float expandedPercentage = ((percentage - 0.5f) * (1.0f + unusable) + 0.5f).Clamp(0.0f, 1.0f);
-			Value = (int)(MinValue + expandedPercentage * (MaxValue - MinValue));
+			Value = (MinValue + expandedPercentage * (MaxValue - MinValue)).Round();
 			if (Value == lastPointerValue)
 				return;
 			lastPointerValue = Value;
@@ -60,14 +61,17 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 				ValueChanged(Value);
 		}
 
-		private int lastPointerValue = -999;
+		private const float DefaultPointerAspectRatio = 0.5f;
+
+		private int lastPointerValue = int.MaxValue;
 
 		public Action<int> ValueChanged;
 
 		protected override void UpdatePointerDrawArea()
 		{
 			Rectangle drawArea = DrawArea;
-			float aspectRatio = Pointer.Material.MaterialRenderSize.AspectRatio;
+			float aspectRatio = Pointer.Material.DiffuseMap != null
+				? Pointer.Material.DiffuseMap.PixelSize.AspectRatio : DefaultPointerAspectRatio;
 			var size = new Size(aspectRatio * drawArea.Height, drawArea.Height);
 			float percentage = (Value - MinValue) / (float)(MaxValue - MinValue);
 			var leftCenter = new Vector2D(drawArea.Left + size.Width / 2, drawArea.Center.Y);

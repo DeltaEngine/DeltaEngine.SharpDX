@@ -1,5 +1,7 @@
 ﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Multimedia;
 using DeltaEngine.Platforms;
 using DeltaEngine.ScreenSpaces;
@@ -17,10 +19,13 @@ namespace Blocks.Tests
 		{
 			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f
 				? Orientation.Landscape : Orientation.Portrait;
-			//fixedRandomScope = Randomizer.Use(new FixedRandom());
+			content = new JewelBlocksContent();
+			game = new Game(Resolve<Window>(), content);
 		}
 
 		private Orientation displayMode;
+		private JewelBlocksContent content;
+		private Game game;
 		//private IDisposable fixedRandomScope;
 
 		[Test]
@@ -42,7 +47,6 @@ namespace Blocks.Tests
 		[Test]
 		public void AffixingBlockAddsToScore()
 		{
-			var game = new Game(Resolve<Window>(), new JewelBlocksContent(), Resolve<SoundDevice>());
 			game.StartGame();
 			Assert.AreEqual(0, game.UserInterface.Score);
 			AdvanceTimeAndUpdateEntities(10.0f);
@@ -52,13 +56,12 @@ namespace Blocks.Tests
 		[Test]
 		public void CursorLeftMovesBlockLeft()
 		{
-			var content = new JewelBlocksContent();
-			var game = new Game(Resolve<Window>(), content, Resolve<SoundDevice>());
+			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
-			//mockResolver.input.SetKeyboardState(Key.CursorLeft, State.Pressing);
+			mockKeyboard.SetKeyboardState(Key.CursorLeft, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(6, game.Controller.FallingBlock.Left);
+			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
 		}
 
 		private void InitializeBlocks(Controller controller, JewelBlocksContent content)
@@ -70,43 +73,139 @@ namespace Blocks.Tests
 		[Test]
 		public void HoldingCursorLeftEventuallyMovesBlockLeftTwice()
 		{
-			var content = new JewelBlocksContent();
-			var game = new Game(Resolve<Window>(), content, Resolve<SoundDevice>());
+			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
-			//mockResolver.input.SetKeyboardState(Key.CursorLeft, State.Pressing);
+			mockKeyboard.SetKeyboardState(Key.CursorLeft, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
-			//mockResolver.input.SetKeyboardState(Key.CursorLeft, State.Pressed);
-			AdvanceTimeAndUpdateEntities(0.1f);
-			Assert.AreEqual(6, game.Controller.FallingBlock.Left);
-			AdvanceTimeAndUpdateEntities(0.1f);
-			Assert.AreEqual(6, game.Controller.FallingBlock.Left);
+			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.AreEqual(4, game.Controller.FallingBlock.Left);
 		}
 
 		[Test]
 		public void CursorRightMovesBlockRight()
 		{
-			var content = new JewelBlocksContent();
-			var game = new Game(Resolve<Window>(), content, Resolve<SoundDevice>());
+			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
-			//mockResolver.input.SetKeyboardState(Key.CursorRight, State.Pressing);
+			mockKeyboard.SetKeyboardState(Key.CursorRight, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(6, game.Controller.FallingBlock.Left);
+			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
 		}
 
-		//		[Test]
-		//		public void HoldingCursorRightEventuallyMovesBlockRightTwice()
-		//		{
-		//			InitializeBlocks(screenSpace, game.Controller, content);
-		//			mockResolver.input.SetKeyboardState(Key.CursorRight, State.Pressing);
-		//			mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//			mockResolver.input.SetKeyboardState(Key.CursorRight, State.Pressed);
-		//			mockResolver.AdvanceTimeAndExecuteRunners(0.1f);
-		//			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
-		//			mockResolver.AdvanceTimeAndExecuteRunners(0.1f);
-		//			Assert.AreEqual(8, game.Controller.FallingBlock.Left);
-		//		}
+		[Test]
+		public void HoldingCursorRightEventuallyMovesBlockRightTwice()
+		{
+			var mockKeyboard = Resolve<MockKeyboard>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockKeyboard.SetKeyboardState(Key.CursorRight, State.Pressing);
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.AreEqual(8, game.Controller.FallingBlock.Left);
+		}
+
+		[Test]
+		public void CursorDownDropsBlockFast()
+		{
+			var mockKeyboard = Resolve<MockKeyboard>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockKeyboard.SetKeyboardState(Key.CursorDown, State.Pressing);
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.IsTrue(game.Controller.IsFallingFast);
+		}
+
+		[Test]
+		public void LeftHalfClickMovesBlockLeft()
+		{
+			var mockMouse = Resolve<MockMouse>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockMouse.SetPosition(new Vector2D(0.35f, 0.0f));
+			mockMouse.SetButtonState(MouseButton.Left, State.Pressing);
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
+		}
+
+		[Test]
+		public void RightHalfClickMovesBlockRight()
+		{
+			var mockMouse = Resolve<MockMouse>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockMouse.SetPosition(new Vector2D(0.65f, 0.0f));
+			mockMouse.SetButtonState(MouseButton.Left, State.Pressing);
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
+		}
+
+		[Test]
+		public void BottomHalfClickDropsBlockFast()
+		{
+			var mockMouse = Resolve<MockMouse>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockMouse.SetPosition(new Vector2D(0.5f, 0.6f));
+			mockMouse.SetButtonState(MouseButton.Left, State.Pressing);
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.IsTrue(game.Controller.IsFallingFast);
+		}
+
+		[Test]
+		public void LeftHalfTouchMovesBlockLeft()
+		{
+			var mockTouch = Resolve<MockTouch>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockTouch.SetTouchState(0, State.Pressing, new Vector2D(0.35f, 0.0f));
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
+		}
+
+		[Test]
+		public void RightHalfTouchMovesBlockRight()
+		{
+			var mockTouch = Resolve<MockTouch>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockTouch.SetTouchState(0, State.Pressing, new Vector2D(0.65f, 0.0f));
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
+		}
+
+		[Test]
+		public void BottomHalfTouchDropsBlockFast()
+		{
+			var mockTouch = Resolve<MockTouch>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			mockTouch.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.6f));
+			AdvanceTimeAndUpdateEntities(0.01f);
+			Assert.IsTrue(game.Controller.IsFallingFast);
+		}
+
+		[Test]
+		public void MoveBlockLeftIsNotPossible()
+		{
+			var mockKeyboard = Resolve<MockKeyboard>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			game.Controller.FallingBlock = null;
+			mockKeyboard.SetKeyboardState(Key.CursorLeft, State.Pressing);
+		}
+
+		[Test]
+		public void MoveBlockRightIsNotPossible()
+		{
+			var mockKeyboard = Resolve<MockKeyboard>();
+			game.StartGame();
+			InitializeBlocks(game.Controller, content);
+			game.Controller.FallingBlock = null;
+			mockKeyboard.SetKeyboardState(Key.CursorRight, State.Pressing);
+		}
 
 		//		[Test]
 		//		public void CursorUpRotatesBlock()
@@ -124,52 +223,6 @@ namespace Blocks.Tests
 		//					}
 		//				});
 		//		}
-
-		//		[Test]
-		//		public void CursorDownDropsBlockFast()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					Assert.IsFalse(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetKeyboardState(Key.CursorDown, State.Pressing);
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.IsTrue(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetKeyboardState(Key.CursorDown, State.Releasing);
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.IsFalse(game.Controller.IsFallingFast);
-		//				});
-		//		}
-
-		//		[Test]
-		//		public void LeftHalfClickMovesBlockLeft()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetMousePosition(new Vector2D(0.35f, 0.0f));
-		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.AreEqual(5, game.Controller.FallingBlock.Left);
-		//				});
-		//		}
-
-		//		[Test]
-		//		public void RightHalfClickMovesBlockRight()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetMousePosition(new Vector2D(0.65f, 0.0f));
-		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.AreEqual(7, game.Controller.FallingBlock.Left);
-		//				});
-		//		}
-
 		//		[Test]
 		//		public void TopHalfClickRotatesBlock()
 		//		{
@@ -186,51 +239,6 @@ namespace Blocks.Tests
 		//		}
 
 		//		[Test]
-		//		public void BottomHalfClickDropsBlockFast()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					Assert.IsFalse(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetMousePosition(new Vector2D(0.5f, 0.6f));
-		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.IsTrue(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetMousePosition(new Vector2D(0.5f, 0.6f));
-		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Releasing);
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.IsFalse(game.Controller.IsFallingFast);
-		//				});
-		//		}
-
-		//		[Test]
-		//		public void LeftHalfTouchMovesBlockLeft()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.35f, 0.0f));
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.AreEqual(5, game.Controller.FallingBlock.Left);
-		//				});
-		//		}
-
-		//		[Test]
-		//		public void RightHalfTouchMovesBlockRight()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.65f, 0.0f));
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.AreEqual(7, game.Controller.FallingBlock.Left);
-		//				});
-		//		}
-
-		//		[Test]
 		//		public void TopHalfTouchRotatesBlock()
 		//		{
 		//			Start(typeof(MockResolver),
@@ -241,23 +249,6 @@ namespace Blocks.Tests
 		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.4f));
 		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
 		//					Assert.AreEqual("O.../O.../O.../O...", game.Controller.FallingBlock.ToString());
-		//				});
-		//		}
-
-		//		[Test]
-		//		public void BottomHalfTouchDropsBlockFast()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					Assert.IsFalse(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.6f));
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.IsTrue(game.Controller.IsFallingFast);
-		//					mockResolver.input.SetTouchState(0, State.Releasing, new Vector2D(0.5f, 0.6f));
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.IsFalse(game.Controller.IsFallingFast);
 		//				});
 		//		}
 

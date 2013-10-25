@@ -58,14 +58,13 @@ namespace DeltaEngine.Tests.Datatypes
 			var rangesGraph = new RangeGraph<Range<Color>>(ranges[0], ranges[2]);
 			rangesGraph.AddValueAfter(0, ranges[1]);
 			Assert.AreEqual(ranges, rangesGraph.Values);
-			Assert.IsTrue(rangesGraph.ToString().StartsWith("{"));
+			Assert.IsTrue(rangesGraph.ToString().StartsWith("("));
 		}
 
 		[Test]
 		public void GetTrivialInterpolation()
 		{
-			var points =
-				new List<Vector2D>(new[] { Vector2D.One });
+			var points = new List<Vector2D>(new[] { Vector2D.One });
 			var graph = new RangeGraph<Vector2D>(points);
 			var interpolatedPointMiddle = graph.GetInterpolatedValue(0.3f);
 			var expectedPointMiddle = Vector2D.One;
@@ -147,6 +146,38 @@ namespace DeltaEngine.Tests.Datatypes
 			pointGraph.AddValueAfter(1, points[3]);
 			pointGraph.AddValueBefore(1, points[1]);
 			Assert.AreEqual(points, pointGraph.Values);
+		}
+
+		[Test]
+		public void ConvertToStringAndBackVector2D()
+		{
+			var rangeGraph = new RangeGraph<Vector2D>(Vector2D.UnitX, Vector2D.UnitY);
+			var stringGraph = rangeGraph.ToString();
+			var retrievedRangeGraph = new RangeGraph<Vector2D>(stringGraph);
+			Assert.AreEqual("({1, 0}, {0, 1})", stringGraph);
+			Assert.AreEqual(rangeGraph.Values, retrievedRangeGraph.Values);
+		}
+
+		[Test]
+		public void ConvertToStringAndBackColors()
+		{
+			var rangeGraph = new RangeGraph<Color>(new[] { Color.Red, Color.Black, Color.Green });
+			var stringGraph = rangeGraph.ToString();
+			var retrievedGraph = new RangeGraph<Color>(stringGraph);
+			Assert.AreEqual(
+				"({R=255, G=0, B=0, A=255}, {R=0, G=0, B=0, A=255}, {R=0, G=255, B=0, A=255})", stringGraph);
+			Assert.AreEqual(rangeGraph.Values, retrievedGraph.Values);
+		}
+
+		[Test]
+		public void ConvertingFromInvalidStringThrows()
+		{
+			var rangeGraph = new RangeGraph<Color>(new[] { Color.Red, Color.Black, Color.Green });
+			var stringGraph = rangeGraph.ToString();
+			Assert.Throws<Range<Vector3D>.TypeInStringNotEqualToInitializedType>(
+				() => { new RangeGraph<Vector3D>(stringGraph); });
+			Assert.Throws<Range<Vector3D>.InvalidStringFormat>(
+				() => { new RangeGraph<Vector3D>("rect, 123, que?"); });
 		}
 	}
 }

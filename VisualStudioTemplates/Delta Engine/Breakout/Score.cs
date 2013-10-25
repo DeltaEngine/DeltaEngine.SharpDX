@@ -47,8 +47,8 @@ namespace $safeprojectname$
 
 		public override string ToString()
 		{
-			return "Level: " + Level + ", Score: " + points + (lives == 0 ? " - GAME OVER" : ", Lives: " +
-				"" + lives);
+			return "Level: " + Level + ", Score: " + points + (lives == 0 ? " - GAME OVER" : ", " +
+				"Lives: " + lives);
 		}
 	}
 }

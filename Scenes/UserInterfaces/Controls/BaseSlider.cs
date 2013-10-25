@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Content;
+using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
@@ -7,8 +8,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public abstract class BaseSlider : Picture
 	{
-		protected BaseSlider(Theme theme, Theme.Appearance appearance, Rectangle drawArea)
-			: base(theme, appearance, drawArea) {}
+		protected BaseSlider(Theme theme, Material material, Rectangle drawArea)
+			: base(theme, material, drawArea) {}
 
 		public override void Update()
 		{

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
 {
@@ -19,6 +20,22 @@ namespace DeltaEngine.Datatypes
 			Direction = direction;
 		}
 
+		public Ray(string stringRay) 
+			: this()
+		{
+			var partitions = stringRay.SplitAndTrim(new[]{'{', '}'});
+			if(partitions.Length != 5)
+				throw new InvalidNumberOfStringComponents();
+			if (partitions[0] != "Ray(" || partitions[2] != "," || partitions[4] != ")")
+				throw  new InvalidStringFormat();
+			Origin = new Vector3D(partitions[1]);
+			Direction = new Vector3D(partitions[3]);
+		}
+
+		public class InvalidNumberOfStringComponents : Exception{}
+
+		public class InvalidStringFormat : Exception{}
+
 		public Vector3D Origin;
 		public Vector3D Direction;
 
@@ -30,7 +47,7 @@ namespace DeltaEngine.Datatypes
 		[Pure]
 		public override string ToString()
 		{
-			return "Origin [" + Origin + "] Direction [" + Direction + "]";
+			return "Ray({" + Origin + "},{" + Direction + "})";
 		}
 	}
 }

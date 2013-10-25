@@ -17,6 +17,15 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		}
 
 		[Test]
+		public void RenderManyRects()
+		{
+			var random = Core.Randomizer.Current;
+			for (int num = 0; num < 20; num++)
+				new FilledRect(new Rectangle(random.Get(0.0f, 0.8f), random.Get(0.2f, 0.8f), 0.2f, 0.2f),
+					Color.GetRandomColor());
+		}
+
+		[Test]
 		public void ControlRectanglesWithMouseAndWhenTheyCollideTheyChangeColor()
 		{
 			var r1 = new FilledRect(new Rectangle(0.2f, 0.2f, 0.1f, 0.1f), Color.Red) { Rotation = 45 };
@@ -82,13 +91,11 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 				State.Releasing));
 		}
 
-		//ncrunch: no coverage start
-		// (only executed when triggering the command)
+		//ncrunch: no coverage start (only executed when triggering the command)
 		private static void ChangeVisibility(FilledRect rect)
 		{
 			rect.IsVisible = !rect.IsVisible;
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void RenderRedRectOverBlue()

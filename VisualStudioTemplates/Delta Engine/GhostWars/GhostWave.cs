@@ -99,8 +99,8 @@ namespace $safeprojectname$
 		private float CurrentRotation(int num)
 		{
 			var distanceFromCenter = CalcDistanceFromCenter(num, 0.0f, 180, -180);
-			return start.RotationTo(target) + distanceFromCenter * 30 + (start.RotationTo(target).Abs() 
-				< 90 ? 0 : 180);
+			return start.RotationTo(target) + distanceFromCenter * 30 + 
+				(start.RotationTo(target).Abs() < 90 ? 0 : 180);
 		}
 
 		protected bool ReachedTarget

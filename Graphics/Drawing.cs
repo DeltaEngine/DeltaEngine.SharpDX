@@ -194,7 +194,7 @@ namespace DeltaEngine.Graphics
 
 		private readonly List<CircularBuffer> lineBuffers = new List<CircularBuffer>();
 
-		internal void DrawEverythingInCurrentLayer()
+		public void DrawEverythingInCurrentLayer()
 		{
 			if (Has3DData())
 				Draw3DData();

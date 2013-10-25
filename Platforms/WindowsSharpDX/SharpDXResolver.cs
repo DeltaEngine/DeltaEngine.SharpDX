@@ -1,4 +1,6 @@
-﻿using DeltaEngine.Graphics.SharpDX;
+﻿using DeltaEngine.Content.Xml;
+using DeltaEngine.Graphics;
+using DeltaEngine.Graphics.SharpDX;
 using DeltaEngine.Input.SharpDX;
 using DeltaEngine.Input.Windows;
 using DeltaEngine.Multimedia.SharpDX;
@@ -14,6 +16,7 @@ namespace DeltaEngine.Platforms
 			RegisterSingleton<FormsWindow>();
 			RegisterSingleton<WindowsSystemInformation>();
 			RegisterSingleton<SharpDXDevice>();
+			RegisterSingleton<Drawing>();
 			RegisterSingleton<SharpDXScreenshotCapturer>();
 			RegisterSingleton<XAudioDevice>();
 			RegisterSingleton<SharpDXMouse>();
@@ -22,6 +25,7 @@ namespace DeltaEngine.Platforms
 			RegisterSingleton<WindowsTouch>();
 			RegisterSingleton<WindowsGamePad>();
 			RegisterSingleton<CursorPositionTranslater>();
+			Register<InputCommands>();
 			if (IsAlreadyInitialized)
 				throw new UnableToRegisterMoreTypesAppAlreadyStarted();
 		}
@@ -34,6 +38,7 @@ namespace DeltaEngine.Platforms
 			Register<SharpDXGeometry>();
 			Register<XAudioSound>();
 			Register<XAudioMusic>();
+			Register<XmlContent>();
 		}
 	}
 }

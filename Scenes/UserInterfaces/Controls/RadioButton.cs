@@ -21,15 +21,19 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private Rectangle GetSelectorDrawArea()
 		{
-			float aspectRatio = theme.RadioButtonNotSelected.Material.MaterialRenderSize.AspectRatio;
+			float aspectRatio = Theme.RadioButtonNotSelected.DiffuseMap != null
+				? Theme.RadioButtonNotSelected.DiffuseMap.PixelSize.AspectRatio
+				: DefaultRadioButtonAspectRatio;
 			var size = new Size(aspectRatio * DrawArea.Height, DrawArea.Height);
 			return new Rectangle(DrawArea.TopLeft, size);
 		}
 
+		private const float DefaultRadioButtonAspectRatio = 1.0f;
+
 		public override void Update()
 		{
 			base.Update();
-			SetAppearance(IsEnabled ? theme.RadioButtonBackground : theme.RadioButtonBackgroundDisabled);
+			SetAppearance(IsEnabled ? Theme.RadioButtonBackground : Theme.RadioButtonBackgroundDisabled);
 			UpdateSelectorAppearance();
 			selector.DrawArea = GetSelectorDrawArea();
 		}
@@ -37,15 +41,15 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		private void UpdateSelectorAppearance()
 		{
 			if (!IsEnabled)
-				selector.SetAppearance(theme.RadioButtonDisabled);
+				selector.SetAppearance(Theme.RadioButtonDisabled);
 			if (State.IsInside && State.IsSelected)
-				selector.SetAppearance(theme.RadioButtonSelectedMouseover);
+				selector.SetAppearance(Theme.RadioButtonSelectedMouseover);
 			else if (State.IsInside)
-				selector.SetAppearance(theme.RadioButtonNotSelectedMouseover);
+				selector.SetAppearance(Theme.RadioButtonNotSelectedMouseover);
 			else if (State.IsSelected)
-				selector.SetAppearance(theme.RadioButtonSelected);
+				selector.SetAppearance(Theme.RadioButtonSelected);
 			else
-				selector.SetAppearance(theme.RadioButtonNotSelected);
+				selector.SetAppearance(Theme.RadioButtonNotSelected);
 		}
 
 		public override void Click()

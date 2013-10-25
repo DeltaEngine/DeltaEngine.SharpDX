@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DeltaEngine.Commands;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
@@ -14,16 +13,16 @@ using DeltaEngine.ScreenSpaces;
 
 namespace GhostWars
 {
-	public class MainMenu : Entity, Updateable
+	public class MainMenu : Entity
 	{
-		public MainMenu(Window window, Mouse mouse)
+		public MainMenu(Window window)
 		{
-			this.mouse = mouse;
+			screenSpace = new Camera2DScreenSpace(window);
 			CreateMainMenu();
 			new Command(Command.Exit, window.CloseAfterFrame);
 		}
 
-		private readonly Mouse mouse;
+		private Camera2DScreenSpace screenSpace;
 
 		private void CreateMainMenu()
 		{
@@ -203,22 +202,6 @@ namespace GhostWars
 			Clear();
 			Add(new Sprite("CreditsBackground", ScreenSpace.Current.Viewport));
 			Add(new Command(Command.Click, CreateMainMenu));
-		}
-
-		public void Update()
-		{
-			foreach (var fontText in entities.OfType<FontText>())
-				ShowHoverEffectAndPlaySoundForFontText(fontText);
-		}
-
-		private void ShowHoverEffectAndPlaySoundForFontText(FontText fontText)
-		{
-			var oldColor = fontText.Color;
-			fontText.Color = fontText.DrawArea.Contains(mouse.Position) ? Color.Yellow : Color.White;
-			if (oldColor == fontText.Color || Time.Total - lastSwingSound < 0.075f)
-				return;
-			lastSwingSound = Time.Total;
-			ContentLoader.Load<Sound>("MalletSwing").Play(0.24f);
 		}
 
 		public static GameState State { get; set; }

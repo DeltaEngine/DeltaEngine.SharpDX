@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Core;
+﻿using System;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 
@@ -16,6 +17,26 @@ namespace DeltaEngine.Rendering2D.Particles
 			End = maximum;
 		}
 
+		public ValueRange(string rangeString)
+			: this()
+		{
+			float[] partitions;
+			try
+			{
+				partitions = rangeString.SplitIntoFloats();
+			}
+			catch
+			{
+				throw new InvalidStringFormat();
+			}
+			if(partitions.Length != 2)
+				throw new InvalidStringFormat();
+			Start = partitions[0];
+			End = partitions[1];
+		}
+
+		public class InvalidStringFormat : Exception{}
+
 		public float Start { get; set; }
 		public float End { get; set; }
 
@@ -32,7 +53,7 @@ namespace DeltaEngine.Rendering2D.Particles
 
 		public override string ToString()
 		{
-			return "[" + Start.ToInvariantString() + ", " + End.ToInvariantString() + "]";
+			return Start.ToInvariantString() + ", " + End.ToInvariantString();
 		}
 	}
 }

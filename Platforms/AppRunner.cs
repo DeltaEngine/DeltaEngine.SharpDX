@@ -22,7 +22,7 @@ namespace DeltaEngine.Platforms
 	/// </summary>
 	public abstract class AppRunner : ApproveFirstFrameScreenshot
 	{
-		//ncrunch: no coverage start
+		//ncrunch: no coverage start (for performance reasons)
 		protected void RegisterCommonEngineSingletons()
 		{
 			LoadFileSettingsAndCommands();
@@ -157,13 +157,7 @@ namespace DeltaEngine.Platforms
 					new[] { "OK" });
 				Environment.Exit((int)ExitCode.ContentMissingAndApiKeyNotSet);
 			}
-			RaiseContentIsReadyEvent();
-		}
-
-		private void RaiseContentIsReadyEvent()
-		{
-			if (ContentIsReady != null)
-				ContentIsReady();
+			ContentIsReady();
 		}
 
 		private bool alreadyCheckedContentManagerReady;
@@ -212,14 +206,7 @@ namespace DeltaEngine.Platforms
 			do
 				RunTick();
 			while (!Window.IsClosing);
-			Dispose();
 		}
-
-		private Window Window
-		{
-			get { return cachedWindow ?? (cachedWindow = Resolve<Window>()); }
-		}
-		private Window cachedWindow;
 
 		internal void RunTick()
 		{
@@ -229,13 +216,41 @@ namespace DeltaEngine.Platforms
 			ExecuteTestCodeAndMakeScreenshotAfterFirstFrame();
 			Device.Present();
 			Window.Present();
+			CheckIfAppShouldSleepBecauseOfLimitFramerate();
 		}
+
+		private void CheckIfAppShouldSleepBecauseOfLimitFramerate()
+		{
+			if (settings.LimitFramerate <= 0 || GlobalTime.Current.Milliseconds < 1000)
+				return;
+			if (sleepDoseEachFrame < 0 && GlobalTime.Current.Fps > settings.LimitFramerate)
+				sleepDoseEachFrame = 1.0f / settings.LimitFramerate - 1.0f / GlobalTime.Current.Fps;
+			if (sleepDoseEachFrame < 0)
+				return;
+			if (Time.CheckEvery(2.0f) &&
+				Math.Abs(GlobalTime.Current.Fps - settings.LimitFramerate) > settings.LimitFramerate / 20)
+				sleepDoseEachFrame += (1.0f / settings.LimitFramerate - 1.0f / GlobalTime.Current.Fps) / 2;
+			accumulatedSleepMs += sleepDoseEachFrame * 1000.0f;
+			if ((int)accumulatedSleepMs <= 0)
+				return;
+			Thread.Sleep((int)accumulatedSleepMs);
+			accumulatedSleepMs -= (int)accumulatedSleepMs;
+		}
+
+		private float sleepDoseEachFrame = -1.0f;
+		private float accumulatedSleepMs;
 
 		private Device Device
 		{
 			get { return cachedDevice ?? (cachedDevice = Resolve<Device>()); }
 		}
 		private Device cachedDevice;
+
+		private Window Window
+		{
+			get { return cachedWindow ?? (cachedWindow = Resolve<Window>()); }
+		}
+		private Window cachedWindow;
 
 		/// <summary>
 		/// When debugging or testing crash where the actual exception happens, not here.

@@ -44,7 +44,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MockMusic.cs" />
     <Compile Include="MockSoundDevice.cs" />
-    <Compile Include="MockVideoSurface.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

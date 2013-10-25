@@ -34,10 +34,10 @@ namespace DeltaEngine.Tests.Datatypes
 			Assert.AreEqual(new Vector2D(0.5f, 0.5f), Vector2D.Half);
 			Assert.AreEqual(new Vector2D(1, 0), Vector2D.UnitX);
 			Assert.AreEqual(new Vector2D(0, 1), Vector2D.UnitY);
-			Assert.AreEqual(new Vector2D(-1, 0), Vector2D.Left);
-			Assert.AreEqual(new Vector2D(1, 0), Vector2D.Right);
-			Assert.AreEqual(new Vector2D(0, -1), Vector2D.Up);
-			Assert.AreEqual(new Vector2D(0, 1), Vector2D.Down);
+			Assert.AreEqual(new Vector2D(1, 0), Vector2D.ScreenRight);
+			Assert.AreEqual(new Vector2D(-1, 0), Vector2D.ScreenLeft);
+			Assert.AreEqual(new Vector2D(0, -1), Vector2D.ScreenUp);
+			Assert.AreEqual(new Vector2D(0, 1), Vector2D.ScreenDown);
 			Assert.AreEqual(8, Vector2D.SizeInBytes);
 		}
 
@@ -74,7 +74,6 @@ namespace DeltaEngine.Tests.Datatypes
 			const float F = 1.5f;
 			var s = new Size(F);
 			Assert.AreEqual(new Vector2D(3, 6), v * F);
-			Assert.AreEqual(new Vector2D(3, 6), F * v);
 			Assert.AreEqual(new Vector2D(3, 6), v * s);
 		}
 

@@ -222,16 +222,17 @@ namespace DeltaEngine.Core
 		private static Material LoadCustomMaterial(BinaryReader reader)
 		{
 			var shaderName = reader.ReadString();
-			var isCustomImage = reader.ReadBoolean();
-			var pixelSize = isCustomImage
+			var customImageType = reader.ReadByte();
+			var pixelSize = customImageType > 0
 				? new Size(reader.ReadSingle(), reader.ReadSingle()) : Size.Zero;
-			var imageOrAnimationName = isCustomImage ? "" : reader.ReadString();
+			var imageOrAnimationName = customImageType > 0 ? "" : reader.ReadString();
+			var customImage = customImageType == 1
+				? ContentLoader.Create<Image>(new ImageCreationData(pixelSize)) : null;
 			var color = new Color(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(),
 				reader.ReadByte());
 			var duration = reader.ReadSingle();
-			var material = isCustomImage
-				? new Material(ContentLoader.Load<Shader>(shaderName),
-					ContentLoader.Create<Image>(new ImageCreationData(pixelSize)))
+			var material = customImageType > 0
+				? new Material(ContentLoader.Load<Shader>(shaderName), customImage, pixelSize)
 				: new Material(shaderName, imageOrAnimationName);
 			material.DefaultColor = color;
 			material.Duration = duration;

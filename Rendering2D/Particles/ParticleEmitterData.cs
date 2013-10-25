@@ -16,21 +16,20 @@ namespace DeltaEngine.Rendering2D.Particles
 		public ParticleEmitterData()
 			: base("<GeneratedParticleEmitterData>")
 		{
-			StartVelocity = new RangeGraph<Vector3D>(Vector3D.Zero);
-			Acceleration = new RangeGraph<Vector3D>(Vector3D.Zero);
-			Size = new RangeGraph<Size>(new Size(0.1f));
-			Color = new RangeGraph<Color>(Datatypes.Color.White);
-			StartPosition = new RangeGraph<Vector3D>(Vector3D.Zero);
-			StartRotation = new RangeGraph<ValueRange>(new ValueRange(0.0f));
-			RotationSpeed = new RangeGraph<ValueRange>(new ValueRange(0.0f));
-			EmitterType = "PointEmitter";
-			ParticlesPerSpawn = new RangeGraph<ValueRange>(new ValueRange(1, 1));
+			StartVelocity = new RangeGraph<Vector3D>(Vector3D.Zero, Vector3D.Zero);
+			Acceleration = new RangeGraph<Vector3D>(Vector3D.Zero, Vector3D.Zero);
+			Size = new RangeGraph<Size>(new Size(), new Size());
+			Color = new RangeGraph<Color>(Datatypes.Color.White, Datatypes.Color.White);
+			PositionType = ParticleEmitterPositionType.Point;
+			StartPosition = new RangeGraph<Vector3D>(Vector3D.Zero, Vector3D.Zero);
+			StartRotation = new RangeGraph<ValueRange>(new ValueRange(0.0f), new ValueRange(0.0f));
+			RotationSpeed = new RangeGraph<ValueRange>(new ValueRange(0.0f), new ValueRange(0.0f));
+			ParticlesPerSpawn = new RangeGraph<ValueRange>(new ValueRange(1, 1), new ValueRange(1, 1));
 		}
 
 		public float SpawnInterval { get; set; }
 		public float LifeTime { get; set; }
 		public int MaximumNumberOfParticles { get; set; }
-		public string EmitterType { get; set; }
 		public RangeGraph<Vector3D> StartVelocity { get; set; }
 		public RangeGraph<Vector3D> Acceleration { get; set; }
 		public RangeGraph<Size> Size { get; set; }
@@ -38,6 +37,7 @@ namespace DeltaEngine.Rendering2D.Particles
 		public RangeGraph<ValueRange> RotationSpeed { get; set; }
 		public RangeGraph<Color> Color { get; set; }
 		public Material ParticleMaterial { get; set; }
+		public ParticleEmitterPositionType PositionType { get; set; }
 		public RangeGraph<Vector3D> StartPosition { get; set; }
 		public RangeGraph<ValueRange> ParticlesPerSpawn { get; set; }
 		public bool DoParticlesTrackEmitter { get; set; }
@@ -56,7 +56,7 @@ namespace DeltaEngine.Rendering2D.Particles
 			ParticleMaterial = emitterData.ParticleMaterial;
 			ParticlesPerSpawn = emitterData.ParticlesPerSpawn;
 			RotationSpeed = emitterData.RotationSpeed;
-			EmitterType = emitterData.EmitterType;
+			PositionType = emitterData.PositionType;
 			StartPosition = emitterData.StartPosition;
 			ParticlesPerSpawn = emitterData.ParticlesPerSpawn;
 			DoParticlesTrackEmitter = emitterData.DoParticlesTrackEmitter;
@@ -78,7 +78,7 @@ namespace DeltaEngine.Rendering2D.Particles
 			newEmitterData.ParticleMaterial = otherData.ParticleMaterial;
 			newEmitterData.ParticlesPerSpawn = otherData.ParticlesPerSpawn;
 			newEmitterData.RotationSpeed = new RangeGraph<ValueRange>(otherData.RotationSpeed.Values);
-			newEmitterData.EmitterType = otherData.EmitterType;
+			newEmitterData.PositionType = otherData.PositionType;
 			newEmitterData.StartPosition = new RangeGraph<Vector3D>(otherData.StartPosition.Values);
 			newEmitterData.ParticlesPerSpawn = otherData.ParticlesPerSpawn;
 			newEmitterData.DoParticlesTrackEmitter = otherData.DoParticlesTrackEmitter;

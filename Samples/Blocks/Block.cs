@@ -30,7 +30,7 @@ namespace Blocks
 				? GetNumberOfBricks() : NormalNumberOfBricks;
 			var image = content.Load<Image>("Block" + Randomizer.Current.Get(1, 8));
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image);
+			var material = new Material(shader, image, image.PixelSize);
 			var newBrick = new Brick(material, Vector2D.Zero, displayMode);
 			Bricks = new List<Brick> { newBrick };
 			for (int i = 1; i < numberOfBricks; i++)

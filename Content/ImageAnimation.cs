@@ -53,7 +53,7 @@ namespace DeltaEngine.Content
 
 		public Material CreateMaterial(Shader shader)
 		{
-			return new Material(shader, null) { Animation = this };
+			return new Material(shader, null, Frames[0].PixelSize) { Animation = this };
 		}
 	}
 }

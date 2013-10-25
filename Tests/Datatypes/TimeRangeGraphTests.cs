@@ -58,15 +58,6 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
-		public void GetStringOfTimeRange()
-		{
-			var colors = new List<Color>(new[] { Color.Orange, Color.PaleGreen, Color.Gold });
-			var colorsTimeRange = new TimeRangeGraph<Color>(colors);
-			Assert.IsTrue(colorsTimeRange.ToString().StartsWith("{0: (R=255"));
-			Assert.IsTrue(colorsTimeRange.ToString().EndsWith(")}"));
-		}
-
-		[Test]
 		public void TrySettingPercentagesWithoutOrderChange()
 		{
 			var colors =
@@ -92,6 +83,7 @@ namespace DeltaEngine.Tests.Datatypes
 		{
 			return new List<Color>(new[] { Color.Orange, Color.PaleGreen, Color.Gold, Color.Purple });
 		}
+
 		[Test]
 		public void AddValueAtPercentage()
 		{
@@ -130,6 +122,35 @@ namespace DeltaEngine.Tests.Datatypes
 			Assert.AreEqual(4, colorsTimeRange.Values.Length);
 			colorsTimeRange.SetValue(100, Color.Green);
 			Assert.AreEqual(4, colorsTimeRange.Values.Length);
+		}
+
+		[Test]
+		public void ConvertToStringAndReverse()
+		{
+			var points =
+				new List<Vector2D>(new[]
+				{ Vector2D.Zero, Vector2D.UnitX, Vector2D.UnitY, Vector2D.UnitY, Vector2D.One });
+			var pointsTimeRange = new TimeRangeGraph<Vector2D>(points);
+			var stringRange = pointsTimeRange.ToString();
+			var retrievedTimeRange = new TimeRangeGraph<Vector2D>(stringRange);
+			Assert.AreEqual("(0: {0, 0}, 0.25: {1, 0}, 0.5: {0, 1}, 0.75: {0, 1}, 1: {1, 1})",
+				stringRange);
+			Assert.AreEqual(pointsTimeRange.Values, retrievedTimeRange.Values);
+			Assert.AreEqual(pointsTimeRange.Percentages, retrievedTimeRange.Percentages);
+		}
+
+		[Test]
+		public void TryingToCreateFromInvalidStringThrows()
+		{
+			Assert.Throws<Range<Color>.InvalidStringFormat>(
+				() => { new TimeRangeGraph<Color>("({123 ; 458})"); });
+			Assert.Throws<Range<Color>.InvalidStringFormat>(() => { new TimeRangeGraph<Color>("asdf"); });
+			Assert.Throws<Range<Color>.TypeInStringNotEqualToInitializedType>(
+				() =>
+				{
+					new TimeRangeGraph<Color>(
+						"(0: {0, 0}, 0.25: {1, 0}, 0.5: {0, 1}, 0.75: {0, 1}, 1: {1, 1})");
+				});
 		}
 	}
 }

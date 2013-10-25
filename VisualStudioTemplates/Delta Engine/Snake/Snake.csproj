@@ -51,6 +51,9 @@
     <Reference Include="DeltaEngine.Platforms">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Platforms.dll</HintPath>
     </Reference>
+    <Reference Include="DeltaEngine.WindowsSharpDX">
+	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.WindowsSharpDX.dll</HintPath>
+    </Reference>
     <Reference Include="DeltaEngine.Rendering2D">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
     </Reference>
@@ -62,9 +65,6 @@
     </Reference>
     <Reference Include="DeltaEngine.Scenes">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Scenes.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.WindowsSharpDX">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.WindowsSharpDX.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

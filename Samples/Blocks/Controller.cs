@@ -10,9 +10,9 @@ namespace Blocks
 	/// <summary>
 	/// Handles the falling and upcoming blocks.
 	/// </summary>
-	public class Controller : Entity2D
+	public class Controller : Entity
 	{
-		public Controller(Orientation displayMode, BlocksContent content) :base(Rectangle.Zero)
+		public Controller(Orientation displayMode, BlocksContent content)
 		{
 			this.content = content;
 			this.displayMode = displayMode;
@@ -62,7 +62,6 @@ namespace Blocks
 			List<int> validStartingPositions = Get<Grid>().GetValidStartingColumns(FallingBlock);
 			if (validStartingPositions.Count == 0)
 				return false;
-
 			int column = Randomizer.Current.Get(0, validStartingPositions.Count);
 			FallingBlock.Left = validStartingPositions[column];
 			return true;

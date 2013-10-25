@@ -7,8 +7,6 @@ namespace DeltaEngine.Input
 	/// </summary>
 	public class TouchMessage
 	{
-		protected TouchMessage() {}
-
 		public TouchMessage(Vector2D[] positions, bool[] pressedTouches)
 		{
 			Positions = positions;

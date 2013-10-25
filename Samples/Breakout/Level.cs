@@ -138,7 +138,7 @@ namespace Breakout
 				var bricksAlive = 0;
 				for (int x = 0; x < rows; x++)
 					for (int y = 0; y < columns; y++)
-						if (bricks[x, y].IsVisible == true)
+						if (bricks[x, y].IsVisible)
 							bricksAlive++;
 
 				return bricksAlive;

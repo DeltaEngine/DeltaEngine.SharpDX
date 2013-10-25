@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
@@ -15,33 +14,32 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 	/// </summary>
 	public class EntityWriter : EntityEditor
 	{
-		public EntityWriter(Entity entity)
+		public EntityWriter(Entity2D entity)
 			: base(entity) {}
 
 		public override void Update()
 		{
-			var entity2D = Entity as Entity2D;
-			if (entity2D != null && entity2D.RotationCenter.IsNearlyEqual(entity2D.DrawArea.Center))
-				KeepRotationCenterInLineWithDrawAreaCenter(entity2D);
+			if (Entity != null && Entity.RotationCenter.IsNearlyEqual(Entity.DrawArea.Center))
+				KeepRotationCenterInLineWithDrawAreaCenter();
 			foreach (var pair in componentControls)
 				UpdateComponentFromControls(pair.Key, pair.Value);
 		}
 
-		private void KeepRotationCenterInLineWithDrawAreaCenter(Entity2D entity2D)
+		private void KeepRotationCenterInLineWithDrawAreaCenter()
 		{
 			List<Control> drawAreaControls;
 			List<Control> rotationCenterControls;
 			if (componentControls.TryGetValue(typeof(Rectangle), out drawAreaControls))
 				if (componentControls.TryGetValue(typeof(Vector2D), out rotationCenterControls))
-					UpdateRotationCenterIfDrawAreaHasChanged(entity2D, ((TextBox)drawAreaControls[1]).Text,
+					UpdateRotationCenterIfDrawAreaHasChanged(((TextBox)drawAreaControls[1]).Text,
 						(TextBox)rotationCenterControls[1]);
 		}
 
-		private static void UpdateRotationCenterIfDrawAreaHasChanged(Entity2D entity2D,
-			string drawAreaText, TextBox rotationCenterControl)
+		private void UpdateRotationCenterIfDrawAreaHasChanged(string drawAreaText, 
+			TextBox rotationCenterControl)
 		{
 			var drawArea = (Rectangle)GetComponentFromString(typeof(Rectangle), drawAreaText);
-			if (entity2D.DrawArea != drawArea)
+			if (Entity.DrawArea != drawArea)
 				rotationCenterControl.Text = drawArea.Center.ToString();
 		}
 
@@ -113,7 +111,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 		private void UpdateComponentIfValueHasChanged(Type componentType, TextBox textbox)
 		{
 			object newComponent = GetComponentFromString(componentType, textbox.Text);
-			List<object> oldComponents = Entity.GetComponentsForSaving();
+			List<object> oldComponents = Entity.GetComponentsForEditing();
 			foreach (var oldComponent in oldComponents)
 				if (oldComponent.GetType() == componentType &&
 					oldComponent.ToString() != newComponent.ToString())

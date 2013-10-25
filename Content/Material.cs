@@ -12,7 +12,7 @@ namespace DeltaEngine.Content
 	/// which can be a single <see cref="Image"/>, an <see cref="ImageAnimation"/>, or a
 	/// <see cref="SpriteSheet"/>
 	/// </summary>
-	public sealed class Material : ContentData
+	public sealed class Material : ContentData, IEquatable<Material>
 	{
 		/// <summary>
 		/// Create material from content created via the Editor, contentName is NOT just the image name.
@@ -70,12 +70,11 @@ namespace DeltaEngine.Content
 		private void SetNullDiffuseMap()
 		{
 			diffuseMap = null;
-			pixelSize = Size.Zero;
 			RenderingCalculator = new RenderingCalculator();
 		}
 
 		private Image diffuseMap;
-		private Size pixelSize;
+		internal Size pixelSize;
 
 		private void SetDiffuseMap(Image value)
 		{
@@ -87,13 +86,27 @@ namespace DeltaEngine.Content
 		/// <summary>
 		/// Special constructor for creating custom shaders and images or reusing existing instances.
 		/// </summary>
-		public Material(Shader customShader, Image customDiffuseMap)
+		public Material(Shader customShader, Image customDiffuseMap, Size customPixelSize)
 			: base("<GeneratedCustomMaterial:" + customShader + ":" + customDiffuseMap + ">")
 		{
 			Shader = customShader;
 			DiffuseMap = customDiffuseMap;
+			pixelSize = customPixelSize;
 			DefaultColor = Color.White;
 			MetaData = new ContentMetaData();
+			RenderingCalculator = new RenderingCalculator();
+		}
+
+		public Material(Size customPixelSize, Color nonUVShaderColor)
+			: base("<GeneratedCustomMaterial:" + customPixelSize + ":" + nonUVShaderColor + ">")
+		{
+			Shader = ContentLoader.Load<Shader>(Shader.Position2DColor);
+			DiffuseMap = ContentLoader.Create<Image>(new ImageCreationData(customPixelSize));
+			DiffuseMap.Fill(Color.White);
+			pixelSize = customPixelSize;
+			DefaultColor = nonUVShaderColor;
+			MetaData = new ContentMetaData();
+			RenderingCalculator = new RenderingCalculator();
 		}
 
 		public ImageAnimation Animation
@@ -132,41 +145,34 @@ namespace DeltaEngine.Content
 		{
 			get
 			{
-				var size = new Size(0.5f);
-				if (spriteSheet != null)
-					size = SetRenderSize(renderSize, spriteSheet.SubImageSize);
-				else if (DiffuseMap != null)
-					size = SetRenderSize(renderSize, pixelSize);
-				return size;
+				return GetRenderSize(spriteSheet != null ? spriteSheet.SubImageSize : pixelSize);
 			}
 		}
 
-		private RenderSize renderSize = RenderSize.PixelBased;
-
-		private static Size SetRenderSize(RenderSize renderSize, Size pixelSize)
+		private Size GetRenderSize(Size imagePixelSize)
 		{
-			if (renderSize == RenderSize.PixelBased)
-				return ScreenSpace.Current.FromPixelSpace(pixelSize);
-			if (renderSize == RenderSize.Size800X480)
-				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(800));
-			if (renderSize == RenderSize.Size1024X720)
-				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1024));
-			if (renderSize == RenderSize.Size1280X720)
-				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1280));
-			if (renderSize == RenderSize.Size1920X1080)
-				return ScreenSpace.Current.FromPixelSpace(pixelSize / new Size(1920));
-			if (renderSize == RenderSize.SettingsBased)
-				return GetRenderSizeBassedOnSettings(pixelSize);
-			return pixelSize; // ncrunch: no coverage
+			if (RenderSizeMode == RenderSizeMode.PixelBased)
+				return ScreenSpace.Current.FromPixelSpace(imagePixelSize);
+			if (RenderSizeMode == RenderSizeMode.SizeFor800X480)
+				return imagePixelSize / new Size(800);
+			if (RenderSizeMode == RenderSizeMode.SizeFor1024X768)
+				return imagePixelSize / new Size(1024);
+			if (RenderSizeMode == RenderSizeMode.SizeFor1280X720)
+				return imagePixelSize / new Size(1280);
+			if (RenderSizeMode == RenderSizeMode.SizeFor1920X1080)
+				return imagePixelSize / new Size(1920);
+			if (RenderSizeMode == RenderSizeMode.SizeForSettingsResolution)
+				return GetRenderSizeBasedOnSettings(imagePixelSize);
+			return imagePixelSize; // ncrunch: no coverage
 		}
 
-		private static Size GetRenderSizeBassedOnSettings(Size pixelSize)
+		public RenderSizeMode RenderSizeMode { get; set; }
+
+		private static Size GetRenderSizeBasedOnSettings(Size pixelSize)
 		{
 			Settings settings = Settings.Current;
-			var quadSizeSettings =
-				new Size(settings.Resolution.Width > settings.Resolution.Height
-					? settings.Resolution.Width : settings.Resolution.Height);
-			return ScreenSpace.Current.FromPixelSpace(pixelSize / quadSizeSettings);
+			var quadSize = new Size(Math.Max(settings.Resolution.Width, settings.Resolution.Height));
+			return pixelSize / quadSize;
 		}
 
 		protected override void LoadData(Stream fileData)
@@ -176,6 +182,7 @@ namespace DeltaEngine.Content
 				throw new UnableToCreateMaterialWithoutValidShaderName();
 			Shader = ContentLoader.Load<Shader>(shaderName);
 			DefaultColor = MetaData.Get("Color", Color.White);
+			RenderSizeMode = MetaData.Get("RenderSizeMode", RenderSizeMode.PixelBased);
 			string imageOrAnimationName = MetaData.Get("ImageOrAnimationName", "");
 			if (string.IsNullOrEmpty(imageOrAnimationName))
 				return; // ncrunch: no coverage
@@ -199,18 +206,36 @@ namespace DeltaEngine.Content
 
 		public Image LightMap { get; set; }
 
+		public static Material EmptyTransparentMaterial
+		{
+			get
+			{
+				if (transparentMaterial != null)
+					return transparentMaterial;
+				transparentMaterial = new Material(ContentLoader.Load<Shader>(Shader.Position2DColor), null,
+					Size.One);
+				transparentMaterial.DefaultColor = Color.TransparentBlack;
+				return transparentMaterial;
+			}
+		}
+
+		private static Material transparentMaterial;
+
 		protected override void DisposeData() {}
+
+		public bool Equals(Material other)
+		{
+			return diffuseMap == other.diffuseMap && Shader == other.Shader &&
+				RenderSizeMode == other.RenderSizeMode && DefaultColor == other.DefaultColor &&
+				animation == other.animation && Duration == other.Duration &&
+				spriteSheet == other.spriteSheet && RenderingCalculator.Equals(other.RenderingCalculator);
+		}
 
 		public override string ToString()
 		{
 			return "Material: Shader=" + Shader + ", DiffuseMap=" + DiffuseMap + ", DefaultColor=" +
 				DefaultColor + (Animation != null ? ", Animation=" + Animation : "") +
 				(SpriteSheet != null ? ", SpriteSheet=" + SpriteSheet : "");
-		}
-
-		public void SetRenderSize(RenderSize size)
-		{
-			renderSize = size;
 		}
 	}
 }

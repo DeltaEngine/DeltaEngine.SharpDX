@@ -72,9 +72,9 @@ namespace DeltaEngine.Graphics
 			switch (Name)
 			{
 			case Position2DUV:
-					Initialize(new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
-						ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
-						ShaderCodeDX9.Position2DUVDX9, VertexFormat.Position2DUV));
+				Initialize(new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
+					ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
+					ShaderCodeDX9.Position2DUVDX9, VertexFormat.Position2DUV));
 				break;
 			case Position2DColor:
 				Initialize(new ShaderCreationData(ShaderCodeOpenGL.PositionColorOpenGLVertexCode,

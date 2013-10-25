@@ -3,16 +3,15 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
-using DeltaEngine.Multimedia;
 
 namespace Breakout
 {
 	/// <summary>
 	/// Primes the window to respond to keyboard commands and launches the game
 	/// </summary>
-	public class UI
+	public class UI : Entity, Updateable
 	{
-		public UI(Window window, Game game, SoundDevice soundDevice)
+		public UI(Window window, Game game)
 		{
 			this.window = window;
 			this.game = game;
@@ -23,10 +22,15 @@ namespace Breakout
 		private readonly Window window;
 		private readonly Game game;
 
-		public void Run()
+		public void Update()
 		{
 			if (Time.CheckEvery(0.2f))
 				window.Title = "Breakout " + game.Score;
+		}
+
+		public bool IsPauseable
+		{
+			get { return true; }
 		}
 	}
 }

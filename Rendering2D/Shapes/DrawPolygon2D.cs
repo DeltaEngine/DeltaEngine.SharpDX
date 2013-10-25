@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using DeltaEngine.Content;
-using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Graphics;
@@ -15,20 +14,17 @@ namespace DeltaEngine.Rendering2D.Shapes
 	/// </summary>
 	public class DrawPolygon2D : DrawBehavior
 	{
-		public DrawPolygon2D(Drawing draw, Window window)
+		public DrawPolygon2D(Drawing draw)
 		{
 			this.draw = draw;
-			this.window = window;
 			material = new Material(Shader.Position2DColor, "");
 		}
 
 		private readonly Drawing draw;
-		private readonly Window window;
 		private readonly Material material;
 
 		public void Draw(List<DrawableEntity> visibleEntities)
 		{
-			window.Title = "DrawPolygon2D Fps: " + GlobalTime.Current.Fps;
 			foreach (var entity in visibleEntities)
 				AddToBatch((Entity2D)entity);
 			DrawBatch();
@@ -51,22 +47,19 @@ namespace DeltaEngine.Rendering2D.Shapes
 			offset += points.Count;
 		}
 
-		//ncrunch: no coverage start
-		//(Involving loads of vertices)
+		//ncrunch: no coverage start, involving loads of vertices
 		private class TooManyVerticesForPolygon : Exception
 		{
 			public TooManyVerticesForPolygon(int numberOfPoints)
 				: base(
 					"Points: " + numberOfPoints + ", Maximum: " + CircularBuffer.TotalMaximumVerticesLimit) {}
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private int offset;
 		private VertexPosition2DColor[] vertices = new VertexPosition2DColor[InitialVertices];
 		private const int InitialVertices = 4096;
 
-		//ncrunch: no coverage start
-		//(Involving loads of vertices)
+		//ncrunch: no coverage start, involving loads of vertices
 		private void ResizeVertices()
 		{
 			if (offset > 0)
@@ -75,8 +68,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 				return;
 			vertices = new VertexPosition2DColor[vertices.Length * 2];
 			indices = new short[vertices.Length * 3];
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private short[] indices = new short[InitialVertices * 3];
 

@@ -16,14 +16,13 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[SetUp]
 		public void SetUp()
 		{
-			scrollbar = new Scrollbar(Center);
+			scrollbar = new Scrollbar(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.1f));
 			scrollbar.Add(new FontText(Font.Default, "", new Rectangle(0.5f, 0.7f, 0.2f, 0.1f)));
 			scrollbar.Start<DisplayScrollbarValue>();
 			InitializeMouse();
 		}
 
 		private Scrollbar scrollbar;
-		private static readonly Rectangle Center = Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.1f);
 
 		private class DisplayScrollbarValue : UpdateBehavior
 		{
@@ -70,7 +69,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void DefaultsToEnabled()
 		{
 			Assert.IsTrue(scrollbar.IsEnabled);
-			Assert.AreEqual(Color.White, scrollbar.Color);
+			Assert.AreEqual(Color.Gray, scrollbar.Color);
 			Assert.AreEqual(Color.LightGray, scrollbar.Pointer.Color);
 		}
 
@@ -87,7 +86,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			scrollbar.IsEnabled = false;
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(Color.Gray, scrollbar.Color);
+			Assert.AreEqual(Color.DarkGray, scrollbar.Color);
 			Assert.AreEqual(Color.Gray, scrollbar.Pointer.Color);
 		}
 
@@ -116,9 +115,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					scrollbar.DrawArea = Rectangle.FromCenter(center, size);
 				}
 			}
-		}
-
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void DefaultValues()
@@ -172,7 +169,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-
 			mouse.SetPosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();

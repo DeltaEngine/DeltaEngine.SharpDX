@@ -203,8 +203,8 @@ namespace DeltaEngine.Datatypes
 
 		public override string ToString()
 		{
-			return "{" + X.ToInvariantString() + ", " + Y.ToInvariantString() + ", " +
-				Z.ToInvariantString() + "}";
+			return X.ToInvariantString() + ", " + Y.ToInvariantString() + ", " +
+				Z.ToInvariantString();
 		}
 
 		public Vector2D GetVector2D()

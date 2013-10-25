@@ -119,7 +119,7 @@ namespace DeltaEngine.Extensions
 		{
 			var result = System.IO.Path.GetFileNameWithoutExtension(fullClassName);
 			while (result.Contains(".Tests."))
-				result = System.IO.Path.GetFileNameWithoutExtension(result);
+				result = System.IO.Path.GetFileNameWithoutExtension(result); //ncrunch: no coverage
 			return result;
 		}
 

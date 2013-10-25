@@ -12,8 +12,9 @@ namespace $safeprojectname$
 		public HudInterface()
 		{
 			hudFont = ContentLoader.Load<Font>("Tahoma30");
-			ScoreDisplay = new FontText(hudFont, "0", new Rectangle(ScreenSpace.Current.Viewport.Left, 
-				ScreenSpace.Current.Viewport.Top, 0.1f, 0.05f));
+			ScoreDisplay = new FontText(hudFont, "0", new 
+				Rectangle(ScreenSpace.Current.Viewport.Left, ScreenSpace.Current.Viewport.Top, 0.1f, 
+					0.05f));
 			ScoreDisplay.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			gameOverText = new FontText(ContentLoader.Load<Font>("Verdana12"), "", 
 				Rectangle.FromCenter(0.5f, 0.5f, 0.8f, 0.4f));
@@ -35,8 +36,8 @@ namespace $safeprojectname$
 
 		public void SetGameOverText()
 		{
-			gameOverText.Text = "Game Over!\n\n[Space] / Controller (A) - Restart\n[Esc] / Controller " +
-				"(B)- Back to Menu";
+			gameOverText.Text = "Game Over!\n\n[Space] / Controller (A) - Restart\n[Esc] / " +
+				"Controller (B)- Back to Menu";
 			gameOverText.IsVisible = true;
 		}
 

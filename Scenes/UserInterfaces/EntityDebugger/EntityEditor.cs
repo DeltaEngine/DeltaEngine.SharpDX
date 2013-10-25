@@ -16,14 +16,14 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 	/// </summary>
 	public abstract class EntityEditor : Entity, Updateable, IDisposable
 	{
-		protected EntityEditor(Entity entity)
+		protected EntityEditor(Entity2D entity)
 		{
 			Entity = entity;
 			ScreenSpace.Current.ViewportSizeChanged += RepositionControls;
 			UpdatePriority = Priority.Last;
 		}
 
-		public Entity Entity
+		public Entity2D Entity
 		{
 			get { return entity; }
 			set
@@ -33,14 +33,14 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 			}
 		}
 
-		private Entity entity;
+		private Entity2D entity;
 
 		protected void Reset()
 		{
 			row = 0;
 			scene.Clear();
 			componentControls.Clear();
-			componentList = entity.GetComponentsForSaving();
+			componentList = entity.GetComponentsForEditing();
 			foreach (object component in componentList)
 				AddComponentToScene(component);
 		}
@@ -63,8 +63,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 
 		private void AddFloatTextBoxToScene(float value)
 		{
-			string name = entity is Entity2D ? "Rotation" : "float";
-			var label = new Label(GetNextLabelDrawArea(), name);
+			var label = new Label(GetNextLabelDrawArea(), "Rotation");
 			var textbox = new TextBox(GetNextControlDrawArea(), value.ToInvariantString());
 			componentControls.Add(typeof(float), new List<Control> { label, textbox });
 			scene.Add(label);
@@ -139,11 +138,11 @@ namespace DeltaEngine.Scenes.UserInterfaces.EntityDebugger
 			scene.Add(controls);
 		}
 
-		private string GetName(object component)
+		private static string GetName(object component)
 		{
-			if (entity is Entity2D && component is Rectangle)
+			if (component is Rectangle)
 				return "Draw Area";
-			if (entity is Entity2D && component is Vector2D)
+			if (component is Vector2D)
 				return "Rot Center";
 			return component.GetShortNameOrFullNameIfNotFound();
 		}

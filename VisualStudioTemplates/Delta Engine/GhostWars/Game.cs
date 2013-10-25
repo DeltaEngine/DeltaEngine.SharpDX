@@ -8,7 +8,8 @@ namespace $safeprojectname$
 	{
 		public Game()
 		{
-			new MainMenu(Resolve<Window>(), Resolve<Mouse>());
+			var window = Resolve<Window>();
+			new MainMenu(window);
 		}
 
 		static void Main()

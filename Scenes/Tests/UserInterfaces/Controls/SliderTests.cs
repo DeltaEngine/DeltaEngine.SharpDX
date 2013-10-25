@@ -54,8 +54,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void DefaultProperties()
 		{
 			Assert.IsTrue(slider.IsEnabled);
-			Assert.AreEqual(Color.White, slider.Color);
-			Assert.AreEqual(Color.White, slider.Pointer.Color);
+			Assert.AreEqual(Color.Gray, slider.Color);
+			Assert.AreEqual(Color.LightGray, slider.Pointer.Color);
 			Assert.AreEqual(0, slider.MinValue);
 			Assert.AreEqual(100, slider.Value);
 			Assert.AreEqual(100, slider.MaxValue);
@@ -74,7 +74,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			slider.IsEnabled = false;
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(Color.Gray, slider.Color);
+			Assert.AreEqual(Color.DarkGray, slider.Color);
 			Assert.AreEqual(Color.Gray, slider.Pointer.Color);
 		}
 
@@ -122,7 +122,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test, CloseAfterFirstFrame]
 		public void ValidatePointerSize()
 		{
-			var pointer = Theme.Default.SliderPointer.Material;
+			var pointer = Theme.Default.SliderPointer;
 			var width = pointer.MaterialRenderSize.AspectRatio * 0.1f;
 			var pointerSize = new Size(width, 0.1f);
 			Assert.AreEqual(pointerSize, slider.Pointer.DrawArea.Size);

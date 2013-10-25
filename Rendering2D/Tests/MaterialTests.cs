@@ -1,4 +1,6 @@
 ﻿using DeltaEngine.Content;
+using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
@@ -59,6 +61,57 @@ namespace DeltaEngine.Rendering2D.Tests
 			var material = ContentLoader.Load<Material>("3DMaterial");
 			var shader = material.Shader as ShaderWithFormat;
 			Assert.IsTrue(shader.Format.Is3D);
+		}
+
+		[Test]
+		public void SaveAndLoadContentMaterial()
+		{
+			SaveAndLoadMaterialAndCompare(ContentLoader.Load<Material>("Earth"));
+		}
+
+		private static void SaveAndLoadMaterialAndCompare(Material material)
+		{
+			var data = BinaryDataExtensions.SaveDataIntoMemoryStream(material);
+			var loadedMaterial = BinaryDataExtensions.LoadDataWithKnownTypeFromMemoryStream<Material>(data);
+			Assert.AreEqual(material, loadedMaterial);
+		}
+
+		[Test]
+		public void SaveAndLoadImageMaterial()
+		{
+			SaveAndLoadMaterialAndCompare(new Material(Shader.Position2DUV, "Earth"));
+		}
+
+		[Test]
+		public void SaveAndLoadCustomMaterial()
+		{
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DUV);
+			var image = ContentLoader.Load<Image>("Earth");
+			SaveAndLoadMaterialAndCompare(new Material(shader, image, image.PixelSize));
+		}
+
+		[Test]
+		public void SaveAndLoadAnimationMaterial()
+		{
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DUV);
+			var animation = ContentLoader.Load<ImageAnimation>("MyImageAnimation");
+			SaveAndLoadMaterialAndCompare(new Material(shader, null, new Size(4))
+			{
+				Animation = animation
+			});
+		}
+
+		[Test]
+		public void SaveAndLoadSpriteSheetMaterial()
+		{
+			SaveAndLoadMaterialAndCompare(new Material(Shader.Position2DUV, "MySpriteSheet"));
+		}
+
+		[Test]
+		public void SaveAndLoadCustomImageMaterial()
+		{
+			var shader = ContentLoader.Load<Shader>(Shader.Position2DUV);
+			SaveAndLoadMaterialAndCompare(new Material(shader, null, new Size(2)));
 		}
 	}
 }

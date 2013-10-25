@@ -15,8 +15,7 @@ namespace GhostWars.Tests
 		public void ShowMenu()
 		{
 			Resolve<Settings>().Resolution = new Size(1200, 750);
-			ContentLoader.Use<DiskContentLoader>();
-			new MainMenu(Resolve<Window>(), Resolve<Mouse>());
+			new MainMenu(Resolve<Window>());
 		}
 	}
 }

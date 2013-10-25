@@ -146,7 +146,7 @@ namespace DeltaEngine.Entities
 		public class ListWithLerpElementsForInterpolationWasNotFound : Exception
 		{
 			public ListWithLerpElementsForInterpolationWasNotFound(Type type)
-				: base(type.ToString()) { }
+				: base(type.ToString()) {}
 		}
 
 		public T[] GetInterpolatedArray<T>(int arrayCopyLimit = -1) where T : Lerp
@@ -170,7 +170,7 @@ namespace DeltaEngine.Entities
 								EntitiesRunner.CurrentDrawInterpolation);
 						return returnValue;
 					}
-			}
+			} //ncrunch: no coverage
 			throw new ArrayWithLerpElementsForInterpolationWasNotFound(typeof(T));
 		}
 

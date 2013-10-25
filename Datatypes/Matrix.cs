@@ -135,6 +135,11 @@ namespace DeltaEngine.Datatypes
 			return new Matrix(scaleX, 0, 0, 0, 0, scaleY, 0, 0, 0, 0, scaleZ, 0, 0, 0, 0, 1);
 		}
 
+		public static Matrix CreateScale(Vector3D scale)
+		{
+			return new Matrix(scale.X, 0, 0, 0, 0, scale.Y, 0, 0, 0, 0, scale.Z, 0, 0, 0, 0, 1);
+		}
+
 		public static Matrix CreateRotationZYX(EulerAngles eulerAngles)
 		{
 			return CreateRotationZYX(eulerAngles.Pitch, eulerAngles.Yaw, eulerAngles.Roll);

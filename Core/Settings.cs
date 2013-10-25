@@ -27,14 +27,14 @@ namespace DeltaEngine.Core
 			set { SetValue("Resolution", value); }
 		}
 
-		protected abstract T GetValue<T>(string key, T defaultValue);
+		public abstract T GetValue<T>(string name, T defaultValue);
 
 		public static Size DefaultResolution
 		{
 			get { return ExceptionExtensions.IsDebugMode ? new Size(640, 360) : new Size(1280, 720); }
 		}
 
-		protected abstract void SetValue(string key, object value);
+		public abstract void SetValue(string name, object value);
 
 		public bool StartInFullscreen
 		{
@@ -120,6 +120,11 @@ namespace DeltaEngine.Core
 		{
 			get { return GetValue("ContentServerPort", 800); }
 			set { SetValue("ContentServerPort", value); }
+		}
+
+		public bool UseVSync
+		{
+			get { return LimitFramerate > 0 && LimitFramerate <= 120; }
 		}
 	}
 }

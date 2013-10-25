@@ -152,5 +152,12 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				}
 			}
 		}
+		//ncrunch: no coverage end
+
+		[Test, CloseAfterFirstFrame]
+		public void ColorDoesNotInterpolateAtCreation()
+		{
+			Assert.AreEqual(label.Color, label.LastColor);
+		}
 	}
 }

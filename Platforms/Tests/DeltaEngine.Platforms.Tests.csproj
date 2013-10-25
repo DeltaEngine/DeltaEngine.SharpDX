@@ -104,7 +104,6 @@
     <Compile Include="ConsoleCommandManagerTests.cs" />
     <Compile Include="FileSettingsTests.cs" />
     <Compile Include="InAppPurchaseTests.cs" />
-    <Compile Include="MaterialRenderSizeTests.cs" />
     <Compile Include="OrientationTests.cs" />
     <Compile Include="ResolverTests.cs" />
     <Compile Include="TestCommand.cs" />

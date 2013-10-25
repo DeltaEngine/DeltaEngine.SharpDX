@@ -47,13 +47,11 @@ namespace Breakout
 			command.Add(new KeyTrigger(Key.Space));
 			command.Add(new MouseButtonTrigger());
 			command.Add(new GamePadButtonTrigger(GamePadButton.A));
-			
-			//inputCommands.Add(touch => FireBallFromPaddle());
 		}
 
 		private void FireBallFromPaddle()
 		{
-			if (!isOnPaddle || IsVisible != true)
+			if (!isOnPaddle || !IsVisible)
 				return;
 
 			isOnPaddle = false;
@@ -170,7 +168,7 @@ namespace Breakout
 			velocity.Y = -Math.Abs(velocity.Y) * SpeedYIncrease;
 			float speed = velocity.Length;
 			if (speed > MaximumScalarSpeed)
-				velocity *= MaximumScalarSpeed / speed;
+				velocity *= MaximumScalarSpeed / speed; //ncrunch: no coverage
 			collisionSound.Play(0.6f);
 		}
 

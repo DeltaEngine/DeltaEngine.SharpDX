@@ -51,8 +51,10 @@ namespace DeltaEngine.Graphics.Tests
 		public void ExpectDefaultShader2DIfNoShaderContentAvailable()
 		{
 			var position2DUVShader = ContentLoader.Load<NoDataShaderWithFormat>("Position2DUV");
+			var position2DColorShader = ContentLoader.Load<NoDataShaderWithFormat>("Position2DColor");
 			var position2DColorUVShader = ContentLoader.Load<NoDataShaderWithFormat>("Position2DColorUV");
 			Assert.AreEqual(VertexFormat.Position2DUV, position2DUVShader.Format);
+			Assert.AreEqual(VertexFormat.Position2DColor, position2DColorShader.Format);
 			Assert.AreEqual(VertexFormat.Position2DColorUV, position2DColorUVShader.Format);
 		}
 

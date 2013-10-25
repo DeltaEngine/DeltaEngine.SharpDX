@@ -1,5 +1,4 @@
 using DeltaEngine.Core;
-using DeltaEngine.Multimedia;
 using DeltaEngine.Platforms;
 
 namespace $safeprojectname$
@@ -9,7 +8,7 @@ namespace $safeprojectname$
 		public Program()
 		{
 			Resolve<Settings>().UpdatesPerSecond = 60;
-			new Game(Resolve<Window>(), Resolve<SoundDevice>());
+			new Game(Resolve<Window>());
 		}
 
 		public static void Main()

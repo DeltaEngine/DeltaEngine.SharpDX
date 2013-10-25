@@ -23,8 +23,7 @@ namespace DeltaEngine.Rendering2D.Particles
 				Color = Color.Lerp(other.Color, interpolation),
 				IsActive = IsActive && other.IsActive && ElapsedTime < other.ElapsedTime,
 				CurrentUV = other.CurrentUV,
-				Material = other.Material != null ?
-					new Material(other.Material.Shader, other.Material.DiffuseMap) : null,
+				Material = other.Material,
 				CurrentFrame = other.CurrentFrame,
 			};
 		}
@@ -41,6 +40,7 @@ namespace DeltaEngine.Rendering2D.Particles
 		public Material Material { get; set; }
 		public int CurrentFrame { get; set; }
 
+		//ncrunch: no coverage start
 		public VertexPosition3DColorUV[] GetVertices(Size size, Color color)
 		{
 			float halfWidth = size.Width * 0.5f;
@@ -58,7 +58,7 @@ namespace DeltaEngine.Rendering2D.Particles
 		{
 			return Rotation == 0 ? new Vector3D(halfWidth, 0, halfHeight) :
 				new Vector3D(halfWidth, 0, halfHeight).RotateAround(Vector3D.UnitY, Rotation);
-		}
+		} //ncrunch: no coverage end
 
 		public void SetStartVelocityRandomizedFromRange(Vector3D startVelocity,
 			Vector3D startVelocityVariance)
@@ -104,9 +104,8 @@ namespace DeltaEngine.Rendering2D.Particles
 			if (ElapsedTime > data.LifeTime && data.LifeTime > 0.0f)
 				return IsActive = false;
 			CurrentMovement += Acceleration * Time.Delta;
-			Rotation +=
-				data.RotationSpeed.GetInterpolatedValue(ElapsedTime / data.LifeTime).GetRandomValue() *
-					Time.Delta;
+			Rotation += data.RotationSpeed.GetInterpolatedValue(ElapsedTime / data.LifeTime).
+				GetRandomValue() * Time.Delta;
 			return true;
 		}
 

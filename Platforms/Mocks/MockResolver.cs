@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DeltaEngine.Commands;
 using DeltaEngine.Content;
+using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
@@ -107,6 +108,7 @@ namespace DeltaEngine.Platforms.Mocks
 			Register<MockGeometry>();
 			Register<MockSound>();
 			Register<MockMusic>();
+			Register<XmlContent>();
 			Register<Font>();
 			Register<ParticleEmitterData>();
 		}
@@ -143,6 +145,7 @@ namespace DeltaEngine.Platforms.Mocks
 			RegisterSingleton<MockMouse>();
 			RegisterSingleton<MockTouch>();
 			RegisterSingleton<MockGamePad>();
+			Register<InputCommands>();
 			device = RegisterMock(new MockDevice(Window));
 			drawing = RegisterMock(new Drawing(device, Window));
 			ScreenSpace.resolver = new AutofacScreenSpaceResolver(this);
@@ -190,7 +193,7 @@ namespace DeltaEngine.Platforms.Mocks
 			if (baseType == typeof(Line2DRenderer))
 				return AddAndReturn(new Line2DRenderer(drawing));
 			if (baseType == typeof(DrawPolygon2D))
-				return AddAndReturn(new DrawPolygon2D(drawing, Window));
+				return AddAndReturn(new DrawPolygon2D(drawing));
 			if (baseType == typeof(SpriteBatchRenderer))
 				return AddAndReturn(new SpriteBatchRenderer(drawing));
 			if (baseType == typeof(VectorText.ProcessText))
@@ -245,9 +248,6 @@ namespace DeltaEngine.Platforms.Mocks
 		private object GetRegisteredMock<ConcreteType>()
 			where ConcreteType : new()
 		{
-			foreach (object mock in registeredMocks)
-				if (mock is ConcreteType)
-					return mock;
 			var newInstance = new ConcreteType();
 			registeredMocks.Add(newInstance);
 			return newInstance;

@@ -27,8 +27,8 @@ namespace $safeprojectname$
 				RenderLayer = 5
 			};
 			statusText.Color = Team.HumanYellow.ToColor();
-			new Sprite(new Material(Shader.Position2DUV, "Logo"), new Rectangle(0.02f, 0.205f, 0.15f, 
-				0.15f)) {
+			new Sprite(new Material(Shader.Position2DUV, "Logo"), new Rectangle(0.02f, 0.205f, 
+				0.15f, 0.15f)) {
 				RenderLayer = -15
 			};
 			CreateArrowSelectionAndBars();
@@ -132,8 +132,8 @@ namespace $safeprojectname$
 
 			var targetTree = FindNearestTree(startTree, end);
 			arrow.IsVisible = false;
-			if (startTree.Team != MainMenu.PlayerTeam || targetTree == startTree || MainMenu.State != 
-				GameState.Game || startTree.Center.DistanceTo(end) < 0.05f)
+			if (startTree.Team != MainMenu.PlayerTeam || targetTree == startTree || MainMenu.State 
+				!= GameState.Game || startTree.Center.DistanceTo(end) < 0.05f)
 				return;
 
 			arrow.IsActive = false;

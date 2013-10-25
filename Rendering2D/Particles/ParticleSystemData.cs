@@ -23,8 +23,8 @@ namespace DeltaEngine.Rendering2D.Particles
 		protected override void LoadData(Stream fileData)
 		{
 			var namesFromMetaData = MetaData.Get("EmitterNames", " ");
-			if(string.IsNullOrEmpty(namesFromMetaData))
-				throw  new InvalidParticleSystemDataNoEmitterNames();
+			if (string.IsNullOrEmpty(namesFromMetaData))
+				throw new InvalidParticleSystemDataNoEmitterNames(); //ncrunch: no coverage
 			var names = namesFromMetaData.SplitAndTrim(new[] { ' ', ',' });
 			emitterNames = new List<string>();
 			foreach (var emitterName in names)

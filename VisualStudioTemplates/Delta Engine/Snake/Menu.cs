@@ -9,7 +9,7 @@ using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
-	internal class Menu : Scene
+	public class Menu : Scene
 	{
 		public Menu()
 		{
@@ -28,23 +28,20 @@ namespace $safeprojectname$
 
 		private void CreateMenuTheme()
 		{
-			SetQuadraticBackground("SnakeMainMenuBackground");
-			menuTheme = new Theme();
-			menuTheme.Button = new Theme.Appearance(new Material(Shader.Position2DUV, 
-				"SnakeButtonDefault"));
-			menuTheme.ButtonDisabled = new Theme.Appearance();
-			menuTheme.ButtonMouseover = new Theme.Appearance(new Material(Shader.Position2DUV, 
-				"SnakeButtonHover"));
-			menuTheme.ButtonPressed = new Theme.Appearance(new Material(Shader.Position2DUV, 
-				"SnakeButtonPressed"));
+			SetViewportBackground("SnakeMainMenuBackground");
+			menuTheme = new Theme {
+				Button = new Material(Shader.Position2DUV, "SnakeButtonDefault"),
+				ButtonMouseover = new Material(Shader.Position2DUV, "SnakeButtonHover"),
+				ButtonPressed = new Material(Shader.Position2DUV, "SnakeButtonPressed")
+			};
 		}
 
 		private Theme menuTheme;
 
 		private void AddStartButton()
 		{
-			var startButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.1f, 0.4f, 0.15f), 
-				"Start Game");
+			var startButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.1f, 0.4f, 
+				0.15f), "Start Game");
 			startButton.Clicked += TryInvokeGameStart;
 			Add(startButton);
 		}
@@ -60,8 +57,8 @@ namespace $safeprojectname$
 
 		private void AddQuitButton()
 		{
-			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.7f, 0.4f, 0.15f), 
-				"Quit");
+			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.7f, 0.4f, 
+				0.15f), "Quit");
 			quitButton.Clicked += TryInvokeQuit;
 			Add(quitButton);
 		}
@@ -76,8 +73,8 @@ namespace $safeprojectname$
 
 		private void AddColorsButton()
 		{
-			var colorButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.3f, 0.4f, 0.15f), 
-				"ChooseColours");
+			var colorButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.3f, 0.4f, 
+				0.15f), "ChooseColours");
 			colorButton.Clicked += () => 
 			{
 				Hide();
@@ -100,6 +97,7 @@ namespace $safeprojectname$
 			public ColorOptionsMenu(Menu parentMenu)
 			{
 				this.parentMenu = parentMenu;
+				SetViewportBackground("SnakeMainMenuBackground");
 				AddBackgroundAndColorDisplay();
 				AddGameElementSelection();
 				AddColorSliders();
@@ -122,8 +120,8 @@ namespace $safeprojectname$
 
 			private void AddGameElementSelection()
 			{
-				var backgroundButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.2f, 
-					0.2f, 0.12f, 0.07f), "Background") {
+				var backgroundButton = new InteractiveButton(parentMenu.menuTheme, new 
+					Rectangle(0.2f, 0.2f, 0.12f, 0.07f), "Background") {
 					RenderLayer = 5
 				};
 				backgroundButton.Clicked += () => 
@@ -133,8 +131,8 @@ namespace $safeprojectname$
 					UpdateSliderValues();
 				};
 				Add(backgroundButton);
-				var borderButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.35f, 0.2f, 
-					0.12f, 0.07f), "Border") {
+				var borderButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.35f, 
+					0.2f, 0.12f, 0.07f), "Border") {
 					RenderLayer = 5
 				};
 				borderButton.Clicked += () => 
@@ -144,8 +142,8 @@ namespace $safeprojectname$
 					UpdateSliderValues();
 				};
 				Add(borderButton);
-				var snakeButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.5f, 0.2f, 
-					0.12f, 0.07f), "Snake") {
+				var snakeButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.5f, 
+					0.2f, 0.12f, 0.07f), "Snake") {
 					RenderLayer = 5
 				};
 				snakeButton.Clicked += () => 
@@ -155,8 +153,8 @@ namespace $safeprojectname$
 					UpdateSliderValues();
 				};
 				Add(snakeButton);
-				var chunkButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.65f, 0.2f, 
-					0.12f, 0.07f), "Chunk") {
+				var chunkButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.65f, 
+					0.2f, 0.12f, 0.07f), "Chunk") {
 					RenderLayer = 5
 				};
 				chunkButton.Clicked += () => 
@@ -212,8 +210,8 @@ namespace $safeprojectname$
 
 			private void AddDoneButton()
 			{
-				var doneButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.4f, 0.72f, 
-					0.2f, 0.1f), "Done!") {
+				var doneButton = new InteractiveButton(parentMenu.menuTheme, new Rectangle(0.4f, 
+					0.72f, 0.2f, 0.1f), "Done!") {
 					RenderLayer = 5
 				};
 				doneButton.Clicked += () => 
@@ -242,8 +240,8 @@ namespace $safeprojectname$
 		}
 		private void AddHowToPlay()
 		{
-			var howToButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.5f, 0.4f, 0.15f), 
-				"How To Play");
+			var howToButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.5f, 0.4f, 
+				0.15f), "How To Play");
 			howToButton.Clicked += ShowHowToPlaySubMenu;
 			Add(howToButton);
 		}
@@ -264,7 +262,7 @@ namespace $safeprojectname$
 			{
 				this.parent = parent;
 				this.menuTheme = menuTheme;
-				SetQuadraticBackground("SnakeMainMenuBackground");
+				SetViewportBackground("SnakeMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
 			}
@@ -274,11 +272,15 @@ namespace $safeprojectname$
 
 			private void AddControlDescription()
 			{
-				const string DescriptionText = "Snake - Manual\n\n" + "Move Left - Cursor left or click " +
-					"an area left next to the Snake\n" + "Move Right - Cursor right or click an area right " +
-					"next to the Snake\n" + "Move Up - Cursor up or click an area above the Snake\n" + 
-					"Move Down - Cursor down or click an area below the Snake";
-				var howToDisplayText = new FontText(Font.Default, DescriptionText, Vector2D.Half);
+				const string DescriptionText = "Collect the chunks lying around separately\n" + "by " +
+					"moving the head of the snake over them\n" + " so they can be attached to the " +
+					"end\n\n" + "Now - How to move around...\n\n" + "You can either use cursor keys or " +
+					"a gamepad controller,\n" + "in case you have one at your disposal,\n\n" + "or you " +
+					"may click / tap on a position that,\n" + "relatively to the foremost part of the " +
+					"snake,\n" + "is towards your desired movement direction";
+				var howToDisplayText = new FontText(Font.Default, DescriptionText, Vector2D.Half) {
+					Color = Color.Black
+				};
 				Add(howToDisplayText);
 			}
 

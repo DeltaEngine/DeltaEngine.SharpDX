@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Extensions;
+﻿using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
@@ -13,6 +14,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
 		public void SetUp()
 		{
 			logo = new BouncingLogo();
+			logo.Color = Color.White;
 			reader = new EntityReader(logo);
 		}
 

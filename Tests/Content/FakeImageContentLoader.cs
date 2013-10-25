@@ -14,21 +14,22 @@ namespace DeltaEngine.Tests.Content
 		public override ContentMetaData GetMetaData(string contentName,
 			Type contentClassType = null)
 		{
-			if (MetaData != null)
-				return MetaData;
-			MetaData = new ContentMetaData { Type = ContentType.Image };
-			MetaData.Values.Add("ImageName", "DeltaEngineLogo");
-			MetaData.Values.Add("UV", Rectangle.One.ToString());
-			MetaData.Values.Add("PadLeft", "0.5");
-			MetaData.Values.Add("PadRight", "0.5");
-			MetaData.Values.Add("PadTop", "0.5");
-			MetaData.Values.Add("PadBottom", "0.5");
-			MetaData.Values.Add("Rotated", "false");
-			return MetaData;
+			if (metaData != null)
+				return metaData;
+			metaData = new ContentMetaData { Type = ContentType.Image };
+			metaData.Values.Add("ImageName", "DeltaEngineLogo");
+			metaData.Values.Add("UV", Rectangle.One.ToString());
+			metaData.Values.Add("PadLeft", "0.5");
+			metaData.Values.Add("PadRight", "0.5");
+			metaData.Values.Add("PadTop", "0.5");
+			metaData.Values.Add("PadBottom", "0.5");
+			metaData.Values.Add("Rotated", "false");
+			return metaData;
 		}
 
-		private ContentMetaData MetaData;
+		private ContentMetaData metaData;
 
+		//ncrunch: no coverage start
 		protected override bool HasValidContentAndMakeSureItIsLoaded()
 		{
 			return true;

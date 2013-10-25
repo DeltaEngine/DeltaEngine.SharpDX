@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
@@ -98,11 +97,21 @@ namespace DeltaEngine.Rendering2D
 			if (RotationCenter != DrawArea.Center)
 				componentsForSaving.Add(RotationCenter);
 			foreach (var component in base.GetComponentsForSaving())
-				if (!component.GetType().Name.Contains("Theme") &&
-					!component.GetType().Name.Contains("Font") && !(component is Color) &&
-					!(component is float) && !(component is Vector2D) && !(component is int))
+				if (!(component is Color) && !(component is float) && !(component is Vector2D))
 					componentsForSaving.Add(component);
 			return componentsForSaving;
+		}
+
+		public List<object> GetComponentsForEditing()
+		{
+			var componentsForEditing = GetComponentsForSaving();
+			if (Color == DefaultColor)
+				componentsForEditing.Add(Color);
+			if (Rotation == DefaultRotation)
+				componentsForEditing.Add(Rotation);
+			if (RotationCenter == DrawArea.Center)
+				componentsForEditing.Add(RotationCenter);
+			return componentsForEditing;
 		}
 
 		public override T Get<T>()
@@ -191,15 +200,16 @@ namespace DeltaEngine.Rendering2D
 			{
 				EntitiesRunner.Current.CheckIfInUpdateState();
 				DrawArea = (Rectangle)component;
+				return;
 			}
-			else
-				base.Set(component);
+			base.Set(component);
 		}
 
 		public bool RotatedDrawAreaContains(Vector2D position)
 		{
-			return DrawArea.Contains(Rotation == DefaultRotation
-				? position : position.RotateAround(RotationCenter, -Rotation));
+			return
+				DrawArea.Contains(Rotation == DefaultRotation
+					? position : position.RotateAround(RotationCenter, -Rotation));
 		}
 	}
 }

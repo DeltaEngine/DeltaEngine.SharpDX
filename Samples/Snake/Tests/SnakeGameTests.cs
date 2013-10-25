@@ -1,5 +1,8 @@
 ﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input;
+using DeltaEngine.Input.Mocks;
+using DeltaEngine.Mocks;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -19,13 +22,13 @@ namespace Snake.Tests
 		private int gridSize;
 		private float moveSpeed;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void StartGame()
 		{
 			new Game(Resolve<Window>());
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void RespawnChunkIfCollidingWithSnake()
 		{
 			var game = new Game(Resolve<Window>());
@@ -36,7 +39,7 @@ namespace Snake.Tests
 			Assert.IsFalse(game.Chunk.IsCollidingWithSnake(game.Snake.Get<Body>().BodyParts));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void SnakeEatsChunk()
 		{
 			var game = new Game(Resolve<Window>());
@@ -52,12 +55,64 @@ namespace Snake.Tests
 			Assert.AreEqual(originalLength + 1, game.Snake.Get<Body>().BodyParts.Count);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DisplayGameOver()
 		{
 			var game = new Game(Resolve<Window>());
 			game.StartGame();
 			game.Reset();
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void QuitGracefullyDisposes()
+		{
+			var game = new Game(Resolve<Window>());
+			Assert.DoesNotThrow(game.CloseGame);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void RestartGameInitializesAnew()
+		{
+			var game = new Game(Resolve<Window>());
+			game.StartGame();
+			AdvanceTimeAndUpdateEntities();
+			game.Reset();
+			var keyboard = Resolve<Keyboard>();
+			if (keyboard.GetType() != typeof(MockKeyboard))
+				return; //ncrunch: no coverage (This is for NOT ncrunch...)
+			var mockKeyboard = (MockKeyboard)keyboard;
+			mockKeyboard.SetKeyboardState(Key.Y, State.Pressing);
+			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void MoveByTouchPositionLeft()
+		{
+			var game = new Game(Resolve<Window>());
+			game.StartGame();
+			game.MoveAccordingToTouchPosition(new Vector2D(-1, 0.5f));
+			Assert.AreEqual(new Vector2D(-(1.0f / 25.0f), 0), game.Snake.Get<Body>().Direction);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void MoveByTouchPositionRight()
+		{
+			var game = new Game(Resolve<Window>());
+			game.StartGame();
+			game.MoveAccordingToTouchPosition(new Vector2D(1, 0.5f));
+			Assert.AreEqual(new Vector2D(1.0f / 25.0f, 0), game.Snake.Get<Body>().Direction);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void ResizeWindow()
+		{
+			var window = Resolve<Window>();
+			if (window.GetType() != typeof(MockWindow))
+				return; //ncrunch: no coverage (security measure for non-mock, would crash)
+			var mockWindow = (MockWindow)window;
+			var game = new Game(mockWindow);
+			mockWindow.ViewportPixelSize = new Size(200.0f, 100.0f);
+			Assert.AreEqual(0.5f, game.screenSpace.Zoom);
 		}
 	}
 }

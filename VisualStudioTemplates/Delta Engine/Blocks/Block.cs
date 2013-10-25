@@ -27,7 +27,7 @@ namespace $safeprojectname$
 				NormalNumberOfBricks;
 			var image = content.Load<Image>("Block" + Randomizer.Current.Get(1, 8));
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image);
+			var material = new Material(shader, image, image.PixelSize);
 			var newBrick = new Brick(material, Vector2D.Zero, displayMode);
 			Bricks = new List<Brick> {
 				newBrick
@@ -64,8 +64,8 @@ namespace $safeprojectname$
 
 		private static Vector2D GetRandomOffset()
 		{
-			return Randomizer.Current.Get(0, 2) == 0 ? new Vector2D(Randomizer.Current.Get(0, 2) * 2 - 
-				1, 0) : new Vector2D(0, Randomizer.Current.Get(0, 2) * 2 - 1);
+			return Randomizer.Current.Get(0, 2) == 0 ? new Vector2D(Randomizer.Current.Get(0, 2) * 2 
+				- 1, 0) : new Vector2D(0, Randomizer.Current.Get(0, 2) * 2 - 1);
 		}
 
 		private void ShiftToTopLeft()

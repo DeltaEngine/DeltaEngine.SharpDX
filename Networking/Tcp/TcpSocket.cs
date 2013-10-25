@@ -114,8 +114,7 @@ namespace DeltaEngine.Networking.Tcp
 				});
 		}
 
-		private void SocketConnectionComplete(object sender,
-			SocketAsyncEventArgs socketAsyncEventArgs)
+		private void SocketConnectionComplete(object sender, SocketAsyncEventArgs socketAsyncEventArgs)
 		{
 			lock (syncObject)
 			{

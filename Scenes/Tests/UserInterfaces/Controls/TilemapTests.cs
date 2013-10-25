@@ -14,6 +14,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 {
 	public class TilemapTests : TestWithMocksOrVisually
 	{
+		//ncrunch: no coverage start
 		[Test, Category("Slow")]
 		public void RenderColoredLogoTilemap()
 		{

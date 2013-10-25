@@ -24,10 +24,21 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
-		public void RayToString()
+		public void CanConvertToStringAndBack()
 		{
-			Assert.AreEqual("Origin [{1, 0, 0}] Direction [{0, 1, 0}]",
-				new Ray(Vector3D.UnitX, Vector3D.UnitY).ToString());
+			var ray = new Ray(Vector3D.UnitX, Vector3D.Up);
+			var stringRay = ray.ToString();
+			Assert.AreEqual("Ray({1, 0, 0},{0, 1, 0})", stringRay);
+			var retrievedRay = new Ray(stringRay);
+			Assert.AreEqual(ray.Origin, retrievedRay.Origin);
+			Assert.AreEqual(ray.Direction, retrievedRay.Direction);
+		}
+
+		[Test]
+		public void ConvertingInvalidStringThrows()
+		{
+			Assert.Throws<Ray.InvalidNumberOfStringComponents>(() => { new Ray("Ray({1, 0, 0})"); });
+			Assert.Throws<Ray.InvalidStringFormat>(() => { new Ray("Fray({1, 0, 0},{0, 1, 0})"); });
 		}
 	}
 }

@@ -7,6 +7,7 @@ namespace DeltaEngine.Platforms.Tests
 	[Category("Slow")]
 	public class FileSettingsTests : TestWithMocksOrVisually
 	{
+		//ncrunch: no coverage start
 		[SetUp]
 		public void Init()
 		{

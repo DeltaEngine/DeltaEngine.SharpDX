@@ -36,8 +36,7 @@ namespace DeltaEngine.Content.Xml
 		{
 			public XmlContentNotFound(string contentName, Exception innerException)
 				: base(contentName, innerException) {}
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		protected override void DisposeData() {}
 	}

@@ -68,14 +68,14 @@ namespace DeltaEngine.Content
 			try
 			{
 				LoadImage(fileData);
-			} // ncrunch: no coverage
+			} //ncrunch: no coverage
 			catch (Exception ex)
 			{
 				Logger.Error(ex);
 				if (!Debugger.IsAttached)
 					CreateDefault();
 				else
-					throw; // ncrunch: no coverage
+					throw; //ncrunch: no coverage
 			}
 		}
 
@@ -140,15 +140,22 @@ namespace DeltaEngine.Content
 			SetSamplerState();
 		}
 
+		public void Fill(Color color)
+		{
+			var colors = new Color[(int)PixelSize.Width * (int)PixelSize.Height];
+			for (int i = 0; i < colors.Length; i++)
+				colors[i] = color;
+			Fill(colors);
+		}
+
 		public abstract void Fill(Color[] colors);
+		public abstract void Fill(byte[] rgbaColors);
 
 		public class InvalidNumberOfColors : Exception
 		{
 			public InvalidNumberOfColors(Size pixelSize)
 				: base(pixelSize.Width + "*" + pixelSize.Height) {}
 		}
-
-		public abstract void Fill(byte[] rgbaColors);
 
 		public class InvalidNumberOfBytes : Exception
 		{

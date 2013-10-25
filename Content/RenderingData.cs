@@ -5,7 +5,7 @@ namespace DeltaEngine.Content
 	/// <summary>
 	/// Returned by RenderingCalculator and tells how an image should be rendered.
 	/// </summary>
-	public struct RenderingData : Lerp<RenderingData>
+	public class RenderingData : Lerp<RenderingData>
 	{
 		public Rectangle RequestedUserUV { get; internal set; }
 		public Rectangle RequestedDrawArea { get; internal set; }
@@ -19,8 +19,8 @@ namespace DeltaEngine.Content
 		{
 			return new RenderingData
 			{
-				RequestedUserUV = RequestedUserUV.Lerp(other.RequestedUserUV, interpolation),
-				RequestedDrawArea = RequestedDrawArea.Lerp(other.RequestedDrawArea, interpolation),
+				RequestedUserUV = other.RequestedUserUV,
+				RequestedDrawArea = other.RequestedDrawArea,
 				FlipMode = FlipMode,
 				AtlasUV = AtlasUV.Lerp(other.AtlasUV, interpolation),
 				DrawArea = DrawArea.Lerp(other.DrawArea, interpolation),

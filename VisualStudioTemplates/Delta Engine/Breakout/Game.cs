@@ -5,17 +5,17 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
 using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Scenes;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
-	public class Game
+	public class Game : Scene
 	{
-		public Game(Window window, SoundDevice soundDevice)
+		public Game(Window window)
 		{
-			new RelativeScreenSpace(window);
+			screenSpace = new Camera2DScreenSpace(window);
 			this.window = window;
-			device = soundDevice;
 			menu = new MainMenu();
 			menu.InitGame += InitGame;
 			menu.QuitGame += window.CloseAfterFrame;
@@ -23,11 +23,20 @@ namespace $safeprojectname$
 			soundTrack = ContentLoader.Load<Music>("BreakoutMusic");
 			soundTrack.Loop = true;
 			soundTrack.Play();
-			menu.SettingsChanged += UpdateMusicVolume;
+			MainMenu.SettingsChanged += UpdateMusicVolume;
+			screenSpace.Zoom = 1 / window.ViewportPixelSize.AspectRatio;
+			window.ViewportSizeChanged += SizeChanged;
+			SetViewportBackground("Background");
 		}
 
 		private readonly MainMenu menu;
 		private readonly Music soundTrack;
+		private readonly Camera2DScreenSpace screenSpace;
+
+		private void SizeChanged(Size size)
+		{
+			screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio;
+		}
 
 		private void UpdateMusicVolume()
 		{
@@ -46,11 +55,10 @@ namespace $safeprojectname$
 			if (gameOverMessage != null)
 				gameOverMessage.IsActive = false;
 
-			new Background().RenderLayer = 0;
 			score = new Score();
 			currentLevel = new Level(score);
 			ball = new BallInLevel(new Paddle(), currentLevel);
-			new UI(window, this, device);
+			new UI(window, this);
 			score.GameOver += () => 
 			{
 				RemoveOldObjects();
@@ -72,7 +80,6 @@ namespace $safeprojectname$
 		private BallInLevel ball;
 		private Score score;
 		private readonly Window window;
-		private readonly SoundDevice device;
 		private Command restartCommand;
 		private FontText gameOverMessage;
 

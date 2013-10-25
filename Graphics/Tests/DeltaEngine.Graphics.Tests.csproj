@@ -86,8 +86,7 @@
     <Compile Include="GeometryTests.cs" />
     <Compile Include="IndexTests.cs" />
     <Compile Include="MaterialTests.cs" />
-    <Compile Include="ScreenshotTests.cs" />
-    <Compile Include="ShaderGenerationTests.cs" />
+    <Compile Include="ScreenshotCapturerTests.cs" />
     <Compile Include="ShaderWithFormatTests.cs" />
     <Compile Include="VertexElementTests.cs" />
     <Compile Include="VertexFormatTests.cs" />

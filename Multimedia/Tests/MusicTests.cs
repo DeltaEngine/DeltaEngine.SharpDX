@@ -43,6 +43,7 @@ namespace DeltaEngine.Multimedia.Tests
 			music.Play();
 			Assert.IsTrue(music.IsPlaying());
 			AssertBetween(4.10f, 4.15f, music.DurationInSeconds);
+			AssertBetween(0.9f, 1.0f, music.PositionInSeconds);
 		}
 
 		private static void AssertBetween(float min, float max, float value)

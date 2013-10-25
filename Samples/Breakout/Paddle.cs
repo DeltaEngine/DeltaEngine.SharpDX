@@ -24,18 +24,19 @@ namespace Breakout
 
 		private void RegisterInputCommands()
 		{
-			new Command(() =>
-			{
-				xPosition -= PaddleMovementSpeed * Time.Delta;
-			}).Add(new KeyTrigger(Key.CursorLeft, State.Pressed));
-			new Command(() =>
-			{
-				xPosition += PaddleMovementSpeed * Time.Delta;
-			}).Add(new KeyTrigger(Key.CursorRight, State.Pressed));
-			new Command(pos =>
-			{
-				xPosition += pos.X - Position.X;
-			}).Add(new MouseButtonTrigger(MouseButton.Left, State.Pressed));
+			RegisterButtonCommands();
+			new Command(pos => xPosition += pos.X - Position.X).Add(
+				new MouseButtonTrigger(MouseButton.Left, State.Pressed));
+		}
+
+		private void RegisterButtonCommands()
+		{
+			var left = new Command(() => xPosition -= PaddleMovementSpeed * Time.Delta);
+			left.Add(new KeyTrigger(Key.CursorLeft, State.Pressed));
+			left.Add(new GamePadButtonTrigger(GamePadButton.Left, State.Pressed));
+			var right = new Command(() => xPosition += PaddleMovementSpeed * Time.Delta);
+			right.Add(new KeyTrigger(Key.CursorRight, State.Pressed));
+			right.Add(new GamePadButtonTrigger(GamePadButton.Right, State.Pressed));
 		}
 
 		private float xPosition = 0.5f;

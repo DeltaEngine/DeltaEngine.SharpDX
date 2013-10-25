@@ -1,4 +1,6 @@
-﻿using DeltaEngine.Datatypes;
+﻿using System;
+using DeltaEngine.Content;
+using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
@@ -9,23 +11,42 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	{
 		protected Picture()
 		{
-			Add(theme = Theme.Default);
-			// theme needs to be extracted
+			Theme = Theme.Default;
 		}
 
-		public Picture(Theme theme, Theme.Appearance appearance, Rectangle drawArea)
+		public Picture(Theme theme, Material material, Rectangle drawArea)
 			: base(drawArea)
 		{
-			Add(this.theme = theme);
-			SetAppearance(appearance);
+			Theme = theme;
+			SetAppearanceWithoutInterpolation(material);
 		}
 
-		public Theme theme;
-
-		public void SetAppearance(Theme.Appearance appearance)
+		protected Theme Theme
 		{
-			Material = appearance.Material;
-			Color = appearance.Color;
+			set { Set(value); }
+			get
+			{
+				try
+				{
+					return Get<Theme>();
+				}
+				catch
+				{
+					return null;
+				}
+			}
+		}
+
+		public void SetAppearanceWithoutInterpolation(Material material)
+		{
+			Material = material;
+			SetWithoutInterpolation(material.DefaultColor);
+		}
+
+		public void SetAppearance(Material material)
+		{
+			Material = material;
+			Color = material.DefaultColor;
 		}
 	}
 }

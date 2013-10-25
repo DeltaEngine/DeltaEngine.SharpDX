@@ -51,6 +51,10 @@
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Scenes\DeltaEngine.Scenes.csproj">
+      <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
+      <Name>DeltaEngine.Scenes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Asteroids.csproj">
       <Project>{6BA7DE2F-0323-428F-9318-6A163B182F0C}</Project>
       <Name>Asteroids</Name>

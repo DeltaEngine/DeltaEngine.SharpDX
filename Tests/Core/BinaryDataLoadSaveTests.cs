@@ -162,12 +162,33 @@ namespace DeltaEngine.Tests.Core
 		}
 
 		[Test]
-		public void ThrowExceptionTypeNameStartsWithXml()
+		public void ThrowExceptionIfTypeNameStartsWithXml()
 		{
 			Assert.Throws<BinaryDataSaver.UnableToSave>(
 				() => BinaryDataExtensions.SaveToMemoryStream(new XmlBinaryData("Xml")));
 			Assert.AreEqual("Xml", new XmlBinaryData("Xml").Text);
 		}
+
+		[Test]
+		public void ThrowExceptionIfTypeNameStartsWithMock()
+		{
+			Assert.Throws<BinaryDataSaver.UnableToSave>(
+				() => BinaryDataExtensions.SaveToMemoryStream(new MockBinaryData()));
+		}
+
+		private class MockBinaryData {}
+
+		[Test]
+		public void ThrowExceptionIfTypeNameEndsWithImageOrSound()
+		{
+			Assert.Throws<BinaryDataSaver.UnableToSave>(
+				() => BinaryDataExtensions.SaveToMemoryStream(new NonContentImage()));
+			Assert.Throws<BinaryDataSaver.UnableToSave>(
+				() => BinaryDataExtensions.SaveToMemoryStream(new NonContentSound()));
+		}
+
+		private class NonContentImage { }
+		private class NonContentSound { }
 
 		[Test]
 		public void LoadAndSaveClassWithMemoryStream()
