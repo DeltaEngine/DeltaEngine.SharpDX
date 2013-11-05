@@ -5,7 +5,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Allows mouse button tap to be tracked.
 	/// </summary>
-	public class MouseTapTrigger : Trigger
+	public class MouseTapTrigger : Trigger, MouseTrigger
 	{
 		public MouseTapTrigger(MouseButton button)
 		{
@@ -13,7 +13,18 @@ namespace DeltaEngine.Input
 			Start<Mouse>();
 		}
 
-		public MouseButton Button { get; internal set; }
-		public State LastState { get; set; }
+		public MouseButton Button { get; private set; }
+
+		public void HandleWithMouse(Mouse mouse)
+		{
+			bool wasJustStartedPressing = lastState == State.Pressing;
+			State currentState = mouse.GetButtonState(Button);
+			var isNowReleased = currentState == State.Releasing;
+			lastState = currentState;
+			if (isNowReleased && wasJustStartedPressing)
+				Invoke();
+		}
+
+		private State lastState;
 	}
 }

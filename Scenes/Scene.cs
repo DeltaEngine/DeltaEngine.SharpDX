@@ -113,8 +113,8 @@ namespace DeltaEngine.Scenes
 				Remove(background);
 			var screen = ScreenSpace.Current;
 			background = new Sprite(material, screen.Viewport) { RenderLayer = int.MinValue };
-			ScreenSpace.Current.ViewportSizeChanged += () => 
-				background.SetWithoutInterpolation(screen.Viewport);
+			ScreenSpace.Current.ViewportSizeChanged +=
+				() => background.SetWithoutInterpolation(screen.Viewport);
 			Add(background);
 		}
 
@@ -122,14 +122,10 @@ namespace DeltaEngine.Scenes
 
 		protected override void LoadData(Stream fileData)
 		{
-			var sceneData = (Scene)new BinaryReader(fileData).Create();
-			controls = sceneData.Controls;
-			foreach (var control in controls)
-			{
-				if (control.GetType() == typeof(Label) || control.GetType() == typeof(Button))
-					(control as Label).SetFontText();
-			}
-			background = sceneData.background;
+			var loadedScene = (Scene)new BinaryReader(fileData).Create();
+			controls = loadedScene.Controls;
+			//TODO: Need to set ScreenSpace.Current.ViewportSizeChanged if applicable
+			background = loadedScene.background;
 		}
 	}
 }

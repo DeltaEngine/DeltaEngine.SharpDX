@@ -20,16 +20,17 @@ namespace Blocks
 				? 1 / window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
 			var menu = new MainMenu(content);
 			menu.InitGame += () =>
-			{
+			{ //ncrunch: no coverage start
 				menu.Hide();
 				StartGame();
-			};
+			}; //ncrunch: no coverage end
 			menu.QuitGame += window.CloseAfterFrame;
 			window.ViewportSizeChanged +=
 				size =>
 				{ 
 					if(IsInGame)
-						screenSpace.Zoom = (size.AspectRatio > 1) ? 1.8f / size.AspectRatio : 1.8f * size.AspectRatio;
+						screenSpace.Zoom = //ncrunch: no coverage
+							(size.AspectRatio > 1) ? 1.8f / size.AspectRatio : 1.8f * size.AspectRatio;
 					else
 						screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio; };
 		}
@@ -74,7 +75,7 @@ namespace Blocks
 			if (size.AspectRatio >= 1.0f)
 				UserInterface.ShowUserInterfaceLandscape();
 			else
-				UserInterface.ShowUserInterfacePortrait();
+				UserInterface.ShowUserInterfacePortrait(); //ncrunch: no coverage
 		}
 
 		private void SetControllerEvents()
@@ -140,11 +141,11 @@ namespace Blocks
 		private void Pressing(Vector2D position)
 		{
 			if (position.X < 0.4f)
-				Controller.MoveBlockLeftIfPossible();
+				Controller.MoveBlockLeftIfPossible(); //ncrunch: no coverage
 			else if (position.X > 0.6f)
-				Controller.MoveBlockRightIfPossible();
+				Controller.MoveBlockRightIfPossible(); //ncrunch: no coverage
 			else if (position.Y < 0.5f)
-				Controller.RotateBlockAntiClockwiseIfPossible();
+				Controller.RotateBlockAntiClockwiseIfPossible(); //ncrunch: no coverage
 			else
 				Controller.IsFallingFast = true;
 		}

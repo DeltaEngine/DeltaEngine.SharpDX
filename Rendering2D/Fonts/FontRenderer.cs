@@ -1,26 +1,33 @@
-﻿using DeltaEngine.Content;
+﻿using System.Collections.Generic;
+using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
-using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Vertices;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Rendering2D.Fonts
 {
-	internal class FontRenderer : SpriteBatchRenderer
+	internal class FontRenderer : DrawBehavior
 	{
-		public FontRenderer(Drawing drawing)
-			: base(drawing) {}
-
-		protected override void AddVerticesToSpriteBatch(DrawableEntity entity)
+		public FontRenderer(BatchRenderer renderer)
 		{
-			var text = (FontText)entity;
+			this.renderer = renderer;
+		}
+
+		private readonly BatchRenderer renderer;
+
+		public void Draw(List<DrawableEntity> visibleEntities)
+		{
+			foreach (var entity in visibleEntities)
+				AddVerticesToBatch((FontText)entity);
+		}
+
+		private void AddVerticesToBatch(FontText text)
+		{
 			glyphs = text.Get<GlyphDrawData[]>();
-			if (text.cachedMaterial == null && text.Get<Material>() != null)
-				text.cachedMaterial = text.Get<Material>();
-			var batch = FindOrCreateSpriteBatch(text.cachedMaterial, BlendMode.Normal, glyphs.Length);
+			var batch = renderer.FindOrCreateBatch(text.CachedMaterial, BlendMode.Normal, glyphs.Length);
 			drawArea = text.Get<Rectangle>();
 			color = text.Get<Color>();
 			size = text.Get<Size>();
@@ -55,7 +62,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 			return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.Center).Y - (size.Height / 2).Round();
 		}
 
-		private void AddIndicesAndVerticesForGlyph(SpriteBatch batch, GlyphDrawData glyph)
+		private void AddIndicesAndVerticesForGlyph(Batch batch, GlyphDrawData glyph)
 		{
 			batch.AddIndices();
 			batch.verticesColorUV[batch.verticesIndex++] = new VertexPosition2DColorUV(

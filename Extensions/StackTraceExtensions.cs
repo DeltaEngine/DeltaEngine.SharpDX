@@ -230,9 +230,16 @@ namespace DeltaEngine.Extensions
 		{
 			get
 			{
-				return !StartedFromNCrunch &&
-					new StackTrace().GetFrames().Any(frame => frame.GetMethod().Name == "Main");
+				if (!(!StartedFromNCrunch))
+					return false;
+				return new StackTrace().GetFrames().Any(IsMethodMainOrStart);
 			}
+		}
+
+		private static bool IsMethodMainOrStart(StackFrame frame)
+		{
+			var methodName = frame.GetMethod().Name;
+			return methodName == "Main" || methodName == "StartEntryPoint";
 		}
 
 		/// <summary>

@@ -5,6 +5,7 @@ namespace $safeprojectname$
 {
 	internal class Program : App
 	{
+		//ncrunch: no coverage start
 		public Program()
 		{
 			new Game(Resolve<Window>());
@@ -15,4 +16,5 @@ namespace $safeprojectname$
 			new Program().Run();
 		}
 	}
+
 }

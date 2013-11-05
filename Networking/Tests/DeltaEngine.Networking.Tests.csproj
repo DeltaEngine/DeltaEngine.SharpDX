@@ -81,5 +81,4 @@
     <Compile Include="Tcp\TcpNetworkingServerTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

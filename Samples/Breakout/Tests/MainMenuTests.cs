@@ -57,7 +57,8 @@ namespace Breakout.Tests
 			Assert.IsTrue(quit);
 		}
 
-		[Test]
+		//ncrunch: no coverage start
+		[Test, Ignore]
 		public void HowToPlay()
 		{
 			if (resolver.GetType() != typeof(MockResolver))
@@ -69,7 +70,7 @@ namespace Breakout.Tests
 			Assert.IsTrue(menu.Controls[0].IsVisible);
 		}
 
-		[Test]
+		[Test, Ignore]
 		public void Options()
 		{
 			if (resolver.GetType() != typeof(MockResolver))
@@ -96,5 +97,6 @@ namespace Breakout.Tests
 			SetStateAndPosition(mouse, State.Pressed, new Vector2D(x - 0.1f, y));
 			SetStateAndPosition(mouse, State.Releasing, new Vector2D(x - 0.2f, y));
 		}
+		//ncrunch: no coverage end
 	}
 }

@@ -59,7 +59,7 @@ namespace DeltaEngine.Tests.Entities
 			Assert.AreEqual(last, SortedResult[2]);
 		}
 
-		public static readonly List<Entity> SortedResult = new List<Entity>();
+		public static readonly List<Entity> SortedResult = new List<Entity>(); //ncrunch: no coverage
 
 		private class SortByRenderLayer : DrawBehavior
 		{

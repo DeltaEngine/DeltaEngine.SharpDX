@@ -1,59 +1,39 @@
-using System.Collections.Generic;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 
 namespace $safeprojectname$
 {
-	public class Game : Entity
+	/// <summary>
+	/// Changes the window's background to a random color each second.
+	/// </summary>
+	public class Game : Entity, Updateable
 	{
 		public Game(Window window)
 		{
 			this.window = window;
-			Start<ColorUpdate>();
 		}
 
 		public readonly Window window;
+		public float ElapsedTimeSinceColorChange { get; private set; }
+		public Color CurrentColor { get; private set; }
+		public Color NextColor { get; private set; }
 
-		public float FadePercentage
+		public void Update()
 		{
-			get;
-			private set;
-		}
-
-		public Color CurrentColor
-		{
-			get;
-			private set;
-		}
-
-		public Color NextColor
-		{
-			get;
-			private set;
+			ElapsedTimeSinceColorChange += Time.Delta;
+			if (ElapsedTimeSinceColorChange >= 1.0f)
+				SwitchToNextRandomColor();
+			window.BackgroundColor = CurrentColor.Lerp(NextColor, ElapsedTimeSinceColorChange);
 		}
 
 		private void SwitchToNextRandomColor()
 		{
 			CurrentColor = NextColor;
 			NextColor = Color.GetRandomColor();
-			FadePercentage = 0;
+			ElapsedTimeSinceColorChange = 0;
 		}
-		public class ColorUpdate : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (var entity in entities)
-				{
-					var gameEntity = entity as Game;
-					gameEntity.FadePercentage += Time.Delta;
-					if (gameEntity.FadePercentage >= 1.0f)
-						gameEntity.SwitchToNextRandomColor();
 
-					gameEntity.window.BackgroundColor = 
-						gameEntity.CurrentColor.Lerp(gameEntity.NextColor, gameEntity.FadePercentage);
-				}
-			}
-		}
+		public bool IsPauseable { get { return true; } }
 	}
 }

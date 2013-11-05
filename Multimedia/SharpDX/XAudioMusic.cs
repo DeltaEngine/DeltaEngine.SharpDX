@@ -14,8 +14,8 @@ namespace DeltaEngine.Multimedia.SharpDX
 	/// </summary>
 	public class XAudioMusic : Music
 	{
-		protected XAudioMusic(string contentName, XAudioDevice device, Settings settings)
-			: base(contentName, device, settings)
+		protected XAudioMusic(string contentName, XAudioDevice device)
+			: base(contentName, device)
 		{
 			CreateBuffers();
 		}
@@ -27,14 +27,14 @@ namespace DeltaEngine.Multimedia.SharpDX
 				var stream = new MemoryStream();
 				fileData.CopyTo(stream);
 				stream.Position = 0;
-				musicStream = new MusicStreamFactory().Load(stream, "Content/" + Name);
+				musicStream = new MusicStreamFactory().Load(stream, Path.Combine("Content", Name));
 				source = new SourceVoice((device as XAudioDevice).XAudio2,
 					new WaveFormat(musicStream.Samplerate, 16, musicStream.Channels), false);
 			}
 			catch (Exception ex)
 			{
 				if (Debugger.IsAttached)
-					throw new MusicNotFoundOrAccessible(Name, ex);
+					throw new CouldNotLoadMusicFromFilestream(Name, ex);
 			}
 		}
 
@@ -130,7 +130,7 @@ namespace DeltaEngine.Multimedia.SharpDX
 			get
 			{
 				float seconds = (float)DateTime.Now.Subtract(playStartTime).TotalSeconds;
-				return MathExtensions.Round(seconds.Clamp(0f, DurationInSeconds), 2);
+				return seconds.Clamp(0f, DurationInSeconds).Round(2);
 			}
 		}
 	}

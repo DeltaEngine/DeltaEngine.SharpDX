@@ -15,7 +15,6 @@
 		<Project File="Blocks.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="false" TargetFileName="BlocksIcon.ico">BlocksIcon.ico</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="packages.config">packages.config</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Brick.cs">Brick.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Controller.cs">Controller.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="FruitBlocksContent.cs">FruitBlocksContent.cs</ProjectItem>

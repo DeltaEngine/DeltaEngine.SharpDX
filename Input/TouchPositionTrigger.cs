@@ -1,11 +1,12 @@
 ﻿using DeltaEngine.Commands;
+using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Input
 {
 	/// <summary>
 	/// Tracks touch movement with a mouse button in a prescribed state.
 	/// </summary>
-	public class TouchPositionTrigger : PositionTrigger
+	public class TouchPositionTrigger : PositionTrigger, TouchTrigger
 	{
 		public TouchPositionTrigger(State state = State.Pressing)
 		{
@@ -17,6 +18,15 @@ namespace DeltaEngine.Input
 		protected override void StartInputDevice()
 		{
 			Start<Touch>();
+		}
+
+		public void HandleWithTouch(Touch touch)
+		{
+			var isButton = touch.GetState(0) == State;
+			bool changedPosition = Position != touch.GetPosition(0);
+			Position = touch.GetPosition(0);
+			if (isButton && changedPosition && ScreenSpace.Current.Viewport.Contains(Position))
+				Invoke();
 		}
 	}
 }

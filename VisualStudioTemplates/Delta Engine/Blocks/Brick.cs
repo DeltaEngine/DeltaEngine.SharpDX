@@ -5,13 +5,16 @@ using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// This represents a brick within a block
+	/// </summary>
 	public class Brick : Sprite
 	{
-		public Brick(Material material, Vector2D offset, Orientation displayMode) : base(material, 
-			Rectangle.Zero)
+		public Brick(Material material, Vector2D offset, Orientation displayMode)
+			: base(material, Rectangle.Zero)
 		{
 			Offset = offset;
-			RenderLayer = (int)Blocks.RenderLayer.Grid;
+			RenderLayer = (int)$safeprojectname$.RenderLayer.Grid;
 			this.displayMode = displayMode;
 		}
 
@@ -25,7 +28,8 @@ namespace $safeprojectname$
 			{
 				newPoint = OffsetLandscape + (Position - Vector2D.UnitY) * ZoomLandscape;
 				DrawArea = NewDrawArea(newPoint, SizeLandscape);
-			} else
+			}
+			else
 			{
 				newPoint = OffsetPortrait + (Position - Vector2D.UnitY) * ZoomPortrait;
 				DrawArea = new Rectangle(newPoint, SizePortrait);
@@ -39,10 +43,7 @@ namespace $safeprojectname$
 
 		public Vector2D Position
 		{
-			get
-			{
-				return TopLeftGridCoord + Offset;
-			}
+			get { return TopLeftGridCoord + Offset; }
 		}
 
 		public Vector2D TopLeftGridCoord;

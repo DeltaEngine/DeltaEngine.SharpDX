@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.IO;
+using NUnit.Framework;
 
 namespace DeltaEngine.Content.Xml.Tests
 {
@@ -10,6 +11,17 @@ namespace DeltaEngine.Content.Xml.Tests
 			var data = new XmlData("name");
 			var file = new XmlFile(data);
 			Assert.AreEqual(data, file.Root);
+		}
+
+		[Test]
+		public void LoadXmlFromStream()
+		{
+			var memoryStream = new MemoryStream();
+			var writer = new BinaryWriter(memoryStream);
+			writer.Write(new XmlData("MyData").ToXmlString());
+			memoryStream.Seek(0, SeekOrigin.Begin);
+			var file = new XmlFile(memoryStream);
+			Assert.AreEqual("MyData", file.Root.Name);
 		}
 
 		[Test]

@@ -4,6 +4,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
+using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes;
 using DeltaEngine.ScreenSpaces;
@@ -22,7 +23,7 @@ namespace Breakout
 			menu = new MainMenu();
 			menu.InitGame += InitGame;
 			menu.QuitGame += window.CloseAfterFrame;
-			window.ViewportPixelSize = new Size(900, 900);
+			window.ViewportPixelSize = Settings.Current.Resolution;
 			soundTrack = ContentLoader.Load<Music>("BreakoutMusic");
 			soundTrack.Loop = true;
 			soundTrack.Play();
@@ -51,10 +52,13 @@ namespace Breakout
 
 		private void InitGame()
 		{
+			Show();
 			if (menu != null)
 				menu.Hide();
 			if (restartCommand != null && restartCommand.IsActive)
 				restartCommand.IsActive = false; //ncrunch: no coverage
+			if (backToMenuCommand != null && backToMenuCommand.IsActive)
+				backToMenuCommand.IsActive = false; //ncrunch: no coverage
 			if (gameOverMessage != null)
 				gameOverMessage.IsActive = false; //ncrunch: no coverage
 			score = new Score();
@@ -65,10 +69,12 @@ namespace Breakout
 			score.GameOver += () =>
 			{
 				RemoveOldObjects();
-				gameOverMessage = new FontText(Font.Default, "That's it.\nGame Over!", Rectangle.One);
+				gameOverMessage = new FontText(Font.Default, "That's it.\nGame Over!\n\nPress \"Q\" to " +
+					"go back to the Main Menu.", Rectangle.One);
 				restartCommand =
 					new Command(InitGame).Add(new KeyTrigger(Key.Space)).Add(new MouseButtonTrigger()).Add(
 						new TouchTapTrigger());
+				backToMenuCommand = new Command(BackToMainMenu).Add(new KeyTrigger(Key.Q));
 			};
 			//ncrunch: no coverage end
 			Score = score;
@@ -88,8 +94,21 @@ namespace Breakout
 		private Score score;
 		private readonly Window window;
 		private Command restartCommand;
+		private Command backToMenuCommand;
 		private FontText gameOverMessage;
 
 		public Score Score { get; private set; }
+
+		private void BackToMainMenu()
+		{
+			if (gameOverMessage != null)
+				gameOverMessage.IsActive = false;
+			if (backToMenuCommand != null)
+				backToMenuCommand.IsActive = false; //ncrunch: no coverage
+			if (restartCommand != null)
+				restartCommand.IsActive = false;
+			Hide();
+			menu.Show();
+		}
 	}
 }

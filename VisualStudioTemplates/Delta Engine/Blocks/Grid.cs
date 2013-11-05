@@ -3,17 +3,22 @@ using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Particles;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Represents a grid of bricks: the blocks that have come to rest and not yet been removed
+	/// </summary>
 	public class Grid
 	{
-		public Grid(BlocksContent content)
+		public Grid($safeprojectname$Content content)
 		{
 			this.content = content;
-			zoomBrickData = new ParticleEmitterData {
+			zoomBrickData = new ParticleEmitterData
+			{
 				LifeTime = 0.2f,
 				Color = new RangeGraph<Color>(Color.White, Color.TransparentWhite),
 				MaximumNumberOfParticles = 10,
@@ -23,7 +28,7 @@ namespace $safeprojectname$
 			};
 		}
 
-		private readonly BlocksContent content;
+		private readonly $safeprojectname$Content content;
 		private readonly ParticleEmitterData zoomBrickData;
 
 		public int AffixBlock(Block block)
@@ -37,16 +42,16 @@ namespace $safeprojectname$
 
 		private bool IsOccupied(Brick brick)
 		{
-			return bricks [(int)brick.Position.X, (int)brick.Position.Y] != null;
+			return bricks[(int)brick.Position.X, (int)brick.Position.Y] != null;
 		}
 
-		internal readonly Brick[,] bricks = new Brick[Width, Height];
+		internal readonly Brick[,] bricks = new Brick[Width,Height];
 
 		private void AffixBrick(Brick brick)
 		{
-			brick.TopLeftGridCoord = new Vector2D((int)brick.TopLeftGridCoord.X, 
+			brick.TopLeftGridCoord = new Vector2D((int)brick.TopLeftGridCoord.X,
 				(int)brick.TopLeftGridCoord.Y + 1);
-			bricks [(int)brick.Position.X, (int)brick.Position.Y - 1] = brick;
+			bricks[(int)brick.Position.X, (int)brick.Position.Y - 1] = brick;
 			brick.UpdateDrawArea();
 			AddZoomingBrick(brick);
 		}
@@ -59,7 +64,7 @@ namespace $safeprojectname$
 			removedRows = 0;
 			for (int y = 0; y < Height; y++)
 				if (IsRowFilled(y))
-					RemoveRow(y);
+					RemoveRow(y); //ncrunch: no coverage
 		}
 
 		private int removedRows;
@@ -67,12 +72,12 @@ namespace $safeprojectname$
 		private bool IsRowFilled(int y)
 		{
 			for (int x = 0; x < Width; x++)
-				if (bricks [x, y] == null)
+				if (bricks[x, y] == null)
 					return false;
-
-			return true;
+			return true; //ncrunch: no coverage
 		}
 
+		//ncrunch: no coverage start
 		private void RemoveRow(int row)
 		{
 			for (int x = 0; x < Width; x++)
@@ -84,24 +89,26 @@ namespace $safeprojectname$
 
 			removedRows++;
 		}
+		//ncrunch: no coverage end
 
 		private void RemoveBrick(int x, int y)
 		{
-			var brick = bricks [x, y];
+			var brick = bricks[x, y];
 			brick.IsActive = false;
-			bricks [x, y] = null;
+			bricks[x, y] = null;
 			if (content.DoBricksSplitInHalfWhenRowFull)
-				AddPairOfFallingBricks(brick);
+				AddPairOfFallingBricks(brick); //ncrunch: no coverage
 			else
 				AddFallingBrick(brick, brick.Material);
 		}
 
+		//ncrunch: no coverage start
 		private void AddPairOfFallingBricks(Brick brick)
 		{
 			AddTopFallingBrick(brick);
 			AddBottomFallingBrick(brick);
 		}
-
+		
 		private void AddTopFallingBrick(Sprite brick)
 		{
 			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
@@ -119,15 +126,18 @@ namespace $safeprojectname$
 			var material = new Material(shader, image, image.PixelSize);
 			AddFallingBrick(brick, material);
 		}
+		//ncrunch: no coverage end
 
 		private static void AddFallingBrick(Entity2D brick, Material material)
 		{
-			var fallingBrick = new Sprite(material, brick.DrawArea) {
+			var fallingBrick = new Sprite(material, brick.DrawArea)
+			{
 				Color = brick.Color,
 				RenderLayer = (int)RenderLayer.FallingBrick,
 			};
 			var random = Randomizer.Current;
-			fallingBrick.Add(new SimplePhysics.Data {
+			fallingBrick.Add(new SimplePhysics.Data
+			{
 				Velocity = new Vector2D(random.Get(-0.5f, 0.5f), random.Get(-1.0f, 0.0f)),
 				RotationSpeed = random.Get(-360, 360),
 				Duration = 5.0f,
@@ -136,15 +146,17 @@ namespace $safeprojectname$
 			fallingBrick.Start<SimplePhysics.Move>();
 		}
 
+		//ncrunch: no coverage start
 		private void MoveBrickDown(int x, int y)
 		{
-			bricks [x, y] = bricks [x, y - 1];
-			if (bricks [x, y] == null)
+			bricks[x, y] = bricks[x, y - 1];
+			if (bricks[x, y] == null)
 				return;
 
-			bricks [x, y].TopLeftGridCoord.Y++;
-			bricks [x, y].UpdateDrawArea();
+			bricks[x, y].TopLeftGridCoord.Y++;
+			bricks[x, y].UpdateDrawArea();
 		}
+		//ncrunch: no coverage end
 
 		private void AddZoomingBrick(Sprite brick)
 		{
@@ -166,18 +178,20 @@ namespace $safeprojectname$
 
 		private static bool IsOutsideTheGrid(Brick brick)
 		{
-			return brick.Position.X < 0 || brick.Position.X >= Width || brick.Position.Y < 1 || 
+			return brick.Position.X < 0 || brick.Position.X >= Width || brick.Position.Y < 1 ||
 				brick.Position.Y >= Height;
 		}
 
 		public List<int> GetValidStartingColumns(Block block)
 		{
 			block.Top = 1;
-			List<int> validStartingColumns = content.DoBlocksStartInARandomColumn ? 
-				GetAllValidStartingColumns(block) : GetMiddleColumnIfValid(block);
+			List<int> validStartingColumns = content.Do$safeprojectname$StartInARandomColumn
+				? GetAllValidStartingColumns(block) : GetMiddleColumnIfValid(block);
+
 			return validStartingColumns;
 		}
 
+		//ncrunch: no coverage start
 		private List<int> GetAllValidStartingColumns(Block block)
 		{
 			var validStartingColumns = new List<int>();
@@ -187,6 +201,7 @@ namespace $safeprojectname$
 
 			return validStartingColumns;
 		}
+		//ncrunch: no coverage end
 
 		private bool IsAValidStartingColumn(Block block, int column)
 		{
@@ -208,7 +223,7 @@ namespace $safeprojectname$
 		public bool IsABrickOnFirstRow()
 		{
 			for (int x = 0; x < Width; x++)
-				if (bricks [x, 0] != null)
+				if (bricks[x, 0] != null)
 					return true;
 
 			return false;
@@ -218,8 +233,11 @@ namespace $safeprojectname$
 		{
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Height; y++)
-					if (bricks [x, y] != null)
+					if (bricks[x, y] != null)
 						RemoveBrick(x, y);
+			var remainingBricks = EntitiesRunner.Current.GetEntitiesOfType<Brick>();
+			foreach (var brick in remainingBricks)
+				brick.IsActive = false;
 		}
 	}
 }

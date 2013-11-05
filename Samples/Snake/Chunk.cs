@@ -36,6 +36,7 @@ namespace Snake
 			var newRandomPos = new Vector2D(x * blockSize, y * blockSize);
 			var newDrawArea = new Rectangle(newRandomPos, new Size(blockSize));
 			DrawArea = newDrawArea;
+
 		}
 
 		public bool IsCollidingWithSnake(List<FilledRect> snakeBodies)

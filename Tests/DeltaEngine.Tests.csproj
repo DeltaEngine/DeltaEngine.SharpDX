@@ -66,6 +66,7 @@
     <Compile Include="Content\FakeImageContentLoaderTests.cs" />
     <Compile Include="Content\FakeShader.cs" />
     <Compile Include="Content\MaterialTests.cs" />
+    <Compile Include="Extensions\PathExtensionsTests.cs" />
     <Compile Include="Commands\CommandTests.cs" />
     <Compile Include="Content\FakeContentLoader.cs" />
     <Compile Include="Content\FakeContentLoaderTests.cs" />
@@ -124,5 +125,4 @@
     <Compile Include="Core\WindowTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

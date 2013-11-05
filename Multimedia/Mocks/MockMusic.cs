@@ -8,8 +8,8 @@ namespace DeltaEngine.Multimedia.Mocks
 	/// </summary>
 	public class MockMusic : Music
 	{
-		public MockMusic(string contentName, SoundDevice device, Settings settings)
-			: base(contentName, device, settings) {}
+		public MockMusic(string contentName, SoundDevice device)
+			: base(contentName, device) {}
 
 		protected override void LoadData(Stream fileData) {}
 

@@ -74,6 +74,8 @@ namespace DeltaEngine.Extensions
 				return ((double)someObj).ToString(NumberFormatInfo.InvariantInfo);
 			if (someObj is decimal)
 				return ((decimal)someObj).ToString(NumberFormatInfo.InvariantInfo);
+			if (someObj is DateTime)
+				return ((DateTime)someObj).ToString(CultureInfo.InvariantCulture);
 			return someObj.ToString();
 		}
 
@@ -154,11 +156,10 @@ namespace DeltaEngine.Extensions
 			return firstChar < 'A' || firstChar > 'Z';
 		}
 
-		public static string ConvertFirstCharactertoUpperCase(this string word)
+		public static string ConvertFirstCharacterToUpperCase(this string word)
 		{
 			if (String.IsNullOrEmpty(word) || !word.IsFirstCharacterInLowerCase())
 				return word;
-
 			return (char)(word[0] - 32) + word.Substring(1);
 		}
 
@@ -178,7 +179,7 @@ namespace DeltaEngine.Extensions
 				x => name.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		public static string SplitWords(this string stringToSplit)
+		public static string SplitWords(this string stringToSplit, bool convertFirstLetterToLowerCase)
 		{
 			string words = "";
 			if (string.IsNullOrEmpty(stringToSplit))
@@ -186,8 +187,10 @@ namespace DeltaEngine.Extensions
 			for (int i = 0; i < stringToSplit.Length; ++i)
 			{
 				char letter = stringToSplit[i];
-				if (letter == char.ToUpper(letter) && i != 0)
-					words += " " + letter.ToString(CultureInfo.InvariantCulture).ToLower();
+				if (letter == char.ToUpper(letter) && i != 0 && letter >= 'A')
+					words += " " +
+						(convertFirstLetterToLowerCase
+							? letter.ToString(CultureInfo.InvariantCulture).ToLower() : letter + "");
 				else
 					words += letter;
 			}

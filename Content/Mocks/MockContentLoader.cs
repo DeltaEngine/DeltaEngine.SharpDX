@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -37,6 +38,8 @@ namespace DeltaEngine.Content.Mocks
 				stream = SaveSceneWithAButtonWithMaterial();
 			else if (content.Name.Equals("SceneWithAButtonWithDifferentFontText"))
 				stream = SaveSceneWithAButtonWithFontText();
+			else if (content.Name.Equals("SceneWithASlider"))
+				stream = SaveSceneWithASlider();
 			else if (content.Name.Equals("TestMenuXml"))
 				stream = SaveTestMenu();
 			else if (content.Name.Equals("3DMaterial"))
@@ -59,6 +62,12 @@ namespace DeltaEngine.Content.Mocks
 				stream = CreateEmitter3D(ParticleEmitterPositionType.Mesh);
 			else if (content.MetaData.Type == ContentType.ParticleEmitter)
 				stream = SaveTestParticle();
+			else if (content.Name == "SpineboyAtlas")
+				stream = new MemoryStream(Encoding.Default.GetBytes(MockSpineAtlas.Text));
+			else if (content.Name == "SpineboySkeleton")
+				stream = new MemoryStream(Encoding.Default.GetBytes(MockSpineSkeleton.Text));
+			else if (content.Name.Contains("Theme"))
+				stream = SaveTestTheme();
 			return stream;
 		}
 
@@ -194,6 +203,15 @@ namespace DeltaEngine.Content.Mocks
 			return data;
 		}
 
+		private static Stream SaveSceneWithASlider()
+		{
+			var scene = new Scene();
+			scene.Controls.Add(new Slider(Theme.Default, Rectangle.One));
+			var data = BinaryDataExtensions.SaveToMemoryStream(scene);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;
+		}
+
 		private static MemoryStream SaveTestMenu()
 		{
 			var emptyScene = new AutoArrangingMenu(Size.One);
@@ -220,13 +238,16 @@ namespace DeltaEngine.Content.Mocks
 			return data;
 		}
 
-		private Stream CreateLineEmitter3D()
+		private static Stream SaveTestTheme()
 		{
-			var pointEmitter = new ParticleEmitterData();
-			pointEmitter.ParticleMaterial = new Material(Shader.Position3DColorUV, "DeltaEngineLogo");
-			var data = BinaryDataExtensions.SaveToMemoryStream(pointEmitter);
+			var theme = new Theme();
+			theme.SelectBox = new Material(Shader.Position2DColorUV, "DeltaEngineLogo")
+			{
+				DefaultColor = Color.Blue
+			};
+			var data = BinaryDataExtensions.SaveToMemoryStream(theme);
 			data.Seek(0, SeekOrigin.Begin);
-			return data;			
+			return data;
 		}
 
 		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
@@ -242,7 +263,7 @@ namespace DeltaEngine.Content.Mocks
 				return CreateImageAnimationNoImagesMetaData(contentName);
 			if (contentName.EndsWith("ImageAnimation") || contentType == ContentType.ImageAnimation)
 				return CreateImageAnimationMetaData(contentName);
-			if (contentType == ContentType.Image)
+			if (contentType == ContentType.Image || contentName == "DeltaEngineLogo")
 				return CreateImageMetaData(contentName);
 			if (contentType == ContentType.Model)
 				return CreateModelMetaData(contentName);
@@ -250,6 +271,8 @@ namespace DeltaEngine.Content.Mocks
 				return CreateMeshMetaData(contentName);
 			if (contentType == ContentType.Shader)
 				return CreateShaderData(contentName);
+			if (contentType == ContentType.Sound)
+				return CreateSoundData(contentName);
 			if (contentType == ContentType.ParticleSystem)
 				return CreateParticleSystemMetaData(contentName);
 			return new ContentMetaData { Name = contentName, Type = contentType };
@@ -297,6 +320,10 @@ namespace DeltaEngine.Content.Mocks
 				return ContentType.ParticleEmitter;
 			if (typeName.Contains("ParticleSystemData"))
 				return ContentType.ParticleSystem;
+			if (typeName.Contains("AtlasData") || typeName.Contains("SkeletonData"))
+				return ContentType.JustStore;
+			if (typeName.Contains("Theme"))
+				return ContentType.Theme;
 			foreach (var contentType in EnumExtensions.GetEnumValues<ContentType>())
 				if (contentType != ContentType.Image && contentType != ContentType.Mesh &&
 					typeName.Contains(contentType.ToString()))
@@ -323,15 +350,15 @@ namespace DeltaEngine.Content.Mocks
 		private static void AddShaderNameToMetaData(ContentMetaData metaData)
 		{
 			metaData.Values.Add("ShaderName",
-				metaData.Name.EndsWith("2D") ? "Position2DUV" : "Position3DUV");
+				metaData.Name.EndsWith("3D") ? "Position3DUV" : "Position2DUV");
 		}
 
 		private static ContentMetaData CreateSpriteSheetAnimationMetaData(string name)
 		{
 			var metaData = new ContentMetaData { Name = name, Type = ContentType.SpriteSheetAnimation };
 			metaData.Values.Add("ImageName", "EarthImages");
-			metaData.Values.Add("DefaultDuration", "5.0");
-			metaData.Values.Add("SubImageSize", "32,32");
+			metaData.Values.Add("DefaultDuration", "1.0");
+			metaData.Values.Add("SubImageSize", "107, 80");
 			return metaData;
 		}
 
@@ -354,7 +381,7 @@ namespace DeltaEngine.Content.Mocks
 		private static ContentMetaData CreateImageMetaData(string contentName)
 		{
 			var metaData = new ContentMetaData { Name = contentName, Type = ContentType.Image };
-			metaData.Values.Add("PixelSize", "128,128");
+			metaData.Values.Add("PixelSize", contentName == "EarthImages" ? "428, 240" : "128, 128");
 			if (contentName.Contains("ParticleFire"))
 				metaData.Values.Add("BlendMode", "Additive");
 			return metaData;
@@ -383,7 +410,16 @@ namespace DeltaEngine.Content.Mocks
 
 		private static ContentMetaData CreateShaderData(string contentName)
 		{
-			return new ContentMetaData { Name = contentName, Type = ContentType.Shader };
+			var metaData = new ContentMetaData { Name = contentName, Type = ContentType.Shader };
+			metaData.Values.Add("Flags", "UI2D, UV, Color");
+			return metaData;
+		}
+
+		private static ContentMetaData CreateSoundData(string contentName)
+		{
+			var metaData = new ContentMetaData { Name = contentName, Type = ContentType.Sound };
+			metaData.Values.Add("Length", "1.3");
+			return metaData;
 		}
 		
 		private static ContentMetaData CreateParticleSystemMetaData(string contentName)

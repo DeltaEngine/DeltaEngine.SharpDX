@@ -14,9 +14,9 @@
 		/// </summary>
 		UIScreen = 1,
 		/// <summary>
-		/// .DeltaUITheme is always used for scenes and controls to set a style for all buttons, etc.
+		/// .DeltaTheme is always used for scenes and controls to set a style for all buttons, etc.
 		/// </summary>
-		UITheme = 2,
+		Theme = 2,
 		/// <summary>
 		/// .DeltaLevel is a collection of used meshes their world matrix and maybe some other content
 		/// like camera paths, animations, etc. (different level settings for each game).

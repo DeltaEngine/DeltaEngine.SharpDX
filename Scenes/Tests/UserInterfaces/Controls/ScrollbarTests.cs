@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
@@ -16,12 +17,14 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[SetUp]
 		public void SetUp()
 		{
-			scrollbar = new Scrollbar(Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.1f));
+			center = Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.1f);
+			scrollbar = new Scrollbar(center);
 			scrollbar.Add(new FontText(Font.Default, "", new Rectangle(0.5f, 0.7f, 0.2f, 0.1f)));
 			scrollbar.Start<DisplayScrollbarValue>();
 			InitializeMouse();
 		}
 
+		private static Rectangle center;
 		private Scrollbar scrollbar;
 
 		private class DisplayScrollbarValue : UpdateBehavior
@@ -213,6 +216,35 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			new Command(
 				point => scrollbar.DrawArea =  //ncrunch: no coverage
 					Rectangle.FromCenter(point, scrollbar.DrawArea.Size)).Add(new MouseMovementTrigger());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			scrollbar.CenterValue = 20;
+			var stream = BinaryDataExtensions.SaveToMemoryStream(scrollbar);
+			var loadedScrollbar = (Scrollbar)stream.CreateFromMemoryStream();
+			Assert.AreEqual(center, loadedScrollbar.DrawArea);
+			Assert.AreEqual(20, loadedScrollbar.CenterValue);
+			Assert.AreEqual(scrollbar.Get<Picture>().Material.DefaultColor,
+				loadedScrollbar.Get<Picture>().Material.DefaultColor);
+		}
+
+		[Test]
+		public void DrawLoadedScrollbar()
+		{
+			scrollbar.CenterValue = 50;
+			var stream = BinaryDataExtensions.SaveToMemoryStream(scrollbar);
+			scrollbar.IsActive = false;
+			stream.CreateFromMemoryStream();
+		}
+
+		[Test]
+		public void ChangingPointerChangesChild()
+		{
+			var pointer = new Picture(Theme.Default, Theme.Default.ScrollbarPointer, Rectangle.Unused);
+			scrollbar.Set(pointer);
+			Assert.AreEqual(pointer, scrollbar.children[0].Entity2D);
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace Breakout.Tests
 		private void AssertPaddleMovesRightCorrectly(Paddle paddle)
 		{
 			AdvanceTimeAndUpdateEntities(0.2f);
-			Assert.IsTrue(paddle.Position.X > 0.5f);
+			Assert.Greater(paddle.Position.X, 0.5f);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -69,18 +69,13 @@ namespace Breakout.Tests
 				return; //ncrunch: no coverage
 			var paddle = Resolve<Paddle>();
 			var mouse = Resolve<MockMouse>();
-			SetMousePositionAndState(mouse, State.Pressed, new Vector2D(0.1f, 0.8f));
+			mouse.SetPosition(new Vector2D(0.45f, 0.76f));
+			mouse.SetButtonState(MouseButton.Left, State.Pressed);
 			AssertPaddleMovesLeftCorrectly(paddle);
-			SetMousePositionAndState(mouse, State.Released, Vector2D.One);
-			SetMousePositionAndState(mouse, State.Pressed, Vector2D.One);
+			mouse.SetPosition(new Vector2D(0.55f, 0.76f));
+			mouse.SetButtonState(MouseButton.Left, State.Released);
+			mouse.SetButtonState(MouseButton.Left, State.Pressed);
 			AssertPaddleMovesRightCorrectly(paddle);
-		}
-
-		private void SetMousePositionAndState(MockMouse mouse, State state, Vector2D position)
-		{
-			mouse.SetPosition(position);
-			mouse.SetButtonState(MouseButton.Left, state);
-			AdvanceTimeAndUpdateEntities();
 		}
 
 		[Test, CloseAfterFirstFrame]

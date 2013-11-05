@@ -29,6 +29,7 @@ namespace Blocks.Tests
 		private JewelBlocksContent content;
 		private Grid grid;
 
+		//ncrunch: no coverage start
 		[Test, Ignore]
 		public void AffixBlocksWhichFillOneRow()
 		{
@@ -43,10 +44,12 @@ namespace Blocks.Tests
 				Assert.IsNotNull(grid.bricks[11, 18]);
 			//}
 		}
+		//ncrunch: no coverage end
 
 		//private static readonly float[] IBlock = new[]
 		//{ 0.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f };
 
+		//ncrunch: no coverage start
 		private int AffixBlocks(Grid gameGrid, IEnumerable<Vector2D> points)
 		{
 			return points.Sum(point => gameGrid.AffixBlock(new Block(displayMode, content, point)));
@@ -118,6 +121,7 @@ namespace Blocks.Tests
 			Assert.IsFalse(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(3, 0))));
 			Assert.IsTrue(grid.IsValidPosition(new Block(displayMode, content, new Vector2D(5, 2))));
 		}
+		//ncrunch: no coverage end
 
 		[Test]
 		public void IsABrickOnFirstRow()
@@ -129,6 +133,7 @@ namespace Blocks.Tests
 			Assert.IsTrue(grid.IsABrickOnFirstRow());
 		}
 
+		//ncrunch: no coverage start
 		[Test, Ignore]
 		public void Clear()
 		{
@@ -159,6 +164,7 @@ namespace Blocks.Tests
 			var block = new Block(displayMode, content, Vector2D.Zero);
 			Assert.AreEqual(new[] { 4 }, grid.GetValidStartingColumns(block));
 		}
+		//ncrunch: no coverage end
 
 		[TestFixtureTearDown]
 		public void TearDown()

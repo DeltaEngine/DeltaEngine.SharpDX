@@ -3,39 +3,25 @@ using DeltaEngine.Content;
 
 namespace $safeprojectname$
 {
-	public abstract class BlocksContent
+	/// <summary>
+	/// Allows a prefix to be applied to the name of each content item prior to loading.
+	/// Games can therefore swap mods/skins simply by switching this prefix.
+	/// </summary>
+	public abstract class $safeprojectname$Content
 	{
-		protected BlocksContent(string prefix = "", bool doBricksSplitInHalfWhenRowFull = false)
+		protected $safeprojectname$Content(string prefix = "",
+			bool doBricksSplitInHalfWhenRowFull = false)
 		{
 			Prefix = prefix;
 			DoBricksSplitInHalfWhenRowFull = doBricksSplitInHalfWhenRowFull;
-			AreFiveBrickBlocksAllowed = true;
-			DoBlocksStartInARandomColumn = false;
+			AreFiveBrick$safeprojectname$Allowed = true;
+			Do$safeprojectname$StartInARandomColumn = false;
 		}
 
-		public string Prefix
-		{
-			get;
-			set;
-		}
-
-		public bool DoBricksSplitInHalfWhenRowFull
-		{
-			get;
-			set;
-		}
-
-		public bool AreFiveBrickBlocksAllowed
-		{
-			get;
-			set;
-		}
-
-		public bool DoBlocksStartInARandomColumn
-		{
-			get;
-			set;
-		}
+		public string Prefix { get; set; }
+		public bool DoBricksSplitInHalfWhenRowFull { get; set; }
+		public bool AreFiveBrick$safeprojectname$Allowed { get; set; }
+		public bool Do$safeprojectname$StartInARandomColumn { get; set; }
 
 		public T Load<T>(string contentName) where T : ContentData
 		{
@@ -49,8 +35,7 @@ namespace $safeprojectname$
 
 			return filenameWithPrefix.Substring(Prefix.Length);
 		}
-		public class FilenameWrongPrefixException : Exception
-		{
-		}
+
+		public class FilenameWrongPrefixException : Exception {}
 	}
 }

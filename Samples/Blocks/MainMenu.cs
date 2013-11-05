@@ -49,42 +49,53 @@ namespace Blocks
 			Add(startButton);
 		}
 
+		//ncrunch: no coverage start
 		private void TryInvokeGameStart()
 		{
 			if (InitGame != null)
 				InitGame();
 		}
+		//ncrunch: no coverage end
 
 		public event Action InitGame;
 
 		private void AddHowToPlay()
 		{
-			var howToButton = new Button(menuTheme, new Rectangle(0.3f, 0.6f, 0.4f, 0.15f),
+			var howToButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.6f, 0.4f, 0.15f),
 				"How To Play");
 			howToButton.Clicked += ShowHowToPlaySubMenu;
 			Add(howToButton);
 		}
 
+		//ncrunch: no coverage start
 		private void ShowHowToPlaySubMenu()
 		{
 			if (howToPlay == null)
-				howToPlay = new HowToPlaySubMenu(this, menuTheme);
+				howToPlay = new HowToPlaySubMenu(this, menuTheme, content);
 			howToPlay.Show();
 			Hide();
 		}
+		//ncrunch: no coverage end
 
 		private HowToPlaySubMenu howToPlay;
 
 		private sealed class HowToPlaySubMenu : Scene
 		{
-			public HowToPlaySubMenu(Scene parent, Theme menuTheme)
+			//ncrunch: no coverage start
+			public HowToPlaySubMenu(Scene parent, Theme menuTheme, BlocksContent content)
 			{
 				this.parent = parent;
 				this.menuTheme = menuTheme;
-				SetViewportBackground("BlocksMainMenuBackground");
+				var backgroundImage = content.Load<Image>("Background");
+				var backgroundMaterial = new Material(ContentLoader.Load<Shader>(Shader.Position2DUV),
+					backgroundImage, backgroundImage.PixelSize);
+				SetViewportBackground(backgroundMaterial);
+				var gameLogoImage = content.Load<Image>("GameLogo");
+				var gameLogoMaterial = new Material(ContentLoader.Load<Shader>(Shader.Position2DUV),
+					gameLogoImage, gameLogoImage.PixelSize);
+				Add(new Sprite(gameLogoMaterial, Rectangle.FromCenter(0.5f, 0.2f, 0.6f, 0.32f)));
 				AddControlDescription();
 				AddBackButton();
-				Hide();
 			}
 
 			private readonly Theme menuTheme;
@@ -94,17 +105,18 @@ namespace Blocks
 			{
 				const string DescriptionText =
 					"Quite likely this won't be much of a surprise - here we expect you\n" +
-						"to arrange the random falling blocks to horizontal rows.\n\n" + "- Controls -\n\n" +
-						"You can move the current block to either side by pressing the left and right cursor keys\n" +
-						"or click / tap on the corresponding side.\n" +
-						"Rotate the block by click / tap above or by pressing cursor up or space.\n" +
-						"To make the block fall faster, click / tap below or press cursor down!";
-				Add(new FontText(Font.Default, DescriptionText, Vector2D.Half) { Color = Color.Gray });
+					"to arrange the random falling blocks to horizontal rows.\n\n" + "- Controls -\n\n" +
+					"You can move the current block to either side by pressing the left and right cursor " +
+					"keys\nor click / tap on the corresponding side.\n" +
+					"Rotate the block by click / tap above or by pressing cursor up or space.\n" +
+					"To make the block fall faster, click / tap below or press cursor down!";
+				Add(new FontText(Font.Default, DescriptionText, 
+					new Vector2D(0.5f, 0.6f)) { Color = Color.CornflowerBlue });
 			}
 
 			private void AddBackButton()
 			{
-				var backButton = new Button(menuTheme,
+				var backButton = new InteractiveButton(menuTheme,
 					new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.15f, 0.4f, 0.08f), "Back");
 				backButton.Clicked += () =>
 				{
@@ -113,6 +125,7 @@ namespace Blocks
 				};
 				Add(backButton);
 			}
+			//ncrunch: no coverage end
 		}
 
 		private void AddQuitButton()
@@ -123,11 +136,13 @@ namespace Blocks
 			Add(quitButton);
 		}
 
+		//ncrunch: no coverage start
 		private void TryInvokeQuit()
 		{
 			if (QuitGame != null)
 				QuitGame();
 		}
+		//ncrunch: no coverage end
 
 		public event Action QuitGame;
 	}

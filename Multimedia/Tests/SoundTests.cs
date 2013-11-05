@@ -173,12 +173,5 @@ namespace DeltaEngine.Multimedia.Tests
 			Assert.Throws<ContentLoader.ContentNotFound>(
 				() => ContentLoader.Load<Sound>("UnavailableSound"));
 		}
-
-		[Test]
-		public void GetAllowCreationIfContentNotFound()
-		{
-			Assert.IsTrue(
-				ContentLoader.Load<Sound>("DefaultSound").InternalAllowCreationIfContentNotFound);
-		}
 	}
 }

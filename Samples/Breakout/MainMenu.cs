@@ -85,7 +85,6 @@ namespace Breakout
 				SetViewportBackground("Background");
 				AddControlDescription();
 				AddBackButton();
-				Hide();
 			}
 
 			private readonly MainMenu parent;
@@ -144,7 +143,6 @@ namespace Breakout
 				AddMusicOption();
 				AddSoundOption();
 				AddBackButton();
-				Hide();
 			}
 
 			private readonly MainMenu parent;
@@ -165,12 +163,14 @@ namespace Breakout
 					MinValue = 0,
 					Value = (int)(Settings.Current.MusicVolume * 100)
 				};
+				//ncrunch: no coverage start
 				musicSlider.ValueChanged += val =>
 				{
 					Settings.Current.MusicVolume = val / 100.0f;
 					if (!parent.EnterSound.IsAnyInstancePlaying)
 						parent.EnterSound.Play(Settings.Current.MusicVolume);
 				};
+				//ncrunch: no coverage end
 				musicSlider.Start<SettingsUpdater>();
 				Add(musicSlider);
 			}
@@ -202,12 +202,14 @@ namespace Breakout
 					MinValue = 0,
 					Value = (int)(Settings.Current.SoundVolume * 100)
 				};
+				//ncrunch: no coverage start
 				soundSlider.ValueChanged += val =>
 				{
 					Settings.Current.SoundVolume = val / 100.0f;
 					if (!parent.EnterSound.IsAnyInstancePlaying)
 						parent.EnterSound.Play(Settings.Current.SoundVolume);
 				};
+				//ncrunch: no coverage end
 				soundSlider.Start<SettingsUpdater>();
 				Add(soundSlider);
 			}

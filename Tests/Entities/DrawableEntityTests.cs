@@ -108,5 +108,20 @@ namespace DeltaEngine.Tests.Entities
 			draw.SetWithoutInterpolation(2.0f);
 			Assert.AreEqual(2.0f, draw.GetLastTickLerpComponents()[0]);
 		}
+
+		[Test]
+		public void DoesNotIncludeRenderLayerForSavingIfItIsDefaultValue()
+		{
+			var draw = new MockDrawableEntity();
+			Assert.AreEqual(0, draw.GetComponentsForSaving().Count);
+		}
+
+		[Test]
+		public void IncludesRenderLayerForSavingIfItIsNotDefaultValue()
+		{
+			var draw = new MockDrawableEntity { RenderLayer = 1 };
+			Assert.AreEqual(1, draw.GetComponentsForSaving().Count);
+			Assert.AreEqual(1, draw.GetComponentsForSaving()[0]);
+		}
 	}
 }

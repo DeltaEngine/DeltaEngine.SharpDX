@@ -52,6 +52,7 @@ namespace Asteroids
 		{
 			foreach (var asteroid in EntitiesRunner.Current.GetEntitiesOfType<Asteroid>())
 			{
+				//ncrunch: no coverage start
 				foreach (var projectile in EntitiesRunner.Current.GetEntitiesOfType<Projectile>())
 					if (ObjectsInHitRadius(projectile, asteroid, 0.1f / asteroid.sizeModifier))
 					{
@@ -61,6 +62,7 @@ namespace Asteroids
 						projectile.Dispose();
 						asteroid.Fracture();
 					}
+				//ncrunch: no coverage end
 				if (Player.IsActive && ObjectsInHitRadius(Player, asteroid, 0.06f / asteroid.sizeModifier))
 				{
 					Player.IsActive = false;
@@ -104,9 +106,9 @@ namespace Asteroids
 		public void DisposeObjects()
 		{
 			foreach (Asteroid asteroid in EntitiesRunner.Current.GetEntitiesOfType<Asteroid>())
-				asteroid.IsActive = false;
+				asteroid.IsActive = false; //ncrunch: no coverage 
 			foreach (Projectile projectile in EntitiesRunner.Current.GetEntitiesOfType<Projectile>())
-				projectile.Dispose();
+				projectile.Dispose(); //ncrunch: no coverage
 			foreach (PlayerShip playerShip in EntitiesRunner.Current.GetEntitiesOfType<PlayerShip>())
 				playerShip.IsActive = false;
 		}

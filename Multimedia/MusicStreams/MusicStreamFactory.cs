@@ -8,8 +8,6 @@ namespace DeltaEngine.Multimedia.MusicStreams
 		{
 			if (OggMusicStream.IsOggStream(stream))
 				return new OggMusicStream(stream);
-			if (WmaMusicStream.IsWmaStream(stream))
-				return new WmaMusicStream(filepath + ".wma");
 			return new Mp3MusicStream(stream);
 		}
 	}

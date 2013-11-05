@@ -145,7 +145,7 @@ namespace Breakout
 			if (collisionAtBorder == Direction.Bottom)
 				ResetBall();
 			else
-				collisionSound.Play(0.5f);
+				collisionSound.Play();
 		}
 
 		private void HandlePaddleCollision()
@@ -169,7 +169,7 @@ namespace Breakout
 			float speed = velocity.Length;
 			if (speed > MaximumScalarSpeed)
 				velocity *= MaximumScalarSpeed / speed; //ncrunch: no coverage
-			collisionSound.Play(0.6f);
+			collisionSound.Play();
 		}
 
 		private const float SpeedYIncrease = 1.015f;

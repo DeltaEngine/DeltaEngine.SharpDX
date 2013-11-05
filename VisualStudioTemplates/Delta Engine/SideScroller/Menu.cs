@@ -21,7 +21,8 @@ namespace $safeprojectname$
 		private void CreateMenuTheme()
 		{
 			SetQuadraticBackground("SidescrollerMainMenuBackground");
-			menuTheme = new Theme {
+			menuTheme = new Theme
+			{
 				Button = new Material(Shader.Position2DUV, "SidescrollerButtonDefault"),
 				ButtonMouseover = new Material(Shader.Position2DUV, "SidescrollerButtonHover"),
 				ButtonPressed = new Material(Shader.Position2DUV, "SidescrollerButtonPressed")
@@ -32,8 +33,8 @@ namespace $safeprojectname$
 
 		private void AddStartButton()
 		{
-			var startButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.3f, 0.4f, 
-				0.1f), "Start Game");
+			var startButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.3f, 0.4f, 0.1f),
+				"Start Game");
 			startButton.Clicked += TryInvokeGameStart;
 			Add(startButton);
 		}
@@ -48,22 +49,22 @@ namespace $safeprojectname$
 
 		private void AddHowToPlay()
 		{
-			var howToButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.45f, 0.4f, 
-				0.1f), "How To Play");
+			var howToButton = new InteractiveButton(menuTheme,
+				new Rectangle(0.3f, 0.45f, 0.4f, 0.1f), "How To Play");
 			howToButton.Clicked += ShowHowToPlaySubMenu;
 			Add(howToButton);
 		}
 
 		private void ShowHowToPlaySubMenu()
 		{
-			if (howToPlay == null)
+			if(howToPlay == null)
 				howToPlay = new HowToPlaySubMenu(this, menuTheme);
-
 			howToPlay.Show();
 			Hide();
 		}
 
 		private HowToPlaySubMenu howToPlay;
+
 		private sealed class HowToPlaySubMenu : Scene
 		{
 			public HowToPlaySubMenu(Scene parent, Theme menuTheme)
@@ -73,7 +74,6 @@ namespace $safeprojectname$
 				SetQuadraticBackground("SidescrollerMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
-				Hide();
 			}
 
 			private readonly Scene parent;
@@ -81,17 +81,22 @@ namespace $safeprojectname$
 
 			private void AddControlDescription()
 			{
-				const string DescriptionText = "SideScroller - Manual\n\n" + "Fly Up - W or cursor " +
-					"up\n" + "Fly Down - S or cursor down\n" + "Fire - Space";
+				const string DescriptionText = "$safeprojectname$ - a Delta Engine sample game\n\n" +
+					"Defeat the enemies approaching from the right without getting hit yourself\n\n" +
+					"Controls:\n" +
+					"Fly Up - W or cursor up\n" +
+					"Fly Down - S or cursor down\n" +
+					"MachineGunFire - Hold Space\n" +
+					"Fire a missile - Press LeftCtrl";
 				var howToDisplayText = new FontText(Font.Default, DescriptionText, Vector2D.Half);
 				Add(howToDisplayText);
 			}
 
 			private void AddBackButton()
 			{
-				var backButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 
-					ScreenSpace.Current.Bottom - 0.15f, 0.4f, 0.1f), "Back");
-				backButton.Clicked += () => 
+				var backButton = new InteractiveButton(menuTheme,
+					new Rectangle(0.3f, ScreenSpace.Current.Bottom - 0.15f, 0.4f, 0.1f), "Back");
+				backButton.Clicked += () =>
 				{
 					Hide();
 					parent.Show();
@@ -99,9 +104,10 @@ namespace $safeprojectname$
 				Add(backButton);
 			}
 		}
+
 		private void AddQuitButton()
 		{
-			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.6f, 0.4f, 0.1f), 
+			var quitButton = new InteractiveButton(menuTheme, new Rectangle(0.3f, 0.6f, 0.4f, 0.1f),
 				"Quit Game");
 			quitButton.Clicked += TryInvokeQuit;
 			Add(quitButton);

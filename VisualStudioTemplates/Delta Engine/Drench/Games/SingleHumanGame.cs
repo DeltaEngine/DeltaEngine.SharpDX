@@ -5,7 +5,8 @@ namespace $safeprojectname$.Games
 {
 	public class SingleHumanGame : Game
 	{
-		public SingleHumanGame(int width, int height) : base(new SinglePlayerLogic(width, height))
+		public SingleHumanGame(int width, int height)
+			: base(new SinglePlayerLogic(width, height))
 		{
 			upperText.Text = "Try to complete the grid in the lowest number of turns!";
 		}
@@ -16,7 +17,6 @@ namespace $safeprojectname$.Games
 			bool isValid = logic.GetPlayerValidMoves(0).Contains(color);
 			if (isValid)
 				logic.MakeMove(color);
-
 			upperText.Text = isValid ? GetTurnsText() : GetTurnsText() + " - Invalid Move!";
 			return isValid;
 		}

@@ -2,8 +2,8 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
-using DeltaEngine.Multimedia;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
@@ -19,6 +19,10 @@ namespace Blocks.Tests
 		{
 			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f
 				? Orientation.Landscape : Orientation.Portrait;
+			mockResolver = new MockResolver();
+			mockKeyboard = mockResolver.Resolve<MockKeyboard>();
+			mockMouse = mockResolver.Resolve<MockMouse>();
+			mockTouch = mockResolver.Resolve<MockTouch>();
 			content = new JewelBlocksContent();
 			game = new Game(Resolve<Window>(), content);
 		}
@@ -26,7 +30,11 @@ namespace Blocks.Tests
 		private Orientation displayMode;
 		private JewelBlocksContent content;
 		private Game game;
-		//private IDisposable fixedRandomScope;
+		private MockResolver mockResolver;
+		private MockKeyboard mockKeyboard;
+		private MockMouse mockMouse;
+		private MockTouch mockTouch;
+		//private IDisposable fixedRandomScope1;
 
 		[Test]
 		public void CreateGameInPortrait()
@@ -56,11 +64,12 @@ namespace Blocks.Tests
 		[Test]
 		public void CursorLeftMovesBlockLeft()
 		{
-			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockKeyboard.SetKeyboardState(Key.CursorLeft, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
 		}
 
@@ -73,11 +82,12 @@ namespace Blocks.Tests
 		[Test]
 		public void HoldingCursorLeftEventuallyMovesBlockLeftTwice()
 		{
-			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockKeyboard.SetKeyboardState(Key.CursorLeft, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.AreEqual(4, game.Controller.FallingBlock.Left);
@@ -86,22 +96,24 @@ namespace Blocks.Tests
 		[Test]
 		public void CursorRightMovesBlockRight()
 		{
-			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockKeyboard.SetKeyboardState(Key.CursorRight, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
 		}
 
 		[Test]
 		public void HoldingCursorRightEventuallyMovesBlockRightTwice()
 		{
-			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockKeyboard.SetKeyboardState(Key.CursorRight, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
 			AdvanceTimeAndUpdateEntities(0.01f);
 			Assert.AreEqual(8, game.Controller.FallingBlock.Left);
@@ -110,7 +122,6 @@ namespace Blocks.Tests
 		[Test]
 		public void CursorDownDropsBlockFast()
 		{
-			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockKeyboard.SetKeyboardState(Key.CursorDown, State.Pressing);
@@ -121,31 +132,30 @@ namespace Blocks.Tests
 		[Test]
 		public void LeftHalfClickMovesBlockLeft()
 		{
-			var mockMouse = Resolve<MockMouse>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockMouse.SetPosition(new Vector2D(0.35f, 0.0f));
 			mockMouse.SetButtonState(MouseButton.Left, State.Pressing);
-			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
+			AdvanceTimeAndUpdateEntities(0.05f);
+			Assert.AreEqual(IndexOfSpawnColumn, game.Controller.FallingBlock.Left);
 		}
+
+		private const int IndexOfSpawnColumn = 6;
 
 		[Test]
 		public void RightHalfClickMovesBlockRight()
 		{
-			var mockMouse = Resolve<MockMouse>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockMouse.SetPosition(new Vector2D(0.65f, 0.0f));
 			mockMouse.SetButtonState(MouseButton.Left, State.Pressing);
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
+			Assert.AreEqual(IndexOfSpawnColumn, game.Controller.FallingBlock.Left);
 		}
 
 		[Test]
 		public void BottomHalfClickDropsBlockFast()
 		{
-			var mockMouse = Resolve<MockMouse>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockMouse.SetPosition(new Vector2D(0.5f, 0.6f));
@@ -157,29 +167,26 @@ namespace Blocks.Tests
 		[Test]
 		public void LeftHalfTouchMovesBlockLeft()
 		{
-			var mockTouch = Resolve<MockTouch>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockTouch.SetTouchState(0, State.Pressing, new Vector2D(0.35f, 0.0f));
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(5, game.Controller.FallingBlock.Left);
+			Assert.AreEqual(IndexOfSpawnColumn, game.Controller.FallingBlock.Left);
 		}
 
 		[Test]
 		public void RightHalfTouchMovesBlockRight()
 		{
-			var mockTouch = Resolve<MockTouch>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockTouch.SetTouchState(0, State.Pressing, new Vector2D(0.65f, 0.0f));
 			AdvanceTimeAndUpdateEntities(0.01f);
-			Assert.AreEqual(7, game.Controller.FallingBlock.Left);
+			Assert.AreEqual(IndexOfSpawnColumn, game.Controller.FallingBlock.Left);
 		}
 
 		[Test]
 		public void BottomHalfTouchDropsBlockFast()
 		{
-			var mockTouch = Resolve<MockTouch>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			mockTouch.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.6f));
@@ -190,7 +197,6 @@ namespace Blocks.Tests
 		[Test]
 		public void MoveBlockLeftIsNotPossible()
 		{
-			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			game.Controller.FallingBlock = null;
@@ -200,7 +206,6 @@ namespace Blocks.Tests
 		[Test]
 		public void MoveBlockRightIsNotPossible()
 		{
-			var mockKeyboard = Resolve<MockKeyboard>();
 			game.StartGame();
 			InitializeBlocks(game.Controller, content);
 			game.Controller.FallingBlock = null;

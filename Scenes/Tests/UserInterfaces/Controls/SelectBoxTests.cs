@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
@@ -38,6 +39,13 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test]
 		public void RenderSelectBoxWithTenValuesAndThreeLines()
 		{
+			SetToTenValues();
+			var text = new FontText(Font.Default, "", new Rectangle(0.4f, 0.7f, 0.2f, 0.1f));
+			selectBox.LineClicked += lineNo => text.Text = selectBox.Values[lineNo] + " clicked";
+		}
+
+		private void SetToTenValues()
+		{
 			selectBox.Values = new List<object>
 			{
 				"value 1",
@@ -51,8 +59,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				"value 9",
 				"value 10"
 			};
-			var text = new FontText(Font.Default, "", new Rectangle(0.4f, 0.7f, 0.2f, 0.1f));
-			selectBox.LineClicked += lineNo => text.Text = selectBox.Values[lineNo] + " clicked";
 		}
 
 		[Test]
@@ -91,6 +97,28 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					selectBox.DrawArea = Rectangle.FromCenter(center, size);
 				}
 			}
+		} //ncrunch: no coverage end
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(selectBox);
+			var loadedSelectBox = (SelectBox)stream.CreateFromMemoryStream();
+			Assert.AreEqual(selectBox.DrawArea, loadedSelectBox.DrawArea);
+			Assert.AreEqual(3, loadedSelectBox.Values.Count);
+			Assert.AreEqual(selectBox.Values[1].ToString(), loadedSelectBox.Values[1].ToString());
+		}
+
+		[Test]
+		public void DrawLoadedSelectBox()
+		{
+			SetToTenValues();
+			var stream = BinaryDataExtensions.SaveToMemoryStream(selectBox);
+			selectBox.IsActive = false;
+			var loadedSelectBox = (SelectBox)stream.CreateFromMemoryStream(); 
+			var text = new FontText(Font.Default, "", new Rectangle(0.4f, 0.7f, 0.2f, 0.1f));
+			loadedSelectBox.LineClicked +=
+				lineNo => text.Text = loadedSelectBox.Values[lineNo] + " clicked"; //ncrunch: no coverage
 		}
 	}
 }

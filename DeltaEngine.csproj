@@ -38,7 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Commands\DragDirection.cs" />
     <Compile Include="Content\RenderingData.cs" />
+    <Compile Include="Extensions\PathExtensions.cs" />
     <Compile Include="Commands\InputTrigger.cs" />
     <Compile Include="Commands\ZoomTrigger.cs" />
     <Compile Include="Commands\DragTrigger.cs" />

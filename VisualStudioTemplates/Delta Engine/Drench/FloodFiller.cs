@@ -19,12 +19,11 @@ namespace $safeprojectname$
 
 		public void SetColor(int x, int y, Color color)
 		{
-			oldColor = colors [x, y];
+			oldColor = colors[x, y];
 			newColor = color;
 			processedPoints.Clear();
 			if (oldColor == newColor)
 				return;
-
 			unprocessedPoints.Clear();
 			unprocessedPoints.Add(new Vector2D(x, y));
 			while (unprocessedPoints.Any())
@@ -41,24 +40,20 @@ namespace $safeprojectname$
 			var point = unprocessedPoints.First();
 			unprocessedPoints.Remove(point);
 			processedPoints.Add(point);
-			colors [(int)point.X, (int)point.Y] = newColor;
+			colors[(int)point.X, (int)point.Y] = newColor;
 			foreach (var direction in Directions)
 				ProcessNeighbour(point, direction);
 		}
 
-		private static readonly Vector2D[] Directions = new[] {
-			-Vector2D.UnitX,
-			Vector2D.UnitX,
-			-Vector2D.UnitY,
-			Vector2D.UnitY
-		};
+		private static readonly Vector2D[] Directions = new[]
+		{ -Vector2D.UnitX, Vector2D.UnitX, -Vector2D.UnitY, Vector2D.UnitY };
 
 		private void ProcessNeighbour(Vector2D point, Vector2D direction)
 		{
 			var x = (int)point.X + (int)direction.X;
 			var y = (int)point.Y + (int)direction.Y;
 			if (x >= 0 && x < width && y >= 0 && y < height)
-				ProcessValidNeighbour(new Vector2D(x, y), colors [x, y]);
+				ProcessValidNeighbour(new Vector2D(x, y), colors[x, y]);
 		}
 
 		private void ProcessValidNeighbour(Vector2D point, Color color)
@@ -69,10 +64,7 @@ namespace $safeprojectname$
 
 		public int ProcessedCount
 		{
-			get
-			{
-				return processedPoints.Count;
-			}
+			get { return processedPoints.Count; }
 		}
 	}
 }

@@ -7,6 +7,9 @@ using DeltaEngine.Rendering2D.Particles;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// All the bricks for each level are initialized and updated here.
+	/// </summary>
 	public class Level : IDisposable
 	{
 		public Level(Score score)
@@ -15,7 +18,8 @@ namespace $safeprojectname$
 			var explosionMaterial = new Material(Shader.Position2DColorUV, "Explosion");
 			explosionSound = ContentLoader.Load<Sound>("BrickExplosion");
 			lostBallSound = ContentLoader.Load<Sound>("LostBall");
-			explosionData = new ParticleEmitterData {
+			explosionData = new ParticleEmitterData
+			{
 				Color = new RangeGraph<Color>(Color.White, Color.TransparentWhite),
 				Size = new RangeGraph<Size>(ExplosionSize, ExplosionSize * 2),
 				ParticleMaterial = explosionMaterial,
@@ -37,7 +41,7 @@ namespace $safeprojectname$
 		{
 			rows = score.Level + 1;
 			columns = score.Level + 1;
-			bricks = new Sprite[rows, columns];
+			bricks = new Sprite[rows,columns];
 			brickWidth = 1.0f / rows;
 			brickHeight = 0.5f / columns;
 			CreateBricks();
@@ -54,9 +58,9 @@ namespace $safeprojectname$
 			for (int x = 0; x < rows; x++)
 				for (int y = 0; y < columns; y++)
 				{
-					bricks [x, y] = new Sprite(brickMaterial, GetBounds(x, y));
-					bricks [x, y].Set(GetBrickColor(x, y));
-					bricks [x, y].RenderLayer = 5;
+					bricks[x, y] = new Sprite(brickMaterial, GetBounds(x, y));
+					bricks[x, y].Set(GetBrickColor(x, y));
+					bricks[x, y].RenderLayer = 5;
 				}
 		}
 
@@ -97,16 +101,11 @@ namespace $safeprojectname$
 
 		private static Color GetLevelThreeBrickColor(int x, int y)
 		{
-			return LevelThreeColors [(x * 4 + y) % LevelThreeColors.Length];
+			return LevelThreeColors[(x * 4 + y) % LevelThreeColors.Length];
 		}
 
-		private static readonly Color[] LevelThreeColors = new[] {
-			Color.Yellow,
-			Color.Teal,
-			Color.Green,
-			Color.LightBlue,
-			Color.Teal
-		};
+		private static readonly Color[] LevelThreeColors = new[]
+		{ Color.Yellow, Color.Teal, Color.Green, Color.LightBlue, Color.Teal };
 
 		private static Color GetLevelFourBrickColor(int x, int y)
 		{
@@ -129,7 +128,7 @@ namespace $safeprojectname$
 		{
 			for (int x = 0; x < rows; x++)
 				for (int y = 0; y < columns; y++)
-					bricks [x, y].IsActive = false;
+					bricks[x, y].IsActive = false;
 		}
 
 		public int BricksLeft
@@ -139,7 +138,7 @@ namespace $safeprojectname$
 				var bricksAlive = 0;
 				for (int x = 0; x < rows; x++)
 					for (int y = 0; y < columns; y++)
-						if (bricks [x, y].IsVisible)
+						if (bricks[x, y].IsVisible)
 							bricksAlive++;
 
 				return bricksAlive;
@@ -150,11 +149,11 @@ namespace $safeprojectname$
 		{
 			var brickIndexX = (int)(x / brickWidth);
 			var brickIndexY = (int)(y / brickHeight);
-			if (brickIndexX < 0 || brickIndexX >= rows || brickIndexY < 0 || brickIndexY >= columns 
-				|| bricks [brickIndexX, brickIndexY].IsVisible != true)
+			if (brickIndexX < 0 || brickIndexX >= rows || brickIndexY < 0 || brickIndexY >= columns ||
+				bricks[brickIndexX, brickIndexY].IsVisible != true)
 				return null;
 
-			return bricks [brickIndexX, brickIndexY];
+			return bricks[brickIndexX, brickIndexY];
 		}
 
 		public void Explode(Sprite brick, Vector2D collision)
@@ -167,9 +166,7 @@ namespace $safeprojectname$
 
 		private void CreateExplosion(Vector2D collision)
 		{
-			var explosion = new ParticleEmitter(explosionData, collision) {
-				RenderLayer = 16
-			};
+			var explosion = new ParticleEmitter(explosionData, collision) { RenderLayer = 16 };
 			explosion.SpawnAndDispose();
 		}
 

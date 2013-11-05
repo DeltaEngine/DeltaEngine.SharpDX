@@ -48,9 +48,12 @@ namespace Snake
 		{
 			window.Title = "Snake - Let's go";
 			window.BackgroundColor = menu.gameColors[0];
-			new FilledRect(Rectangle.One, menu.gameColors[1]) { RenderLayer = 0 };
-			new FilledRect(CalculateBackgroundDrawArea(), menu.gameColors[0]) { RenderLayer = 1 };
+			rectangleBorder = new FilledRect(Rectangle.One, menu.gameColors[1]) { RenderLayer = 0 };
+			rectangleField = new FilledRect(CalculateBackgroundDrawArea(), menu.gameColors[0]) { RenderLayer = 1 };
 		}
+
+		private FilledRect rectangleBorder;
+		private FilledRect rectangleField;
 
 		private Rectangle CalculateBackgroundDrawArea()
 		{
@@ -170,7 +173,7 @@ namespace Snake
 		{
 			if (Chunk.TopLeft.IsNearlyEqual(snakeBody.BodyParts[0].TopLeft))
 			{
-				Chunk.SpawnAtRandomLocation();
+				RespawnChunk();
 				GrowSnakeInSize(trailingVector);
 			}
 		}
@@ -217,7 +220,7 @@ namespace Snake
 			};
 			yesCommand = new Command(RestartGame);
 			yesCommand.Add(new KeyTrigger(Key.Y));
-			noCommand = new Command(CloseGame);
+			noCommand = new Command(BackToMenu);
 			noCommand.Add(new KeyTrigger(Key.N));
 		}
 
@@ -259,6 +262,23 @@ namespace Snake
 		{
 			snakeBody.DetectSnakeCollisionWithChunk -= SnakeCollisionWithChunk;
 			snakeBody.SnakeCollidesWithBorderOrItself -= Reset;
+		}
+
+		private void BackToMenu()
+		{
+			ClearPlayArea();
+			menu.Show();
+		}
+
+		private void ClearPlayArea()
+		{
+			yesCommand.IsActive = false;
+			noCommand.IsActive = false;
+			gameOverMsg.IsActive = false;
+			restartMsg.IsActive = false;
+			rectangleBorder.IsActive = false;
+			rectangleField.IsActive = false;
+			window.Title = "Snake";
 		}
 	}
 }

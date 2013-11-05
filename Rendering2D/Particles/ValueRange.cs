@@ -20,15 +20,7 @@ namespace DeltaEngine.Rendering2D.Particles
 		public ValueRange(string rangeString)
 			: this()
 		{
-			float[] partitions;
-			try
-			{
-				partitions = rangeString.SplitIntoFloats();
-			}
-			catch
-			{
-				throw new InvalidStringFormat();
-			}
+			float[] partitions = rangeString.SplitIntoFloats();
 			if(partitions.Length != 2)
 				throw new InvalidStringFormat();
 			Start = partitions[0];

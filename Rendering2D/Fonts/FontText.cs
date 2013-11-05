@@ -1,6 +1,5 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 
 namespace DeltaEngine.Rendering2D.Fonts
 {
@@ -10,7 +9,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 	/// </summary>
 	public class FontText : Entity2D
 	{
-		protected FontText(){}
+		protected FontText() {}
 
 		public FontText(Font font, string text, Vector2D centerPosition)
 			: this(font, text, Rectangle.FromCenter(centerPosition, new Size(0.3f, 0.1f))) {}
@@ -18,53 +17,69 @@ namespace DeltaEngine.Rendering2D.Fonts
 		public FontText(Font font, string text, Rectangle drawArea)
 			: base(drawArea)
 		{
-			this.text = text;
-			wasFontLoadedOk = font.WasLoadedOk;
-			cachedMaterial = font.Material;
-			if (wasFontLoadedOk)
+			// ReSharper disable DoNotCallOverridableMethodsInConstructor once
+			Add(text);
+			if (font.WasLoadedOk)
 				RenderAsFontText(font);
 			else
 				RenderAsVectorText();
+			Add(new FontName(font.Name));
 		}
 
-		private string text;
-		private readonly bool wasFontLoadedOk;
-
-		private void RenderAsFontText(Font font)
+		private class FontName
 		{
-			description = font.Description;
-			description.Generate(text, HorizontalAlignment.Center);
-			Add(font.Material);
-			Add(description.Glyphs);
-			Add(description.DrawSize);
-			OnDraw<FontRenderer>();
-		}
+			protected FontName() {}
 
-		private FontDescription description;
+			public FontName(string name)
+			{
+				if (name.StartsWith("<GeneratedMockFont:"))
+					name = name.Substring(20, name.Length - 21);
+				Name = name;
+			}
 
-	  private void RenderAsVectorText()
-		{
-			Add(new VectorText.Data(text));
-			Start<VectorText.ProcessText>();
-			OnDraw<VectorText.Render>();
+			public string Name { get; set; }
 		}
 
 		public string Text
 		{
-			get { return text; }
+			get { return Get<string>(); }
 			set
 			{
-				text = value;
-				if (wasFontLoadedOk)
+				Set(value);
+				if (WasLoadedOk)
 					UpdateFontTextRendering();
 				else
 					Get<VectorText.Data>().Text = value;
 			}
 		}
 
+		private bool WasLoadedOk
+		{
+			get { return Contains<GlyphDrawData[]>(); }
+		}
+
+		private void RenderAsFontText(Font font)
+		{
+			description = font.Description;
+			description.Generate(Text, HorizontalAlignment.Center);
+			Add(font.Material);
+			Add(description.Glyphs);
+			Add(description.DrawSize);
+			OnDraw<FontRenderer>();
+		}
+
+		internal FontDescription description;
+
+	  private void RenderAsVectorText()
+		{
+			Add(new VectorText.Data(Text));
+			Start<VectorText.ProcessText>();
+			OnDraw<VectorText.Render>();
+		}
+
 		private void UpdateFontTextRendering()
 		{
-			description.Generate(text, HorizontalAlignment);
+			description.Generate(Text, HorizontalAlignment);
 			Set(description.Glyphs);
 			SetWithoutInterpolation(description.DrawSize);
 		}
@@ -79,7 +94,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 			set
 			{
 				Set(value);
-				if (wasFontLoadedOk)
+				if (WasLoadedOk)
 					UpdateFontTextRendering();
 			}
 		}
@@ -93,18 +108,23 @@ namespace DeltaEngine.Rendering2D.Fonts
 			set
 			{
 				Set(value);
-				if (wasFontLoadedOk)
+				if (WasLoadedOk)
 					UpdateFontTextRendering();
 			}
 		}
 
-		public override Entity Add<T>(T component)
+		public override void Set(object component)
 		{
-			if (component is Material)
-				cachedMaterial = component as Material;
-			return base.Add(component);
+			var fontName = component as FontName;
+			if (component is FontName)
+				description = ContentLoader.Load<Font>(fontName.Name).Description;
+			base.Set(component);
 		}
 
-		internal Material cachedMaterial;
+		internal Material CachedMaterial
+		{
+			get { return cachedMaterial ?? (cachedMaterial = Get<Material>()); }
+		}
+		private Material cachedMaterial;
 	}
 }

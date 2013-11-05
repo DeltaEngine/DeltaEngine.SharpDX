@@ -9,7 +9,7 @@ namespace DeltaEngine.Input
 	/// Fires once when the mouse has not moved for a prescribed period. Ideally used in tandem with
 	/// MouseMovementTrigger to cancel the logic raised on a hover.
 	/// </summary>
-	public class MouseHoverTrigger : Trigger
+	public class MouseHoverTrigger : Trigger, MouseTrigger
 	{
 		public MouseHoverTrigger(float hoverTime = DefaultHoverTime)
 		{
@@ -27,7 +27,24 @@ namespace DeltaEngine.Input
 			Start<Mouse>();
 		}
 
-		public bool IsHovering()
+		public float Elapsed { get; private set; }
+		public Vector2D LastPosition { get; private set; }
+
+		public void HandleWithMouse(Mouse mouse)
+		{
+			if (LastPosition.DistanceTo(mouse.Position) < PositionEpsilon)
+			{
+				if (IsHovering())
+					Invoke();
+			}
+			else
+			{
+				LastPosition = mouse.Position;
+				Elapsed = 0.0f;
+			}
+		}
+
+		private bool IsHovering()
 		{
 			if (Elapsed >= HoverTime)
 				return false;
@@ -35,7 +52,6 @@ namespace DeltaEngine.Input
 			return Elapsed >= HoverTime;
 		}
 
-		public float Elapsed { get; set; }
-		public Vector2D LastPosition { get; set; }
+		private const float PositionEpsilon = 0.0025f;
 	}
 }

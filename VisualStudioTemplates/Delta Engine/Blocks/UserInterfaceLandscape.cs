@@ -6,9 +6,13 @@ using DeltaEngine.Scenes;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Renders the static elements (background, grid, score) in landscape plus keeps track of and 
+	/// renders the player score.
+	/// </summary>
 	public class UserInterfaceLandscape : Scene
 	{
-		public UserInterfaceLandscape(BlocksContent content)
+		public UserInterfaceLandscape($safeprojectname$Content content)
 		{
 			this.content = content;
 			AddBackground();
@@ -17,7 +21,7 @@ namespace $safeprojectname$
 			AddScore();
 		}
 
-		private readonly BlocksContent content;
+		private readonly $safeprojectname$Content content;
 
 		private void AddBackground()
 		{
@@ -34,9 +38,7 @@ namespace $safeprojectname$
 			var image = content.Load<Image>("Grid");
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image, image.PixelSize);
-			grid = new Sprite(material, GetGridDrawArea()) {
-				RenderLayer = Background
-			};
+			grid = new Sprite(material, GetGridDrawArea()) { RenderLayer = Background };
 			Add(grid);
 		}
 
@@ -81,16 +83,13 @@ namespace $safeprojectname$
 
 		private void AddScore()
 		{
-			Text = new FontText(ContentLoader.Load<Font>("Verdana12"), "", scoreWindow.DrawArea) {
+			Text = new FontText(ContentLoader.Load<Font>("Verdana12"), "", scoreWindow.DrawArea)
+			{
 				RenderLayer = (int)RenderLayer.Foreground
 			};
 		}
 
-		internal FontText Text
-		{
-			get;
-			private set;
-		}
+		internal FontText Text { get; private set; }
 
 		public void ResizeInterface()
 		{

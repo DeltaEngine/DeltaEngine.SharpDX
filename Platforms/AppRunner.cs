@@ -12,6 +12,7 @@ using DeltaEngine.Graphics;
 using DeltaEngine.Logging;
 using DeltaEngine.Networking;
 using DeltaEngine.Networking.Tcp;
+using DeltaEngine.Rendering2D;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Platforms
@@ -24,6 +25,26 @@ namespace DeltaEngine.Platforms
 	{
 		//ncrunch: no coverage start (for performance reasons)
 		protected void RegisterCommonEngineSingletons()
+		{
+#if DEBUG
+			TryRegisterCommonEngineSingletons();
+#else
+			//some machines with missing frameworks initialization will crash and need useful error messages
+			try
+			{
+				TryRegisterCommonEngineSingletons();
+			}
+			catch (Exception exception)
+			{
+				Logger.Error(exception);
+				if (StackTraceExtensions.IsStartedFromNunitConsole())
+					throw;
+				DisplayMessageBoxAndCloseApp("Fatal Runtime Error", exception);
+			}
+#endif
+		}
+
+		private void TryRegisterCommonEngineSingletons()
 		{
 			LoadFileSettingsAndCommands();
 			CreateOnlineService();
@@ -123,7 +144,7 @@ namespace DeltaEngine.Platforms
 		}
 
 		private int timeout;
-		private const int NextMessageTimeoutMs = 3000;
+		private const int NextMessageTimeoutMs = 4000;
 
 		private void CreateEntitySystem()
 		{
@@ -260,10 +281,22 @@ namespace DeltaEngine.Platforms
 			Drawing.NumberOfDynamicVerticesDrawnThisFrame = 0;
 			Drawing.NumberOfDynamicDrawCallsThisFrame = 0;
 			if (Debugger.IsAttached || StackTraceExtensions.StartedFromNCrunch)
-				entities.UpdateAndDrawAllEntities(Drawing.DrawEverythingInCurrentLayer);
+				entities.UpdateAndDrawAllEntities(DrawEverythingInCurrentLayer);
 			else
 				TryUpdateAndDrawAllEntities();
 		}
+
+		private void DrawEverythingInCurrentLayer()
+		{
+			BatchRenderer.DrawAndResetBatches();
+			Drawing.DrawEverythingInCurrentLayer();
+		}
+
+		private BatchRenderer BatchRenderer
+		{
+			get { return cachedBatchRenderer ?? (cachedBatchRenderer = Resolve<BatchRenderer>()); }
+		}
+		private BatchRenderer cachedBatchRenderer;
 
 		private Drawing Drawing
 		{
@@ -275,7 +308,7 @@ namespace DeltaEngine.Platforms
 		{
 			try
 			{
-				entities.UpdateAndDrawAllEntities(Drawing.DrawEverythingInCurrentLayer);
+				entities.UpdateAndDrawAllEntities(DrawEverythingInCurrentLayer);
 			}
 			catch (Exception exception)
 			{
@@ -290,7 +323,6 @@ namespace DeltaEngine.Platforms
 
 		private void DisplayMessageBoxAndCloseApp(string title, Exception exception)
 		{
-			Window.CopyTextToClipboard(exception.ToString());
 			if (IsShowingMessageBoxClosedWithIgnore(title, exception))
 				return;
 			Dispose();
@@ -300,8 +332,10 @@ namespace DeltaEngine.Platforms
 
 		private bool IsShowingMessageBoxClosedWithIgnore(string title, Exception ex)
 		{
-			var closeOptions = new[] { "Abort", "Ignore" };
-			return Window.ShowMessageBox(title, "Unable to continue: " + ex, closeOptions) == "Ignore";
+			Window.CopyTextToClipboard(ex.ToString());
+			string message = "Unable to continue: " + ex + ErrorWasCopiedToClipboardMessage +
+				ClickIgnoreToContinue;
+			return Window.ShowMessageBox(title, message, new[] { "Abort", "Ignore" }) == "Ignore";
 		}
 
 		public override void Dispose()

@@ -155,7 +155,7 @@ namespace DeltaEngine.Core
 		}
 
 		/// <summary>
-		/// If a fatal exception happened this message is logged. Often the App has to quit afterwards.
+		/// If a fatal exception happened this message is logged. Often the App has to quit afterward.
 		/// </summary>
 		public static void Error(Exception exception)
 		{

@@ -16,6 +16,7 @@ namespace DeltaEngine.Graphics
 		{
 			this.device = device;
 			this.window = window;
+			device.CullBackFaces = true;
 		}
 
 		private readonly Device device;
@@ -100,17 +101,18 @@ namespace DeltaEngine.Graphics
 
 				public void Draw()
 				{
+					//ncrunch: no coverage start
 					foreach (var geometryTask in geometries)
 					{
 						var material = geometryTask.Material;
 						if (material.LightMap != null)
-							material.Shader.SetLightmapTexture(material.LightMap);
-						material.Shader.SetModelViewProjectionMatrix(geometryTask.Transform *
-							device.ModelViewProjectionMatrix);
+							material.Shader.SetLightmapTexture(material.LightMap); 
+						material.Shader.SetModelViewProjectionMatrix(
+							geometryTask.Transform * device.ModelViewProjectionMatrix);
 						if (geometryTask.Geometry.HasAnimationData)
 							material.Shader.SetJointMatrices(geometryTask.Geometry.JointTranforms);
 						geometryTask.Geometry.Draw();
-					}
+					} //ncrunch: no coverage end
 				}
 			}
 
@@ -168,6 +170,12 @@ namespace DeltaEngine.Graphics
 		private readonly Dictionary<BlendMode, List<CircularBuffer>> buffersPerBlendMode =
 			new Dictionary<BlendMode, List<CircularBuffer>>();
 
+		public void FlushDrawBuffer(Material material, BlendMode blendMode)
+		{
+			var buffer = GetDrawBuffer(material.Shader, blendMode);
+			buffer.DrawAllTextureChunks();
+		}
+
 		public void AddLines<T>(Material material, T[] vertices) where T : struct, Vertex
 		{
 			if (material.DiffuseMap != null)
@@ -194,7 +202,7 @@ namespace DeltaEngine.Graphics
 
 		private readonly List<CircularBuffer> lineBuffers = new List<CircularBuffer>();
 
-		public void DrawEverythingInCurrentLayer()
+		internal void DrawEverythingInCurrentLayer()
 		{
 			if (Has3DData())
 				Draw3DData();

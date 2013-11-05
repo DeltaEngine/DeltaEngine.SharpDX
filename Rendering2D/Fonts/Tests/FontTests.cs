@@ -1,5 +1,7 @@
 ﻿using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
@@ -22,17 +24,13 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		public void DrawSmallFont()
 		{
 			var text = new FontText(verdana, "Hi there", Rectangle.One);
-			Assert.AreEqual(3, text.NumberOfComponents);
 		}
 
-		/// <summary>
-		/// FontText has a font material, the glyphs and the draw size as components.
-		/// </summary>
 		[Test, CloseAfterFirstFrame]
-		public void FontTextHas3Components()
+		public void FontTextHas5Components()
 		{
 			var text = new FontText(verdana, "Hi there", Rectangle.One);
-			Assert.AreEqual(3, text.NumberOfComponents);
+			Assert.AreEqual(5, text.NumberOfComponents);
 		}
 
 		/// <summary>
@@ -101,6 +99,28 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		{
 			new FontText(tahoma, "Delta Engine", Top);
 			new FontText(verdana, "Delta Engine", Bottom);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var text = new FontText(tahoma, "Delta Engine", Top);
+			var stream = BinaryDataExtensions.SaveToMemoryStream(text);
+			var loadedText = (FontText)stream.CreateFromMemoryStream();
+			Assert.AreEqual(Top, loadedText.DrawArea);
+			Assert.AreEqual("Delta Engine", loadedText.Text);
+			Assert.AreEqual(text.CachedMaterial.Name, loadedText.CachedMaterial.Name);
+			Assert.AreEqual(text.description.FontFamilyName, loadedText.description.FontFamilyName);
+		}
+
+		[Test]
+		public void DrawLoadedFont()
+		{
+			var text = new FontText(tahoma, "Original", Top);
+			var stream = BinaryDataExtensions.SaveToMemoryStream(text);
+			var loadedText = (FontText)stream.CreateFromMemoryStream();
+			loadedText.Text = "Loaded";
+			loadedText.DrawArea = Bottom;
 		}
 	}
 }

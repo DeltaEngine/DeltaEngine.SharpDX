@@ -26,6 +26,7 @@ namespace DeltaEngine.Tests.Core
 			Assert.AreEqual(32, settings.ColorBufferBits);
 			Assert.AreEqual(4, settings.AntiAliasingSamples);
 			Assert.AreEqual(0, settings.LimitFramerate);
+			Assert.AreEqual(false, settings.UseVSync);
 			Assert.AreEqual(20, settings.UpdatesPerSecond);
 			Assert.AreEqual(20, settings.RapidUpdatesPerSecond);
 		}
@@ -60,6 +61,7 @@ namespace DeltaEngine.Tests.Core
 		{
 			Settings settings = Settings.Current;
 			EditSettings(settings);
+			Assert.IsTrue((settings as  MockSettings).AreChanged);
 			CheckSettings(settings);
 		}
 

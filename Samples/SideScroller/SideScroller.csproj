@@ -63,6 +63,10 @@
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Rendering2D\Particles\DeltaEngine.Rendering2D.Particles.csproj">
+      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Name>DeltaEngine.Rendering2D.Particles</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
@@ -80,12 +84,9 @@
     <Content Include="Sidescroller.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnemyPlane.cs" />
-    <Compile Include="GameControls.cs" />
+    <Compile Include="PlayerControls.cs" />
     <Compile Include="InteractionLogics.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="ParallaxBackground.cs" />

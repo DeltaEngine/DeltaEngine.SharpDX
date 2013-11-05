@@ -78,6 +78,7 @@ namespace DeltaEngine.Graphics
 		public class Set3DModeHasNoDelegatesRegistered : Exception {}
 
 		public event Action OnSet3DMode;
+		public abstract bool CullBackFaces { get; set; }
 
 		public abstract void EnableDepthTest();
 		public abstract void Dispose();

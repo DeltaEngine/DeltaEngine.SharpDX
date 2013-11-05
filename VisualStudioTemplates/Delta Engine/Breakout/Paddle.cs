@@ -9,9 +9,13 @@ using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Holds the paddle position
+	/// </summary>
 	public class Paddle : Sprite
 	{
-		public Paddle() : base(new Material(Shader.Position2DColorUV, "Paddle"), Rectangle.One)
+		public Paddle()
+			: base(new Material(Shader.Position2DColorUV, "Paddle"), Rectangle.One)
 		{
 			RegisterInputCommands();
 			Start<RunPaddle>();
@@ -21,8 +25,20 @@ namespace $safeprojectname$
 		private void RegisterInputCommands()
 		{
 			RegisterButtonCommands();
-			new Command(pos => xPosition += pos.X - Position.X).Add(new 
-				MouseButtonTrigger(MouseButton.Left, State.Pressed));
+			new Command(DoMovementByMouseClick).Add(
+				new MouseButtonTrigger(MouseButton.Left, State.Pressed));
+		}
+
+		private void DoMovementByMouseClick(Vector2D clickPosition)
+		{
+			var moveDistAbsolute = PaddleMovementSpeed * Time.Delta;
+			var distance = clickPosition.X - xPosition;
+			if (distance.Abs() < moveDistAbsolute)
+			{
+				xPosition = clickPosition.X;
+				return;
+			}
+			xPosition += distance > 0 ? moveDistAbsolute : -moveDistAbsolute;
 		}
 
 		private void RegisterButtonCommands()
@@ -37,6 +53,7 @@ namespace $safeprojectname$
 
 		private float xPosition = 0.5f;
 		private const float PaddleMovementSpeed = 1.5f;
+
 		public class RunPaddle : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
@@ -50,6 +67,7 @@ namespace $safeprojectname$
 				}
 			}
 		}
+
 		private const float YPosition = 0.9f;
 		internal const float HalfWidth = Width / 2.0f;
 		private const float Width = 0.2f;
@@ -57,10 +75,7 @@ namespace $safeprojectname$
 
 		public Vector2D Position
 		{
-			get
-			{
-				return new Vector2D(DrawArea.Center.X, DrawArea.Top);
-			}
+			get { return new Vector2D(DrawArea.Center.X, DrawArea.Top); }
 		}
 	}
 }

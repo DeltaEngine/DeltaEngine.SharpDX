@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
@@ -20,6 +21,18 @@ namespace DeltaEngine.Input.Tests
 		{
 			var trigger = new TouchPositionTrigger(State.Pressed);
 			Assert.AreEqual(State.Pressed, trigger.State);
+		}
+
+		[Test]
+		public void InvokeTouch()
+		{
+			var touch = Resolve<MockTouch>();
+			var trigger = new TouchPositionTrigger(State.Pressed);
+			bool wasInvoked = false;
+			new Command(() => wasInvoked = true).Add(trigger);
+			touch.SetTouchState(0, State.Pressed, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities();
+			Assert.IsTrue(wasInvoked);
 		}
 	}
 }

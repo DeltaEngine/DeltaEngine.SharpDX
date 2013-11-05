@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+using DeltaEngine.Commands;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
+using DeltaEngine.Input;
 using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.ScreenSpaces;
 
 namespace SideScroller
@@ -16,9 +20,12 @@ namespace SideScroller
 		public Game(Window window)
 			: base(Rectangle.Zero)
 		{
+			Settings.Current.LimitFramerate = 60;
+			window.ViewportPixelSize = Settings.Current.Resolution;
 			mainMenu = new Menu();
 			mainMenu.InitGame += StartGame;
 			mainMenu.QuitGame += window.CloseAfterFrame;
+			window.ViewportSizeChanged += size => { Settings.Current.Resolution = size; };
 		}
 
 		public readonly Menu mainMenu;
@@ -26,20 +33,22 @@ namespace SideScroller
 		public void StartGame()
 		{
 			mainMenu.Hide();
+			if (backToMenuCommand != null && backToMenuCommand.IsActive)
+				backToMenuCommand.IsActive = false; //ncrunch: no coverage
+			if (gameOverMessage != null)
+				gameOverMessage.IsActive = false; //ncrunch: no coverage
 			interact = new InteractionLogics();
-			playerTexture = new Material(Shader.Position2DColorUV, "PlayerPlane");
 			enemyTexture = new Material(Shader.Position2DColorUV, "EnemyPlane");
-			player = new PlayerPlane(playerTexture, new Vector2D(0.15f, 0.5f));
-			controls = new GameControls();
+			player = new PlayerPlane(new Vector2D(ScreenSpace.Current.Viewport.Left + 0.08f, 0.5f));
+			controls = new PlayerControls(player);
 			background = new ParallaxBackground(4, layerImageNames, layerScrollFactors);
-			background.BaseSpeed = 1.2f;
-			BindPlayerToControls();
-			BindPlayerAndInteraction();
+			background.BaseSpeed = 0.2f;
+			player.Destroyed += DisplayGameOverMessage;
 			Start<EnemySpawner>();
 		}
 
 		public PlayerPlane player;
-		internal GameControls controls;
+		internal PlayerControls controls;
 		public InteractionLogics interact;
 		internal Material playerTexture;
 		internal Material enemyTexture;
@@ -47,27 +56,35 @@ namespace SideScroller
 
 		public void CreateEnemyAtPosition(Vector2D position)
 		{
-			var enemy = new EnemyPlane(enemyTexture, position);
-			player.PlayerFiredShot += point => enemy.CheckIfHitAndReact(point);
-			enemy.EnemyFiredShot += point => interact.FireShotByEnemy(point);
+			new EnemyPlane(position);
 		}
 
-		private void BindPlayerToControls()
+		private void DisplayGameOverMessage()
 		{
-			controls.Ascend += () => player.AccelerateVertically(-Time.Delta);
-			controls.Sink += () => player.AccelerateVertically(Time.Delta);
-			controls.VerticalStop += () => player.StopVertically();
-			controls.Fire += () => { player.IsFireing = true; };
-			controls.HoldFire += () => { player.IsFireing = false; };
-			controls.SlowDown += () => { };
-			controls.Accelerate += () => { };
+			Stop<EnemySpawner>();
+			controls.Destroy();
+			gameOverMessage = new FontText(Font.Default,
+				GetRandomGameOverMessage() + "\n\n [Q] - " + "return to Main Menu.", Rectangle.One);
+			backToMenuCommand = new Command(BackToMainMenu).Add(new KeyTrigger(Key.Q));
 		}
 
-		private void BindPlayerAndInteraction()
+		private static string GetRandomGameOverMessage()
 		{
-			player.PlayerFiredShot += point => { interact.FireShotByPlayer(point); };
+			var randomSelection = Randomizer.Current.Get(0, 3);
+			switch (randomSelection)
+			{
+			case 0:
+				return "Crashed... ~";
+			case 1:
+				return "Halt! Did you forget the parachute again?";
+			case 2:
+				return "I guess that's it, right?";
+			}
+			return "Crashed... ~";
 		}
 
+		private FontText gameOverMessage;
+		private Command backToMenuCommand;
 		private readonly string[] layerImageNames = new[]
 		{ "SkyBackground", "Mountains_Back", "Mountains_Middle", "Mountains_Front" };
 		private readonly float[] layerScrollFactors = new[] { 0.4f, 0.6f, 1.0f, 1.4f };
@@ -90,6 +107,30 @@ namespace SideScroller
 
 			private float timeLastOneSpawned;
 			private int alternating = 1;
+		}
+
+		private void BackToMainMenu()
+		{
+			controls.Destroy();
+			PurgeGameObjects();
+			if (gameOverMessage != null)
+				gameOverMessage.IsActive = false;
+			if (backToMenuCommand != null)
+				backToMenuCommand.IsActive = false;
+
+			mainMenu.Show();
+		}
+
+		private void PurgeGameObjects()
+		{
+			player.IsActive = false;
+			background.IsActive = false;
+			var enemies = EntitiesRunner.Current.GetEntitiesOfType<EnemyPlane>();
+			for (int i = 0; i < enemies.Count; i++)
+				enemies[i].IsActive = false;
+			var emitters = EntitiesRunner.Current.GetEntitiesOfType<ParticleEmitter>();
+			for (int i = 0; i < emitters.Count; i++)
+				emitters[i].IsActive = false;
 		}
 	}
 }

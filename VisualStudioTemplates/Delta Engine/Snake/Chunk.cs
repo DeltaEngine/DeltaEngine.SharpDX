@@ -7,11 +7,17 @@ using DeltaEngine.Rendering2D.Shapes;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// This class holds the data for the chunk and moves the chunk to random locations after 
+	/// being consumed.
+	/// </summary>
 	public class Chunk : FilledRect
 	{
-		public Chunk(int gridSize, float blockSize, Color color) : base(new Rectangle(new 
-			Vector2D(blockSize * (int)(gridSize / 2.0f), blockSize * (int)(gridSize / 2.0f)), new 
-				Size(blockSize)), color)
+		public Chunk(int gridSize, float blockSize, Color color)
+			: base(
+				new Rectangle(
+					new Vector2D(blockSize * (int)(gridSize / 2.0f), blockSize * (int)(gridSize / 2.0f)),
+					new Size(blockSize)), color)
 		{
 			this.gridSize = gridSize;
 			this.blockSize = blockSize;
@@ -30,9 +36,10 @@ namespace $safeprojectname$
 			var newRandomPos = new Vector2D(x * blockSize, y * blockSize);
 			var newDrawArea = new Rectangle(newRandomPos, new Size(blockSize));
 			DrawArea = newDrawArea;
+
 		}
 
-		public bool IsCollidingWithSnake(List<FilledRect> snakeBodies)
+		public bool IsCollidingWith$safeprojectname$(List<FilledRect> snakeBodies)
 		{
 			return snakeBodies.Any(IsBodyColliding);
 		}

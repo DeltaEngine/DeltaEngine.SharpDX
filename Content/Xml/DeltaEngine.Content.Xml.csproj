@@ -51,6 +51,7 @@
     <Compile Include="XmlContent.cs" />
     <Compile Include="XmlFile.cs" />
     <Compile Include="XmlData.cs" />
+    <Compile Include="XmlMetaDataExtensions.cs" />
     <Compile Include="XmlSnippet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

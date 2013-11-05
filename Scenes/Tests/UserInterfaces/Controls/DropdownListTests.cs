@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
@@ -44,6 +45,11 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test]
 		public void RenderDropdownListWithTenValues()
 		{
+			SetToTenValues();
+		}
+
+		private void SetToTenValues()
+		{
 			dropdownList.Values = new List<object>
 			{
 				"value 1",
@@ -66,7 +72,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Assert.AreEqual(Values[0], dropdownList.SelectedValue);
 			Assert.AreEqual(Center, dropdownList.DrawArea);
 			Assert.AreEqual(Color.Gray, dropdownList.Color);
-			Assert.AreEqual(3, dropdownList.selectBox.texts.Count);
+			Assert.AreEqual(3, dropdownList.SelectBox.texts.Count);
 			Assert.IsFalse(dropdownList.IsPauseable);
 			Assert.AreEqual(3, dropdownList.MaxDisplayCount);
 		}
@@ -86,7 +92,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			dropdownList.Values = newValues;
 			Assert.AreEqual(newValues, dropdownList.Values);
 			Assert.AreEqual("value 1", dropdownList.SelectedValue);
-			Assert.AreEqual(3, dropdownList.selectBox.texts.Count);
+			Assert.AreEqual(3, dropdownList.SelectBox.texts.Count);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -95,7 +101,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			var newValues = new List<object> { 1, 2 };
 			dropdownList.Values = newValues;
 			Assert.AreEqual(1, dropdownList.SelectedValue);
-			Assert.AreEqual(2, dropdownList.selectBox.texts.Count);
+			Assert.AreEqual(2, dropdownList.SelectBox.texts.Count);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -116,9 +122,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void HidingDropdownListHidesEverything()
 		{
 			dropdownList.IsVisible = false;
-			Assert.IsFalse(dropdownList.selectBox.IsVisible);
+			Assert.IsFalse(dropdownList.SelectBox.IsVisible);
 			Assert.IsFalse(dropdownList.Get<FontText>().IsVisible);
-			foreach (FontText text in dropdownList.selectBox.texts)
+			foreach (FontText text in dropdownList.SelectBox.texts)
 				Assert.IsFalse(text.IsVisible);
 		}
 
@@ -128,7 +134,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; //ncrunch: no coverage
 			Click(new Vector2D(0.5f, 0.31f));
-			Assert.IsTrue(dropdownList.selectBox.IsVisible);
+			Assert.IsTrue(dropdownList.SelectBox.IsVisible);
 		}
 
 		private void Click(Vector2D position)
@@ -149,7 +155,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Click(new Vector2D(0.5f, 0.31f));
 			Click(new Vector2D(0.5f, 0.41f));
 			Assert.AreEqual("value 2", dropdownList.SelectedValue);
-			Assert.IsFalse(dropdownList.selectBox.IsVisible);
+			Assert.IsFalse(dropdownList.SelectBox.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -157,9 +163,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			dropdownList.selectBox.IsVisible = false;
-			dropdownList.selectBox.LineClicked(0);
-			Assert.IsFalse(dropdownList.selectBox.IsVisible);
+			dropdownList.SelectBox.IsVisible = false;
+			dropdownList.SelectBox.LineClicked(0);
+			Assert.IsFalse(dropdownList.SelectBox.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -178,9 +184,9 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; //ncrunch: no coverage
 			Click(new Vector2D(0.5f, 0.31f));
 			MoveMouse(new Vector2D(0.5f, 0.41f));
-			Assert.AreEqual(Color.VeryLightGray, dropdownList.selectBox.texts[0].Color);
-			Assert.AreEqual(Color.White, dropdownList.selectBox.texts[1].Color);
-			Assert.AreEqual(Color.VeryLightGray, dropdownList.selectBox.texts[2].Color);
+			Assert.AreEqual(Color.VeryLightGray, dropdownList.SelectBox.texts[0].Color);
+			Assert.AreEqual(Color.White, dropdownList.SelectBox.texts[1].Color);
+			Assert.AreEqual(Color.VeryLightGray, dropdownList.SelectBox.texts[2].Color);
 		}
 
 		private void MoveMouse(Vector2D position)
@@ -196,8 +202,8 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; //ncrunch: no coverage
 			Click(new Vector2D(0.5f, 0.31f));
 			dropdownList.IsEnabled = false;
-			Assert.IsFalse(dropdownList.selectBox.IsVisible);
-			foreach (FontText text in dropdownList.selectBox.texts)
+			Assert.IsFalse(dropdownList.SelectBox.IsVisible);
+			foreach (FontText text in dropdownList.SelectBox.texts)
 				Assert.IsFalse(text.IsVisible);
 		}
 
@@ -236,6 +242,25 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			dropdownList.MaxDisplayCount = 4;
 			Assert.AreEqual(4, dropdownList.MaxDisplayCount);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(dropdownList);
+			var loadedDropdownList = (DropdownList)stream.CreateFromMemoryStream();
+			Assert.AreEqual(dropdownList.DrawArea, loadedDropdownList.DrawArea);
+			Assert.AreEqual(3, loadedDropdownList.Values.Count);
+			Assert.AreEqual(dropdownList.Values[1].ToString(), loadedDropdownList.Values[1].ToString());
+		}
+
+		[Test]
+		public void DrawLoadedSelectBox()
+		{
+			SetToTenValues();
+			var stream = BinaryDataExtensions.SaveToMemoryStream(dropdownList);
+			dropdownList.IsActive = false;
+			stream.CreateFromMemoryStream();
 		}
 	}
 }

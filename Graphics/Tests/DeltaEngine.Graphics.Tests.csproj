@@ -70,10 +70,6 @@
       <Project>{F4D2EF4F-24F2-4D4A-BC93-78B0C5AD19A4}</Project>
       <Name>DeltaEngine.Graphics.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Graphics.csproj">
-      <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
-      <Name>DeltaEngine.Graphics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
       <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
       <Name>DeltaEngine.TestWithSharpDX</Name>

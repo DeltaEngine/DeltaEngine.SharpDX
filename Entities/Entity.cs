@@ -10,7 +10,7 @@ namespace DeltaEngine.Entities
 	/// Each entity has a name, unique components for data and behaviors for logic attached to them.
 	/// Entities are used for all engine objects, rendering, game objects, ui, physics, etc.
 	/// </summary>
-	public abstract class Entity
+	public abstract class Entity : IDisposable
 	{
 		/// <summary>
 		/// Entities start out active and are automatically added to the current EntitiesRunner. Call
@@ -23,7 +23,12 @@ namespace DeltaEngine.Entities
 			EntitiesRunner.Current.Add(this);
 		}
 
-		public class UnableToCreateEntityWithoutInitializedResolverAndEntitiesRunner : Exception {}
+		public class UnableToCreateEntityWithoutInitializedResolverAndEntitiesRunner : Exception { }
+
+		public virtual void Dispose()
+		{
+			IsActive = false;
+		}
 
 		public virtual bool IsActive
 		{

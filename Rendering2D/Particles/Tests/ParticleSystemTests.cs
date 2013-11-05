@@ -89,7 +89,7 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 			Assert.AreEqual(particleSystem.Rotation, emitter.Rotation);
 		}
 
-		[Test, CloseAfterFirstFrame, Category("Slow")]
+		[Test, CloseAfterFirstFrame]
 		public void SystemCanBeCreatedFromDataOfEmitterNames()
 		{
 			var particleSystemData = new ParticleSystemData

@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Core;
+﻿using System;
+using DeltaEngine.Core;
 using NUnit.Framework;
 using Randomizer = DeltaEngine.Core.Randomizer;
 
@@ -40,6 +41,21 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 		public void ValueRangeToString()
 		{
 			Assert.AreEqual("0.2, 0.3", valueRange.ToString());
+		}
+
+		[Test]
+		public void CreateValueRangeFromString()
+		{
+			var range = new ValueRange("0.1, 0.9");
+			Assert.AreEqual(0.1f, range.Start);
+			Assert.AreEqual(0.9f, range.End);
+		}
+
+		[Test]
+		public void CreateValueRangeFromInvalidStringCrashes()
+		{
+			Assert.Throws<FormatException>(() => new ValueRange("abc, 3"));
+			Assert.Throws<ValueRange.InvalidStringFormat>(() => new ValueRange("0.1"));
 		}
 	}
 }

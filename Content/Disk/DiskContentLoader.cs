@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using DeltaEngine.Core;
 using DeltaEngine.Extensions;
@@ -29,11 +28,10 @@ namespace DeltaEngine.Content.Disk
 
 		private bool isInitialized;
 
-		private void LoadMetaData(string xmlFilePath)
+		internal void LoadMetaData(string xmlFilePath)
 		{
-			IsMetaDataNoLongerUpToDate(xmlFilePath);
-			//if (IsMetaDataNoLongerUpToDate(xmlFilePath))
-			//xml = new ContentMetaDataFileCreator(xml).CreateAndLoad(xmlFilePath);
+			if (IsMetaDataNoLongerUpToDate(xmlFilePath))
+				xml = new ContentMetaDataFileCreator(xml).CreateAndLoad(xmlFilePath);
 			ParseXmlNode(xml.Root);
 		}
 

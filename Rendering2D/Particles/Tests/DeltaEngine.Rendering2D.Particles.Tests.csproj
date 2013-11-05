@@ -83,5 +83,4 @@
     <Compile Include="ValueRangeTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

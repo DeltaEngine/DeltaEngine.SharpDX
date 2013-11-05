@@ -144,7 +144,7 @@ namespace DeltaEngine.Rendering2D.Tests
 				() => Assert.AreEqual(1, Resolve<Drawing>().NumberOfDynamicDrawCallsThisFrame));
 		}
 
-		[Test]
+		[Test, ApproveFirstFrameScreenshot]
 		public void DrawSpritesWithDifferentBlendModes()
 		{
 			Resolve<Window>().Title =
@@ -205,28 +205,28 @@ namespace DeltaEngine.Rendering2D.Tests
 			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
 		}
 
-		[Test]
+		[Test, ApproveFirstFrameScreenshot]
 		public void ResizeViewportAndRenderFullscreenSprite()
 		{
 			Resolve<Window>().ViewportPixelSize = new Size(800, 600);
 			new Sprite(logoMaterial, Rectangle.One);
 		}
 
-		[Test]
+		[Test, ApproveFirstFrameScreenshot]
 		public void RenderFullscreenSpriteAndResizeViewport()
 		{
 			new Sprite(logoMaterial, Rectangle.One);
 			Resolve<Window>().ViewportPixelSize = new Size(800, 600);
 		}
 
-		[Test]
+		[Test, ApproveFirstFrameScreenshot]
 		public void RenderRotatedSprite()
 		{
 			var sprite = new Sprite(logoMaterial, Rectangle.FromCenter(Vector2D.Half, new Size(0.5f)));
 			sprite.Rotation = 60;
 		}
 
-		[Test]
+		[Test, ApproveFirstFrameScreenshot]
 		public void DrawFlippedSprite()
 		{
 			new Sprite(logoMaterial, Rectangle.FromCenter(new Vector2D(0.25f, 0.5f), new Size(0.2f)));
@@ -255,7 +255,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			}
 		}
 
-		[Test]
+		[Test, ApproveFirstFrameScreenshot]
 		public void DrawColoredSprite()
 		{
 			var sprite = new Sprite(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"),
@@ -263,12 +263,21 @@ namespace DeltaEngine.Rendering2D.Tests
 			sprite.Color = Color.Red;
 		}
 
-		[Test]
+		[Test, ApproveFirstFrameScreenshot]
+		public void SettingRenderLayerOnInvisibleSpriteLeavesItInvisible()
+		{
+			var sprite = new Sprite(logoMaterial, Rectangle.HalfCentered);
+			sprite.IsVisible = false;
+			sprite.RenderLayer = 1;
+			sprite.DrawArea = Rectangle.One;
+		}
+
+		[Test, ApproveFirstFrameScreenshot]
 		public void DrawModifiedUVSprite()
 		{
 			var sprite = new Sprite(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"),
 				Rectangle.FromCenter(new Vector2D(0.5f, 0.5f), new Size(0.2f)));
-			sprite.UV = new Rectangle(0, 0, 0.5f, 0.5f);
+			sprite.LastUV = sprite.UV = new Rectangle(0, 0, 0.5f, 0.5f);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -284,8 +293,10 @@ namespace DeltaEngine.Rendering2D.Tests
 		{
 			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
 			sprite.SetWithoutInterpolation(Rectangle.One);
+			sprite.SetWithoutInterpolation(sprite.renderingData);
 			Assert.AreEqual(Rectangle.One, sprite.DrawArea);
 			Assert.AreEqual(Rectangle.One, sprite.LastDrawArea);
+			Assert.AreEqual(sprite.renderingData, sprite.Get<RenderingData>());
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -295,8 +306,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			Assert.IsTrue(sprite.GetComponentsForSaving().Any(c => c is RenderingData));
 		}
 
-		// ncrunch: no coverage start
-		// Ignored because setting Time.IsPaused can mess up tests being run in parallel
+		//ncrunch: no coverage start (Time.IsPaused can mess up tests being run in parallel)
 		[Test, Ignore]
 		public void ChangingDrawAreaWhenPausedDrawsCorrectly()
 		{
@@ -306,7 +316,21 @@ namespace DeltaEngine.Rendering2D.Tests
 			AdvanceTimeAndUpdateEntities();
 			Assert.AreEqual(new Vector2D(0.6f, 0.6f), sprite.Get<RenderingData>().DrawArea.Center);
 			Time.IsPaused = false;
+		} //ncrunch: no coverage end
+
+		[Test]
+		public void SettingUVDoesNotSetLastUV()
+		{
+			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero) { UV = Rectangle.HalfCentered };
+			Assert.AreEqual(Rectangle.One, sprite.LastUV);
 		}
-		// ncrunch: no coverage end
+
+		[Test]
+		public void ChangeLastUV()
+		{
+			var sprite = new Sprite("DeltaEngineLogo", Rectangle.Zero);
+			sprite.LastUV = Rectangle.HalfCentered;
+			Assert.AreEqual(Rectangle.HalfCentered, sprite.LastUV);
+		}
 	}
 }

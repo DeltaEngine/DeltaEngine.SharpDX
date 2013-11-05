@@ -12,7 +12,7 @@ namespace EmptyGame.Tests
 		{
 			var game = new Game(Resolve<Window>());
 			var initialColor = new Color();
-			Assert.AreEqual(0.0f, game.FadePercentage);
+			Assert.AreEqual(0.0f, game.ElapsedTimeSinceColorChange);
 			Assert.AreEqual(initialColor, game.CurrentColor);
 			Assert.AreEqual(initialColor, game.NextColor);
 		}

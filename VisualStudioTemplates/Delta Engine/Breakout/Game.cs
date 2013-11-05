@@ -4,12 +4,16 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
+using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Renders the background, ball, level and score; Also handles starting new levels
+	/// </summary>
 	public class Game : Scene
 	{
 		public Game(Window window)
@@ -19,8 +23,8 @@ namespace $safeprojectname$
 			menu = new MainMenu();
 			menu.InitGame += InitGame;
 			menu.QuitGame += window.CloseAfterFrame;
-			window.ViewportPixelSize = new Size(900, 900);
-			soundTrack = ContentLoader.Load<Music>("BreakoutMusic");
+			window.ViewportPixelSize = Settings.Current.Resolution;
+			soundTrack = ContentLoader.Load<Music>("$safeprojectname$Music");
 			soundTrack.Loop = true;
 			soundTrack.Play();
 			MainMenu.SettingsChanged += UpdateMusicVolume;
@@ -33,10 +37,12 @@ namespace $safeprojectname$
 		private readonly Music soundTrack;
 		private readonly Camera2DScreenSpace screenSpace;
 
+		//ncrunch: no coverage start
 		private void SizeChanged(Size size)
 		{
 			screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio;
 		}
+		//ncrunch: no coverage end
 
 		private void UpdateMusicVolume()
 		{
@@ -46,47 +52,63 @@ namespace $safeprojectname$
 
 		private void InitGame()
 		{
+			Show();
 			if (menu != null)
 				menu.Hide();
-
 			if (restartCommand != null && restartCommand.IsActive)
-				restartCommand.IsActive = false;
-
+				restartCommand.IsActive = false; //ncrunch: no coverage
+			if (backToMenuCommand != null && backToMenuCommand.IsActive)
+				backToMenuCommand.IsActive = false; //ncrunch: no coverage
 			if (gameOverMessage != null)
-				gameOverMessage.IsActive = false;
-
+				gameOverMessage.IsActive = false; //ncrunch: no coverage
 			score = new Score();
 			currentLevel = new Level(score);
 			ball = new BallInLevel(new Paddle(), currentLevel);
 			new UI(window, this);
-			score.GameOver += () => 
+			//ncrunch: no coverage start
+			score.GameOver += () =>
 			{
 				RemoveOldObjects();
-				gameOverMessage = new FontText(Font.Default, "That's it.\nGame Over!", Rectangle.One);
-				restartCommand = new Command(InitGame).Add(new KeyTrigger(Key.Space)).Add(new 
-					MouseButtonTrigger()).Add(new TouchTapTrigger());
+				gameOverMessage = new FontText(Font.Default, "That's it.\nGame Over!\n\nPress \"Q\" to " +
+					"go back to the Main Menu.", Rectangle.One);
+				restartCommand =
+					new Command(InitGame).Add(new KeyTrigger(Key.Space)).Add(new MouseButtonTrigger()).Add(
+						new TouchTapTrigger());
+				backToMenuCommand = new Command(BackToMainMenu).Add(new KeyTrigger(Key.Q));
 			};
+			//ncrunch: no coverage end
 			Score = score;
 		}
 
 		private Level currentLevel;
 
+		//ncrunch: no coverage start
 		private void RemoveOldObjects()
 		{
 			ball.Dispose();
 			currentLevel.Dispose();
 		}
+		//ncrunch: no coverage end
 
 		private BallInLevel ball;
 		private Score score;
 		private readonly Window window;
 		private Command restartCommand;
+		private Command backToMenuCommand;
 		private FontText gameOverMessage;
 
-		public Score Score
+		public Score Score { get; private set; }
+
+		private void BackToMainMenu()
 		{
-			get;
-			private set;
+			if (gameOverMessage != null)
+				gameOverMessage.IsActive = false;
+			if (backToMenuCommand != null)
+				backToMenuCommand.IsActive = false; //ncrunch: no coverage
+			if (restartCommand != null)
+				restartCommand.IsActive = false;
+			Hide();
+			menu.Show();
 		}
 	}
 }

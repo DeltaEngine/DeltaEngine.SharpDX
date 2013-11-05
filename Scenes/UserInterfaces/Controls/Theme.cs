@@ -25,7 +25,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			DefaultButtonAppearance();
 			DefaultDropdownListAppearance();
 			Font = Font.Default;
-			Label = new Material(new Size(4, 1), Color.Gray);
+			Label = new Material(new Size(4, 1), Color.TransparentWhite);
 			DefaultRadioButtonAppearance();
 			DefaultScrollbarAppearance();
 			DefaultSelectBoxAppearance();
@@ -140,10 +140,35 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		protected override void LoadData(Stream fileData)
 		{
 			var theme = (Theme)new BinaryReader(fileData).Create();
+			Label = theme.Label;
 			Button = theme.Button;
 			ButtonDisabled = theme.ButtonDisabled;
 			ButtonMouseover = theme.ButtonMouseover;
 			ButtonPressed = theme.ButtonPressed;
+			DropdownListBox = theme.DropdownListBox;
+			DropdownListBoxDisabled = theme.DropdownListBoxDisabled;
+			RadioButtonBackground = theme.RadioButtonBackground;
+			RadioButtonBackgroundDisabled = theme.RadioButtonBackgroundDisabled;
+			RadioButtonDisabled = theme.RadioButtonDisabled;
+			RadioButtonNotSelected = theme.RadioButtonNotSelected;
+			RadioButtonNotSelectedMouseover = theme.RadioButtonNotSelectedMouseover;
+			RadioButtonSelected = theme.RadioButtonSelected;
+			RadioButtonSelectedMouseover = theme.RadioButtonSelectedMouseover;
+			Scrollbar = theme.Scrollbar;
+			ScrollbarDisabled = theme.ScrollbarDisabled;
+			ScrollbarPointerMouseover = theme.ScrollbarPointerMouseover;
+			ScrollbarPointerDisabled = theme.ScrollbarPointerDisabled;
+			ScrollbarPointer = theme.ScrollbarPointer;
+			SelectBox = theme.SelectBox;
+			SelectBoxDisabled = theme.SelectBoxDisabled;
+			Slider = theme.Slider;
+			SliderDisabled = theme.SliderDisabled;
+			SliderPointer = theme.SliderPointer;
+			SliderPointerDisabled = theme.SliderPointerDisabled;
+			SliderPointerMouseover = theme.SliderPointerMouseover;
+			TextBox = theme.TextBox;
+			TextBoxFocused = theme.TextBoxFocused;
+			TextBoxDisabled = theme.TextBoxDisabled;
 		}
 	}
 }

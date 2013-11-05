@@ -15,6 +15,9 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void CreateMaterial()
 		{
 			material = new Material(Shader.Position2DUV, "EarthSpriteSheet");
+			Assert.IsNotNull(material.SpriteSheet);
+			Assert.AreEqual(12, material.SpriteSheet.UVs.Count);
+			Assert.AreEqual(new Size(107, 80), material.SpriteSheet.SubImageSize);
 		}
 
 		private Material material;
@@ -29,8 +32,8 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void CheckDurationFromMetaData()
 		{
 			var animation = new Sprite(material, center);
-			Assert.AreEqual(5, animation.Material.SpriteSheet.DefaultDuration);
-			Assert.AreEqual(5, animation.Material.Duration);
+			Assert.AreEqual(1, animation.Material.SpriteSheet.DefaultDuration);
+			Assert.AreEqual(1, animation.Material.Duration);
 		}
 
 		private readonly Rectangle center = Rectangle.FromCenter(Vector2D.Half, new Size(0.2f, 0.2f));

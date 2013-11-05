@@ -11,6 +11,7 @@ using DeltaEngine.Multimedia;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
+using DeltaEngine.Scenes;
 
 namespace GhostWars
 {
@@ -18,17 +19,20 @@ namespace GhostWars
 	{
 		public TreeManager(Team playerTeam)
 		{
+			gameScene = new Scene();
 			MainMenu.PlayerTeam = playerTeam;
 			if (MainMenu.State != GameState.CountDown)
 				MainMenu.State = GameState.Game;
 			statusText = new FontText(MainMenu.Font, "",
 				Rectangle.FromCenter(new Vector2D(0.5f, 0.25f), new Size(0.2f))) { RenderLayer = 5 };
 			statusText.Color = Team.HumanYellow.ToColor();
-			new Sprite(new Material(Shader.Position2DUV, "Logo"),
-				new Rectangle(0.02f, 0.205f, 0.15f, 0.15f)) { RenderLayer = -15 };
+			gameScene.Add(new Sprite(new Material(Shader.Position2DUV, "Logo"),
+				new Rectangle(0.02f, 0.205f, 0.15f, 0.15f)) { RenderLayer = -15 });
 			CreateArrowSelectionAndBars();
 			OnClickSelectTree();
 		}
+
+		private readonly Scene gameScene;
 
 		private readonly FontText statusText;
 
@@ -98,17 +102,17 @@ namespace GhostWars
 		{
 			var newTree = new Tree(position, team);
 			trees.Add(newTree);
+			gameScene.Add(newTree);
 			UpdateBars();
-			new Command(newTree.TryToUpgrade).
-				Add(new MouseHoldTrigger(newTree.DrawArea)).
-				Add(new TouchHoldTrigger(newTree.DrawArea));
+			new Command(newTree.TryToUpgrade).Add(new MouseHoldTrigger(newTree.DrawArea)).Add(
+				new TouchHoldTrigger(newTree.DrawArea));
 			new Command(
-				(start, end, dragDone) => MoveGhostsFromTreeToTree(start, end, dragDone, newTree)).
-				Add(new MouseDragTrigger()).
-				Add(new TouchDragTrigger());
+				(start, end, dragDone) => MoveGhostsFromTreeToTree(start, end, dragDone, newTree)).Add(
+					new MouseDragTrigger()).Add(new TouchDragTrigger());
 		}
 
-		private void MoveGhostsFromTreeToTree(Vector2D start, Vector2D end, bool dragDone, Tree startTree)
+		private void MoveGhostsFromTreeToTree(Vector2D start, Vector2D end, bool dragDone,
+			Tree startTree)
 		{
 			if (start.DistanceTo(startTree.DrawArea.Center) > 0.04f)
 				return;
@@ -120,7 +124,7 @@ namespace GhostWars
 			arrow.IsActive = false;
 			arrow = Effects.CreateArrow(startTree.Center, targetTree.Center);
 			arrow.Color = startTree.Team.ToColor();
-			arrow.IsVisible = dragDone ? false : true;
+			arrow.IsVisible = !dragDone;
 			if ((dragDone && Time.Total - lastWaveSend > TimeBetweenWaves ||
 				!dragDone && Time.CheckEvery(TimeBetweenWaves)) && startTree.NumberOfGhosts >= 1)
 			{
@@ -157,17 +161,17 @@ namespace GhostWars
 			Tree nearestTree = null;
 			foreach (var tree in trees)
 				if (tree != previousTree)
-			{
-				float treeDistance = tree.Center.DistanceTo(target);
-				if (previousTree != null)
-					treeDistance +=
-						Math.Abs(previousTree.Center.RotationTo(target) -
-							previousTree.Center.RotationTo(tree.Center)) / 500.0f;
-				if (treeDistance > nearestDistance)
-					continue;
-				nearestDistance = treeDistance;
-				nearestTree = tree;
-			}
+				{
+					float treeDistance = tree.Center.DistanceTo(target);
+					if (previousTree != null)
+						treeDistance +=
+							Math.Abs(previousTree.Center.RotationTo(target) -
+								previousTree.Center.RotationTo(tree.Center)) / 500.0f;
+					if (treeDistance > nearestDistance)
+						continue;
+					nearestDistance = treeDistance;
+					nearestTree = tree;
+				}
 			return nearestTree;
 		}
 
@@ -199,7 +203,7 @@ namespace GhostWars
 		{
 			if (AllTreesBelongTo(MainMenu.PlayerTeam))
 				HandleWinSitutation();
-			else if (AllTreesBelongTo(Team.ComputerTeal) || AllTreesBelongTo(Team.ComputerPurple))
+			else if (NoTreesBelongTo(MainMenu.PlayerTeam))
 				HandleLostSituation();
 			else if (Time.Total > 2.5f)
 				statusText.Text = "";
@@ -214,7 +218,10 @@ namespace GhostWars
 		{
 			statusText.Text = "";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUV, "YouWin"), Vector2D.Half) { RenderLayer = 4000 };
+			gameScene.Add(new Sprite(new Material(Shader.Position2DUV, "YouWin"), Vector2D.Half)
+			{
+				RenderLayer = 4000
+			});
 			if (GameFinished != null)
 				GameFinished();
 		}
@@ -225,7 +232,10 @@ namespace GhostWars
 		{
 			statusText.Text = "You Lost!";
 			MainMenu.State = GameState.GameOver;
-			new Sprite(new Material(Shader.Position2DUV, "GameOver"), Vector2D.Half) { RenderLayer = 4000 };
+			gameScene.Add(new Sprite(new Material(Shader.Position2DUV, "GameOver"), Vector2D.Half)
+			{
+				RenderLayer = 4000
+			});
 			if (GameLost != null)
 				GameLost();
 		}
@@ -240,7 +250,7 @@ namespace GhostWars
 				SendWave(tree, nearestFreeTree);
 			else if (tree.NumberOfGhosts > 15 && nearestTree != null)
 				SendWave(tree, nearestTree);
-			else if (tree.NumberOfGhosts > 45)
+			else if (tree.NumberOfGhosts > 25)
 				SendWave(tree, trees[Randomizer.Current.Get(0, trees.Count)]);
 		}
 
@@ -250,13 +260,13 @@ namespace GhostWars
 			Tree nearestTree = null;
 			foreach (var tree in trees)
 				if (tree.Team == Team.None)
-			{
-				float treeDistance = tree.Center.DistanceTo(sourceTree.Center);
-				if (treeDistance > nearestDistance)
-					continue;
-				nearestDistance = treeDistance;
-				nearestTree = tree;
-			}
+				{
+					float treeDistance = tree.Center.DistanceTo(sourceTree.Center);
+					if (treeDistance > nearestDistance)
+						continue;
+					nearestDistance = treeDistance;
+					nearestTree = tree;
+				}
 			return nearestTree;
 		}
 
@@ -282,6 +292,25 @@ namespace GhostWars
 			return trees.All(tree => tree.Team == team);
 		}
 
-		public bool IsPauseable { get { return true; } }
+		private bool NoTreesBelongTo(Team team)
+		{
+			return trees.All(tree => tree.Team != team);
+		}
+
+		public void RemoveTrees()
+		{
+			gameScene.Clear();
+			trees.Clear();
+			statusText.Text = "";
+			foreach (var bar in bars)
+			{
+				bar.IsVisible = false;
+			}
+		}
+
+		public bool IsPauseable
+		{
+			get { return true; }
+		}
 	}
 }

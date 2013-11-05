@@ -5,14 +5,14 @@ using DeltaEngine.Rendering2D;
 
 namespace SideScroller
 {
-	public class ParallaxBackground : Entity, Updateable
+	public class ParallaxBackground : Entity, RapidUpdateable
 	{
 		public ParallaxBackground(int numberOfLayers, string[] layerImageNames, float[] scrollFactors)
 		{
 			layers = new BackgroundLayer[numberOfLayers];
 			for (int i = 0; i < numberOfLayers; i++)
 				layers[i] = new BackgroundLayer(layerImageNames[i], scrollFactors[i]);
-			RenderLayer = 0;
+			RenderLayer = -(layerImageNames.Length + 1);
 		}
 
 		public int RenderLayer
@@ -28,7 +28,7 @@ namespace SideScroller
 		private readonly BackgroundLayer[] layers;
 		public float BaseSpeed { get; set; }
 
-		public void Update()
+		public void RapidUpdate()
 		{
 			foreach (var backgroundLayer in layers)
 				backgroundLayer.ScrollByBaseSpeed(BaseSpeed);
@@ -52,6 +52,22 @@ namespace SideScroller
 			internal void ScrollByBaseSpeed(float baseSpeed)
 			{
 				UV = UV.Move(baseSpeed * speedFactor * Time.Delta, 0.0f);
+			}
+		}
+
+		public override bool IsActive
+		{
+			get
+			{
+				return base.IsActive;
+			}
+			set
+			{
+				foreach (var backgroundLayer in layers)
+				{
+					backgroundLayer.IsActive = value;
+				}
+				base.IsActive = value;
 			}
 		}
 

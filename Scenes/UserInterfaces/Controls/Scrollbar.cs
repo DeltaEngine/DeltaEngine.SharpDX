@@ -8,20 +8,20 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Scrollbar : BaseSlider
 	{
+		protected Scrollbar() {}
+
 		public Scrollbar(Rectangle drawArea)
 			: this(Theme.Default, drawArea) {}
 
 		public Scrollbar(Theme theme, Rectangle drawArea)
 			: base(theme, theme.Scrollbar, drawArea)
 		{
-			Add(values = new Values { MinValue = 0, MaxValue = 99, LeftValue = 90, ValueWidth = 10 });
-			Add(Pointer = new Picture(theme, theme.ScrollbarPointer, Rectangle.Unused));
+			Add(new Data { MinValue = 0, MaxValue = 99, LeftValue = 90, ValueWidth = 10 });
+			Add(new Picture(theme, theme.ScrollbarPointer, Rectangle.Unused));
 			AddChild(Pointer);
 		}
 
-		private readonly Values values;
-
-		private class Values
+		private class Data
 		{
 			public int MinValue { get; set; }
 			public int MaxValue { get; set; }
@@ -81,41 +81,41 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 					leftValue = MaxValue - ValueWidth + 1;
 				if (leftValue < MinValue)
 					leftValue = MinValue;
-				Get<Values>().LeftValue = leftValue;
+				Get<Data>().LeftValue = leftValue;
 			}
 		}
 
 		public int LeftValue
 		{
-			get { return values.LeftValue; }
+			get { return Get<Data>().LeftValue; }
 		}
 
 		public int ValueWidth
 		{
-			get { return values.ValueWidth; }
+			get { return Get<Data>().ValueWidth; }
 			set
 			{
-				values.ValueWidth = value;
+				Get<Data>().ValueWidth = value;
 				CenterValue = CenterValue;
 			}
 		}
 
 		public int MinValue
 		{
-			get { return values.MinValue; }
+			get { return Get<Data>().MinValue; }
 			set
 			{
-				values.MinValue = value;
+				Get<Data>().MinValue = value;
 				CenterValue = CenterValue;
 			}
 		}
 
 		public int MaxValue
 		{
-			get { return values.MaxValue; }
+			get { return Get<Data>().MaxValue; }
 			set
 			{
-				values.MaxValue = value;
+				Get<Data>().MaxValue = value;
 				CenterValue = CenterValue;
 			}
 		}

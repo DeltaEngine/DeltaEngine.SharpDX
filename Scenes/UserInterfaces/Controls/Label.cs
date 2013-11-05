@@ -9,12 +9,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Label : Picture
 	{
-		protected Label()
-		{
-			fontText = new FontText(Theme.Font, "", GetFontTextDrawArea());
-			Add(fontText);
-			// Text needs to be extracted
-		}
+		protected Label() {}
 
 		public Label(Rectangle drawArea, string text = "")
 			: this(Theme.Default, drawArea, text) {}
@@ -28,23 +23,27 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		public string Text
 		{
-			get { return fontText.Text; }
+			get { return FontText.Text; }
 			set
 			{
-				if (fontText.Text == value)
+				if (FontText.Text == value)
 					return;
-				PreviousText = fontText.Text;
-				fontText.Text = value;
+				PreviousText = FontText.Text;
+				FontText.Text = value;
 			}
 		}
 
-		protected FontText fontText;
-		public string PreviousText { get; private set; }
+		protected FontText FontText
+		{
+			get { return Get<FontText>(); }
+		}
+
+		public string PreviousText { get; protected set; }
 
 		internal Label(Theme theme, Material material, Rectangle drawArea)
 			: base(theme, material, drawArea)
 		{
-			fontText = new FontText(theme.Font, "", GetFontTextDrawArea());
+			var fontText = new FontText(theme.Font, "", GetFontTextDrawArea());
 			Add(fontText);
 			AddChild(fontText);
 		}
@@ -56,16 +55,24 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		protected const float ReductionDueToBorder = 0.9f;
 
+		public override void Set(object component)
+		{
+			if (component is FontText)
+				ReplaceChild((FontText)component);
+			base.Set(component);
+		}
+
+		private void ReplaceChild(FontText text)
+		{
+			if (Contains<FontText>())
+				RemoveChild(Get<FontText>());
+			AddChild(text);
+		}
+
 		public override void Update()
 		{
 			base.Update();
-			fontText.DrawArea = GetFontTextDrawArea();
-		}
-
-		public void SetFontText()
-		{
-			fontText = new FontText(Theme.Font, Text, GetFontTextDrawArea());
-			Set(fontText);
+			FontText.DrawArea = GetFontTextDrawArea();
 		}
 	}
 }

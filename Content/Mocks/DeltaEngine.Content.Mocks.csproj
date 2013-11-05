@@ -69,6 +69,8 @@
     <Compile Include="MockContentLoader.cs" />
     <Compile Include="MockXmlContent.cs" />
     <Compile Include="MockSound.cs" />
+    <Compile Include="MockSpineAtlas.cs" />
+    <Compile Include="MockSpineSkeleton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

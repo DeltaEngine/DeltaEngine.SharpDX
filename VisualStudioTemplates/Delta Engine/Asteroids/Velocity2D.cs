@@ -3,6 +3,11 @@ using DeltaEngine.Extensions;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Component for any Entity moving around in 2D space with velocity limited to a maximum value
+	/// It can be accelerated (or decelerated, which is the same) by a vector, by magnitude and direction,
+	/// or by a scalar factor
+	/// </summary>
 	public class Velocity2D
 	{
 		public Velocity2D(Vector2D velocity, float maximumSpeed)
@@ -16,10 +21,7 @@ namespace $safeprojectname$
 
 		public Vector2D Velocity
 		{
-			get
-			{
-				return velocity;
-			}
+			get { return velocity; }
 			set
 			{
 				velocity = value;
@@ -36,8 +38,8 @@ namespace $safeprojectname$
 
 		public void Accelerate(float magnitude, float angle)
 		{
-			Velocity = new Vector2D(velocity.X + MathExtensions.Sin(angle) * magnitude, velocity.Y - 
-				MathExtensions.Cos(angle) * magnitude);
+			Velocity = new Vector2D(velocity.X + MathExtensions.Sin(angle) * magnitude,
+				velocity.Y - MathExtensions.Cos(angle) * magnitude);
 		}
 	}
 }

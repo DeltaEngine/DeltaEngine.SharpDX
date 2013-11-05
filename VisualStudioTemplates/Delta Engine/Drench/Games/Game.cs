@@ -16,7 +16,7 @@ namespace $safeprojectname$.Games
 			this.logic = logic;
 			buttonShader = ContentLoader.Load<Shader>("Position2DColorUV");
 			buttonImage = Theme.Default.Button.DiffuseMap;
-			buttons = new InteractiveButton[logic.Board.Width, logic.Board.Height];
+			buttons = new InteractiveButton[logic.Board.Width,logic.Board.Height];
 			ArrangeScene();
 			ScreenSpace.Current.ViewportSizeChanged += ArrangeScene;
 		}
@@ -54,36 +54,41 @@ namespace $safeprojectname$.Games
 
 		private void CreateButton(int x, int y)
 		{
-			if (buttons [x, y] != null)
-				buttons [x, y].IsActive = false;
-
+			if (buttons[x, y] != null)
+				buttons[x, y].IsActive = false;
 			var theme = CreateButtonTheme(x, y);
-			var drawArea = new Rectangle(buttonsLeft + x * buttonWidth, buttonsTop + y * 
-				buttonHeight, buttonWidth, buttonHeight);
-			buttons [x, y] = new InteractiveButton(theme, drawArea);
-			buttons [x, y].Clicked = () => ButtonClicked(x, y);
+			var drawArea = new Rectangle(buttonsLeft + x * buttonWidth, buttonsTop + y * buttonHeight,
+				buttonWidth, buttonHeight);
+			buttons[x, y] = new InteractiveButton(theme, drawArea);
+			buttons[x, y].Clicked = () => ButtonClicked(x, y);
 		}
 
 		private Theme CreateButtonTheme(int x, int y)
 		{
 			var color = logic.Board.GetColor(x, y);
-			var darkColor = new Color(color.RedValue * 0.7f, color.GreenValue * 0.7f, 
+			var darkColor = new Color(color.RedValue * 0.7f, color.GreenValue * 0.7f,
 				color.BlueValue * 0.7f);
-			var lightColor = new Color(color.RedValue * 0.85f, color.GreenValue * 0.85f, 
+			var lightColor = new Color(color.RedValue * 0.85f, color.GreenValue * 0.85f,
 				color.BlueValue * 0.85f);
-			return new Theme {
-				Button = new Material(buttonShader, buttonImage, buttonImage.PixelSize) {
-					DefaultColor = darkColor
-				},
-				ButtonMouseover = new Material(buttonShader, buttonImage, buttonImage.PixelSize) {
-					DefaultColor = lightColor
-				},
-				ButtonPressed = new Material(buttonShader, buttonImage, buttonImage.PixelSize) {
-					DefaultColor = color
-				},
-				ButtonDisabled = new Material(buttonShader, buttonImage, buttonImage.PixelSize) {
-					DefaultColor = Color.Gray
-				}
+			return new Theme
+			{
+				Button =
+					new Material(buttonShader, buttonImage, buttonImage.PixelSize)
+					{
+						DefaultColor = darkColor
+					},
+				ButtonMouseover =
+					new Material(buttonShader, buttonImage, buttonImage.PixelSize)
+					{
+						DefaultColor = lightColor
+					},
+				ButtonPressed =
+					new Material(buttonShader, buttonImage, buttonImage.PixelSize) { DefaultColor = color },
+				ButtonDisabled =
+					new Material(buttonShader, buttonImage, buttonImage.PixelSize)
+					{
+						DefaultColor = Color.Gray
+					}
 			};
 		}
 
@@ -99,7 +104,6 @@ namespace $safeprojectname$.Games
 			}
 			if (!ProcessDesiredMove(x, y))
 				return;
-
 			ArrangeScene();
 			if (logic.IsGameOver)
 				GameOver();
@@ -109,9 +113,8 @@ namespace $safeprojectname$.Games
 		{
 			for (int x = 0; x < logic.Board.Width; x++)
 				for (int y = 0; y < logic.Board.Height; y++)
-					if (buttons [x, y] != null)
-						buttons [x, y].IsActive = false;
-
+					if (buttons[x, y] != null)
+						buttons[x, y].IsActive = false;
 			upperText.IsActive = false;
 			lowerText.IsActive = false;
 			if (Exited != null)
@@ -119,9 +122,7 @@ namespace $safeprojectname$.Games
 		}
 
 		public event Action Exited;
-
 		protected abstract bool ProcessDesiredMove(int x, int y);
-
 		protected abstract void GameOver();
 	}
 }

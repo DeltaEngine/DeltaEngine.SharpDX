@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Datatypes;
+﻿using System;
+using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Commands
 {
@@ -8,6 +9,19 @@ namespace DeltaEngine.Commands
 	public abstract class DragTrigger : PositionTrigger
 	{
 		public Vector2D StartPosition { get; set; }
+		public DragDirection Direction { get; protected set; }
 		public bool DoneDragging { get; set; }
+
+		protected bool IsDragDirectionCorrect(Vector2D movementDirection)
+		{
+			if (Direction == DragDirection.Horizontal)
+				return Math.Abs(movementDirection.Y) < AllowedDragDirectionOffset;
+			if (Direction == DragDirection.Vertical)
+				return Math.Abs(movementDirection.X) < AllowedDragDirectionOffset;
+			return Direction == DragDirection.Free;
+		}
+
+		private const float AllowedDragDirectionOffset = 0.01f;
+
 	}
 }

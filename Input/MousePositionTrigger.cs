@@ -1,13 +1,14 @@
 ﻿using System;
 using DeltaEngine.Commands;
 using DeltaEngine.Extensions;
+using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Input
 {
 	/// <summary>
 	/// Tracks mouse movement with a mouse button in a prescribed state.
 	/// </summary>
-	public class MousePositionTrigger : PositionTrigger
+	public class MousePositionTrigger : PositionTrigger, MouseTrigger
 	{
 		public MousePositionTrigger(MouseButton button = MouseButton.Left, State state = State.Pressing)
 		{
@@ -32,6 +33,16 @@ namespace DeltaEngine.Input
 		protected override void StartInputDevice()
 		{
 			Start<Mouse>();
+		}
+
+		public void HandleWithMouse(Mouse mouse)
+		{
+			if (Position == mouse.Position)
+				return;
+			var isButton = mouse.GetButtonState(Button) == State;
+			Position = mouse.Position;
+			if (isButton && ScreenSpace.Current.Viewport.Contains(mouse.Position))
+				Invoke();
 		}
 	}
 }

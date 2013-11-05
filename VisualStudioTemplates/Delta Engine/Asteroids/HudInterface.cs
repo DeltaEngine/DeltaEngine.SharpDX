@@ -12,22 +12,16 @@ namespace $safeprojectname$
 		public HudInterface()
 		{
 			hudFont = ContentLoader.Load<Font>("Tahoma30");
-			ScoreDisplay = new FontText(hudFont, "0", new 
-				Rectangle(ScreenSpace.Current.Viewport.Left, ScreenSpace.Current.Viewport.Top, 0.1f, 
+			ScoreDisplay = new FontText(hudFont, "0",
+				new Rectangle(ScreenSpace.Current.Viewport.Left, ScreenSpace.Current.Viewport.Top, 0.1f,
 					0.05f));
-			ScoreDisplay.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
-			gameOverText = new FontText(ContentLoader.Load<Font>("Verdana12"), "", 
-				Rectangle.FromCenter(0.5f, 0.5f, 0.8f, 0.4f));
-			gameOverText.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
+			ScoreDisplay.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+			GameOverText = new FontText(ContentLoader.Load<Font>("Verdana12"), "", Rectangle.FromCenter(0.5f, 0.5f, 0.8f, 0.4f));
+			GameOverText.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
 		}
 
 		private readonly Font hudFont;
-
-		public FontText ScoreDisplay
-		{
-			get;
-			private set;
-		}
+		public FontText ScoreDisplay { get; private set; }
 
 		public void SetScoreText(int score)
 		{
@@ -36,21 +30,20 @@ namespace $safeprojectname$
 
 		public void SetGameOverText()
 		{
-			gameOverText.Text = "Game Over!\n\n[Space] / Controller (A) - Restart\n[Esc] / " +
-				"Controller (B)- Back to Menu";
-			gameOverText.IsVisible = true;
+			GameOverText.Text = "Game Over!\n\n[Space] / Controller (A) - Restart\n[Esc] / Controller (B)- Back to Menu";
+			GameOverText.IsVisible = true;
 		}
 
-		private readonly FontText gameOverText;
+		public FontText GameOverText { get; private set; }
 
 		public void SetIngameMode()
 		{
-			gameOverText.IsVisible = false;
+			GameOverText.IsVisible = false;
 		}
 
 		public void Dispose()
 		{
-			gameOverText.IsActive = false;
+			GameOverText.IsActive = false;
 			ScoreDisplay.IsActive = false;
 		}
 	}

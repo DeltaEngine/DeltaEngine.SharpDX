@@ -142,6 +142,7 @@ namespace DeltaEngine.Rendering2D.Tests
 		{
 			var entity = new Entity2D(Rectangle.HalfCentered);
 			entity.OnDraw<MockDrawBehavior>();
+			Assert.AreEqual(0, entity.NumberOfComponents);
 			var data = BinaryDataExtensions.SaveToMemoryStream(entity);
 			byte[] savedBytes = data.ToArray();
 			int bytesForName = "Entity2D".Length + 1;
@@ -194,8 +195,8 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void GetComponentsForEntityDebugger()
 		{
 			var entityWithComponent = new Entity2D(Rectangle.HalfCentered);
-			List<object> components = entityWithComponent.GetComponentsForSaving();
-			Assert.AreEqual(2, components.Count);
+			List<object> components = entityWithComponent.GetComponentsForEditing();
+			Assert.AreEqual(5, components.Count);
 			Assert.AreEqual(Rectangle.HalfCentered, GetComponent<Rectangle>(components));
 			Assert.IsTrue(GetComponent<bool>(components));
 		}

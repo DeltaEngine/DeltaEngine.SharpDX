@@ -29,7 +29,7 @@ namespace DeltaEngine.Rendering2D
 				material.DiffuseMap != null ? material.DiffuseMap.BlendMode : BlendMode.Normal);
 			if (material.DefaultColor != DefaultColor)
 				Color = material.DefaultColor;
-			OnDraw<SpriteBatchRenderer>();
+			OnDraw<SpriteRenderer>();
 			if (material.Animation != null)
 				Start<UpdateImageAnimation>();
 			if (material.SpriteSheet != null)
@@ -42,13 +42,13 @@ namespace DeltaEngine.Rendering2D
 
 		internal RenderingData renderingData;
 		internal RenderingData lastRenderingData;
+		public bool IsPlaying { get; set; }
 
-		public override sealed void Set(object component)
+		public override void Set(object component)
 		{
 			if (component is RenderingData)
 			{
-				EntitiesRunner.Current.CheckIfInUpdateState();
-				renderingData = (RenderingData)component;
+				lastRenderingData = renderingData = (RenderingData)component;
 				return;
 			}
 			if (component is Material)
@@ -61,11 +61,7 @@ namespace DeltaEngine.Rendering2D
 		public override sealed void SetWithoutInterpolation<T>(T component)
 		{
 			if (typeof(T) == typeof(RenderingData))
-			{
-				EntitiesRunner.Current.CheckIfInUpdateState();
-				renderingData = (RenderingData)(object)component;
-				lastRenderingData = renderingData;
-			}
+				lastRenderingData = renderingData = (RenderingData)(object)component;
 			else
 				base.SetWithoutInterpolation(component);
 		}
@@ -103,22 +99,33 @@ namespace DeltaEngine.Rendering2D
 
 		public Rectangle UV
 		{
-			get { return Get<RenderingData>().RequestedUserUV; }
-			set { Set(Material.RenderingCalculator.GetUVAndDrawArea(value, DrawArea, FlipMode)); }
+			get { return renderingData.RequestedUserUV; }
+			set { renderingData = Material.RenderingCalculator.GetUVAndDrawArea(value, DrawArea, FlipMode); }
+		}
+
+		public Rectangle LastUV
+		{
+			get { return lastRenderingData.RequestedUserUV; }
+			set
+			{
+				lastRenderingData = Material.RenderingCalculator.GetUVAndDrawArea(value, LastDrawArea,
+					FlipMode);
+			}
 		}
 
 		public FlipMode FlipMode
 		{
-			get { return Get<RenderingData>().FlipMode; }
-			set { Set(Material.RenderingCalculator.GetUVAndDrawArea(UV, DrawArea, value)); }
+			get { return renderingData.FlipMode; }
+			set 
+			{ 
+				lastRenderingData = renderingData = 
+					Material.RenderingCalculator.GetUVAndDrawArea(UV, DrawArea, value); 
+			}
 		}
 
 		public Material Material
 		{
-			get
-			{
-				return cachedMaterial;
-			}
+			get { return cachedMaterial; }
 			set
 			{
 				Set(value);
@@ -126,7 +133,6 @@ namespace DeltaEngine.Rendering2D
 					BlendMode = value.DiffuseMap.BlendMode;
 			}
 		}
-
 		private Material cachedMaterial;
 
 		public BlendMode BlendMode
@@ -134,17 +140,7 @@ namespace DeltaEngine.Rendering2D
 			get { return cachedBlendMode; }
 			set { Set(value); }
 		}
-
 		private BlendMode cachedBlendMode;
-
-		public void SetUVWithoutInterpolation(Rectangle uv)
-		{
-			SetWithoutInterpolation(Material.RenderingCalculator.GetUVAndDrawArea(uv, DrawArea, FlipMode));
-		}
-
-		public float Elapsed { get; set; }
-		public int CurrentFrame { get; set; }
-		public bool IsPlaying { get; set; }
 
 		public void Reset()
 		{
@@ -155,6 +151,9 @@ namespace DeltaEngine.Rendering2D
 			else
 				Elapsed = 0.0f;
 		}
+
+		public float Elapsed { get; set; }
+		public int CurrentFrame { get; set; }
 
 		internal void InvokeAnimationEndedAndReset()
 		{

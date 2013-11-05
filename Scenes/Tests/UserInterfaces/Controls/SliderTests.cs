@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using DeltaEngine.Commands;
+using DeltaEngine.Content;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
@@ -17,14 +19,15 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[SetUp]
 		public void SetUp()
 		{
-			slider = new Slider(Center);
+			center = Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.1f);
+			slider = new Slider(center);
 			slider.Add(new FontText(Font.Default, "", new Rectangle(0.5f, 0.7f, 0.2f, 0.1f)));
 			slider.Start<DisplaySliderValue>();
 			InitializeMouse();
 		}
 
 		private Slider slider;
-		private static readonly Rectangle Center = Rectangle.FromCenter(0.5f, 0.5f, 0.5f, 0.1f);
+		private static Rectangle center;
 
 		private class DisplaySliderValue : UpdateBehavior
 		{
@@ -132,13 +135,13 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void ValidatePointerCenter()
 		{
 			DragMouse(new Vector2D(0.42f, 0.52f));
-			var center = slider.Pointer.DrawArea.Center;
-			Assert.IsTrue(center.IsNearlyEqual(new Vector2D(0.419f, 0.5f)), center.ToString());
+			var pointerCenter = slider.Pointer.DrawArea.Center;
+			Assert.IsTrue(pointerCenter.IsNearlyEqual(new Vector2D(0.419f, 0.5f)), pointerCenter.ToString());
 		}
 
 		private void DragMouse(Vector2D position)
 		{
-			SetMouseState(State.Pressing, position + new Vector2D(0.1f, 0.1f));
+			SetMouseState(State.Pressing, position + new Vector2D(0.01f, 0.01f));
 			SetMouseState(State.Pressing, position);
 		}
 
@@ -197,6 +200,39 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			var position = new Vector2D(0.42f, 0.52f);
 			DragMouse(position);
 			Assert.AreEqual(slider.Value, sliderValue);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			slider.MinValue = 1;
+			slider.Value = 2;
+			slider.MaxValue = 3;
+			var stream = BinaryDataExtensions.SaveToMemoryStream(slider);
+			var loadedSlider = (Slider)stream.CreateFromMemoryStream();
+			Assert.AreEqual(center, loadedSlider.DrawArea);
+			Assert.AreEqual(1, loadedSlider.MinValue);
+			Assert.AreEqual(2, loadedSlider.Value);
+			Assert.AreEqual(3, loadedSlider.MaxValue);
+			Assert.AreEqual(slider.Get<Picture>().Material.DefaultColor,
+				loadedSlider.Get<Picture>().Material.DefaultColor);
+		}
+
+		[Test]
+		public void DrawLoadedSlider()
+		{
+			slider.Value = 70;
+			var stream = BinaryDataExtensions.SaveToMemoryStream(slider);
+			slider.IsActive = false;
+			stream.CreateFromMemoryStream();
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void LoadSceneWithASlider()
+		{
+			var loadedScene = ContentLoader.Load<Scene>("SceneWithASlider");
+			var loadedslider = loadedScene.Controls[0] as Slider;
+			Assert.AreEqual(2, loadedslider.GetActiveBehaviors().Count);
 		}
 	}
 }

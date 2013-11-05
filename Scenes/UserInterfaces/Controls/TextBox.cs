@@ -8,6 +8,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class TextBox : Label, KeyboardControllable
 	{
+		protected TextBox() {}
+
 		public TextBox(Rectangle drawArea, string text = "")
 			: this(Theme.Default, drawArea, text) {}
 
@@ -15,6 +17,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			: base(theme, theme.TextBox, drawArea)
 		{
 			Text = text;
+			PreviousText = text;
 			State.CanHaveFocus = true;
 			Start<Keyboard>();
 		}

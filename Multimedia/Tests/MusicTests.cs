@@ -17,19 +17,19 @@ namespace DeltaEngine.Multimedia.Tests
 	public class MusicTests : TestWithMocksOrVisually
 	{
 		[Test]
-		public void PlayMusicSettingsVolume()
+		public void PlayMusic()
 		{
 			ContentLoader.Load<Music>("DefaultMusic").Play();
 		}
 
 		[Test]
-		public void PlayMusicDifferingVolume()
+		public void PlayMusicWithHalfVolume()
 		{
 			ContentLoader.Load<Music>("DefaultMusic").Play(0.5f);			
 		}
 
 		[Test]
-		public void PlayMusicLoop()
+		public void PlayMusicLooped()
 		{
 			var music = ContentLoader.Load<Music>("DefaultMusic");
 			music.Loop = true;

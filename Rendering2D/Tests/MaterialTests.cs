@@ -58,7 +58,7 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void Load3DMaterial()
 		{
-			var material = ContentLoader.Load<Material>("3DMaterial");
+			var material = ContentLoader.Load<Material>("Material3D");
 			var shader = material.Shader as ShaderWithFormat;
 			Assert.IsTrue(shader.Format.Is3D);
 		}
@@ -79,14 +79,14 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void SaveAndLoadImageMaterial()
 		{
-			SaveAndLoadMaterialAndCompare(new Material(Shader.Position2DUV, "Earth"));
+			SaveAndLoadMaterialAndCompare(new Material(Shader.Position2DUV, "EarthSpriteSheet"));
 		}
 
 		[Test]
 		public void SaveAndLoadCustomMaterial()
 		{
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DUV);
-			var image = ContentLoader.Load<Image>("Earth");
+			var image = ContentLoader.Load<Image>("EarthImages");
 			SaveAndLoadMaterialAndCompare(new Material(shader, image, image.PixelSize));
 		}
 

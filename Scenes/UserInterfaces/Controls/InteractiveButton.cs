@@ -1,5 +1,4 @@
-﻿using DeltaEngine.Content;
-using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
 {
@@ -9,6 +8,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class InteractiveButton : Button
 	{
+		protected InteractiveButton() {}
+
 		public InteractiveButton(Rectangle drawArea, string text = "")
 			: this(Theme.Default, drawArea, text) {}
 

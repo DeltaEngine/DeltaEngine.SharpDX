@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
@@ -8,9 +9,9 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 	public class EllipseTests : TestWithMocksOrVisually
 	{
 		[Test, ApproveFirstFrameScreenshot]
-		public void RenderRedTransparentEllipse()
+		public void RenderRedEllipse()
 		{
-			new Ellipse(Vector2D.Half, 0.4f, 0.2f, new Color(1.0f, 0.0f, 0.0f, 0.5f));
+			new Ellipse(Vector2D.Half, 0.4f, 0.2f, Color.Red);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -34,6 +35,13 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			ellipse2.OnDraw<DrawPolygon2D>();
 		}
 
+		[Test, ApproveFirstFrameScreenshot]
+		public void RenderRedTransparentEllipse()
+		{
+			Resolve<Window>().BackgroundColor = Color.Yellow;
+			new Ellipse(Vector2D.Half, 0.4f, 0.2f, new Color(1.0f, 0.0f, 0.0f, 0.5f));
+		}
+
 		[Test, CloseAfterFirstFrame]
 		public void ChangeRadius()
 		{
@@ -47,7 +55,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		{
 			var ellipse = new Ellipse(Rectangle.One, Color.White);
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(50, ellipse.Get<List<Vector2D>>().Count);
+			Assert.AreEqual(49, ellipse.Get<List<Vector2D>>().Count);
 		}
 
 		[Test, CloseAfterFirstFrame]

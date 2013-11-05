@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using DeltaEngine.Core;
 using DeltaEngine.Multimedia;
 
 namespace DeltaEngine.Content.Mocks
@@ -10,8 +9,8 @@ namespace DeltaEngine.Content.Mocks
 	/// </summary>
 	public class MockSound : Sound
 	{
-		public MockSound(string contentName, Settings settings)
-			: base(contentName, settings) { }
+		public MockSound(string contentName)
+			: base(contentName) {}
 
 		protected override void LoadData(Stream fileData) { }
 

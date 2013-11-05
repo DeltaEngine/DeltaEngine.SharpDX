@@ -5,7 +5,8 @@ namespace $safeprojectname$.Games
 {
 	public class TwoHumanGame : TwoPlayerGame
 	{
-		public TwoHumanGame(int width, int height) : base(new TwoHumanLogic(width, height))
+		public TwoHumanGame(int width, int height)
+			: base(new TwoHumanLogic(width, height))
 		{
 			UpdateText("", "");
 		}
@@ -19,7 +20,7 @@ namespace $safeprojectname$.Games
 			else
 				ReportMoveInvalid();
 			while (!logic.HasPlayerAnyValidMoves(logic.ActivePlayer) && !logic.IsGameOver)
-				logic.Pass();
+				logic.Pass(); //ncrunch: no coverage
 			return isValid;
 		}
 
@@ -34,7 +35,7 @@ namespace $safeprojectname$.Games
 			if (logic.ActivePlayer == 0)
 				UpdateText("- Invalid Move!", "");
 			else
-				UpdateText("", "- Invalid Move!");
+				UpdateText("", "- Invalid Move!"); //ncrunch: no coverage
 		}
 	}
 }

@@ -61,7 +61,7 @@ namespace DeltaEngine.Graphics.SharpDX
 			};
 		}
 
-		public RasterizerState Get2DRasterizerState(DXDevice device)
+		public RasterizerState GetCullBackRasterizerState(DXDevice device)
 		{
 			return rasterizerState2D ??
 				(rasterizerState2D = new RasterizerState(device, GetRasterizer(CullMode.Back)));
@@ -87,10 +87,10 @@ namespace DeltaEngine.Graphics.SharpDX
 			return rasterizerDescription;
 		}
 
-		public RasterizerState Get3DRasterizerState(DXDevice device)
+		public RasterizerState GetNoCullingRasterizerState(DXDevice device)
 		{
 			return rasterizerState3D ??
-				(rasterizerState3D = new RasterizerState(device, GetRasterizer(CullMode.Front)));
+				(rasterizerState3D = new RasterizerState(device, GetRasterizer(CullMode.None)));
 		}
 
 		private RasterizerState rasterizerState3D;

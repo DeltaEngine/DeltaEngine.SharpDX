@@ -21,7 +21,7 @@ namespace DeltaEngine.Tests.Content
 		[Test]
 		public void ContentLoadWithNullStream()
 		{
-			Assert.DoesNotThrow(() => ContentLoader.Load<DynamicXmlMockContent>("XmlContentWithNoPath"));
+			ContentLoader.Load<DynamicXmlMockContent>("XmlContentWithNoPath");
 		}
 
 		[Test]
@@ -35,16 +35,14 @@ namespace DeltaEngine.Tests.Content
 		public void ThrowExceptionIfSecondContentLoaderInstanceIsUsed()
 		{
 			ContentLoader.Exists("abc");
-			Assert.Throws
-				<ContentLoader.ContentLoaderAlreadyExistsItIsOnlyAllowedToSetBeforeTheAppStarts>(
-					() => ContentLoader.Use<FakeContentLoader>());
+			Assert.Throws<ContentLoader.ContentLoaderAlreadyExistsItIsOnlyAllowedToSetBeforeTheAppStarts>(
+				ContentLoader.Use<FakeContentLoader>);
 		}
 
 		[Test]
 		public void LoadDefaultDataIfAllowed()
 		{
-			Assert.DoesNotThrow(
-				() => ContentLoader.Load<DynamicXmlMockContent>("UnavailableDynamicContent"));
+			ContentLoader.Load<DynamicXmlMockContent>("UnavailableDynamicContent");
 		}
 
 		private class DynamicXmlMockContent : ContentData

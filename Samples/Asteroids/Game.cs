@@ -16,6 +16,7 @@ namespace Asteroids
 		public Game(Window window)
 		{
 			this.window = window;
+			window.ViewportPixelSize = Settings.Current.Resolution;
 			screenSpace = new Camera2DScreenSpace(window);
 			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1)
 				? 1 / window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
@@ -27,11 +28,14 @@ namespace Asteroids
 			mainMenu.QuitGame += window.CloseAfterFrame;
 			InteractionLogics = new InteractionLogics();
 			mainMenu.UpdateHighscoreDisplay(highScores);
+			//ncrunch: no coverage start
 			window.ViewportSizeChanged += size =>
 			{
+				Settings.Current.Resolution = size;
 				if (GameState == GameState.MainMenu)
 					screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio;
 			};
+			//ncrunch: no coverage end
 		}
 
 		private int[] highScores;
@@ -43,7 +47,7 @@ namespace Asteroids
 		{
 			var highscorePath = GetHighscorePath();
 			if (!File.Exists(highscorePath))
-				return;
+				return; //ncrunch: no coverage, can't use files in mocks
 			using (var stream = File.OpenRead(highscorePath))
 			{
 				var reader = new StreamReader(stream);
@@ -57,13 +61,13 @@ namespace Asteroids
 				"DeltaEngine", "Asteroids", "Highscores");
 		}
 
-		private void GetHighscoresFromString(string highscoreString)
+		public void GetHighscoresFromString(string highscoreString)
 		{
 			if (string.IsNullOrEmpty(highscoreString))
 				return;
 			var partitions = highscoreString.SplitAndTrim(new[] { ',', ' ' });
 			highScores = new int[10];
-			for (int i = 0; i < partitions.Length; i++)
+			for (int i = 0; i < highScores.Length; i++)
 				try
 				{
 					highScores[i] = int.Parse(partitions[i]);
@@ -85,7 +89,7 @@ namespace Asteroids
 			InteractionLogics.BeginGame();
 			SetUpEvents();
 			controls.SetControlsToState(GameState);
-			hudInterface = new HudInterface();
+			HudInterface = new HudInterface();
 		}
 
 		private void SetUpEvents()
@@ -94,7 +98,7 @@ namespace Asteroids
 			InteractionLogics.IncreaseScore += increase =>
 			{
 				score += increase;
-				hudInterface.SetScoreText(score);
+				HudInterface.SetScoreText(score);
 			};
 		}
 
@@ -102,7 +106,7 @@ namespace Asteroids
 		private int score;
 		public InteractionLogics InteractionLogics { get; private set; }
 		public GameState GameState;
-		private HudInterface hudInterface;
+		public HudInterface HudInterface { get; private set; }
 
 		private void SetUpBackground()
 		{
@@ -118,29 +122,31 @@ namespace Asteroids
 			InteractionLogics.Player.IsActive = false;
 			GameState = GameState.GameOver;
 			controls.SetControlsToState(GameState);
-			hudInterface.SetGameOverText();
+			HudInterface.SetGameOverText();
 		}
 
 		public void RestartGame()
 		{
 			InteractionLogics.Restart();
 			score = 0;
-			hudInterface.SetScoreText(score);
-			hudInterface.SetIngameMode();
+			HudInterface.SetScoreText(score);
+			HudInterface.SetIngameMode();
 			GameState = GameState.Playing;
 			controls.SetControlsToState(GameState);
 		}
 
+		//ncrunch: no coverage start
 		public void BackToMenu()
 		{
 			Hide();
 			InteractionLogics.DisposeObjects();
 			controls.SetControlsToState(GameState.MainMenu);
-			hudInterface.Dispose();
+			HudInterface.Dispose();
 			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1)
 				? 1 / window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
 			mainMenu.Show();
 		}
+		//ncrunch: no coverage end
 
 		private void RefreshHighScores()
 		{
@@ -149,6 +155,7 @@ namespace Asteroids
 			SaveHighScore();
 		}
 
+		//ncrunch: no coverage start
 		private void AddLastScoreToHighscoreIfQualified()
 		{
 			if (score <= highScores[highScores.Length - 1])
@@ -175,6 +182,7 @@ namespace Asteroids
 				else
 					highScores[i] = scoreBuffer[i];
 		}
+		//ncrunch: no coverage end
 
 		private void SaveHighScore()
 		{

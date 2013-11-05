@@ -2,6 +2,10 @@ using System;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Each brick can either be dead or alive, has a color and the bounding
+	/// rectangle for rendering and collision detection.
+	/// </summary>
 	public class Score
 	{
 		public Score()
@@ -9,12 +13,7 @@ namespace $safeprojectname$
 			Level = InitialLevel;
 		}
 
-		public int Level
-		{
-			get;
-			private set;
-		}
-
+		public int Level { get; private set; }
 		private const int InitialLevel = 1;
 
 		public void NextLevel()
@@ -47,8 +46,8 @@ namespace $safeprojectname$
 
 		public override string ToString()
 		{
-			return "Level: " + Level + ", Score: " + points + (lives == 0 ? " - GAME OVER" : ", " +
-				"Lives: " + lives);
+			return "Level: " + Level + ", Score: " + points +
+				(lives == 0 ? " - GAME OVER" : ", Lives: " + lives);
 		}
 	}
 }

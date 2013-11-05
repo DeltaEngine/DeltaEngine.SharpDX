@@ -7,8 +7,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Button : Label
 	{
-		protected Button()
-		{}
+		protected Button() {}
 
 		public Button(Rectangle drawArea, string text = "")
 			: this(Theme.Default, drawArea, text) {}

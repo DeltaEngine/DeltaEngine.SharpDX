@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
-using Randomizer = DeltaEngine.Core.Randomizer;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 {
@@ -81,49 +80,16 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		}
 
 		[Test]
-		public void RenderLabelsThatChangeColorWhenInsideRubberBandSelection()
+		public void HiddenLabelDoesNotRender()
 		{
 			label.IsVisible = false;
-			CreateLabels();
-			CreateRubberBand();
 		}
 
-		private static void CreateLabels()
+		[Test]
+		public void InactiveLabelDoesNotRender()
 		{
-			for (int i = 1; i <= 10; i++)
-				new Label(CreateRandomRectangle()).Start<ChangeColorIfInsideMouseDrag>();
+			label.IsActive = false;
 		}
-
-		private static Rectangle CreateRandomRectangle()
-		{
-			return Rectangle.FromCenter(Randomizer.Current.Get(0.2f, 0.8f),
-				Randomizer.Current.Get(0.3f, 0.7f), Randomizer.Current.Get(0.05f, 0.15f),
-				Randomizer.Current.Get(0.05f, 0.15f));
-		}
-
-		//ncrunch: no coverage start
-		private class ChangeColorIfInsideMouseDrag : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (Label label in entities)
-					label.Color = label.DrawArea.Contains(label.State.DragStart) ? Color.Red : Color.Blue;
-			}
-		}
-		//ncrunch: no coverage end
-
-		private static void CreateRubberBand()
-		{
-			var rectangle = new FilledRect(Rectangle.Unused, TransparentWhite);
-			new Command((start, end, done) => //ncrunch: no coverage start
-			{
-				rectangle.DrawArea = Rectangle.FromCorners(start, end);
-				if (done)
-					rectangle.DrawArea = Rectangle.Unused;
-			}).Add(new MouseDragTrigger()).Add(new TouchDragTrigger()); //ncrunch: no coverage end
-		}
-
-		private static readonly Color TransparentWhite = new Color(1.0f, 1.0f, 1.0f, 0.3f);
 
 		[Test]
 		public void RenderLabelAttachedToMouse()
@@ -133,31 +99,53 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		}
 
 		[Test]
-		public void ChangeColorIfInsideRotatedLabel()
+		public void ReportIfInsideRotatedLabel()
 		{
 			label.Text = "";
 			label.Rotation = 30;
-			label.Start<ChangeColorIfMouseInside>();
+			label.Start<ChangeLabelText>();
 		}
 
 		//ncrunch: no coverage start
-		private class ChangeColorIfMouseInside : UpdateBehavior
+		private class ChangeLabelText : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
 			{
 				foreach (Label label in entities)
 				{
-					label.Color = label.State.IsInside ? Color.Red : Color.White;
-					label.Text = "Relative Mouse Position: " + label.State.RelativePointerPosition;
+					string isInside = label.State.IsInside ? "Inside" : "Outside";
+					label.Text = isInside + " - Relative Mouse Position: " +
+						label.State.RelativePointerPosition;
 				}
 			}
 		}
+
 		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void ColorDoesNotInterpolateAtCreation()
 		{
 			Assert.AreEqual(label.Color, label.LastColor);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(label);
+			var loadedLabel = (Label)stream.CreateFromMemoryStream();
+			Assert.AreEqual(Center, loadedLabel.DrawArea);
+			Assert.AreEqual("Hello World", loadedLabel.Text);
+			Assert.AreEqual(label.children.Count, loadedLabel.children.Count);
+		}
+
+		[Test]
+		public void DrawLoadedLabel()
+		{
+			label.Text = "Original";
+			var stream = BinaryDataExtensions.SaveToMemoryStream(label);
+			var loadedLabel = (Label)stream.CreateFromMemoryStream();
+			loadedLabel.Text = "Loaded";
+			loadedLabel.DrawArea = loadedLabel.DrawArea.Move(0.0f, 0.15f);
 		}
 	}
 }

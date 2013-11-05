@@ -200,7 +200,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			public override void Update()
 			{ //ncrunch: no coverage start
 				base.Update();
-				if (scrollbar.RightValue == scrollbar.MaxValue)
+				if (Scrollbar.RightValue == Scrollbar.MaxValue)
 					WasRead = true;
 			} //ncrunch: no coverage end
 

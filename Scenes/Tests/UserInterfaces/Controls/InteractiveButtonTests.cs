@@ -1,4 +1,5 @@
 ﻿using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
@@ -52,7 +53,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void DefaultsToEnabled()
 		{
 			Assert.IsTrue(button.IsEnabled);
-			Assert.AreEqual(Color.Gray, button.Color);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -121,6 +121,25 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			new Command(point => button.DrawArea = Rectangle.FromCenter(point, button.DrawArea.Size)).
 				Add(new MouseMovementTrigger());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(button);
+			var loadedButton = (InteractiveButton)stream.CreateFromMemoryStream();
+			Assert.AreEqual(Center, loadedButton.DrawArea);
+			Assert.AreEqual("Click Me", loadedButton.Text);
+		}
+
+		[Test]
+		public void DrawLoadedButton()
+		{
+			button.Text = "Original";
+			var stream = BinaryDataExtensions.SaveToMemoryStream(button);
+			var loadedButton = (InteractiveButton)stream.CreateFromMemoryStream();
+			loadedButton.Text = "Loaded";
+			loadedButton.DrawArea = loadedButton.DrawArea.Move(0.0f, 0.15f);
 		}
 	}
 }

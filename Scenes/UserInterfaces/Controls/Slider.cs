@@ -9,20 +9,20 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Slider : BaseSlider
 	{
+		protected Slider() {}
+
 		public Slider(Rectangle drawArea)
 			: this(Theme.Default, drawArea) {}
 
 		public Slider(Theme theme, Rectangle drawArea)
 			: base(theme, theme.Slider, drawArea)
 		{
-			Add(values = new Values { MinValue = 0, Value = 100, MaxValue = 100 });
-			Add(Pointer = new Picture(theme, theme.SliderPointer, Rectangle.Unused));
+			Add(new Data { MinValue = 0, Value = 100, MaxValue = 100 });
+			Add(new Picture(theme, theme.SliderPointer, Rectangle.Unused));
 			AddChild(Pointer);
 		}
 
-		private readonly Values values;
-
-		private class Values
+		private class Data
 		{
 			public int MinValue { get; set; }
 			public int Value { get; set; }
@@ -81,20 +81,20 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		public int MinValue
 		{
-			get { return values.MinValue; }
-			set { values.MinValue = value; }
+			get { return Get<Data>().MinValue; }
+			set { Get<Data>().MinValue = value; }
 		}
 
 		public int Value
 		{
-			get { return values.Value; }
-			set { values.Value = value; }
+			get { return Get<Data>().Value; }
+			set { Get<Data>().Value = value; }
 		}
 
 		public int MaxValue
 		{
-			get { return values.MaxValue; }
-			set { values.MaxValue = value; }
+			get { return Get<Data>().MaxValue; }
+			set { Get<Data>().MaxValue = value; }
 		}
 	}
 }

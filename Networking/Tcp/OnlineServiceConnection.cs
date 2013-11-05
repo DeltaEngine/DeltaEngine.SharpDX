@@ -31,7 +31,8 @@ namespace DeltaEngine.Networking.Tcp
 			var serverError = message as ServerError;
 			var unknownMessage = message as UnknownMessage;
 			var ready = message as ContentReady;
-			var content = message as UpdateContent;
+			var deleteContent = message as DeleteContent;
+			var updateContent = message as UpdateContent;
 			if (serverError != null && ServerErrorHappened != null)
 				ServerErrorHappened(serverError.Error);
 			else if (unknownMessage != null && ServerErrorHappened != null)
@@ -48,7 +49,7 @@ namespace DeltaEngine.Networking.Tcp
 				if (ContentReady != null)
 					ContentReady();
 			}
-			else if (content != null && ContentReceived != null)
+			else if ((deleteContent != null || updateContent != null) && ContentReceived != null)
 				ContentReceived();
 		}
 

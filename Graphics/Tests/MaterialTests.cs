@@ -31,7 +31,7 @@ namespace DeltaEngine.Graphics.Tests
 		{
 			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
 			Assert.AreEqual("DefaultMaterial", loadedMaterial.Name);
-			Assert.AreEqual("Position3DUV", loadedMaterial.Shader.Name);
+			Assert.AreEqual("Position2DUV", loadedMaterial.Shader.Name);
 			Assert.AreEqual("DeltaEngineLogo", loadedMaterial.DiffuseMap.Name);
 			Assert.AreEqual(Color.White, loadedMaterial.DefaultColor);
 		}
@@ -40,15 +40,14 @@ namespace DeltaEngine.Graphics.Tests
 		public void LoadSavedMaterialWithPadding()
 		{
 			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
-			loadedMaterial.RenderingCalculator =
-				new RenderingCalculator(new AtlasRegion
-				{
-					PadLeft = 0.5f,
-					PadRight = 0.5f,
-					PadTop = 0.5f,
-					PadBottom = 0.5f,
-					IsRotated = false
-				});
+			loadedMaterial.RenderingCalculator = new RenderingCalculator(new AtlasRegion
+			{
+				PadLeft = 0.5f,
+				PadRight = 0.5f,
+				PadTop = 0.5f,
+				PadBottom = 0.5f,
+				IsRotated = false
+			});
 			var result = loadedMaterial.RenderingCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
 				Rectangle.One, FlipMode.None);
 			Assert.AreEqual(result.RequestedUserUV, Rectangle.HalfCentered);
@@ -58,15 +57,14 @@ namespace DeltaEngine.Graphics.Tests
 		public void LoadSavedMaterialWithClearPadding()
 		{
 			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
-			loadedMaterial.RenderingCalculator =
-				new RenderingCalculator(new AtlasRegion
-				{
-					PadLeft = 0,
-					PadRight = 0,
-					PadTop = 0,
-					PadBottom = 0,
-					IsRotated = false
-				});
+			loadedMaterial.RenderingCalculator = new RenderingCalculator(new AtlasRegion
+			{
+				PadLeft = 0,
+				PadRight = 0,
+				PadTop = 0,
+				PadBottom = 0,
+				IsRotated = false
+			});
 			var result = loadedMaterial.RenderingCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
 				Rectangle.One, FlipMode.None);
 			Assert.AreEqual(result.RequestedUserUV, Rectangle.HalfCentered);
@@ -76,15 +74,14 @@ namespace DeltaEngine.Graphics.Tests
 		public void LoadSavedMaterialWithRotation()
 		{
 			var loadedMaterial = ContentLoader.Load<Material>("DefaultMaterial");
-			loadedMaterial.RenderingCalculator =
-				new RenderingCalculator(new AtlasRegion
-				{
-					PadLeft = 0.5f,
-					PadRight = 0.5f,
-					PadTop = 0.5f,
-					PadBottom = 0.5f,
-					IsRotated = true
-				});
+			loadedMaterial.RenderingCalculator = new RenderingCalculator(new AtlasRegion
+			{
+				PadLeft = 0.5f,
+				PadRight = 0.5f,
+				PadTop = 0.5f,
+				PadBottom = 0.5f,
+				IsRotated = true
+			});
 			var result = loadedMaterial.RenderingCalculator.GetUVAndDrawArea(Rectangle.HalfCentered,
 				Rectangle.One, FlipMode.None);
 			Assert.AreEqual(result.RequestedUserUV, Rectangle.HalfCentered);

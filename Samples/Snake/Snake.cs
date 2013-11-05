@@ -23,9 +23,9 @@ namespace Snake
 			var body = Get<Body>();
 			foreach (var bodyPart in body.BodyParts)
 				bodyPart.IsActive = false;
+			Stop<SnakeHandler>();
 			Get<Body>().BodyParts.Clear();
 			Remove<Body>();
-			Stop<SnakeHandler>();
 		}
 
 		internal class SnakeHandler : UpdateBehavior
@@ -37,6 +37,8 @@ namespace Snake
 					if (!Time.CheckEvery(0.15f))
 						return;
 					var body = entity.Get<Body>();
+					if(body.BodyParts.Count < 2)
+						return;
 					body.MoveBody();
 					body.CheckSnakeCollidesWithChunk();
 					body.CheckSnakeCollisionWithBorderOrItself();

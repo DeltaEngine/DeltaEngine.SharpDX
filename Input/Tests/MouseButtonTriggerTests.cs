@@ -1,7 +1,9 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
@@ -44,6 +46,20 @@ namespace DeltaEngine.Input.Tests
 			Assert.AreEqual(State.Pressed, trigger.State);
 			Assert.Throws<MouseButtonTrigger.CannotCreateMouseButtonTriggerWithoutButton>(
 				() => new MouseButtonTrigger(""));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void IsTriggered()
+		{
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
+			var trigger = new MouseButtonTrigger(MouseButton.Right, State.Pressed);
+			bool invoked = false;
+			trigger.Invoked += () => invoked = true;
+			var mouse = Resolve<MockMouse>();
+			mouse.SetButtonState(MouseButton.Right, State.Pressed);
+			AdvanceTimeAndUpdateEntities();
+			Assert.True(invoked);
 		}
 	}
 }

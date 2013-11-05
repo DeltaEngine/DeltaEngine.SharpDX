@@ -26,6 +26,7 @@ namespace Asteroids.Tests
 			Assert.GreaterOrEqual(EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count, 1);
 		}
 
+		//ncrunch: no coverage start
 		[Test, CloseAfterFirstFrame, Ignore]
 		public void ProjectileAndAsteroidDisposedOnCollision()
 		{
@@ -35,6 +36,7 @@ namespace Asteroids.Tests
 			AdvanceTimeAndUpdateEntities(1.0f);
 			Assert.IsFalse(projectile.IsActive);
 		}
+		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void PlayerShipAndAsteroidCollidingResultsInGameOver()
@@ -46,6 +48,12 @@ namespace Asteroids.Tests
 			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
 			AdvanceTimeAndUpdateEntities(0.2f);
 			Assert.IsTrue(gameOver);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void InteractionLogicsIsPauseable()
+		{
+			Assert.IsTrue(interactionLogics.IsPauseable);
 		}
 	}
 }

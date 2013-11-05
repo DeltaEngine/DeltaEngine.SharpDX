@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Input;
+﻿using DeltaEngine.Datatypes;
+using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Platforms.Mocks;
@@ -10,83 +11,59 @@ namespace SideScroller.Tests
 	{
 		private void CreateGameControls()
 		{
-			gameControls = new GameControls();
+			controlledPlayer = new PlayerPlane(Vector2D.Half);
+			playerControls = new PlayerControls(controlledPlayer);
 		}
 
-		private GameControls gameControls;
+		private PlayerControls playerControls;
+		private PlayerPlane controlledPlayer;
 
 		[Test]
 		public void TestAscendControls()
 		{
 			CreateGameControls();
-			bool ascended = false;
-			gameControls.Ascend += () => { ascended = true; };
+			var originalVeocity = controlledPlayer.Get<Velocity2D>().Velocity;
 			if (resolver.GetType() != typeof(MockResolver))
 				return;//ncrunch: no coverage
-			var keyboard = Resolve<MockKeyboard>();
+			var keyboard = (MockKeyboard)Resolve<Keyboard>();
 			keyboard.SetKeyboardState(Key.W, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
-			Assert.IsTrue(ascended);
+			Assert.Less(controlledPlayer.Get<Velocity2D>().Velocity.Y, originalVeocity.Y);
 		}
 
 		[Test]
 		public void TestSinkControls()
 		{
 			CreateGameControls();
-			bool sinking = false;
-			gameControls.Sink += () => { sinking = true; };
+			var originalVeocity = controlledPlayer.Get<Velocity2D>().Velocity;
 			if (resolver.GetType() != typeof(MockResolver))
 				return;//ncrunch: no coverage
-			var keyboard = Resolve<MockKeyboard>();
+			var keyboard = (MockKeyboard)Resolve<Keyboard>();
 			keyboard.SetKeyboardState(Key.S, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
-			Assert.IsTrue(sinking);
+			Assert.Greater(controlledPlayer.Get<Velocity2D>().Velocity.Y, originalVeocity.Y);
 		}
 
 		[Test]
 		public void TestAccelerateControls()
 		{
 			CreateGameControls();
-			bool accelerated = false;
-			gameControls.Accelerate += () => { accelerated = true; };
 			if (resolver.GetType() != typeof(MockResolver))
 				return;//ncrunch: no coverage
-			var keyboard = Resolve<MockKeyboard>();
+			var keyboard = (MockKeyboard)Resolve<Keyboard>();
 			keyboard.SetKeyboardState(Key.D, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
-			Assert.IsTrue(accelerated);
 		}
 
 		[Test]
 		public void TestSlowDownControls()
 		{
 			CreateGameControls();
-			bool slowingDown = false;
-			gameControls.SlowDown += () => { slowingDown = true; };
 			if (resolver.GetType() != typeof(MockResolver))
 				return;//ncrunch: no coverage
-			var keyboard = Resolve<MockKeyboard>();
+			var keyboard = (MockKeyboard)Resolve<Keyboard>();
 			keyboard.SetKeyboardState(Key.A, State.Pressed);
 			AdvanceTimeAndUpdateEntities();
-			Assert.IsTrue(slowingDown);
-		}
-
-		[Test]
-		public void TestShootingControls()
-		{
-			CreateGameControls();
-			bool fireing = false;
-			gameControls.Fire += () => { fireing = true; };
-			gameControls.HoldFire += () => { fireing = false; };
-			if (resolver.GetType() != typeof(MockResolver))
-				return;//ncrunch: no coverage
-			var keyboard = Resolve<MockKeyboard>();
-			keyboard.SetKeyboardState(Key.Space, State.Pressing);
-			AdvanceTimeAndUpdateEntities();
-			Assert.IsTrue(fireing);
-			keyboard.SetKeyboardState(Key.Space, State.Releasing);
-			AdvanceTimeAndUpdateEntities();
-			Assert.IsFalse(fireing);
 		}
 	}
 }

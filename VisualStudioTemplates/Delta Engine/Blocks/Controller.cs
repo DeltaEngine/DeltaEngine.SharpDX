@@ -7,9 +7,12 @@ using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
-	public class Controller : Entity
+	/// <summary>
+	/// Handles the falling and upcoming blocks.
+	/// </summary>
+	public sealed class Controller : Entity
 	{
-		public Controller(Orientation displayMode, BlocksContent content)
+		public Controller(Orientation displayMode, $safeprojectname$Content content)
 		{
 			this.content = content;
 			this.displayMode = displayMode;
@@ -18,7 +21,7 @@ namespace $safeprojectname$
 			Start<InteractionHandler>();
 		}
 
-		public readonly BlocksContent content;
+		public readonly $safeprojectname$Content content;
 		public readonly Orientation displayMode;
 
 		public event Action<int> AddToScore;
@@ -28,18 +31,13 @@ namespace $safeprojectname$
 		{
 			if (UpcomingBlock == null)
 				CreateUpcomingBlock();
-
 			FallingBlock = UpcomingBlock;
 			CreateUpcomingBlock();
-			while (IsABrickOnTopRowOrIsNoRoomForNextBlock())
+			if (IsABrickOnTopRowOrIsNoRoomForNextBlock())
 				GameLost();
 		}
 
-		public Block UpcomingBlock
-		{
-			get;
-			internal set;
-		}
+		public Block UpcomingBlock { get; internal set; }
 
 		private void CreateUpcomingBlock()
 		{
@@ -50,12 +48,7 @@ namespace $safeprojectname$
 		}
 
 		private readonly Vector2D upcomingBlockCenter = new Vector2D(9, -4);
-
-		public Block FallingBlock
-		{
-			get;
-			internal set;
-		}
+		public Block FallingBlock { get; internal set; }
 
 		private bool IsABrickOnTopRowOrIsNoRoomForNextBlock()
 		{
@@ -66,20 +59,34 @@ namespace $safeprojectname$
 		{
 			List<int> validStartingPositions = Get<Grid>().GetValidStartingColumns(FallingBlock);
 			if (validStartingPositions.Count == 0)
-				return false;
-
+				return false; //ncrunch: no coverage
 			int column = Randomizer.Current.Get(0, validStartingPositions.Count);
-			FallingBlock.Left = validStartingPositions [column];
+			FallingBlock.Left = validStartingPositions[column];
 			return true;
 		}
 
 		private void GameLost()
 		{
+			Stop<InteractionHandler>();
 			Get<Soundbank>().GameLost.Play();
-			Get<Grid>().Clear();
-			totalRowsRemoved = 0;
 			if (Lose != null)
 				Lose();
+			GetRidOfGameObjects();
+			ReinitializeGame();
+		}
+
+		private void GetRidOfGameObjects()
+		{
+			Get<Grid>().Clear();
+			totalRowsRemoved = 0;
+			UpcomingBlock = null;
+			FallingBlock = null;
+		}
+
+		private void ReinitializeGame()
+		{
+			GetNewFallingBlock();
+			Start<InteractionHandler>();
 		}
 
 		private void MoveFallingBlock()
@@ -88,7 +95,6 @@ namespace $safeprojectname$
 			FallingBlock.UpdateBrickDrawAreas(FallSpeed);
 			if (Get<Grid>().IsValidPosition(FallingBlock))
 				return;
-
 			FallingBlock.Top = top;
 			FallingBlock.UpdateBrickDrawAreas(0.0f);
 			Settle();
@@ -99,7 +105,6 @@ namespace $safeprojectname$
 			settling += FallSpeed * Time.Delta;
 			if (settling < SettleTime)
 				return;
-
 			AffixBlock();
 			settling = 0.0f;
 		}
@@ -109,24 +114,14 @@ namespace $safeprojectname$
 
 		private float FallSpeed
 		{
-			get
-			{
-				return IsFallingFast ? FastFallSpeed : SlowFallSpeed;
-			}
+			get { return IsFallingFast ? FastFallSpeed : SlowFallSpeed; }
 		}
 
-		public bool IsFallingFast
-		{
-			get;
-			set;
-		}
+		public bool IsFallingFast { get; set; }
 
 		private float SlowFallSpeed
 		{
-			get
-			{
-				return BaseSpeed + totalRowsRemoved * SpeedUpPerRowRemoved;
-			}
+			get { return BaseSpeed + totalRowsRemoved * SpeedUpPerRowRemoved; }
 		}
 
 		private const float BaseSpeed = 2.0f;
@@ -148,10 +143,12 @@ namespace $safeprojectname$
 		{
 			if (rowsRemoved == 0)
 				Get<Soundbank>().BlockAffixed.Play();
+			//ncrunch: no coverage start
 			else if (rowsRemoved == 1)
 				Get<Soundbank>().RowRemoved.Play();
 			else
 				Get<Soundbank>().MultipleRowsRemoved.Play();
+			//ncrunch: no coverage end
 		}
 
 		private const int RowRemovedBonus = 10;
@@ -159,9 +156,8 @@ namespace $safeprojectname$
 
 		public void MoveBlockLeftIfPossible()
 		{
-			if (FallingBlock == null)
+			if(FallingBlock == null)
 				return;
-
 			FallingBlock.Left--;
 			if (Get<Grid>().IsValidPosition(FallingBlock))
 				Get<Soundbank>().BlockMoved.Play();
@@ -174,9 +170,8 @@ namespace $safeprojectname$
 
 		public void MoveBlockRightIfPossible()
 		{
-			if (FallingBlock == null)
+			if(FallingBlock == null)
 				return;
-
 			FallingBlock.Left++;
 			if (Get<Grid>().IsValidPosition(FallingBlock))
 				Get<Soundbank>().BlockMoved.Play();
@@ -198,6 +193,7 @@ namespace $safeprojectname$
 				Get<Soundbank>().BlockCouldntMove.Play();
 			}
 		}
+
 		internal class InteractionHandler : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
@@ -207,14 +203,15 @@ namespace $safeprojectname$
 					var controller = entity as Controller;
 					if (controller.FallingBlock == null)
 						controller.GetNewFallingBlock();
-
 					controller.MoveFallingBlock();
 					controller.UpdateElapsed();
 					if (controller.elapsed >= BlockMoveInterval)
-						controller.MoveBlock();
+						controller.MoveBlock(); //ncrunch: no coverage
 				}
 			}
 		}
+
+		//ncrunch: no coverage start
 		internal void MoveBlock()
 		{
 			elapsed -= BlockMoveInterval;
@@ -224,6 +221,7 @@ namespace $safeprojectname$
 			if (isBlockMovingRight)
 				MoveBlockRightIfPossible();
 		}
+		//ncrunch: no coverage end
 
 		private const float BlockMoveInterval = 0.166f;
 

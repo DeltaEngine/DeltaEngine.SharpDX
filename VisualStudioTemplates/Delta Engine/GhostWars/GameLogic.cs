@@ -2,6 +2,9 @@ using DeltaEngine.Datatypes;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Helpful values to change some of the appearance and game logic.
+	/// </summary>
 	public static class GameLogic
 	{
 		public static float GhostSize = 1.0f;

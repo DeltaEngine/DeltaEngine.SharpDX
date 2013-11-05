@@ -5,6 +5,8 @@ namespace $safeprojectname$
 {
 	internal class Program : App
 	{
+		//ncrunch: no coverage start
+		//Program does not really do anything and running from a test fixture causes conflicts
 		public Program()
 		{
 			new Game(Resolve<Window>());
@@ -14,5 +16,6 @@ namespace $safeprojectname$
 		{
 			new Program().Run();
 		}
+		//ncrunch: no coverage end
 	}
 }

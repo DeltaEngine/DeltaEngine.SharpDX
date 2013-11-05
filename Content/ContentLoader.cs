@@ -88,10 +88,10 @@ namespace DeltaEngine.Content
 
 		public static bool Exists(string contentName)
 		{
-			return CurrentLoaderGetMetaData(contentName) != null;
+			return GetMetaDataFromCurrentLoader(contentName) != null;
 		}
 
-		private static ContentMetaData CurrentLoaderGetMetaData(string contentName)
+		private static ContentMetaData GetMetaDataFromCurrentLoader(string contentName)
 		{
 			MakeSureContentLoaderHasBeenCreated();
 			resolver.MakeSureResolverIsInitializedAndContentIsReady();
@@ -100,7 +100,7 @@ namespace DeltaEngine.Content
 
 		public static bool Exists(string contentName, ContentType type)
 		{
-			var metaData = CurrentLoaderGetMetaData(contentName);
+			var metaData = GetMetaDataFromCurrentLoader(contentName);
 			return metaData != null && metaData.Type == type;
 		}
 
@@ -132,7 +132,7 @@ namespace DeltaEngine.Content
 		private static void LoadContentDefaultDataWhenNotFound(ContentData contentData)
 		{
 			if (!current.GetType().Name.StartsWith("Mock"))
-				Logger.Warning("Content not found: " + contentData); // ncrunch: no coverage
+				Logger.Warning("Content not found: " + contentData); //ncrunch: no coverage
 			contentData.InternalCreateDefault();
 		}
 
@@ -226,6 +226,12 @@ namespace DeltaEngine.Content
 		{
 			if (current.resources.ContainsKey(key))
 				current.resources.Clear();
+		}
+
+		protected void ClearBufferedRessources()
+		{
+			if(resources != null)
+				resources.Clear();
 		}
 	}
 }

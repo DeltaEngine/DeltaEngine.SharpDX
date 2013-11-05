@@ -5,26 +5,24 @@ using DeltaEngine.Core;
 namespace DeltaEngine.Multimedia
 {
 	/// <summary>
-	/// Provides a way to load and play a music file.
+	/// Provides a way to load and play music files. Usually setup in Scenes.
 	/// </summary>
 	public abstract class Music : ContentData
 	{
-		protected Music(string contentName, SoundDevice device, Settings settings)
+		protected Music(string contentName, SoundDevice device)
 			: base(contentName)
 		{
 			this.device = device;
-			this.settings = settings;
 			Loop = false;
 		}
 
 		protected readonly SoundDevice device;
-		private readonly Settings settings;
 
 		public void Play()
 		{
 			device.RegisterCurrentMusic(this);
-			PlayNativeMusic(settings.MusicVolume);
-			cachedVolume = settings.MusicVolume;
+			cachedVolume = Settings.Current.MusicVolume;
+			PlayNativeMusic(cachedVolume);
 		}
 
 		protected float cachedVolume;
@@ -71,9 +69,9 @@ namespace DeltaEngine.Multimedia
 		public bool Loop { protected get; set; }
 
 		//ncrunch: no coverage start
-		public class MusicNotFoundOrAccessible : Exception
+		public class CouldNotLoadMusicFromFilestream : Exception
 		{
-			public MusicNotFoundOrAccessible(string musicName, Exception innerException)
+			public CouldNotLoadMusicFromFilestream(string musicName, Exception innerException)
 				: base(musicName, innerException) {}
 		}
 	}

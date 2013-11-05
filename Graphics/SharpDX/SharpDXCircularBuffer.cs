@@ -96,7 +96,6 @@ namespace DeltaEngine.Graphics.SharpDX
 
 		protected override void DrawChunk(Chunk chunk)
 		{
-			sharpDXDevice.Set2DRasterizerState();
 			if (UsesIndexBuffer)
 				DrawChunkWithIndices(chunk);
 			else

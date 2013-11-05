@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Extensions;
 using DeltaEngine.Networking.Messages;
@@ -38,32 +37,33 @@ namespace DeltaEngine.Content.Online
 		public void RefreshMetaData()
 		{
 			metaData.Clear();
-			lock (XmlFile)
-				ParseXmlNode(XmlFile.Root);
+			lock (ProjectMetaDataFile)
+				ParseXmlNode(ProjectMetaDataFile.Root);
 		}
 
-		private XmlFile XmlFile
+		private XmlFile ProjectMetaDataFile
 		{
 			get
 			{
-				if (file != null)
-					return file;
-				if (File.Exists(ContentMetaDataFilePath))
-					file = new XmlFile(ContentMetaDataFilePath);
-				else
-				{
-					var root = new XmlData("ContentMetaData");
-					root.AddAttribute("Name",
-						ProjectName ?? AssemblyExtensions.GetEntryAssemblyForProjectName());
-					root.AddAttribute("Type", "Scene");
-					root.AddAttribute("LastTimeUpdated", DateTime.Now.GetIsoDateTime());
-					root.AddAttribute("ContentDeviceName", "Windows");
-					file = new XmlFile(root);
-				}
-				return file;
+				if (projectMetaDataFile == null)
+					InitializeProjectMetaDataFile();
+				return projectMetaDataFile;
 			}
 		}
-		protected XmlFile file;
+
+		protected XmlFile projectMetaDataFile;
+
+		private void InitializeProjectMetaDataFile()
+		{
+			if (File.Exists(ContentMetaDataFilePath))
+				projectMetaDataFile = new XmlFile(ContentMetaDataFilePath);
+			else
+			{
+				string activeProject = ProjectName ?? AssemblyExtensions.GetEntryAssemblyForProjectName();
+				XmlData root = XmlMetaDataExtensions.CreateProjectMetaData(activeProject, "Windows");
+				projectMetaDataFile = new XmlFile(root);
+			}
+		}
 
 		private void ParseXmlNode(XmlData currentNode)
 		{
@@ -126,6 +126,7 @@ namespace DeltaEngine.Content.Online
 			var newProject = message as SetProject;
 			var receivedFile = message as UpdateContent;
 			var deletedFile = message as DeleteContent;
+			var contentReady = message as ContentReady;
 			if (login != null)
 				SendCheckProjectContent();
 			else if (newProject != null)
@@ -134,13 +135,15 @@ namespace DeltaEngine.Content.Online
 				UpdateLocalContent(receivedFile);
 			else if (deletedFile != null)
 				DeleteLocalContent(deletedFile);
+			else if (contentReady != null && ContentReady != null)
+				ContentReady();
 		}
 
 		protected void SendCheckProjectContent()
 		{
-			if (XmlFile.Root.GetAttributeValue("Name") == "DeltaEngine.Editor")
+			if (ProjectMetaDataFile.Root.GetAttributeValue("Name") == "DeltaEngine.Editor")
 				return;
-			connection.Send(new CheckProjectContent(XmlFile.Root.ToXmlString()));
+			connection.Send(new CheckProjectContent(ProjectMetaDataFile.Root.ToXmlString()));
 		}
 
 		protected void VerifyProject(SetProject newProject)
@@ -148,7 +151,7 @@ namespace DeltaEngine.Content.Online
 			if (newProject.Permissions == ProjectPermissions.None)
 				throw new NoPermissionToUseProject(newProject.ProjectName);
 			ProjectName = newProject.ProjectName;
-			XmlFile.Root.UpdateAttribute("Name", newProject.ProjectName);
+			ProjectMetaDataFile.Root.UpdateAttribute("Name", newProject.ProjectName);
 			SaveXmlFile();
 		}
 
@@ -156,8 +159,8 @@ namespace DeltaEngine.Content.Online
 		{
 			if (!Directory.Exists(contentPath))
 				Directory.CreateDirectory(contentPath);
-			lock (XmlFile)
-				XmlFile.Save(ContentMetaDataFilePath);
+			lock (ProjectMetaDataFile)
+				ProjectMetaDataFile.Save(ContentMetaDataFilePath);
 		}
 
 		private class NoPermissionToUseProject : Exception
@@ -170,7 +173,7 @@ namespace DeltaEngine.Content.Online
 
 		private void UpdateLocalContent(UpdateContent content)
 		{
-			UpdateContentMetaDataFile(content.MetaData, XmlFile.Root);
+			UpdateContentMetaDataFile(content.MetaData, ProjectMetaDataFile.Root);
 			UpdateLastTimeUpdatedFile();
 			SaveXmlFile();
 			foreach (var contentFile in content.OptionalFiles)
@@ -183,9 +186,7 @@ namespace DeltaEngine.Content.Online
 		private static void UpdateContentMetaDataFile(ContentMetaData entry, XmlData parent)
 		{
 			RemoveExistingEntry(entry, parent);
-			var child = new XmlData("ContentMetaData");
-			parent.AddChild(child);
-			child.Attributes.AddRange(ParseAttributes(entry));
+			parent.AddMetaDataEntry(entry);
 		}
 
 		private static void RemoveExistingEntry(ContentMetaData entry, XmlData parent)
@@ -198,27 +199,9 @@ namespace DeltaEngine.Content.Online
 				}
 		}
 
-		private static IEnumerable<XmlAttribute> ParseAttributes(ContentMetaData entry)
-		{
-			var attributes = new List<XmlAttribute>();
-			attributes.Add(new XmlAttribute("Name", entry.Name));
-			attributes.Add(new XmlAttribute("Type", entry.Type));
-			attributes.Add(new XmlAttribute("LastTimeUpdated", entry.LastTimeUpdated.GetIsoDateTime()));
-			if (entry.Language != null)
-				attributes.Add(new XmlAttribute("Language", entry.Language));
-			if (!string.IsNullOrEmpty(entry.LocalFilePath))
-				attributes.Add(new XmlAttribute("LocalFilePath", entry.LocalFilePath));
-			if (entry.PlatformFileId != 0)
-				attributes.Add(new XmlAttribute("PlatformFileId", entry.PlatformFileId));
-			if (entry.FileSize != 0)
-				attributes.Add(new XmlAttribute("FileSize", entry.FileSize));
-			attributes.AddRange(entry.Values.Select(value => new XmlAttribute(value.Key, value.Value)));
-			return attributes;
-		}
-
 		private void UpdateLastTimeUpdatedFile()
 		{
-			XmlFile.Root.UpdateAttribute("LastTimeUpdated", DateTime.Now.GetIsoDateTime());
+			ProjectMetaDataFile.Root.UpdateAttribute("LastTimeUpdated", DateTime.Now.GetIsoDateTime());
 		}
 
 		public event Action<ContentType, string> ContentUpdated;
@@ -226,13 +209,13 @@ namespace DeltaEngine.Content.Online
 		private void DeleteLocalContent(DeleteContent content)
 		{
 			XmlData entryToDelete = null;
-			foreach (var child in XmlFile.Root.Children)
+			foreach (var child in ProjectMetaDataFile.Root.Children)
 				if (child.GetAttributeValue("Name").Compare(content.ContentName))
 					entryToDelete = child;
 			if (entryToDelete == null)
 				return;
 			DeleteFiles(entryToDelete);
-			XmlFile.Root.RemoveChild(entryToDelete);
+			ProjectMetaDataFile.Root.RemoveChild(entryToDelete);
 			UpdateLastTimeUpdatedFile();
 			SaveXmlFile();
 			if (ContentDeleted != null)
@@ -250,13 +233,14 @@ namespace DeltaEngine.Content.Online
 
 		private bool NoContentEntryUsesFile(XmlData entry, string localFilePath)
 		{
-			foreach (var child in XmlFile.Root.Children)
+			foreach (var child in ProjectMetaDataFile.Root.Children)
 				if (child != entry && child.GetAttributeValue("LocalFilePath").Compare(localFilePath))
 					return false;
 			return true;
 		}
 
 		public event Action<string> ContentDeleted;
+		public event Action ContentReady;
 
 		protected override bool HasValidContentAndMakeSureItIsLoaded()
 		{
@@ -264,8 +248,8 @@ namespace DeltaEngine.Content.Online
 				return true;
 			isContentReady = File.Exists(ContentMetaDataFilePath);
 			if (isContentReady)
-				lock (XmlFile)
-					ParseXmlNode(XmlFile.Root);
+				lock (ProjectMetaDataFile)
+					ParseXmlNode(ProjectMetaDataFile.Root);
 			return isContentReady;
 		}
 

@@ -69,11 +69,13 @@ namespace DeltaEngine.Core
 		private static void IncreaseNestingDepth()
 		{
 			//ncrunch: no coverage start
-			if (nestingDepth++ > 8)
+			if (nestingDepth++ > MaximumNestingDepth)
 				throw new NotSupportedException("Nesting depth got too big in '" + topLevelTypeToCreate +
 					"'. Investigate the stack trace and only save types that are actually data types!");
 			//ncrunch: no coverage end
 		}
+
+		private const int MaximumNestingDepth = 9;
 
 		private static object GetDefault(Type type)
 		{

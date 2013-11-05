@@ -166,21 +166,27 @@ namespace DeltaEngine.Graphics.SharpDX
 			}
 		}
 
-		public void Set2DRasterizerState()
-		{
-			Context.Rasterizer.State = states.Get2DRasterizerState(nativeDevice);
-		}
-
-		public void Set3DRasterizerState()
-		{
-			Context.Rasterizer.State = states.Get3DRasterizerState(nativeDevice);
-		}
-
 		public override CircularBuffer CreateCircularBuffer(ShaderWithFormat shader,
 			BlendMode blendMode, VerticesMode drawMode = VerticesMode.Triangles)
 		{
 			return new SharpDXCircularBuffer(this, shader, blendMode, drawMode);
 		}
+		
+		public override bool CullBackFaces
+		{
+			get { return cullBackFaces; }
+			set
+			{
+				if (cullBackFaces == value)
+					return;
+				cullBackFaces = value;
+				Context.Rasterizer.State = cullBackFaces
+					? states.GetCullBackRasterizerState(nativeDevice)
+					: states.GetNoCullingRasterizerState(nativeDevice);
+			}
+		}
+
+		private bool cullBackFaces;
 
 		public override void DisableDepthTest()
 		{

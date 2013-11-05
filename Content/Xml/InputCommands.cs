@@ -41,10 +41,10 @@ namespace DeltaEngine.Content.Xml
 			Command.Register(Command.RightClick, ParseTriggers(rightClick));
 			var moveLeft = new XmlData("Command");
 			moveLeft.AddChild("KeyTrigger", "CursorLeft Pressed");
-			Command.Register(Command.MoveRight, ParseTriggers(moveLeft));
+			Command.Register(Command.MoveLeft, ParseTriggers(moveLeft));
 			var moveRight = new XmlData("Command");
 			moveRight.AddChild("KeyTrigger", "CursorRight Pressed");
-			Command.Register(Command.MoveLeft, ParseTriggers(moveRight));
+			Command.Register(Command.MoveRight, ParseTriggers(moveRight));
 			var moveUp = new XmlData("Command");
 			moveUp.AddChild("KeyTrigger", "CursorUp Pressed");
 			Command.Register(Command.MoveUp, ParseTriggers(moveUp));

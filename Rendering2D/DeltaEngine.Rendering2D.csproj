@@ -46,12 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BatchRenderer.cs" />
     <Compile Include="Entity2D.cs" />
     <Compile Include="Entity2DExtensions.cs" />
     <Compile Include="SimplePhysics.cs" />
     <Compile Include="Sprite.cs" />
-    <Compile Include="SpriteBatch.cs" />
-    <Compile Include="SpriteBatchRenderer.cs" />
+    <Compile Include="Batch.cs" />
+    <Compile Include="SpriteRenderer.cs" />
     <Compile Include="UpdateImageAnimation.cs" />
     <Compile Include="UpdateSpriteSheetAnimation.cs" />
     <Compile Include="UpdateRenderingCalculations.cs" />

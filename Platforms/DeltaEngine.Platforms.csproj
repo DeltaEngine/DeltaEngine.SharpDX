@@ -66,6 +66,10 @@
       <Project>{5231706E-2955-43BF-9C06-291E12AF5C5C}</Project>
       <Name>DeltaEngine.Networking</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rendering2D\DeltaEngine.Rendering2D.csproj">
+      <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
+      <Name>DeltaEngine.Rendering2D</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -92,5 +96,4 @@
     <Compile Include="SystemInformation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

@@ -148,11 +148,15 @@ namespace DeltaEngine.Platforms.Mocks
 			Register<InputCommands>();
 			device = RegisterMock(new MockDevice(Window));
 			drawing = RegisterMock(new Drawing(device, Window));
+			batchRenderer = RegisterMock(new BatchRenderer(drawing));
 			ScreenSpace.resolver = new AutofacScreenSpaceResolver(this);
 			Register<RelativeScreenSpace>();
 			Register<PixelScreenSpace>();
 			Register<Camera2DScreenSpace>();
 		}
+
+		private Drawing drawing;
+		private BatchRenderer batchRenderer;
 
 		public bool IsInitialized
 		{
@@ -194,8 +198,8 @@ namespace DeltaEngine.Platforms.Mocks
 				return AddAndReturn(new Line2DRenderer(drawing));
 			if (baseType == typeof(DrawPolygon2D))
 				return AddAndReturn(new DrawPolygon2D(drawing));
-			if (baseType == typeof(SpriteBatchRenderer))
-				return AddAndReturn(new SpriteBatchRenderer(drawing));
+			if (baseType == typeof(SpriteRenderer))
+				return AddAndReturn(new SpriteRenderer(batchRenderer));
 			if (baseType == typeof(VectorText.ProcessText))
 				return AddAndReturn(new VectorText.ProcessText());
 			if (baseType == typeof(VectorText.Render))
@@ -212,7 +216,6 @@ namespace DeltaEngine.Platforms.Mocks
 		}
 
 		private Device device;
-		private Drawing drawing;
 
 		internal override object Resolve(Type baseType, object customParameter = null)
 		{
@@ -233,9 +236,9 @@ namespace DeltaEngine.Platforms.Mocks
 			if (baseType == typeof(Font))
 				return new MockFont(customParameter as string);
 			if (baseType == typeof(Sound))
-				return new MockSound(customParameter as string, settings);
+				return new MockSound(customParameter as string);
 			if (baseType == typeof(Music))
-				return new MockMusic(customParameter as string, Resolve<SoundDevice>(), settings);
+				return new MockMusic(customParameter as string, Resolve<SoundDevice>());
 			foreach (object mock in registeredMocks)
 				if (baseType.IsInstanceOfType(mock))
 					return mock;

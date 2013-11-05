@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Entities;
-using DeltaEngine.Graphics;
 
 namespace DeltaEngine.Rendering2D.Particles
 {
-	internal class Particle2DRenderer : SpriteBatchRenderer
+	internal class Particle2DRenderer : DrawBehavior
 	{
-		public Particle2DRenderer(Drawing drawing)
-			: base(drawing) { }
-
-		public override void Draw(List<DrawableEntity> visibleEntities)
+		public Particle2DRenderer(BatchRenderer renderer)
 		{
-			ResetSpriteBatches();
+			this.renderer = renderer;
+		}
+
+		private readonly BatchRenderer renderer;
+
+		public void Draw(List<DrawableEntity> visibleEntities)
+		{
 			foreach (ParticleEmitter entity in visibleEntities)
 				if (entity.NumberOfActiveParticles > 0)
 					AddVerticesToBatch(entity);
-			DrawBatches();
 		}
 
 		private void AddVerticesToBatch(ParticleEmitter emitter)
@@ -34,7 +35,7 @@ namespace DeltaEngine.Rendering2D.Particles
 			if (!particle.IsActive)
 				return;
 			var material = particle.Material;
-			var batch = FindOrCreateSpriteBatch(material, material.DiffuseMap.BlendMode);
+			var batch = renderer.FindOrCreateBatch(material, material.DiffuseMap.BlendMode);
 			batch.AddIndices();
 			batch.verticesColorUV[batch.verticesIndex++] = particle.GetTopLeftVertex();
 			batch.verticesColorUV[batch.verticesIndex++] = particle.GetTopRightVertex();

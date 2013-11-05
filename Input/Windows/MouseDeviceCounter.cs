@@ -9,6 +9,7 @@ namespace DeltaEngine.Input.Windows
 	/// </summary>
 	public class MouseDeviceCounter
 	{
+		//ncrunch: no coverage start
 		public int GetNumberOfAvailableMice()
 		{
 			int numberOfMice = 0;

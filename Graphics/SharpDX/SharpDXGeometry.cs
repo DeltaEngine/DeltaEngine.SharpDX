@@ -64,7 +64,6 @@ namespace DeltaEngine.Graphics.SharpDX
 
 		public override void Draw()
 		{
-			sharpDXDevice.Set3DRasterizerState();
 			deviceContext.InputAssembler.SetVertexBuffers(0,
 				new VertexBufferBinding(vertexBuffer, Format.Stride, 0));
 			deviceContext.InputAssembler.SetIndexBuffer(indexBuffer, DXFormat.R16_UInt, 0);

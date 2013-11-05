@@ -301,7 +301,7 @@ namespace DeltaEngine.Platforms
 				text += exceptionText;
 			else
 				text += ex.GetType().Name + " " + ex.Message;
-			text += "\n\nMessage was logged and copied to the clipboard. Click Ignore to try to continue.";
+			text += ErrorWasCopiedToClipboardMessage + ClickIgnoreToContinue;
 			if (window.ShowMessageBox(Header, text, new[] { "Ignore", "Abort" }) != "Abort")
 				return;
 			Dispose();
@@ -320,6 +320,10 @@ namespace DeltaEngine.Platforms
 			}
 			return "";
 		} // ncrunch: no coverage end
+
+		public const string ErrorWasCopiedToClipboardMessage =
+			"\n\nMessage was logged and copied to the clipboard.";
+		protected const string ClickIgnoreToContinue = " Click Ignore to try to continue.";
 
 		public virtual void Dispose()
 		{

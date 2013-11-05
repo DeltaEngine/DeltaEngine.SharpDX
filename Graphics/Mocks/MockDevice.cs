@@ -17,7 +17,8 @@ namespace DeltaEngine.Graphics.Mocks
 
 		public override void Dispose() { }
 		public override void Clear() {}
-		public override void Present() {}
+		public override void Present() { }
+		public override bool CullBackFaces { get; set; }
 		public override void EnableDepthTest() {}
 		public override void SetViewport(Size viewportSize) {}
 		public override void DisableDepthTest() {}

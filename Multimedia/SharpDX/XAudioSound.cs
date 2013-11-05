@@ -14,8 +14,8 @@ namespace DeltaEngine.Multimedia.SharpDX
 	/// </summary>
 	public class XAudioSound : Sound
 	{
-		protected XAudioSound(string contentName, XAudioDevice device, Settings settings)
-			: base(contentName, settings)
+		protected XAudioSound(string contentName, XAudioDevice device)
+			: base(contentName)
 		{
 			xAudio = device.XAudio2;
 		}

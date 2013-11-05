@@ -9,6 +9,10 @@ using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// This is the main game class holding the control of the entire snake game, user input and the 
+	/// interaction of the snake with the borders and the chunks
+	/// </summary>
 	public class Game
 	{
 		public Game(Window window)
@@ -21,8 +25,8 @@ namespace $safeprojectname$
 			menu = new Menu();
 			menu.InitGame += StartGame;
 			menu.Quit += window.CloseAfterFrame;
-			window.ViewportSizeChanged += size => screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / 
-				size.AspectRatio : size.AspectRatio;
+			window.ViewportSizeChanged +=
+				size => screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio;
 		}
 
 		public void StartGame()
@@ -30,7 +34,7 @@ namespace $safeprojectname$
 			menu.Hide();
 			SetupPlayArea();
 			SetInput();
-			InitializeSnake();
+			Initialize$safeprojectname$();
 			SpawnFirstChunk();
 		}
 
@@ -42,20 +46,19 @@ namespace $safeprojectname$
 
 		private void SetupPlayArea()
 		{
-			window.Title = "Snake - Let's go";
-			window.BackgroundColor = menu.gameColors [0];
-			new FilledRect(Rectangle.One, menu.gameColors [1]) {
-				RenderLayer = 0
-			};
-			new FilledRect(CalculateBackgroundDrawArea(), menu.gameColors [0]) {
-				RenderLayer = 1
-			};
+			window.Title = "$safeprojectname$ - Let's go";
+			window.BackgroundColor = menu.gameColors[0];
+			rectangleBorder = new FilledRect(Rectangle.One, menu.gameColors[1]) { RenderLayer = 0 };
+			rectangleField = new FilledRect(CalculateBackgroundDrawArea(), menu.gameColors[0]) { RenderLayer = 1 };
 		}
+
+		private FilledRect rectangleBorder;
+		private FilledRect rectangleField;
 
 		private Rectangle CalculateBackgroundDrawArea()
 		{
-			return new Rectangle(blockSize, blockSize, blockSize * (gridSize - 2), blockSize * 
-				(gridSize - 2));
+			return new Rectangle(blockSize, blockSize, blockSize * (gridSize - 2),
+				blockSize * (gridSize - 2));
 		}
 
 		private void SetInput()
@@ -64,27 +67,26 @@ namespace $safeprojectname$
 			new Command(MoveRight).Add(new KeyTrigger(Key.CursorRight));
 			new Command(MoveUp).Add(new KeyTrigger(Key.CursorUp));
 			new Command(MoveDown).Add(new KeyTrigger(Key.CursorDown));
-			new Command(MoveAccordingToTouchPosition).Add(new TouchPressTrigger()).Add(new 
-				MouseButtonTrigger());
+			new Command(MoveAccordingToTouchPosition).Add(new TouchPressTrigger()).Add(
+				new MouseButtonTrigger());
 			new Command(MoveAnalogue).Add(new GamePadAnalogTrigger(GamePadAnalog.LeftThumbStick));
 		}
 
 		public void MoveLeft()
 		{
 			if (!(GetDirection().X > 0))
-				snakeBody.Direction = new Vector2D(-blockSize, 0);
+			snakeBody.Direction = new Vector2D(-blockSize, 0);
 		}
 
 		private Vector2D GetDirection()
 		{
 			if (snakeBody.BodyParts.Count == 0)
-				return Vector2D.Zero;
+				return Vector2D.Zero; //ncrunch: no coverage, won't be reached
 
-			var snakeHead = snakeBody.BodyParts [0];
-			var partNextToSnakeHead = snakeBody.BodyParts [1];
-			var direction = new Vector2D(snakeHead.DrawArea.Left - 
-				partNextToSnakeHead.DrawArea.Left, snakeHead.DrawArea.Top - 
-					partNextToSnakeHead.DrawArea.Top);
+			var snakeHead = snakeBody.BodyParts[0];
+			var partNextTo$safeprojectname$Head = snakeBody.BodyParts[1];
+			var direction = new Vector2D(snakeHead.DrawArea.Left - partNextTo$safeprojectname$Head.DrawArea.Left,
+				snakeHead.DrawArea.Top - partNextTo$safeprojectname$Head.DrawArea.Top);
 			return direction;
 		}
 
@@ -106,6 +108,7 @@ namespace $safeprojectname$
 				snakeBody.Direction = new Vector2D(0, blockSize);
 		}
 
+		//ncrunch: no coverage start
 		public void MoveAccordingToTouchPosition(Vector2D position)
 		{
 			var comparison = snakeBody.HeadPosition;
@@ -120,7 +123,6 @@ namespace $safeprojectname$
 				var deltaY = position.Y - comparison.Y;
 				if (deltaY > 0)
 					MoveDown();
-
 				if (deltaY < 0)
 					MoveUp();
 			}
@@ -133,7 +135,6 @@ namespace $safeprojectname$
 				var deltaX = position.X - comparison.X;
 				if (deltaX > 0)
 					MoveRight();
-
 				if (deltaX < 0)
 					MoveLeft();
 			}
@@ -143,69 +144,60 @@ namespace $safeprojectname$
 		{
 			if (direction.Y > 0)
 				MoveUp();
-
 			if (direction.Y < 0)
 				MoveDown();
-
 			if (direction.X > 0)
 				MoveRight();
-
 			if (direction.X < 0)
 				MoveLeft();
 		}
 
-		private void InitializeSnake()
+		//ncrunch: no coverage end
+		private void Initialize$safeprojectname$()
 		{
-			Snake = new $safeprojectname$(gridSize, menu.gameColors [2]);
-			snakeBody = Snake.Get<Body>();
+			$safeprojectname$ = new $safeprojectname$(gridSize, menu.gameColors[2]);
+			snakeBody = $safeprojectname$.Get<Body>();
 			AddEventListeners();
 		}
 
 		private Body snakeBody;
-
-		public $safeprojectname$ Snake
-		{
-			get;
-			private set;
-		}
+		public $safeprojectname$ $safeprojectname$ { get; private set; }
 
 		private void AddEventListeners()
 		{
-			snakeBody.DetectSnakeCollisionWithChunk += SnakeCollisionWithChunk;
-			snakeBody.SnakeCollidesWithBorderOrItself += Reset;
+			snakeBody.Detect$safeprojectname$CollisionWithChunk += $safeprojectname$CollisionWithChunk;
+			snakeBody.$safeprojectname$CollidesWithBorderOrItself += Reset;
 		}
 
-		private void SnakeCollisionWithChunk(Vector2D trailingVector)
+		private void $safeprojectname$CollisionWithChunk(Vector2D trailingVector)
 		{
-			if (Chunk.TopLeft.IsNearlyEqual(snakeBody.BodyParts [0].TopLeft))
+			if (Chunk.TopLeft.IsNearlyEqual(snakeBody.BodyParts[0].TopLeft))
 			{
-				Chunk.SpawnAtRandomLocation();
-				GrowSnakeInSize(trailingVector);
+				RespawnChunk();
+				Grow$safeprojectname$InSize(trailingVector);
 			}
 		}
 
-		private void GrowSnakeInSize(Vector2D trailingVector)
+		private void Grow$safeprojectname$InSize(Vector2D trailingVector)
 		{
 			var snakeBodyParts = snakeBody.BodyParts;
-			var tail = snakeBodyParts [snakeBodyParts.Count - 1].DrawArea.TopLeft;
-			var newBodyPart = new FilledRect(CalculateTrailDrawArea(trailingVector, tail), 
-				menu.gameColors [2]) {
-				RenderLayer = 3
-			};
+			var tail = snakeBodyParts[snakeBodyParts.Count - 1].DrawArea.TopLeft;
+			var newBodyPart = new FilledRect(CalculateTrailDrawArea(trailingVector, tail),
+				menu.gameColors[2]) { RenderLayer = 3 };
 			snakeBodyParts.Add(newBodyPart);
-			window.Title = "Snake - Length: " + snakeBodyParts.Count;
+			window.Title = "$safeprojectname$ - Length: " + snakeBodyParts.Count;
 		}
 
 		private Rectangle CalculateTrailDrawArea(Vector2D trailingVector, Vector2D tail)
 		{
-			return new Rectangle(new Vector2D(tail.X + trailingVector.X, tail.Y + trailingVector.Y), 
+			return new Rectangle(new Vector2D(tail.X + trailingVector.X, tail.Y + trailingVector.Y),
 				new Size(blockSize));
 		}
 
 		public void Reset()
 		{
 			RemoveEventListeners();
-			Snake.Dispose();
+			$safeprojectname$.Dispose();
 			DisplayGameOverMessage();
 		}
 
@@ -214,19 +206,21 @@ namespace $safeprojectname$
 			Chunk.IsActive = false;
 			var fontGameOverText = ContentLoader.Load<Font>("Tahoma30");
 			var fontReplayText = ContentLoader.Load<Font>("Verdana12");
-			gameOverMsg = new FontText(fontGameOverText, "Game Over", 
-				Rectangle.FromCenter(Vector2D.Half, new Size(0.6f, 0.3f))) {
+			gameOverMsg = new FontText(fontGameOverText, "Game Over",
+				Rectangle.FromCenter(Vector2D.Half, new Size(0.6f, 0.3f)))
+			{
 				Color = menu.gameColors[1],
 				RenderLayer = 3
 			};
-			restartMsg = new FontText(fontReplayText, "Do you want to continue (Y/N)", 
-				Rectangle.FromCenter(new Vector2D(0.5f, 0.7f), new Size(0.6f, 0.3f))) {
+			restartMsg = new FontText(fontReplayText, "Do you want to continue (Y/N)",
+				Rectangle.FromCenter(new Vector2D(0.5f, 0.7f), new Size(0.6f, 0.3f)))
+			{
 				Color = menu.gameColors[2],
 				RenderLayer = 3
 			};
 			yesCommand = new Command(RestartGame);
 			yesCommand.Add(new KeyTrigger(Key.Y));
-			noCommand = new Command(CloseGame);
+			noCommand = new Command(BackToMenu);
 			noCommand.Add(new KeyTrigger(Key.N));
 		}
 
@@ -241,7 +235,7 @@ namespace $safeprojectname$
 			noCommand.IsActive = false;
 			gameOverMsg.IsActive = false;
 			restartMsg.IsActive = false;
-			InitializeSnake();
+			Initialize$safeprojectname$();
 			SpawnFirstChunk();
 		}
 
@@ -252,26 +246,39 @@ namespace $safeprojectname$
 
 		private void SpawnFirstChunk()
 		{
-			Chunk = new Chunk(gridSize, blockSize, menu.gameColors [3]);
+			Chunk = new Chunk(gridSize, blockSize, menu.gameColors[3]);
 			RespawnChunk();
 		}
 
-		public Chunk Chunk
-		{
-			get;
-			private set;
-		}
+		public Chunk Chunk { get; private set; }
 
 		public void RespawnChunk()
 		{
-			while (Chunk.IsCollidingWithSnake(snakeBody.BodyParts))
+			while (Chunk.IsCollidingWith$safeprojectname$(snakeBody.BodyParts))
 				Chunk.SpawnAtRandomLocation();
 		}
 
 		private void RemoveEventListeners()
 		{
-			snakeBody.DetectSnakeCollisionWithChunk -= SnakeCollisionWithChunk;
-			snakeBody.SnakeCollidesWithBorderOrItself -= Reset;
+			snakeBody.Detect$safeprojectname$CollisionWithChunk -= $safeprojectname$CollisionWithChunk;
+			snakeBody.$safeprojectname$CollidesWithBorderOrItself -= Reset;
+		}
+
+		private void BackToMenu()
+		{
+			ClearPlayArea();
+			menu.Show();
+		}
+
+		private void ClearPlayArea()
+		{
+			yesCommand.IsActive = false;
+			noCommand.IsActive = false;
+			gameOverMsg.IsActive = false;
+			restartMsg.IsActive = false;
+			rectangleBorder.IsActive = false;
+			rectangleField.IsActive = false;
+			window.Title = "$safeprojectname$";
 		}
 	}
 }

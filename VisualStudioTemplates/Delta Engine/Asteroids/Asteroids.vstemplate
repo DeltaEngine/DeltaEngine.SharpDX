@@ -15,7 +15,6 @@
 		<Project File="Asteroids.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="false" TargetFileName="AsteroidsIcon.ico">AsteroidsIcon.ico</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="app.config">app.config</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Asteroid.cs">Asteroid.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Controls.cs">Controls.cs</ProjectItem>

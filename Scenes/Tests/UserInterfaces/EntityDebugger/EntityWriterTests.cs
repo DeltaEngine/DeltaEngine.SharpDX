@@ -13,7 +13,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
 		[SetUp]
 		public void SetUp()
 		{
-			ellipse = new Ellipse(Center, RadiusX, RadiusY, Color);
+			ellipse = new Ellipse(Vector2D.Half, 0.2f, 0.1f, Color.Blue);
 			ellipse.Add(new Name("name"));
 			writer = new EntityWriter(ellipse);
 			drawAreaBox = writer.scene.Controls[1] as TextBox;
@@ -27,10 +27,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
 		}
 
 		private Ellipse ellipse;
-		private static readonly Vector2D Center = Vector2D.Half;
-		private const float RadiusX = 0.2f;
-		private const float RadiusY = 0.1f;
-		private static readonly Color Color = Color.Blue;
 		private EntityWriter writer;
 		private Slider colorRSlider;
 		private Slider colorGSlider;
@@ -60,7 +56,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
 		public void EditEllipseComponents() {}
 
 		[Test, CloseAfterFirstFrame]
-		public void IsNotPausable()
+		public void IsNotPauseable()
 		{
 			Assert.IsFalse(writer.IsPauseable);
 		}

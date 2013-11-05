@@ -103,7 +103,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 				ellipsePoints = entity.Get<List<Vector2D>>();
 				ellipsePoints.Clear();
 				ellipsePoints.Add(center);
-				for (int i = 0; i <= pointsCount; i++)
+				for (int i = 0; i < pointsCount; i++)
 					FormRotatedEllipsePoint(i);
 				entity.Set(ellipsePoints);
 			}

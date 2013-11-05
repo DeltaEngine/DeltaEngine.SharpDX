@@ -21,9 +21,8 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.Throws<Geometry.InvalidNumberOfVertices>(
 				() => geometry.SetData(new Vertex[] { }, new short[] { 0 }));
 			Assert.Throws<Geometry.InvalidNumberOfIndices>(
-				() =>
-					geometry.SetData(new Vertex[] { new VertexPosition3DColor(Vector3D.Zero, Color.Red) },
-						new short[] { }));
+				() => geometry.SetData(new Vertex[] { new VertexPosition3DColor(Vector3D.Zero, Color.Red) },
+					new short[] { }));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -36,7 +35,10 @@ namespace DeltaEngine.Graphics.Tests
 
 		private class TestGeometry : Geometry
 		{
-			public TestGeometry(GeometryCreationData creationData)
+			protected TestGeometry(string contentName)
+				: base(contentName) { }
+
+			private TestGeometry(GeometryCreationData creationData)
 				: base(creationData) {}
 
 			public override void Draw() {} //ncrunch: no coverage
@@ -60,7 +62,14 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void LoadValidData()
+		public void LoadGeometryWithoutDataFails()
+		{
+			Assert.Throws<Geometry.EmptyGeometryFileGiven>(
+				() => ContentLoader.Load<TestGeometry>("TestGeometry"));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CreateGeometry()
 		{
 			var creationData = new GeometryCreationData(VertexFormat.Position3DColor, 1, 1);
 			var geometry = ContentLoader.Create<TestGeometry>(creationData);
@@ -76,16 +85,16 @@ namespace DeltaEngine.Graphics.Tests
 				new VertexPosition3DColor(new Vector3D(-3.0f, 0.0f, 0.0f), Color.Red),
 				new VertexPosition3DColor(new Vector3D(3.0f, 0.0f, 0.0f), Color.Yellow),
 				new VertexPosition3DColor(new Vector3D(1.5f, 3.0f, 0.0f), Color.Teal)
-			});
+			}, "");
 		}
 
-		private static void CreateTriangle(Vertex[] vertices)
+		private static void CreateTriangle(Vertex[] vertices, string imageName)
 		{
 			var geometry =
 				ContentLoader.Create<Geometry>(new GeometryCreationData(VertexFormat.Position3DColor, 3, 3));
 			new GeometryCreationData(VertexFormat.Position3DColor, 3, 3);
 			geometry.SetData(vertices, new short[] { 0, 1, 2 });
-			new Triangle(geometry, new Material(Shader.Position3DColor, ""));
+			new Triangle(geometry, new Material(Shader.Position3DColor, imageName));
 		}
 
 		private class Triangle : DrawableEntity
@@ -118,20 +127,47 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
-		public void ShowSquare()
+		public void ShowSquareIn3D()
 		{
 			CreateTriangle(new Vertex[]
 			{
 				new VertexPosition3DColor(new Vector3D(-3.0f, 3.0f, 0.0f), Color.Red),
 				new VertexPosition3DColor(new Vector3D(-3.0f, -3.0f, 0.0f), Color.Red),
 				new VertexPosition3DColor(new Vector3D(3.0f, -3.0f, 0.0f), Color.Red)
-			});
+			}, "DeltaEngineLogo");
 			CreateTriangle(new Vertex[]
 			{
 				new VertexPosition3DColor(new Vector3D(3.0f, 3.0f, 0.0f), Color.Red),
 				new VertexPosition3DColor(new Vector3D(-3.0f, 3.0f, 0.0f), Color.Red),
 				new VertexPosition3DColor(new Vector3D(3.0f, -3.0f, 0.0f), Color.Red)
-			});
+			}, "DeltaEngineLogo");
+		}
+
+		[Test]
+		public void ShowLineIn3D()
+		{
+			var drawing = Resolve<Drawing>();
+			var lineMaterial = new Material(Shader.Position3DColor, "");
+			drawing.AddLines(lineMaterial,
+				new[]
+				{
+					new VertexPosition3DColor(Vector3D.Zero, Color.Red),
+					new VertexPosition3DColor(Vector3D.One, Color.Red)
+				});
+		}
+
+		[Test]
+		public void ShowBillboardSpriteIn3D()
+		{
+			var drawing = Resolve<Drawing>();
+			var billboardMaterial = new Material(Shader.Position3DUV, "DeltaEngineLogo");
+			drawing.Add(billboardMaterial,
+				new[]
+				{
+					new VertexPosition3DUV(Vector3D.Zero, Vector2D.Zero),
+					new VertexPosition3DUV(Vector3D.UnitX, Vector2D.UnitX),
+					new VertexPosition3DUV(Vector3D.UnitY, Vector2D.UnitY)
+				});
 		}
 	}
 }

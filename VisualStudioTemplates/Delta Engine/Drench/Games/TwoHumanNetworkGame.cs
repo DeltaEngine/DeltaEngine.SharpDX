@@ -8,8 +8,8 @@ namespace $safeprojectname$.Games
 {
 	public class TwoHumanNetworkGame : TwoPlayerGame, Updateable
 	{
-		public TwoHumanNetworkGame(MessagingSession session, int width, int height) : base(new 
-			TwoHumanLogic(width, height))
+		public TwoHumanNetworkGame(MessagingSession session, int width, int height)
+			: base(new TwoHumanLogic(width, height))
 		{
 			this.session = session;
 			UpdateTurnText();
@@ -29,8 +29,8 @@ namespace $safeprojectname$.Games
 				UpdateText("", " (Waiting for other player's turn)");
 		}
 
-		internal TwoHumanNetworkGame(MessagingSession session, Board.Data boardData) : base(new 
-			TwoHumanLogic(boardData))
+		internal TwoHumanNetworkGame(MessagingSession session, Board.Data boardData)
+			: base(new TwoHumanLogic(boardData))
 		{
 			this.session = session;
 			UpdateTurnText();
@@ -49,11 +49,10 @@ namespace $safeprojectname$.Games
 			if (move != null)
 				base.ButtonClicked(move.X, move.Y);
 		}
+
 		private class Move
 		{
-			protected Move()
-			{
-			}
+			protected Move() {} //ncrunch: no coverage
 
 			public Move(int x, int y)
 			{
@@ -61,18 +60,10 @@ namespace $safeprojectname$.Games
 				Y = y;
 			}
 
-			public int X
-			{
-				get;
-				private set;
-			}
-
-			public int Y
-			{
-				get;
-				private set;
-			}
+			public int X { get; private set; }
+			public int Y { get; private set; }
 		}
+
 		protected override void ButtonClicked(int x, int y)
 		{
 			if (logic.ActivePlayer == session.UniqueID)
@@ -80,7 +71,7 @@ namespace $safeprojectname$.Games
 			else if (logic.ActivePlayer == 0)
 				UpdateText("(Waiting for other player's turn)", "- Not Your Turn!");
 			else
-				UpdateText("- Not Your Turn!", " (Waiting for other player's turn)");
+				UpdateText("- Not Your Turn!", " (Waiting for other player's turn)"); //ncrunch: no coverage
 		}
 
 		protected override bool ProcessDesiredMove(int x, int y)
@@ -92,7 +83,7 @@ namespace $safeprojectname$.Games
 			else
 				ReportMoveInvalid();
 			while (!logic.HasPlayerAnyValidMoves(logic.ActivePlayer) && !logic.IsGameOver)
-				logic.Pass();
+				logic.Pass(); //ncrunch: no coverage
 			return isValid;
 		}
 
@@ -100,7 +91,6 @@ namespace $safeprojectname$.Games
 		{
 			if (logic.ActivePlayer == session.UniqueID)
 				session.SendMessage(new Move(x, y));
-
 			logic.MakeMove(color);
 			UpdateTurnText();
 		}
@@ -110,23 +100,14 @@ namespace $safeprojectname$.Games
 			if (logic.ActivePlayer == 0)
 				UpdateText("- Invalid Move!", "");
 			else
-				UpdateText("", "- Invalid Move!");
+				UpdateText("", "- Invalid Move!"); //ncrunch: no coverage
 		}
 
 		internal Color[,] Colors
 		{
-			get
-			{
-				return logic.Board.colors;
-			}
+			get { return logic.Board.colors; }
 		}
 
-		public bool IsPauseable
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool IsPauseable { get { return true; } }
 	}
 }

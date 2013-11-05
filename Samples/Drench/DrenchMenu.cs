@@ -53,12 +53,12 @@ namespace Drench
 			{
 				Clicked = StartTwoHumanLocalGame
 			});
-			startTwoHumanNetworkButton = new InteractiveButton(theme, StartTwoHumanNetworkOption,
-				"Start Human vs Human (networked)") { Clicked = StartTwoHumanNetworkGame };
-			scene.Add(startTwoHumanNetworkButton);
-			joinTwoHumanNetworkButton = new InteractiveButton(theme, JoinTwoHumanNetworkOption,
-				"Join Human vs Human (networked)") { Clicked = JoinTwoHumanNetworkGame };
-			scene.Add(joinTwoHumanNetworkButton);
+			//startTwoHumanNetworkButton = new InteractiveButton(theme, StartTwoHumanNetworkOption,
+			//	"Start Human vs Human (networked)") { Clicked = StartTwoHumanNetworkGame };
+			//scene.Add(startTwoHumanNetworkButton);
+			//joinTwoHumanNetworkButton = new InteractiveButton(theme, JoinTwoHumanNetworkOption,
+			//	"Join Human vs Human (networked)") { Clicked = JoinTwoHumanNetworkGame };
+			//scene.Add(joinTwoHumanNetworkButton);
 		}
 
 		private InteractiveButton startTwoHumanNetworkButton;

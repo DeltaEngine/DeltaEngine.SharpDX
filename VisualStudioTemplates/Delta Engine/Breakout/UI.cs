@@ -6,6 +6,9 @@ using DeltaEngine.Input;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Primes the window to respond to keyboard commands and launches the game
+	/// </summary>
 	public class UI : Entity, Updateable
 	{
 		public UI(Window window, Game game)
@@ -22,15 +25,12 @@ namespace $safeprojectname$
 		public void Update()
 		{
 			if (Time.CheckEvery(0.2f))
-				window.Title = "Breakout " + game.Score;
+				window.Title = "$safeprojectname$ " + game.Score;
 		}
 
 		public bool IsPauseable
 		{
-			get
-			{
-				return true;
-			}
+			get { return true; }
 		}
 	}
 }

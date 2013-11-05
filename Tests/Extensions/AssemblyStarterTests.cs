@@ -26,7 +26,7 @@ namespace DeltaEngine.Tests.Extensions
 		public void FindAllGraphicsTests()
 		{
 			const string TestAssemblyFilename =
-				@"c:\code\DeltaEngine\Graphics\Tests\bin\Debug\DeltaEngine.Graphics.Tests.exe";
+				@"c:\code\DeltaEngine\Graphics\Tests\bin\Debug\DeltaEngine.Graphics.Tests.dll";
 			using (var starter = new AssemblyStarter(TestAssemblyFilename, false))
 				foreach (var test in starter.GetTestNames())
 					Console.WriteLine(test);
@@ -36,7 +36,7 @@ namespace DeltaEngine.Tests.Extensions
 		public void StartGraphicsVisualTest()
 		{
 			const string TestAssemblyFilename =
-				@"c:\code\DeltaEngine\Graphics\Tests\bin\Debug\DeltaEngine.Graphics.Tests.exe";
+				@"c:\code\DeltaEngine\Graphics\Tests\bin\Debug\DeltaEngine.Graphics.Tests.dll";
 			using (var starter = new AssemblyStarter(TestAssemblyFilename, true))
 				starter.Start("DeviceTests", "DrawRedBackground");
 		}

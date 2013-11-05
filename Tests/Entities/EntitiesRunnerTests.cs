@@ -379,17 +379,14 @@ namespace DeltaEngine.Tests.Entities
 			VerifyEntityWasNotUpdated(new MockRapidEntity(), () => entities.RunEntitiesPaused());
 		}
 
-// ReSharper disable UnusedParameter.Local
+		// ReSharper disable UnusedParameter.Local
 		private static void VerifyEntityWasUpdated(VerifiableUpdate entity, Action run)
-// ReSharper restore UnusedParameter.Local
 		{
 			run();
 			Assert.IsTrue(entity.WasUpdated);
 		}
 
-// ReSharper disable UnusedParameter.Local
 		private static void VerifyEntityWasNotUpdated(VerifiableUpdate entity, Action run)
-// ReSharper restore UnusedParameter.Local
 		{
 			run();
 			Assert.IsFalse(entity.WasUpdated);
@@ -429,9 +426,9 @@ namespace DeltaEngine.Tests.Entities
 		[Test]
 		public void NonPauseableUpdateBehaviorAlwaysRuns()
 		{
-			//VerifyEntityWasUpdated(
-			//	(VerifiableUpdate)new MockEntity().Start<MockNonPauseableUpdateBehavior>(),
-			//	() => entities.RunEntities());
+			VerifyEntityWasUpdated(
+				(VerifiableUpdate)new MockEntity().Start<MockNonPauseableUpdateBehavior>(),
+				() => entities.RunEntities());
 			var entity = new MockEntity().Start<MockNonPauseableUpdateBehavior>();
 			VerifyEntityWasUpdated(
 				(VerifiableUpdate)entity,

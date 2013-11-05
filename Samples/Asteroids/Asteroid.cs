@@ -94,7 +94,7 @@ namespace Asteroids
 		{
 			var velocity = Get<SimplePhysics.Data>().Velocity;
 			if (DrawArea.Width >= borders.Width || DrawArea.Height >= borders.Height)
-				return;
+				return; //ncrunch: no coverage, this does not actually happen
 			if (DrawArea.Right < borders.Left && velocity.X < 0)
 				SetWithoutInterpolation(new Rectangle(borders.Right, DrawArea.Top, DrawArea.Width,
 					DrawArea.Height));

@@ -10,7 +10,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Fires once when the mouse button is pressed and the mouse has not moved for some time.
 	/// </summary>
-	public class MouseHoldTrigger : PositionTrigger
+	public class MouseHoldTrigger : PositionTrigger, MouseTrigger
 	{
 		public MouseHoldTrigger(Rectangle holdArea, float holdTime = DefaultHoldTime,
 			MouseButton button = MouseButton.Left)
@@ -47,6 +47,26 @@ namespace DeltaEngine.Input
 			Start<Mouse>();
 		}
 
+		public void HandleWithMouse(Mouse mouse)
+		{
+			if (mouse.GetButtonState(Button) == State.Pressing)
+				StartPosition = mouse.Position;
+			Position = mouse.Position;
+			if (!CheckHoverState(mouse))
+				Elapsed = 0.0f;
+			else if (IsHovering())
+				Invoke();
+		}
+
+		private bool CheckHoverState(Mouse mouse)
+		{
+			return HoldArea.Contains(StartPosition) &&
+				mouse.GetButtonState(Button) == State.Pressed &&
+				StartPosition.DistanceTo(mouse.Position) < PositionEpsilon;
+		}
+
+		private const float PositionEpsilon = 0.0025f;
+
 		public bool IsHovering()
 		{
 			if (Elapsed >= HoldTime || !HoldArea.Contains(Position))
@@ -55,7 +75,7 @@ namespace DeltaEngine.Input
 			return Elapsed >= HoldTime;
 		}
 
-		public float Elapsed { get; set; }
-		public Vector2D StartPosition { get; set; }
+		private float Elapsed { get; set; }
+		private Vector2D StartPosition { get; set; }
 	}
 }

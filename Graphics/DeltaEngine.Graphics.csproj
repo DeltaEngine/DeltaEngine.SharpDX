@@ -65,7 +65,7 @@
     <Compile Include="Device.cs" />
     <Compile Include="Vertices\VertexPosition3DNormalUV.cs" />
     <Compile Include="Vertices\VertexPosition3DUV.cs" />
-    <Compile Include="Vertices\VertexPosition3DUvSkinned.cs" />
+    <Compile Include="Vertices\VertexPosition3DUVSkinned.cs" />
     <Compile Include="Vertices\VerticesMode.cs" />
     <Compile Include="Vertices\VertexPosition3DColor.cs" />
   </ItemGroup>

@@ -86,7 +86,7 @@ namespace DeltaEngine.Graphics
 				numberOfIndices = numberOfVertices * 6 / 4;
 			CheckTotalDataSize(numberOfVertices, numberOfIndices);
 			var chunk = GetOrCreateLastTextureChunk(texture);
-			if (chunk.NumberOfVertices == 0 && shader.Format != vertices[0].Format)
+			if (chunk.NumberOfVertices == 0 && vertices.Length > 0 && shader.Format != vertices[0].Format)
 				throw new ShaderVertexFormatDoesNotMatchVertex(shader.Format, default(VertexType).Format);
 			AddDataNative(chunk, vertices, indices, numberOfVertices, numberOfIndices);
 			UpdateOffsets(chunk, numberOfVertices, numberOfIndices);

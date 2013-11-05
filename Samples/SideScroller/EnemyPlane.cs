@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using DeltaEngine.Content;
-using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
+using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.ScreenSpaces;
 
 namespace SideScroller
 {
 	public class EnemyPlane : Plane
 	{
-		public EnemyPlane(Material enemyTexture, Vector2D initialPosition)
-			: base(enemyTexture, initialPosition)
+		public EnemyPlane(Vector2D initialPosition)
+			: base(ContentLoader.Load<Material>("EnemyPlaneMaterial"), initialPosition)
 		{
 			Hitpoints = 5;
 			verticalDecelerationFactor = 3.0f;
 			verticalAccelerationFactor = 1.5f;
 			RenderLayer = (int)DefRenderLayer.Player;
-			Add(new Velocity2D(new Vector2D(-0.5f, 0), MaximumSpeed));
+			elapsedSinceLastMissile = missileCadenceInverse - 0.2f;
+			machingeGunAndLauncher =
+				new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MachineGunAndLauncherEnemy"));
+			machingeGunAndLauncher.Position = new Vector3D(initialPosition);
+			Add(new Velocity2D(new Vector2D(-0.3f, 0), MaximumSpeed));
 			Start<EnemyHandler>();
 		}
 
@@ -33,11 +37,8 @@ namespace SideScroller
 			{
 				var pointAfterVerticalMovement =
 					new Vector2D(
-						entity.Get<Rectangle>().TopLeft.X +
-							entity.Get<Velocity2D>().velocity.X * Time.Delta,
-						entity.Get<Rectangle>().TopLeft.Y +
-							entity.Get<Velocity2D>().velocity.Y * Time.Delta);
-
+						entity.Get<Rectangle>().TopLeft.X + entity.Get<Velocity2D>().velocity.X * Time.Delta,
+						entity.Get<Rectangle>().TopLeft.Y + entity.Get<Velocity2D>().velocity.Y * Time.Delta);
 				return new Rectangle(pointAfterVerticalMovement, entity.Get<Rectangle>().Size);
 			}
 
@@ -51,30 +52,11 @@ namespace SideScroller
 				return - 50 * vel.Y / MaximumSpeed;
 			}
 
-			private static void FireShotIfRightTime(EnemyPlane entity)
-			{
-				if (GlobalTime.Current.Milliseconds - entity.timeLastShot > 1)
-				{
-					entity.timeLastShot = GlobalTime.Current.Milliseconds;
-					entity.EnemyFiredShot(entity.Center);
-				}
-			}
-
 			public override void Update(IEnumerable<Entity> entities)
 			{
 				foreach (var entity in entities)
 				{
 					var enemy = entity as EnemyPlane;
-
-					if (enemy.defeated)
-					{
-						enemy.AccelerateVertically(0.02f);
-						if (enemy.DrawArea.Top > ScreenSpace.Current.Viewport.Bottom)
-							enemy.IsActive = false;
-					}
-					else
-						FireShotIfRightTime(enemy);
-
 					var newRect = CalculateRectAfterMove(enemy);
 					MoveEntity(enemy, newRect);
 					var velocity2D = enemy.Get<Velocity2D>();
@@ -82,14 +64,50 @@ namespace SideScroller
 						Time.Delta;
 					enemy.Set(velocity2D);
 					enemy.Rotation = RotationAccordingToVerticalSpeed(velocity2D.velocity);
-
 					if (enemy.DrawArea.Right < ScreenSpace.Current.Viewport.Left)
 						entity.IsActive = false;
+					enemy.FireMissileIfAllowed();
+
+					HitTestToPlayerPlane(enemy);
 				}
 			}
-		}
 
-		internal float timeLastShot;
-		public event Action<Vector2D> EnemyFiredShot;
+			private static void HitTestToPlayerPlane(EnemyPlane enemyPlane)
+			{
+				var playerPlanes = EntitiesRunner.Current.GetEntitiesOfType<PlayerPlane>();
+				if (playerPlanes == null)
+					return;
+				var bullets = enemyPlane.machingeGunAndLauncher.AttachedEmitters[0].particles;
+				if (bullets != null)
+					for (int i = 0; i < bullets.Length; i++)
+					{
+						if (!bullets[i].IsActive)
+							continue;
+						if (bullets[i].Position.X < ScreenSpace.Current.Viewport.Left)
+							bullets[i].IsActive = false;
+						foreach (var player in playerPlanes)
+							if (player.DrawArea.Contains(bullets[i].Position.GetVector2D()))
+							{
+								player.ReceiveAttack();
+								bullets[i].IsActive = false;
+							}
+					}
+				var rockets = enemyPlane.machingeGunAndLauncher.AttachedEmitters[1].particles;
+				if (rockets != null)
+					for (int i = 0; i < rockets.Length; i++)
+					{
+						if (!rockets[i].IsActive)
+							continue;
+						if (rockets[i].Position.X < ScreenSpace.Current.Viewport.Left)
+							rockets[i].IsActive = false;
+						foreach (var player in playerPlanes)
+							if (player.DrawArea.Contains(rockets[i].Position.GetVector2D()))
+							{
+								player.ReceiveAttack(5, true);
+								rockets[i].IsActive = false;
+							}
+					}
+			}
+		}
 	}
 }

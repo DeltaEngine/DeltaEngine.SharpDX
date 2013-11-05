@@ -31,10 +31,12 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			entity.RenderLayer = RenderLayer + children.Count;
 		}
 
-		private readonly List<Child> children = new List<Child>();
+		internal readonly List<Child> children = new List<Child>();
 
-		protected class Child
+		internal protected class Child
 		{
+			protected Child() {} //ncrunch: no coverage
+
 			public Child(Entity2D control)
 			{
 				Entity2D = control;

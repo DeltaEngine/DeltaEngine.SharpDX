@@ -2,18 +2,18 @@ using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Extends the ball to live and communicate with the level
+	/// </summary>
 	public class BallInLevel : Ball
 	{
-		public BallInLevel(Paddle paddle, Level level) : base(paddle)
+		public BallInLevel(Paddle paddle, Level level)
+			: base(paddle)
 		{
 			Level = level;
 		}
 
-		public Level Level
-		{
-			get;
-			private set;
-		}
+		public Level Level { get; private set; }
 
 		protected override void UpdateInFlight(float timeDelta)
 		{

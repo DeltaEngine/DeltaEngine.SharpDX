@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DeltaEngine.Entities;
 
 namespace DeltaEngine.Rendering2D
@@ -14,8 +13,9 @@ namespace DeltaEngine.Rendering2D
 
 		public override void Update(IEnumerable<Entity> entities)
 		{
-			foreach (var sprite in entities.OfType<Sprite>().Where(sprite => sprite.IsPlaying))
-				UpdateSpriteSheet(sprite);
+			foreach (Sprite sprite in entities)
+				if (sprite.IsPlaying)
+					UpdateSpriteSheet(sprite);
 		}
 
 		private static void UpdateSpriteSheet(Sprite animation)
@@ -26,7 +26,7 @@ namespace DeltaEngine.Rendering2D
 				(int)(animationData.UVs.Count * animation.Elapsed / animation.Material.Duration);
 			if (animation.CurrentFrame >= animationData.UVs.Count)
 				animation.InvokeAnimationEndedAndReset();
-			animation.SetUVWithoutInterpolation(animationData.UVs[animation.CurrentFrame]);
+			animation.LastUV = animation.UV = animationData.UVs[animation.CurrentFrame];
 		}
 	}
 }

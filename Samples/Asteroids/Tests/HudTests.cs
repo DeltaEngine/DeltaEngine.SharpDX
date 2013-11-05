@@ -21,5 +21,14 @@ namespace Asteroids.Tests
 			var hudGameOver = new HudInterface();
 			hudGameOver.SetGameOverText();
 		}
+
+		[Test, CloseAfterFirstFrame]
+		public void DisposeInterfaceRemovesEntities()
+		{
+			var hud = new HudInterface();
+			hud.Dispose();
+			Assert.IsFalse(hud.ScoreDisplay.IsActive);
+			Assert.IsFalse(hud.GameOverText.IsActive);
+		}
 	}
 }

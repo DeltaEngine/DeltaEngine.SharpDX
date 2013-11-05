@@ -9,6 +9,7 @@ using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
+using DeltaEngine.Scenes;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -17,31 +18,33 @@ namespace $safeprojectname$
 	{
 		public MainMenu(Window window)
 		{
-			screenSpace = new Camera2DScreenSpace(window);
+			menuScene = new Scene();
 			CreateMainMenu();
 			new Command(Command.Exit, window.CloseAfterFrame);
 		}
 
-		private Camera2DScreenSpace screenSpace;
+		private readonly Scene menuScene;
 
 		private void CreateMainMenu()
 		{
 			Clear();
+			State = GameState.Menu;
+			if (trees != null)
+				trees.RemoveTrees();
 			AddMenuBackground();
 			AddMenuOption(OnHowToPlay, "HowToPlay", new Vector2D(0.5f, 0.50f));
 			AddMenuOption(OnSingleplayer, "SinglePlayer", new Vector2D(0.5f, 0.57f));
 			AddMenuOption(OnCredits, "Credits", new Vector2D(0.5f, 0.64f));
 		}
 
-		private void Clear()
+		public void Clear()
 		{
 			if (entities.Count > 0)
 				PlayClickSound();
-
 			foreach (var entity in entities)
 				entity.IsActive = false;
-
 			entities.Clear();
+			menuScene.Clear();
 		}
 
 		private readonly List<Entity> entities = new List<Entity>();
@@ -53,12 +56,10 @@ namespace $safeprojectname$
 
 		private void AddMenuBackground()
 		{
-			Add(new Sprite("MenuBackground", ScreenSpace.Current.Viewport) {
-				RenderLayer = int.MinValue
-			});
+			menuScene.SetViewportBackground("MenuBackground");
 		}
 
-		private void Add(Entity entity)
+		private void AddEntity(Entity entity)
 		{
 			entities.Add(entity);
 		}
@@ -67,28 +68,29 @@ namespace $safeprojectname$
 		{
 			var buttonRect = Rectangle.FromCenter(position, new Size(0.29f, 0.0525f));
 			var button = new Sprite(buttonName + "Default", buttonRect);
-			Add(button);
-			Add(new Command(Command.Click, point => 
+			button.RenderLayer = 10;
+			AddEntity(button);
+			AddEntity(new Command(Command.Click, point =>
 			{
 				if (buttonRect.Contains(point))
 					clickAction();
 			}));
-			Add(new Command(pos => UpdateSpriteImage(button, buttonName, pos)).Add(new 
-				MouseMovementTrigger()));
+			AddEntity(
+				new Command(pos => UpdateSpriteImage(button, buttonName, pos)).Add(
+					new MouseMovementTrigger()));
 		}
 
 		private void UpdateSpriteImage(Sprite button, string name, Vector2D position)
 		{
 			if (button.DrawArea.Contains(position) && button.Material.DiffuseMap.Name != name + "Hover")
 				button.Material = new Material(Shader.Position2DColorUV, name + "Hover");
-			else if (!button.DrawArea.Contains(position) && button.Material.DiffuseMap.Name != name 
-				+ "Default")
+			else if (!button.DrawArea.Contains(position) &&
+				button.Material.DiffuseMap.Name != name + "Default")
 				button.Material = new Material(Shader.Position2DColorUV, name + "Default");
 			else
 				return;
 			if (Time.Total - lastSwingSound < MinimumDelayBetweenMenuSwingSounds)
 				return;
-
 			lastSwingSound = Time.Total;
 			ContentLoader.Load<Sound>("MalletSwing").Play(DurationOfMenuSwingSound);
 		}
@@ -100,40 +102,40 @@ namespace $safeprojectname$
 		private void OnHowToPlay()
 		{
 			Clear();
-			Add(new Sprite("GhostWarsHowToPlay", ScreenSpace.Current.Viewport));
-			Add(new Command(Command.Click, CreateMainMenu));
+			AddEntity(new Sprite("$safeprojectname$HowToPlay", ScreenSpace.Current.Viewport));
+			AddEntity(new Command(Command.Click, CreateMainMenu));
 		}
 
 		private void OnSingleplayer()
 		{
 			Clear();
-			Add(new Sprite("LevelSelectionBackground", ScreenSpace.Current.Viewport));
-			var clickAreas = new[] {
+			AddEntity(new Sprite("LevelSelectionBackground", ScreenSpace.Current.Viewport));
+			var clickAreas = new[]
+			{
 				Rectangle.FromCenter(0.25f, 0.66f, 0.19f, 0.19f),
 				Rectangle.FromCenter(0.5f, 0.66f, 0.19f, 0.19f),
 				Rectangle.FromCenter(0.75f, 0.66f, 0.19f, 0.19f)
 			};
-			AddLevelSelection(1, clickAreas [0]);
-			AddLevelSelection(2, clickAreas [1]);
-			AddLevelSelection(3, clickAreas [2]);
-			Add(new Command(Command.Click, position => SinglePlayerMenuClick(position, clickAreas)));
+			AddLevelSelection(1, clickAreas[0]);
+			AddLevelSelection(2, clickAreas[1]);
+			AddLevelSelection(3, clickAreas[2]);
+			AddEntity(new Command(Command.Click, position => SinglePlayerMenuClick(position, clickAreas)));
 		}
 
 		private void AddLevelSelection(int levelNumber, Rectangle mapDrawArea)
 		{
-			var levelText = new FontText(Font, levelNumber + "", 
-				Rectangle.FromCenter(mapDrawArea.Center - new Vector2D(0.0f, 0.115f), new Size(0.2f, 
-					0.1f)));
-			Add(levelText);
-			var map = new Sprite("GhostWarsLevel" + levelNumber, mapDrawArea);
-			Add(map);
+			var levelText = new FontText(Font, levelNumber + "",
+				Rectangle.FromCenter(mapDrawArea.Center - new Vector2D(0.0f, 0.115f), new Size(0.2f, 0.1f)));
+			AddEntity(levelText);
+			var map = new Sprite("$safeprojectname$Level" + levelNumber, mapDrawArea);
+			AddEntity(map);
 		}
 
 		private void SinglePlayerMenuClick(Vector2D position, Rectangle[] clickAreas)
 		{
 			for (int i = 0; i < clickAreas.Length; i++)
 			{
-				if (clickAreas [i].Contains(position))
+				if (clickAreas[i].Contains(position))
 				{
 					StartGame(i + 1);
 					return;
@@ -146,9 +148,7 @@ namespace $safeprojectname$
 		{
 			Clear();
 			State = GameState.CountDown;
-			Add(new Sprite("Background", ScreenSpace.Current.Viewport) {
-				RenderLayer = -100
-			});
+			menuScene.SetViewportBackground("Background");
 			trees = new TreeManager(Team.HumanYellow);
 			if (level == 1)
 				SetupLevel1Trees();
@@ -156,14 +156,16 @@ namespace $safeprojectname$
 				SetupLevel2Trees();
 			else
 				SetupLevel3Trees();
-			trees.GameFinished += CreateGameOverButtons;
-			trees.GameLost += CreateGameOverButtons;
+			trees.GameFinished += SetGameOverState;
+			trees.GameLost += SetGameOverState;
 		}
 
 		private TreeManager trees;
+		public int CurrentLevel { get; set; }
 
 		private void SetupLevel1Trees()
 		{
+			CurrentLevel = 1;
 			trees.AddTree(new Vector2D(0.11f, 0.5f), Team.HumanYellow);
 			trees.AddTree(new Vector2D(0.2f, 0.4f), Team.None);
 			trees.AddTree(new Vector2D(0.12f, 0.675f), Team.None);
@@ -178,6 +180,7 @@ namespace $safeprojectname$
 
 		private void SetupLevel2Trees()
 		{
+			CurrentLevel = 2;
 			trees.AddTree(new Vector2D(0.325f, 0.55f), Team.HumanYellow);
 			trees.AddTree(new Vector2D(0.225f, 0.4f), Team.None);
 			trees.AddTree(new Vector2D(0.225f, 0.7f), Team.None);
@@ -191,6 +194,7 @@ namespace $safeprojectname$
 
 		private void SetupLevel3Trees()
 		{
+			CurrentLevel = 3;
 			trees.AddTree(new Vector2D(0.14f, 0.45f), Team.HumanYellow);
 			trees.AddTree(new Vector2D(0.5f, 0.4f), Team.None);
 			trees.AddTree(new Vector2D(0.8f, 0.45f), Team.ComputerPurple);
@@ -203,44 +207,31 @@ namespace $safeprojectname$
 		private void OnCredits()
 		{
 			Clear();
-			Add(new Sprite("CreditsBackground", ScreenSpace.Current.Viewport));
-			Add(new Command(Command.Click, CreateMainMenu));
+			AddEntity(new Sprite("CreditsBackground", ScreenSpace.Current.Viewport));
+			AddEntity(new Command(Command.Click, CreateMainMenu));
 		}
 
-		public static GameState State
-		{
-			get;
-			set;
-		}
-
-		public static Team PlayerTeam
-		{
-			get;
-			set;
-		}
-
+		public static GameState State { get; set; }
+		public static Team PlayerTeam { get; set; }
 		public static Font Font
 		{
-			get
-			{
-				return ContentLoader.Load<Font>("Tahoma30");
-			}
+			get { return ContentLoader.Load<Font>("Tahoma30"); }
 		}
 
-		public void CreateGameOverButtons()
+		public void SetGameOverState()
 		{
+			//AddMenuOption(RestartGame, "Exit", new Vector2D(0.5f, 0.4f));
+			//AddMenuOption(CreateMainMenu, "Exit", new Vector2D(0.5f, 0.6f));
 		}
 
-		private void RestartGame()
+		public void RestartGame()
 		{
+			StartGame(CurrentLevel);
 		}
 
 		public bool IsPauseable
 		{
-			get
-			{
-				return true;
-			}
+			get { return true; }
 		}
 	}
 }

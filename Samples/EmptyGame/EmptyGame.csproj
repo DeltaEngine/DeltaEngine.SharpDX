@@ -45,10 +45,6 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
-      <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
-      <Name>DeltaEngine.Platforms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
       <Project>{05569371-855C-4667-8228-20491337C431}</Project>
       <Name>DeltaEngine.WindowsSharpDX</Name>

@@ -19,13 +19,19 @@ namespace DeltaEngine.Extensions
 			if (!File.Exists(assemblyFilePath))
 				throw new FileNotFoundException("Assembly not found, unable to start it", assemblyFilePath);
 			rememberedDirectory = Directory.GetCurrentDirectory();
-			string assemblyDirectory = Path.GetDirectoryName(assemblyFilePath);
+			var assemblyFullPath = GetFullPathFromRelativeOrAbsoluteFilePath(assemblyFilePath);
 			if (copyToLocalFolderForExecution)
-				CopyAssemblyFileAndAllDependencies(assemblyDirectory);
-			else if (!string.IsNullOrEmpty(assemblyDirectory))
-				Directory.SetCurrentDirectory(assemblyDirectory);
-			domain = AppDomain.CreateDomain(DomainName, null, CreateDomainSetup(assemblyDirectory));
+				CopyAssemblyFileAndAllDependencies(assemblyFullPath);
+			else if (!string.IsNullOrEmpty(assemblyFullPath))
+				Directory.SetCurrentDirectory(assemblyFullPath);
+			domain = AppDomain.CreateDomain(DomainName, null, CreateDomainSetup(assemblyFullPath));
 			domain.SetData("EntryAssembly", Path.GetFullPath(assemblyFilePath));
+		}
+
+		private string GetFullPathFromRelativeOrAbsoluteFilePath(string assemblyFilePath)
+		{
+			return Path.GetDirectoryName(Path.IsPathRooted(assemblyFilePath)
+				? assemblyFilePath : Path.Combine(rememberedDirectory, assemblyFilePath));
 		}
 
 		private void CopyAssemblyFileAndAllDependencies(string assemblyDirectory)
@@ -109,18 +115,35 @@ namespace DeltaEngine.Extensions
 			var instance = Activator.CreateInstance(type);
 			StackTraceExtensions.SetUnitTestName(type.FullName + "." + methodName, true);
 			RunMethodWithAttribute(instance, methods, SetUpAttribute);
-			foreach (var method in methods.Where(method => method.Name == methodName))
-				method.Invoke(instance, parameters);
+			methods.FirstOrDefault(method => method.Name == methodName).Invoke(instance, parameters);
 			RunMethodWithAttribute(instance, methods, TearDownAttribute);
 		}
 
 		private static void RunMethodWithAttribute(object classInstance, MethodInfo[] methods,
 			string attributeName)
 		{
+			RunBaseMethodWithAttribute(classInstance, methods, attributeName);
+			RunThisClassMethodWithAttribute(classInstance, methods, attributeName);
+		}
+
+		private static void RunBaseMethodWithAttribute(object classInstance, MethodInfo[] methods,
+			string attributeName)
+		{
 			foreach (var method in methods)
-				foreach (var attribute in method.GetCustomAttributes(true))
-					if (attribute.GetType().ToString() == attributeName)
-						method.Invoke(classInstance, null);
+				if (method.DeclaringType != classInstance.GetType())
+					foreach (var attribute in method.GetCustomAttributes(true))
+						if (attribute.GetType().ToString() == attributeName)
+							method.Invoke(classInstance, null);
+		}
+
+		private static void RunThisClassMethodWithAttribute(object classInstance, MethodInfo[] methods,
+			string attributeName)
+		{
+			foreach (var method in methods)
+				if (method.DeclaringType == classInstance.GetType())
+					foreach (var attribute in method.GetCustomAttributes(true))
+						if (attribute.GetType().ToString() == attributeName)
+							method.Invoke(classInstance, null);
 		}
 
 		private const string SetUpAttribute = "NUnit.Framework.SetUpAttribute";

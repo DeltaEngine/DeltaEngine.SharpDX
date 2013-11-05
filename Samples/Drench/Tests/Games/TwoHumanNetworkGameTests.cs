@@ -68,8 +68,6 @@ namespace Drench.Tests.Games
 
 		private void SetMouseState(State state, Vector2D position)
 		{
-			if (mouse == null)
-				return; //ncrunch: no coverage
 			mouse.SetPosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();

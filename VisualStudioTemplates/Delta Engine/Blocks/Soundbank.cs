@@ -2,9 +2,12 @@ using DeltaEngine.Multimedia;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Plays sound effects when key events occur
+	/// </summary>
 	public class Soundbank
 	{
-		public Soundbank(BlocksContent content)
+		public Soundbank($safeprojectname$Content content)
 		{
 			BlockAffixed = content.Load<Sound>("BlockAffixed");
 			BlockCouldntMove = content.Load<Sound>("BlockCantMove");
@@ -14,40 +17,11 @@ namespace $safeprojectname$
 			MultipleRowsRemoved = content.Load<Sound>("MultipleRowsRemoved");
 		}
 
-		public Sound BlockAffixed
-		{
-			get;
-			private set;
-		}
-
-		public Sound BlockCouldntMove
-		{
-			get;
-			private set;
-		}
-
-		public Sound BlockMoved
-		{
-			get;
-			private set;
-		}
-
-		public Sound GameLost
-		{
-			get;
-			private set;
-		}
-
-		public Sound RowRemoved
-		{
-			get;
-			private set;
-		}
-
-		public Sound MultipleRowsRemoved
-		{
-			get;
-			private set;
-		}
+		public Sound BlockAffixed { get; private set; }
+		public Sound BlockCouldntMove { get; private set; }
+		public Sound BlockMoved { get; private set; }
+		public Sound GameLost { get; private set; }
+		public Sound RowRemoved { get; private set; }
+		public Sound MultipleRowsRemoved { get; private set; }
 	}
 }

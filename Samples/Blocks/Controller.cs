@@ -10,7 +10,7 @@ namespace Blocks
 	/// <summary>
 	/// Handles the falling and upcoming blocks.
 	/// </summary>
-	public class Controller : Entity
+	public sealed class Controller : Entity
 	{
 		public Controller(Orientation displayMode, BlocksContent content)
 		{
@@ -31,11 +31,9 @@ namespace Blocks
 		{
 			if (UpcomingBlock == null)
 				CreateUpcomingBlock();
-
 			FallingBlock = UpcomingBlock;
 			CreateUpcomingBlock();
-
-			while (IsABrickOnTopRowOrIsNoRoomForNextBlock())
+			if (IsABrickOnTopRowOrIsNoRoomForNextBlock())
 				GameLost();
 		}
 
@@ -61,7 +59,7 @@ namespace Blocks
 		{
 			List<int> validStartingPositions = Get<Grid>().GetValidStartingColumns(FallingBlock);
 			if (validStartingPositions.Count == 0)
-				return false;
+				return false; //ncrunch: no coverage
 			int column = Randomizer.Current.Get(0, validStartingPositions.Count);
 			FallingBlock.Left = validStartingPositions[column];
 			return true;
@@ -69,11 +67,26 @@ namespace Blocks
 
 		private void GameLost()
 		{
+			Stop<InteractionHandler>();
 			Get<Soundbank>().GameLost.Play();
-			Get<Grid>().Clear();
-			totalRowsRemoved = 0;
 			if (Lose != null)
 				Lose();
+			GetRidOfGameObjects();
+			ReinitializeGame();
+		}
+
+		private void GetRidOfGameObjects()
+		{
+			Get<Grid>().Clear();
+			totalRowsRemoved = 0;
+			UpcomingBlock = null;
+			FallingBlock = null;
+		}
+
+		private void ReinitializeGame()
+		{
+			GetNewFallingBlock();
+			Start<InteractionHandler>();
 		}
 
 		private void MoveFallingBlock()
@@ -82,7 +95,6 @@ namespace Blocks
 			FallingBlock.UpdateBrickDrawAreas(FallSpeed);
 			if (Get<Grid>().IsValidPosition(FallingBlock))
 				return;
-
 			FallingBlock.Top = top;
 			FallingBlock.UpdateBrickDrawAreas(0.0f);
 			Settle();
@@ -93,7 +105,6 @@ namespace Blocks
 			settling += FallSpeed * Time.Delta;
 			if (settling < SettleTime)
 				return;
-
 			AffixBlock();
 			settling = 0.0f;
 		}
@@ -132,10 +143,12 @@ namespace Blocks
 		{
 			if (rowsRemoved == 0)
 				Get<Soundbank>().BlockAffixed.Play();
+			//ncrunch: no coverage start
 			else if (rowsRemoved == 1)
 				Get<Soundbank>().RowRemoved.Play();
 			else
 				Get<Soundbank>().MultipleRowsRemoved.Play();
+			//ncrunch: no coverage end
 		}
 
 		private const int RowRemovedBonus = 10;
@@ -190,15 +203,15 @@ namespace Blocks
 					var controller = entity as Controller;
 					if (controller.FallingBlock == null)
 						controller.GetNewFallingBlock();
-
 					controller.MoveFallingBlock();
 					controller.UpdateElapsed();
 					if (controller.elapsed >= BlockMoveInterval)
-						controller.MoveBlock();
+						controller.MoveBlock(); //ncrunch: no coverage
 				}
 			}
 		}
 
+		//ncrunch: no coverage start
 		internal void MoveBlock()
 		{
 			elapsed -= BlockMoveInterval;
@@ -208,6 +221,7 @@ namespace Blocks
 			if (isBlockMovingRight)
 				MoveBlockRightIfPossible();
 		}
+		//ncrunch: no coverage end
 
 		private const float BlockMoveInterval = 0.166f;
 

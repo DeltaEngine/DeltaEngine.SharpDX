@@ -40,7 +40,7 @@ namespace Asteroids
 				AddMainMenuControl();
 				break;
 			default:
-				return;
+				return; //ncrunch: no coverage
 			}
 		}
 
@@ -50,6 +50,7 @@ namespace Asteroids
 			commandsInUse++;
 		}
 
+		//ncrunch: no coverage start, interaction
 		private void SteerPlayerAnalogue(Vector2D direction)
 		{
 			if(direction.Y > 0)
@@ -59,6 +60,7 @@ namespace Asteroids
 			if(direction.X < 0)
 				game.InteractionLogics.Player.SteerLeft(-direction.X * 0.7f);
 		}
+		//ncrunch: no coverage end
 
 		private void AddPlayerAccelerationControl()
 		{
@@ -115,6 +117,7 @@ namespace Asteroids
 			commandsInUse++;
 		}
 
+		//ncrunch: no coverage start
 		private void PlayerForward()
 		{
 			game.InteractionLogics.Player.ShipAccelerate();
@@ -139,5 +142,6 @@ namespace Asteroids
 		{
 			game.InteractionLogics.Player.IsFiring = false;
 		}
+		//ncrunc: no coverage end
 	}
 }

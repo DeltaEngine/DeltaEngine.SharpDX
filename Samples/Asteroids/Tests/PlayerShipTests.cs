@@ -34,6 +34,7 @@ namespace Asteroids.Tests
 			Assert.Greater(playerShip.Rotation, originalAngle);
 		}
 
+		//ncrunch: no coverage start
 		[Test, CloseAfterFirstFrame, Ignore]
 		public void FireRocket()
 		{
@@ -43,6 +44,7 @@ namespace Asteroids.Tests
 			AdvanceTimeAndUpdateEntities(2);
 			Assert.IsTrue(firedRocket);
 		}
+		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void HittingBordersTopLeft()
@@ -61,6 +63,14 @@ namespace Asteroids.Tests
 		public void CreatedEntityIsPauseable()
 		{
 			Assert.IsTrue(playerShip.IsPauseable);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void VelocityCannotExceedMaximum()
+		{
+			var velocity = new Velocity2D(Vector2D.Zero, 0.5f);
+			velocity.Accelerate(1.0f,0);
+			Assert.AreEqual(-0.5f * Vector2D.UnitY, velocity.Velocity);
 		}
 	}
 }

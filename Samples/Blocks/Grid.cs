@@ -3,6 +3,7 @@ using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Particles;
 
@@ -63,7 +64,7 @@ namespace Blocks
 			removedRows = 0;
 			for (int y = 0; y < Height; y++)
 				if (IsRowFilled(y))
-					RemoveRow(y);
+					RemoveRow(y); //ncrunch: no coverage
 		}
 
 		private int removedRows;
@@ -73,10 +74,10 @@ namespace Blocks
 			for (int x = 0; x < Width; x++)
 				if (bricks[x, y] == null)
 					return false;
-
-			return true;
+			return true; //ncrunch: no coverage
 		}
 
+		//ncrunch: no coverage start
 		private void RemoveRow(int row)
 		{
 			for (int x = 0; x < Width; x++)
@@ -88,6 +89,7 @@ namespace Blocks
 
 			removedRows++;
 		}
+		//ncrunch: no coverage end
 
 		private void RemoveBrick(int x, int y)
 		{
@@ -95,17 +97,18 @@ namespace Blocks
 			brick.IsActive = false;
 			bricks[x, y] = null;
 			if (content.DoBricksSplitInHalfWhenRowFull)
-				AddPairOfFallingBricks(brick);
+				AddPairOfFallingBricks(brick); //ncrunch: no coverage
 			else
 				AddFallingBrick(brick, brick.Material);
 		}
 
+		//ncrunch: no coverage start
 		private void AddPairOfFallingBricks(Brick brick)
 		{
 			AddTopFallingBrick(brick);
 			AddBottomFallingBrick(brick);
 		}
-
+		
 		private void AddTopFallingBrick(Sprite brick)
 		{
 			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
@@ -123,6 +126,7 @@ namespace Blocks
 			var material = new Material(shader, image, image.PixelSize);
 			AddFallingBrick(brick, material);
 		}
+		//ncrunch: no coverage end
 
 		private static void AddFallingBrick(Entity2D brick, Material material)
 		{
@@ -142,6 +146,7 @@ namespace Blocks
 			fallingBrick.Start<SimplePhysics.Move>();
 		}
 
+		//ncrunch: no coverage start
 		private void MoveBrickDown(int x, int y)
 		{
 			bricks[x, y] = bricks[x, y - 1];
@@ -151,6 +156,7 @@ namespace Blocks
 			bricks[x, y].TopLeftGridCoord.Y++;
 			bricks[x, y].UpdateDrawArea();
 		}
+		//ncrunch: no coverage end
 
 		private void AddZoomingBrick(Sprite brick)
 		{
@@ -185,6 +191,7 @@ namespace Blocks
 			return validStartingColumns;
 		}
 
+		//ncrunch: no coverage start
 		private List<int> GetAllValidStartingColumns(Block block)
 		{
 			var validStartingColumns = new List<int>();
@@ -194,6 +201,7 @@ namespace Blocks
 
 			return validStartingColumns;
 		}
+		//ncrunch: no coverage end
 
 		private bool IsAValidStartingColumn(Block block, int column)
 		{
@@ -227,6 +235,9 @@ namespace Blocks
 				for (int y = 0; y < Height; y++)
 					if (bricks[x, y] != null)
 						RemoveBrick(x, y);
+			var remainingBricks = EntitiesRunner.Current.GetEntitiesOfType<Brick>();
+			foreach (var brick in remainingBricks)
+				brick.IsActive = false;
 		}
 	}
 }

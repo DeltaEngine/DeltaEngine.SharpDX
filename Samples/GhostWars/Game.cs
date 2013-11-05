@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Core;
-using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 
 namespace GhostWars

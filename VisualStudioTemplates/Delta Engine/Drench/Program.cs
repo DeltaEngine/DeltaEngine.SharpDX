@@ -9,11 +9,11 @@ namespace $safeprojectname$
 		public Program()
 		{
 			new RelativeScreenSpace(Resolve<Window>());
-			new DrenchMenu();
+			new $safeprojectname$Menu();
 		}
 
 		public static void Main()
-		{
+		{ 
 			new Program().Run();
 		}
 	}

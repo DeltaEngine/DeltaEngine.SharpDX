@@ -8,9 +8,12 @@ using DeltaEngine.Extensions;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Holds the individual bricks making up a block and handles rotating them
+	/// </summary>
 	public class Block : Entity
 	{
-		public Block(Orientation displayMode, BlocksContent content, Vector2D topLeft)
+		public Block(Orientation displayMode, $safeprojectname$Content content, Vector2D topLeft)
 		{
 			this.content = content;
 			CreateBricks();
@@ -19,32 +22,25 @@ namespace $safeprojectname$
 			this.displayMode = displayMode;
 		}
 
-		private readonly BlocksContent content;
+		private readonly $safeprojectname$Content content;
 
 		private void CreateBricks()
 		{
-			int numberOfBricks = content.AreFiveBrickBlocksAllowed ? GetNumberOfBricks() : 
-				NormalNumberOfBricks;
+			int numberOfBricks = content.AreFiveBrick$safeprojectname$Allowed
+				? GetNumberOfBricks() : NormalNumberOfBricks;
 			var image = content.Load<Image>("Block" + Randomizer.Current.Get(1, 8));
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image, image.PixelSize);
 			var newBrick = new Brick(material, Vector2D.Zero, displayMode);
-			Bricks = new List<Brick> {
-				newBrick
-			};
+			Bricks = new List<Brick> { newBrick };
 			for (int i = 1; i < numberOfBricks; i++)
-				AddBrick(Bricks [i - 1], material);
+				AddBrick(Bricks[i - 1], material);
 
 			ShiftToTopLeft();
 		}
 
 		private const int NormalNumberOfBricks = 4;
-
-		public List<Brick> Bricks
-		{
-			get;
-			private set;
-		}
+		public List<Brick> Bricks { get; private set; }
 
 		private static int GetNumberOfBricks()
 		{
@@ -55,17 +51,20 @@ namespace $safeprojectname$
 		{
 			Brick newBrick;
 			do
-				newBrick = new Brick(material, lastBrick.Offset + GetRandomOffset(), displayMode) {
+				newBrick = new Brick(material, lastBrick.Offset + GetRandomOffset(), displayMode)
+				{
 					IsActive = false
 				}; while (Bricks.Any(brick => brick.Offset == newBrick.Offset));
+
 			Bricks.Add(newBrick);
 			newBrick.IsActive = true;
 		}
 
 		private static Vector2D GetRandomOffset()
 		{
-			return Randomizer.Current.Get(0, 2) == 0 ? new Vector2D(Randomizer.Current.Get(0, 2) * 2 
-				- 1, 0) : new Vector2D(0, Randomizer.Current.Get(0, 2) * 2 - 1);
+			return Randomizer.Current.Get(0, 2) == 0
+				? new Vector2D(Randomizer.Current.Get(0, 2) * 2 - 1, 0)
+				: new Vector2D(0, Randomizer.Current.Get(0, 2) * 2 - 1);
 		}
 
 		private void ShiftToTopLeft()
@@ -91,18 +90,12 @@ namespace $safeprojectname$
 
 		public Vector2D Center
 		{
-			get
-			{
-				return center;
-			}
+			get { return center; }
 		}
 
 		public float Left
 		{
-			get
-			{
-				return Bricks [0].TopLeftGridCoord.X;
-			}
+			get { return Bricks[0].TopLeftGridCoord.X; }
 			set
 			{
 				foreach (Brick brick in Bricks)
@@ -112,10 +105,7 @@ namespace $safeprojectname$
 
 		public float Top
 		{
-			get
-			{
-				return Bricks [0].TopLeftGridCoord.Y;
-			}
+			get { return Bricks[0].TopLeftGridCoord.Y; }
 			set
 			{
 				foreach (Brick brick in Bricks)

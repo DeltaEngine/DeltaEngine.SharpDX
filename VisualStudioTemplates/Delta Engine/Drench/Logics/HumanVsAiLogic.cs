@@ -4,18 +4,16 @@ namespace $safeprojectname$.Logics
 {
 	public abstract class HumanVsAiLogic : TwoPlayerLogic
 	{
-		protected HumanVsAiLogic(int width, int height) : base(width, height)
-		{
-		}
+		protected HumanVsAiLogic(int width, int height)
+			: base(width, height) {}
 
 		public override void MakeMove(Color color)
 		{
-			Board.SetColor(homeSquares [0], color);
-			turns [0]++;
+			Board.SetColor(homeSquares[0], color);
+			turns[0]++;
 			CheckForGameOver();
 			if (IsGameOver)
 				return;
-
 			ActivePlayer = 1;
 			ProcessComputerMove();
 		}
@@ -24,8 +22,7 @@ namespace $safeprojectname$.Logics
 		{
 			MakeAiMove();
 			if (!LastPlayerPassed)
-				turns [1]++;
-
+				turns[1]++;
 			CheckForGameOver();
 			ActivePlayer = 0;
 		}

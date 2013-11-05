@@ -202,5 +202,12 @@ namespace DeltaEngine.Graphics.Tests
 			window.ViewportPixelSize = new Size(800, 600);
 			Assert.AreEqual(new Size(800, 600), drawing.ViewportPixelSize);
 		}
+
+		[Test, CloseAfterFirstFrame]
+		public void DrawEmptyLine()
+		{
+			var line = new Line(Vector2D.Zero, Vector2D.Zero, Color.White);
+			line.Set(new VertexPosition2DColor[0]);
+		}
 	}
 }

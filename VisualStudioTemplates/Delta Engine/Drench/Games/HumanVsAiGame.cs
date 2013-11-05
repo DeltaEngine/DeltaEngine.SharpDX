@@ -5,7 +5,8 @@ namespace $safeprojectname$.Games
 {
 	public class HumanVsAiGame : TwoPlayerGame
 	{
-		public HumanVsAiGame(HumanVsAiLogic humanVsAiLogic) : base(humanVsAiLogic)
+		public HumanVsAiGame(HumanVsAiLogic humanVsAiLogic)
+			: base(humanVsAiLogic)
 		{
 			UpdateText("", "");
 		}
@@ -20,7 +21,7 @@ namespace $safeprojectname$.Games
 			else
 				UpdateText("- Invalid Move!", "");
 			while (!logic.HasPlayerAnyValidMoves(0) && !logic.IsGameOver)
-				logic.Pass();
+				logic.Pass(); //ncrunch: no coverage
 			return isValid;
 		}
 
@@ -28,7 +29,7 @@ namespace $safeprojectname$.Games
 		{
 			logic.MakeMove(color);
 			if (logic.LastPlayerPassed)
-				UpdateText("", "(AI passes)");
+				UpdateText("", "(AI passes)"); //ncrunch: no coverage
 		}
 	}
 }

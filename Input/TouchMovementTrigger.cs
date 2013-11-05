@@ -6,7 +6,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Tracks any touch movement, useful to update cursor positions.
 	/// </summary>
-	public class TouchMovementTrigger : DragTrigger
+	public class TouchMovementTrigger : DragTrigger, TouchTrigger
 	{
 		public TouchMovementTrigger() {}
 
@@ -21,6 +21,14 @@ namespace DeltaEngine.Input
 		protected override void StartInputDevice()
 		{
 			Start<Touch>();
+		}
+
+		public void HandleWithTouch(Touch touch)
+		{
+			bool changedPosition = Position != touch.GetPosition(0);
+			Position = touch.GetPosition(0);
+			if(changedPosition)
+				Invoke();
 		}
 	}
 }

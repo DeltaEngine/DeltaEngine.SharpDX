@@ -133,7 +133,7 @@ namespace DeltaEngine.Content.Disk
 			try
 			{
 				var bitmap = new Bitmap(filePath);
-				WriteAttribute(writer, "PixelSize", "(" + bitmap.Width + ", " + bitmap.Height + ")");
+				WriteAttribute(writer, "PixelSize", bitmap.Width + ", " + bitmap.Height);
 				if (GetBlendMode(bitmap, filePath).ToString() != "Normal")
 					WriteAttribute(writer, "BlendMode", GetBlendMode(bitmap, filePath).ToString());
 			}

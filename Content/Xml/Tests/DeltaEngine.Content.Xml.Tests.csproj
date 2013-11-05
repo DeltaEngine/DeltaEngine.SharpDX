@@ -74,8 +74,8 @@
     <Compile Include="XmlContentTests.cs" />
     <Compile Include="XmlDataTests.cs" />
     <Compile Include="XmlFileTests.cs" />
+    <Compile Include="XmlMetaDataExtensionsTests.cs" />
     <Compile Include="XmlSnippetTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

@@ -127,18 +127,18 @@ namespace DeltaEngine.Tests.Extensions
 		}
 
 		[Test]
-		public void ConvertFirstCharactertoUpperCase()
+		public void ConvertFirstCharacterToUpperCase()
 		{
 			const string UpperCaseWord = "Banana";
-			Assert.AreEqual(UpperCaseWord, UpperCaseWord.ConvertFirstCharactertoUpperCase());
-			Assert.AreEqual(UpperCaseWord, "banana".ConvertFirstCharactertoUpperCase());
-			Assert.AreEqual("", "".ConvertFirstCharactertoUpperCase());
+			Assert.AreEqual(UpperCaseWord, UpperCaseWord.ConvertFirstCharacterToUpperCase());
+			Assert.AreEqual(UpperCaseWord, "banana".ConvertFirstCharacterToUpperCase());
+			Assert.AreEqual("", "".ConvertFirstCharacterToUpperCase());
 		}
 
 		[Test]
 		public void SplitTextIntoWords()
 		{
-			var stringWords = "TestForSplittingAStringIntoWords".SplitWords();
+			var stringWords = "TestForSplittingAStringIntoWords".SplitWords(true);
 			Assert.AreEqual(' ', stringWords[4]);
 			Assert.AreEqual("Test for splitting a string into words", stringWords);
 		}
@@ -155,7 +155,7 @@ namespace DeltaEngine.Tests.Extensions
 		public void SplitWordsWithEmptyWord()
 		{
 			const string TestString = "";
-			Assert.AreEqual(TestString, TestString.SplitWords());
+			Assert.AreEqual(TestString, TestString.SplitWords(true));
 		}
 
 		[Test]

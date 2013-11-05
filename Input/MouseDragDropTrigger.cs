@@ -9,7 +9,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Drag and Drop events with Mouse.
 	/// </summary>
-	public class MouseDragDropTrigger : Trigger
+	public class MouseDragDropTrigger : Trigger, MouseTrigger
 	{
 		public MouseDragDropTrigger(Rectangle startArea, MouseButton button)
 		{
@@ -40,5 +40,19 @@ namespace DeltaEngine.Input
 		}
 
 		public class CannotCreateMouseDragDropTriggerWithoutStartArea : Exception {}
+
+		public void HandleWithMouse(Mouse mouse)
+		{
+			if (StartArea.Contains(mouse.Position) && mouse.GetButtonState(Button) == State.Pressing)
+				StartDragPosition = mouse.Position;
+			else if (StartDragPosition != Vector2D.Unused &&
+				mouse.GetButtonState(Button) != State.Released)
+				if (StartDragPosition.DistanceTo(mouse.Position) > PositionEpsilon)
+					Invoke();
+				else
+					StartDragPosition = Vector2D.Unused;
+		}
+
+		private const float PositionEpsilon = 0.0025f;
 	}
 }

@@ -8,6 +8,8 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public abstract class BaseSlider : Picture
 	{
+		protected BaseSlider() {}
+
 		protected BaseSlider(Theme theme, Material material, Rectangle drawArea)
 			: base(theme, material, drawArea) {}
 
@@ -34,7 +36,24 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 			Pointer.State.IsPressed = true;
 		}
 
-		protected internal Picture Pointer { get; protected set; }
+		protected internal Picture Pointer
+		{
+			get { return Get<Picture>(); }
+		}
+
+		public override sealed void Set(object component)
+		{
+			if (component is Picture)
+				ReplaceChild((Picture)component);
+			base.Set(component);
+		}
+
+		private void ReplaceChild(Picture pointer)
+		{
+			if (Contains<Picture>())
+				RemoveChild(Get<Picture>());
+			AddChild(pointer);
+		}
 
 		protected abstract void UpdatePointerValue();
 

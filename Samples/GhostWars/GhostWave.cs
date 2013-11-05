@@ -1,5 +1,4 @@
 ﻿using System;
-using DeltaEngine;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;

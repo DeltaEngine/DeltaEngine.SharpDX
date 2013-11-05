@@ -5,12 +5,17 @@ using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
-	public class Snake : Entity2D
+	/// <summary>
+	/// This class holds data about the snake body and checks for snake collisions with either 
+	/// itself or with the borders and whether the snake must grow in size.
+	/// </summary>
+	public class $safeprojectname$ : Entity2D
 	{
-		public Snake(int gridSize, Color color) : base(Rectangle.Zero)
+		public $safeprojectname$(int gridSize, Color color)
+			: base(Rectangle.Zero)
 		{
 			Add(new Body(gridSize, color));
-			Start<SnakeHandler>();
+			Start<$safeprojectname$Handler>();
 		}
 
 		public void Dispose()
@@ -18,12 +23,12 @@ namespace $safeprojectname$
 			var body = Get<Body>();
 			foreach (var bodyPart in body.BodyParts)
 				bodyPart.IsActive = false;
-
+			Stop<$safeprojectname$Handler>();
 			Get<Body>().BodyParts.Clear();
 			Remove<Body>();
-			Stop<SnakeHandler>();
 		}
-		internal class SnakeHandler : UpdateBehavior
+
+		internal class $safeprojectname$Handler : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
 			{
@@ -31,11 +36,12 @@ namespace $safeprojectname$
 				{
 					if (!Time.CheckEvery(0.15f))
 						return;
-
 					var body = entity.Get<Body>();
+					if(body.BodyParts.Count < 2)
+						return;
 					body.MoveBody();
-					body.CheckSnakeCollidesWithChunk();
-					body.CheckSnakeCollisionWithBorderOrItself();
+					body.Check$safeprojectname$CollidesWithChunk();
+					body.Check$safeprojectname$CollisionWithBorderOrItself();
 				}
 			}
 		}

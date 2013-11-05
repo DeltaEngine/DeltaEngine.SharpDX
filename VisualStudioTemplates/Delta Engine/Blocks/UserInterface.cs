@@ -2,9 +2,12 @@ using System;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Swaps from landscape to portrait mode as the window aspect changes
+	/// </summary>
 	public class UserInterface : IDisposable
 	{
-		public UserInterface(BlocksContent content)
+		public UserInterface($safeprojectname$Content content)
 		{
 			userInterfaceLandscape = new UserInterfaceLandscape(content);
 			userInterfacePortrait = new UserInterfacePortrait(content);
@@ -41,11 +44,7 @@ namespace $safeprojectname$
 			Score = 0;
 		}
 
-		public int Score
-		{
-			get;
-			set;
-		}
+		public int Score { get; set; }
 
 		public void Dispose()
 		{

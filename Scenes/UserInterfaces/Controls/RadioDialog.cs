@@ -9,36 +9,45 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class RadioDialog : Control
 	{
+		protected RadioDialog() {}
+
 		public RadioDialog(Rectangle drawArea)
 			: this(Theme.Default, drawArea) {}
 
 		public RadioDialog(Theme theme, Rectangle drawArea)
 			: base(drawArea)
 		{
-			Add(this.theme = theme);
-			Add(buttons = new List<RadioButton>());
+			Add(theme);
+			Add(new List<RadioButton>());
 		}
 
-		private readonly Theme theme;
-		private readonly List<RadioButton> buttons;
+		private Theme Theme
+		{
+			get { return Get<Theme>(); }
+		}
+
+		internal List<RadioButton> Buttons
+		{
+			get { return Get<List<RadioButton>>(); }
+		}
 
 		public void AddButton(string text)
 		{
-			var button = new RadioButton(theme, Rectangle.Unused, text);
+			var button = new RadioButton(Theme, Rectangle.Unused, text);
 			button.Clicked += () => ButtonClicked(button);
-			buttons.Add(button);
+			Buttons.Add(button);
 			AddChild(button);
-			if (buttons.Count == 1)
+			if (Buttons.Count == 1)
 				button.State.IsSelected = true;
-			for (int i = 0; i < buttons.Count; i++)
-				buttons[i].DrawArea = GetButtonDrawArea(i);
+			for (int i = 0; i < Buttons.Count; i++)
+				Buttons[i].DrawArea = GetButtonDrawArea(i);
 		}
 
 		private Rectangle GetButtonDrawArea(int position)
 		{
-			float height = DrawArea.Height / (buttons.Count);
-			float aspectRatio = theme.RadioButtonBackground.DiffuseMap != null
-				? theme.RadioButtonBackground.DiffuseMap.PixelSize.AspectRatio
+			float height = DrawArea.Height / (Buttons.Count);
+			float aspectRatio = Theme.RadioButtonBackground.DiffuseMap != null
+				? Theme.RadioButtonBackground.DiffuseMap.PixelSize.AspectRatio
 				: DefaultRadioButtonAspectRatio;
 			float width = height * aspectRatio;
 			var rectangle = new Rectangle(DrawArea.Left, DrawArea.Top + position * height, width, height);
@@ -49,20 +58,35 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 
 		private void ButtonClicked(RadioButton clicked)
 		{
-			foreach (RadioButton button in buttons)
+			foreach (RadioButton button in Buttons)
 				button.State.IsSelected = (button == clicked);
 		}
 
 		public override void Update()
 		{
 			base.Update();
-			for (int i = 0; i < buttons.Count; i++)
-				buttons[i].DrawArea = GetButtonDrawArea(i);
+			for (int i = 0; i < Buttons.Count; i++)
+				Buttons[i].DrawArea = GetButtonDrawArea(i);
 		}
 
 		public RadioButton SelectedButton
 		{
 			get { return Get<List<RadioButton>>().FirstOrDefault(button => button.State.IsSelected); }
+		}
+
+		public override void Set(object component)
+		{
+			var buttons = component as List<RadioButton>;
+			if (buttons != null)
+				foreach (var button in buttons)
+					ProcessButton(button);
+			base.Set(component);
+		}
+
+		private void ProcessButton(RadioButton button)
+		{
+			button.Clicked += () => ButtonClicked(button);
+			AddChild(button);
 		}
 	}
 }

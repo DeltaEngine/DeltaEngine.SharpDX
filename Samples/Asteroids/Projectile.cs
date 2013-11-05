@@ -10,6 +10,7 @@ using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
 {
+	//ncrunch: no coverage start
 	/// <summary>
 	/// Game object representing the projectiles fired by the player
 	/// </summary>
@@ -20,9 +21,14 @@ namespace Asteroids
 		{
 			Rotation = angle;
 			RenderLayer = (int)AsteroidsRenderLayer.Rockets;
-			missileAndTrails = new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MissileEffect"));
+			missileAndTrails =
+				new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MissileEffect"));
 			missileAndTrails.AttachedEmitters[0].EmitterData.DoParticlesTrackEmitter = true;
 			missileAndTrails.AttachedEmitters[1].EmitterData.DoParticlesTrackEmitter = true;
+			foreach (var emitter in missileAndTrails.AttachedEmitters)
+				emitter.EmitterData.StartRotation =
+					new RangeGraph<ValueRange>(new ValueRange(Rotation, Rotation),
+						new ValueRange(Rotation, Rotation));
 			Add(new SimplePhysics.Data
 			{
 				Gravity = Vector2D.Zero,
@@ -51,10 +57,6 @@ namespace Asteroids
 					projectile.missileAndTrails.Position = new Vector3D(projectile.Center);
 					projectile.missileAndTrails.Rotation = Quaternion.FromAxisAngle(Vector3D.UnitZ,
 						projectile.Rotation);
-					foreach (var emitter in projectile.missileAndTrails.AttachedEmitters)
-					{
-						emitter.EmitterData.StartRotation.Start = new ValueRange(projectile.Rotation);
-					}
 					projectile.DrawArea = CalculateFutureDrawArea(projectile, Time.Delta);
 					if (ObjectHasCrossedScreenBorder(projectile.DrawArea, ScreenSpace.Current.Viewport))
 						projectile.Dispose();
@@ -65,17 +67,17 @@ namespace Asteroids
 			{
 				return
 					new Rectangle(
-						projectile.DrawArea.TopLeft +
-							projectile.Get<SimplePhysics.Data>().Velocity * deltaT,
+						projectile.DrawArea.TopLeft + projectile.Get<SimplePhysics.Data>().Velocity * deltaT,
 						projectile.DrawArea.Size);
 			}
 
 			private static bool ObjectHasCrossedScreenBorder(Rectangle objectArea, Rectangle borders)
 			{
-				return (objectArea.Right <=borders.Left ||
-					objectArea.Left >= borders.Right || objectArea.Bottom <= borders.Top ||
-					objectArea.Top >= borders.Bottom);
+				return (objectArea.Right <= borders.Left || objectArea.Left >= borders.Right ||
+					objectArea.Bottom <= borders.Top || objectArea.Top >= borders.Bottom);
 			}
 		}
 	}
+
+	//ncrunch: no coverage end
 }

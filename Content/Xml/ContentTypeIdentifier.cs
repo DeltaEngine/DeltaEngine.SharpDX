@@ -20,6 +20,8 @@ namespace DeltaEngine.Content.Xml
 				case ".wav":
 					return ContentType.Sound;
 				case ".gif":
+				case ".atlas":
+				case ".txt":
 					return ContentType.JustStore;
 				case ".mp3":
 				case ".ogg":

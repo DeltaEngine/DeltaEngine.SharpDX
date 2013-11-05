@@ -39,8 +39,12 @@ namespace DeltaEngine.Content
 			Shader = ContentLoader.Load<Shader>(shaderName);
 			DefaultColor = defaultColor;
 			RenderingCalculator = new RenderingCalculator();
-			if (String.IsNullOrEmpty(imageOrAnimationName))
-				return;
+			if (!String.IsNullOrEmpty(imageOrAnimationName))
+				DetermineUseCaseData(imageOrAnimationName);
+		}
+
+		private void DetermineUseCaseData(string imageOrAnimationName)
+		{
 			if (ContentLoader.Exists(imageOrAnimationName, ContentType.ImageAnimation))
 				Animation = ContentLoader.Load<ImageAnimation>(imageOrAnimationName);
 			else if (ContentLoader.Exists(imageOrAnimationName, ContentType.SpriteSheetAnimation))
@@ -48,6 +52,33 @@ namespace DeltaEngine.Content
 			else
 				DiffuseMap = ContentLoader.Load<Image>(imageOrAnimationName);	
 		}
+
+		public ImageAnimation Animation
+		{
+			get { return animation; }
+			set
+			{
+				animation = value;
+				DiffuseMap = animation.Frames[0];
+				Duration = animation.DefaultDuration;
+			}
+		}
+
+		private ImageAnimation animation;
+		public float Duration { get; set; }
+
+		public SpriteSheetAnimation SpriteSheet
+		{
+			get { return spriteSheet; }
+			set
+			{
+				spriteSheet = value;
+				DiffuseMap = spriteSheet.Image;
+				Duration = spriteSheet.DefaultDuration;
+			}
+		}
+
+		private SpriteSheetAnimation spriteSheet;
 
 		public class UnableToCreateMaterialWithoutValidShaderName : Exception {}
 
@@ -109,33 +140,6 @@ namespace DeltaEngine.Content
 			RenderingCalculator = new RenderingCalculator();
 		}
 
-		public ImageAnimation Animation
-		{
-			get { return animation; }
-			set
-			{
-				animation = value;
-				DiffuseMap = animation.Frames[0];
-				Duration = animation.DefaultDuration;
-			}
-		}
-
-		private ImageAnimation animation;
-		public float Duration { get; set; }
-
-		public SpriteSheetAnimation SpriteSheet
-		{
-			get { return spriteSheet; }
-			set
-			{
-				spriteSheet = value;
-				DiffuseMap = spriteSheet.Image;
-				Duration = spriteSheet.DefaultDuration;
-			}
-		}
-
-		private SpriteSheetAnimation spriteSheet;
-
 		/// <summary>
 		/// When using the Sprite(Material, Point) constructor this size is used for the draw area.
 		/// It is calculated from the DiffuseMap.PixelSize and the default content resolution, i.e.
@@ -183,15 +187,15 @@ namespace DeltaEngine.Content
 			Shader = ContentLoader.Load<Shader>(shaderName);
 			DefaultColor = MetaData.Get("Color", Color.White);
 			RenderSizeMode = MetaData.Get("RenderSizeMode", RenderSizeMode.PixelBased);
+			LoadImageData();
+		}
+
+		private void LoadImageData()
+		{
 			string imageOrAnimationName = MetaData.Get("ImageOrAnimationName", "");
 			if (string.IsNullOrEmpty(imageOrAnimationName))
 				return; // ncrunch: no coverage
-			if (ContentLoader.Exists(imageOrAnimationName, ContentType.ImageAnimation))
-				Animation = ContentLoader.Load<ImageAnimation>(imageOrAnimationName);
-			else if (ContentLoader.Exists(imageOrAnimationName, ContentType.SpriteSheetAnimation))
-				SpriteSheet = ContentLoader.Load<SpriteSheetAnimation>(imageOrAnimationName);
-			else
-				DiffuseMap = ContentLoader.Load<Image>(imageOrAnimationName);
+			DetermineUseCaseData(imageOrAnimationName);
 			if (DiffuseMap != null)
 				DiffuseMap.BlendMode = MetaData.Get("BlendMode", "Normal").TryParse(BlendMode.Normal);
 			LoadLightMap();

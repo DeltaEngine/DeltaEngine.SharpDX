@@ -139,10 +139,11 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void RenderMovingUVSprite()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), Rectangle.One);
-			sprite.SetUVWithoutInterpolation(new Rectangle(0, 0, 0.1f, 0.1f));
+			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"),
+				Rectangle.HalfCentered);
+			sprite.LastUV = sprite.UV = new Rectangle(0, 0, 0.2f, 0.2f);
 			sprite.FlipMode = FlipMode.Vertical;
-			sprite.StartMovingUV(Vector2D.One/10);
+			sprite.StartMovingUV(Vector2D.One / 10);
 		}
 
 		[Test]

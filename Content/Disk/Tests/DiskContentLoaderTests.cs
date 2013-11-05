@@ -17,10 +17,8 @@ namespace DeltaEngine.Content.Disk.Tests
 	/// <summary>
 	/// ContentMetaData.xml does not exist on purpose, it should be created automatically!
 	/// </summary>
-	[Category("Slow"), Ignore]
 	internal class DiskContentLoaderTests
 	{
-		//ncrunch: no coverage start
 		[TestFixtureSetUp]
 		public void Setup()
 		{
@@ -109,25 +107,27 @@ namespace DeltaEngine.Content.Disk.Tests
 			Assert.AreEqual(new Size(32, 32), smallImage.PixelSize);
 		}
 
+		//ncrunch: no coverage start
 		[Test]
 		public void LoadNonExistingImageFails()
 		{
 			if (Debugger.IsAttached)
 				Assert.Throws<ContentLoader.ContentNotFound>(
 					() => ContentLoader.Load<MockImage>("FailImage"));
-		}
+		} //ncrunch: no coverage end
 
 		[Test]
 		public void LoadingCachedContentOfTheWrongTypeThrowsException()
 		{
 			Assert.DoesNotThrow(() => ContentLoader.Load<MockImage>("DeltaEngineLogo"));
 			Assert.Throws<ContentLoader.CachedResourceExistsButIsOfTheWrongType>(
-				() => ContentLoader.Load<MockSound>("DeltaEngineLogo"));
+				() => ContentLoader.Load<MockXmlContent>("DeltaEngineLogo"));
 		}
 
 		[Test]
 		public void LastTimeUpdatedShouldBeSet()
 		{
+			var x = DateTime.Now;
 			Assert.Greater(image.MetaData.LastTimeUpdated, DateTime.Now.AddSeconds(-2));
 		}
 
@@ -144,6 +144,33 @@ namespace DeltaEngine.Content.Disk.Tests
 		}
 
 		[Test]
+		public void ShouldCreateMetaDataFileIfNoneExists()
+		{
+			string randomContentDir = "Content" + DateTime.Now.Ticks * 2;
+			Directory.CreateDirectory(randomContentDir);
+			var files = Directory.GetFiles("Content", "*.png");
+			File.Copy(files[0], Path.Combine(randomContentDir, Path.GetFileName(files[0])));
+			string metaDataFilePath = Path.Combine(randomContentDir, "ContentMetaData.xml");
+			var contentLoader = (DiskContentLoader)ContentLoader.current;
+			contentLoader.LoadMetaData(metaDataFilePath);
+			Assert.IsTrue(File.Exists(metaDataFilePath));
+		}
+
+		[Test]
+		public void LoadingContentDataFromBinaryDataWillLoadItFromName()
+		{
+			var content = new ImageAnimation(new[] { ContentLoader.Load<Image>("DeltaEngineLogo") }, 1);
+			var data = BinaryDataExtensions.SaveDataIntoMemoryStream(content);
+			Assert.AreEqual(63, data.Length);
+			var loadedContent =
+				BinaryDataExtensions.LoadDataWithKnownTypeFromMemoryStream<ImageAnimation>(data);
+			Assert.AreEqual(content.Name, loadedContent.Name);
+			Assert.AreEqual(content.Frames.Length, loadedContent.Frames.Length);
+			Assert.AreEqual(content.Frames[0], loadedContent.Frames[0]);
+		}
+
+		//ncrunch: no coverage start
+		[Test, Category("Slow"), Ignore]
 		public void CreateMetaDataViaFileCreator()
 		{
 			string randomContentDir = "Content" + DateTime.Now.Ticks;
@@ -167,7 +194,7 @@ namespace DeltaEngine.Content.Disk.Tests
 
 		private static void CheckElementPixelSize(XElement element)
 		{
-			var expectedPixelSize = "(64, 64)";
+			var expectedPixelSize = "64, 64";
 			if (element.Attribute("Name").Value == "DeltaEngineLogo")
 				expectedPixelSize = SetElementTo128Pixels(element);
 			else if (element.Attribute("Name").Value == "SmallImage")
@@ -176,28 +203,17 @@ namespace DeltaEngine.Content.Disk.Tests
 				Assert.AreEqual(expectedPixelSize, element.Attribute("PixelSize").Value);
 		}
 
+		// ReSharper disable UnusedParameter.Local once
 		private static string SetElementTo128Pixels(XElement element)
 		{
 			Assert.IsNull(element.Attribute("BlendMode"));
-			return "(128, 128)";
+			return "128, 128";
 		}
 
 		private static string SetElementTo32Pixels(XElement element)
 		{
 			Assert.AreEqual("Opaque", element.Attribute("BlendMode").Value);
-			return "(32, 32)";
-		}
-
-		[Test]
-		public void LoadingContentDataFromBinaryDataWillLoadItFromName()
-		{
-			var content = ContentLoader.Load<XmlContent>("Test");
-			var data = BinaryDataExtensions.SaveDataIntoMemoryStream(content);
-			Assert.AreEqual(content.Name.Length + 1, data.Length);
-			var loadedContent =
-				BinaryDataExtensions.LoadDataWithKnownTypeFromMemoryStream<XmlContent>(data);
-			Assert.AreEqual(content.Name, loadedContent.Name);
-			Assert.AreEqual(content, loadedContent);
+			return "32, 32";
 		}
 	}
 }

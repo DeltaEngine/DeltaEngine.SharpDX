@@ -38,7 +38,7 @@ namespace DeltaEngine.Datatypes
 				for (int i = 1; i < partitions.Length; i += 2)
 				{
 					Values[i / 2] = (T)Activator.CreateInstance(typeof(T), partitions[i]);
-					Percentages[i / 2] = float.Parse(partitions[i - 1].Trim(new[] { ':', '(', '(', ',' }),
+					Percentages[i / 2] = float.Parse(partitions[i - 1].Trim(new[] { ':', '(', ')', ',' }),
 						CultureInfo.InvariantCulture);
 				}
 			}

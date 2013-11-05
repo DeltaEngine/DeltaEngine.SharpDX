@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Input;
@@ -16,7 +17,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[SetUp]
 		public void SetUp()
 		{
-			dialog = new RadioDialog(Center);
+			dialog = new RadioDialog(Rectangle.FromCenter(0.5f, 0.5f, 0.4f, 0.3f));
 			AdvanceTimeAndUpdateEntities();
 			dialog.AddButton("Top Button");
 			dialog.AddButton("Middle Button");
@@ -28,7 +29,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		}
 
 		private RadioDialog dialog;
-		private static readonly Rectangle Center = Rectangle.FromCenter(0.5f, 0.5f, 0.4f, 0.3f);
 
 		private class UpdateText : UpdateBehavior
 		{
@@ -79,9 +79,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 					dialog.Get<FontText>().Text = "Button '" + dialog.SelectedButton.Text + "'";
 				}
 			}
-		}
-
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void ClickingRadioButtonSelectsIt()
@@ -115,7 +113,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void ClickingOneRadioButtonCausesTheOthersToUnselect()
 		{
 			if (mouse == null)
-				return; // ncrunch: no coverage
+				return; //ncrunch: no coverage
 			var buttons = dialog.Get<List<RadioButton>>();
 			PressAndReleaseMouse(new Vector2D(0.35f, 0.5f));
 			Assert.IsTrue(buttons[1].State.IsSelected);
@@ -137,7 +135,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		public void ClickingDisabledRadioButtonDoesNotCauseTheOthersToUnselect()
 		{
 			if (mouse == null)
-				return; // ncrunch: no coverage
+				return; //ncrunch: no coverage
 			var buttons = dialog.Get<List<RadioButton>>();
 			buttons[2].IsEnabled = false;
 			PressAndReleaseMouse(new Vector2D(0.35f, 0.5f));
@@ -156,7 +154,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void ReenablingDialogEnablesAllButtons()
+		public void ReEnableDialogEnablesAllButtons()
 		{
 			dialog.IsEnabled = false;
 			dialog.IsEnabled = true;
@@ -170,6 +168,34 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		{
 			new Command(point => dialog.DrawArea = Rectangle.FromCenter(point, dialog.DrawArea.Size)).
 				Add(new MouseMovementTrigger());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(dialog);
+			var loadedDialog = (RadioDialog)stream.CreateFromMemoryStream();
+			Assert.AreEqual(3, loadedDialog.Buttons.Count);
+			Assert.AreEqual(dialog.Buttons[1].DrawArea, loadedDialog.Buttons[1].DrawArea);
+			Assert.AreEqual(dialog.Buttons[1].Text, loadedDialog.Buttons[1].Text);
+		}
+
+		[Test]
+		public void DrawLoadedRadioDialog()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(dialog);
+			dialog.IsActive = false;
+			stream.CreateFromMemoryStream();
+		}
+
+		[Test]
+		public void DrawLoadedRadioDialogAttachedToMouse()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(dialog);
+			dialog.IsActive = false;
+			var loadedDialog = (RadioDialog)stream.CreateFromMemoryStream();
+			new Command(point => loadedDialog.DrawArea = Rectangle.FromCenter(point,
+				loadedDialog.DrawArea.Size)).Add(new MouseMovementTrigger());
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			Assert.AreEqual(sprite.Rotation, loadedSprite.Rotation);
 			Assert.AreEqual(1, loadedSprite.GetActiveBehaviors().Count);
 			Assert.AreEqual(1, loadedSprite.GetDrawBehaviors().Count);
-			Assert.AreEqual("SpriteBatchRenderer",
+			Assert.AreEqual("SpriteRenderer",
 				loadedSprite.GetDrawBehaviors()[0].GetShortNameOrFullNameIfNotFound());
 		}
 	}

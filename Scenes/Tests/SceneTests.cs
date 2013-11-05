@@ -7,6 +7,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
@@ -161,6 +162,8 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ControlsDoNotRespondToInputWhenSceneIsHidden()
 		{
+			if(resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			var button = CreateButton();
 			scene.Add(button);
 			scene.Hide();
@@ -200,6 +203,8 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ControlsDoNotRespondToInputWhenInBackground()
 		{
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			var button = CreateButton();
 			scene.Add(button);
 			scene.ToBackground();
@@ -210,6 +215,8 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ControlsRespondToInputWhenBroughtBackToForeground()
 		{
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			var button = CreateButton();
 			scene.Add(button);
 			scene.ToBackground();
@@ -221,6 +228,8 @@ namespace DeltaEngine.Scenes.Tests
 		[Test]
 		public void DrawButtonWhichChangesColorAndSize()
 		{
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
 			var button = CreateButton();
 			button.Start<ChangeSizeDynamically>();
 			scene.Add(button);

@@ -78,8 +78,8 @@ namespace DeltaEngine.Entities
 				RemoveTag(entity, tag);
 			prioritizedEntities[(int)entity.UpdatePriority].entities.Remove(entity);
 			foreach (var priority in prioritizedEntities)
-				foreach (var behaviorEntities in priority.behaviors.Values)
-					behaviorEntities.Remove(entity);
+				foreach (var pair in priority.behaviors)
+					priority.RemoveEntityFromBehaviors(entity, pair.Key);
 			var drawable = entity as DrawableEntity;
 			if (drawable == null)
 				return;
@@ -110,13 +110,11 @@ namespace DeltaEngine.Entities
 		{
 			foreach (var behavior in entity.drawBehaviors)
 				AddToDrawBehaviorList(entity, behavior);
-			flatDrawableEntities.Add(entity);
 		}
 
 		internal void RemoveVisible(DrawableEntity entity)
 		{
 			CheckRenderLayerListToDeleteEntity(entity);
-			flatDrawableEntities.Remove(entity);
 		}
 
 		internal void AddTag(Entity entity, string tag)
@@ -237,6 +235,7 @@ namespace DeltaEngine.Entities
 				entity.InvokeNextUpdateStarted();
 			foreach (var priority in prioritizedEntities)
 			{
+				priority.IncreaseBehaviorsEnumerationCount();
 				foreach (var pair in priority.behaviors)
 					if (pair.Value.Count > 0)
 						RunUpdateBehaviorIfNotPaused(pair.Key, pair.Value);
@@ -246,14 +245,7 @@ namespace DeltaEngine.Entities
 					if (updateableEntity != null)
 						RunEntityUpdateIfNotPaused(updateableEntity);
 				}
-				if (priority.delayedNewBehaviorsWhileUpdating.Count <= 0)
-					continue;
-				foreach (var pair in priority.delayedNewBehaviorsWhileUpdating)
-					if (priority.behaviors.ContainsKey(pair.Key))
-						priority.behaviors[pair.Key].AddRange(pair.Value);
-					else
-						priority.behaviors.Add(pair.Key, pair.Value);
-				priority.delayedNewBehaviorsWhileUpdating.Clear();
+				priority.ReduceBehaviorsEnumerationCount();
 			}
 		}
 
@@ -318,7 +310,7 @@ namespace DeltaEngine.Entities
 		internal UpdateBehavior GetUpdateBehavior(Type behaviorType)
 		{
 			foreach (var priority in prioritizedEntities)
-				foreach (var behavior in priority.delayedNewBehaviorsWhileUpdating.Keys.Where(
+				foreach (var behavior in priority.behaviorsToBeAdded.Keys.Where(
 					behaviorType.IsInstanceOfType))
 					return behavior;
 			foreach (var priority in prioritizedEntities)

@@ -74,7 +74,6 @@ namespace SideScroller
 				SetQuadraticBackground("SidescrollerMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
-				Hide();
 			}
 
 			private readonly Scene parent;
@@ -82,10 +81,13 @@ namespace SideScroller
 
 			private void AddControlDescription()
 			{
-				const string DescriptionText = "SideScroller - Manual\n\n" +
+				const string DescriptionText = "SideScroller - a Delta Engine sample game\n\n" +
+					"Defeat the enemies approaching from the right without getting hit yourself\n\n" +
+					"Controls:\n" +
 					"Fly Up - W or cursor up\n" +
 					"Fly Down - S or cursor down\n" +
-					"Fire - Space";
+					"MachineGunFire - Hold Space\n" +
+					"Fire a missile - Press LeftCtrl";
 				var howToDisplayText = new FontText(Font.Default, DescriptionText, Vector2D.Half);
 				Add(howToDisplayText);
 			}

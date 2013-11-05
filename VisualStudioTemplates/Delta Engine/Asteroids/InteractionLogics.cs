@@ -13,9 +13,7 @@ namespace $safeprojectname$
 		public InteractionLogics()
 		{
 			explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEffectEmitter0");
-			IncreaseScore += i => 
-			{
-			};
+			IncreaseScore += i => { };
 		}
 
 		public void BeginGame()
@@ -24,16 +22,11 @@ namespace $safeprojectname$
 			Player = new PlayerShip();
 		}
 
-		public PlayerShip Player
-		{
-			get;
-			private set;
-		}
-
+		public PlayerShip Player { get; private set; }
 		private ParticleEmitterData explosionData;
 		private bool gameRunning;
 
-		public void CreateRandomAsteroids(int howMany, int sizeMod = 1)
+		public void CreateRandom$safeprojectname$(int howMany, int sizeMod = 1)
 		{
 			for (int asteroidCount = 0; asteroidCount < howMany; asteroidCount++)
 			{
@@ -41,7 +34,7 @@ namespace $safeprojectname$
 			}
 		}
 
-		public void CreateAsteroidsAtPosition(Vector2D position, int sizeMod = 1, int howMany = 2)
+		public void Create$safeprojectname$AtPosition(Vector2D position, int sizeMod = 1, int howMany = 2)
 		{
 			for (int asteroidCount = 0; asteroidCount < howMany; asteroidCount++)
 			{
@@ -59,47 +52,47 @@ namespace $safeprojectname$
 		{
 			foreach (var asteroid in EntitiesRunner.Current.GetEntitiesOfType<Asteroid>())
 			{
+				//ncrunch: no coverage start
 				foreach (var projectile in EntitiesRunner.Current.GetEntitiesOfType<Projectile>())
 					if (ObjectsInHitRadius(projectile, asteroid, 0.1f / asteroid.sizeModifier))
 					{
-						var explosionEmitter = new ParticleEmitter(explosionData, new 
-							Vector3D(projectile.Center));
+						var explosionEmitter = new ParticleEmitter(explosionData, new Vector3D(projectile.Center));
 						explosionEmitter.RenderLayer = 10;
 						explosionEmitter.DisposeAfterSeconds(0.7f);
 						projectile.Dispose();
 						asteroid.Fracture();
 					}
-
+				//ncrunch: no coverage end
 				if (Player.IsActive && ObjectsInHitRadius(Player, asteroid, 0.06f / asteroid.sizeModifier))
 				{
 					Player.IsActive = false;
 					var explosionEmitter = new ParticleEmitter(explosionData, new Vector3D(Player.Center));
 					explosionEmitter.RenderLayer = 10;
 					explosionEmitter.DisposeAfterSeconds(0.5f);
-					if (GameOver != null)
+					if(GameOver != null)
 						GameOver();
 				}
 			}
 		}
 
-		private static bool ObjectsInHitRadius(Entity2D entityAlpha, Entity2D entitytBeta, float radius)
+		private static bool ObjectsInHitRadius(Entity2D entityAlpha, Entity2D entitytBeta,
+			float radius)
 		{
 			return entityAlpha.DrawArea.Center.DistanceTo(entitytBeta.DrawArea.Center) < radius;
 		}
 
 		private void CreateNewAsteroidIfNecessary()
 		{
-			if (GlobalTime.Current.Milliseconds - 1000 > timeLastNewAsteroid && 
-				EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count <= MaximumAsteroids)
+			if (GlobalTime.Current.Milliseconds - 1000 > timeLastNewAsteroid &&
+				EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count <= Maximum$safeprojectname$)
 			{
-				CreateRandomAsteroids(1);
+				CreateRandom$safeprojectname$(1);
 				timeLastNewAsteroid = GlobalTime.Current.Milliseconds;
 			}
 		}
 
-		private const int MaximumAsteroids = 10;
+		private const int Maximum$safeprojectname$ = 10;
 		private float timeLastNewAsteroid;
-
 		public event Action GameOver;
 		public event Action<int> IncreaseScore;
 
@@ -113,20 +106,17 @@ namespace $safeprojectname$
 		public void DisposeObjects()
 		{
 			foreach (Asteroid asteroid in EntitiesRunner.Current.GetEntitiesOfType<Asteroid>())
-				asteroid.IsActive = false;
-
+				asteroid.IsActive = false; //ncrunch: no coverage 
 			foreach (Projectile projectile in EntitiesRunner.Current.GetEntitiesOfType<Projectile>())
-				projectile.Dispose();
-
+				projectile.Dispose(); //ncrunch: no coverage
 			foreach (PlayerShip playerShip in EntitiesRunner.Current.GetEntitiesOfType<PlayerShip>())
 				playerShip.IsActive = false;
 		}
 
 		public void Update()
 		{
-			if (!gameRunning)
+			if(!gameRunning)
 				return;
-
 			CheckAsteroidCollisions();
 			CreateNewAsteroidIfNecessary();
 		}
@@ -136,12 +126,6 @@ namespace $safeprojectname$
 			gameRunning = false;
 		}
 
-		public bool IsPauseable
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool IsPauseable { get { return true; } }
 	}
 }

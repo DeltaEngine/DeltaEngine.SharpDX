@@ -11,15 +11,8 @@ namespace DeltaEngine.Multimedia
 	/// </summary>
 	public abstract class Sound : ContentData
 	{
-		protected Sound(string contentName, Settings settings)
-			: base(contentName)
-		{
-			this.settings = settings;
-		}
-
-		private readonly Settings settings;
-
-		protected override bool AllowCreationIfContentNotFound { get { return true; } }
+		protected Sound(string contentName)
+			: base(contentName) {}
 
 		public abstract float LengthInSeconds { get; }
 		public int NumberOfInstances
@@ -58,7 +51,7 @@ namespace DeltaEngine.Multimedia
 
 		public void Play()
 		{
-			Play(settings.SoundVolume);
+			Play(Settings.Current.SoundVolume);
 		}
 
 		public void Play(float volume, float panning = 0.0f)
@@ -98,7 +91,7 @@ namespace DeltaEngine.Multimedia
 
 		public SoundInstance CreateSoundInstance()
 		{
-			var instance = new SoundInstance(this) { Volume = settings.SoundVolume };
+			var instance = new SoundInstance(this) { Volume = Settings.Current.SoundVolume };
 			Add(instance);
 			return instance;
 		}

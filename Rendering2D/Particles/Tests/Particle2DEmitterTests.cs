@@ -20,10 +20,9 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 		{
 			CreateDataAndEmitter(1000, 0.01f, 10);
 			emitter.Position = new Vector2D(0.5f, 0.4f);
-			new FpsDisplay(emitter, FpsDrawArea1);
+			Rectangle fpsDrawArea = Rectangle.FromCenter(0.5f, 0.25f, 0.2f, 0.2f);
+			new FpsDisplay(emitter, fpsDrawArea);
 		}
-
-		private static readonly Rectangle FpsDrawArea1 = Rectangle.FromCenter(0.5f, 0.25f, 0.2f, 0.2f);
 
 		private void CreateDataAndEmitter(int maxParticles = 1, float spawnInterval = 0.01f,
 			float lifeTime = 0.002f)
@@ -87,12 +86,10 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 		public void Render2000Particles()
 		{
 			new FpsDisplay(new ParticleEmitter(CreateData(1000, 0.01f, 10), new Vector2D(0.3f, 0.5f)),
-				FpsDrawArea1);
-			Rectangle fpsDrawArea2 = Rectangle.FromCenter(0.5f, 0.3f, 0.2f, 0.2f);
+				Rectangle.FromCenter(0.5f, 0.25f, 0.2f, 0.2f));
 			new FpsDisplay(new ParticleEmitter(CreateData(1000, 0.01f, 10), new Vector2D(0.7f, 0.5f)),
-				fpsDrawArea2);
+				Rectangle.FromCenter(0.5f, 0.3f, 0.2f, 0.2f));
 		}
-
 
 		[Test]
 		public void ParticlesAreEmittedAtMousePosition()
@@ -385,12 +382,15 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 			emitterChanging.EmitterData.SpawnInterval += 0.2f;
 			emitterChanging.EmitterData.Acceleration = new RangeGraph<Vector3D>(Vector3D.One);
 			emitterChanging.EmitterData.Color = new RangeGraph<Color>(Color.Green, Color.Yellow);
+			emitterChanging.EmitterData.StartRotation.Start = new ValueRange(3,4);
+			Assert.AreNotSame(emitterData, emitterChanging.EmitterData);
 			Assert.AreNotEqual(emitterStayingSame.EmitterData.SpawnInterval,
 				emitterChanging.EmitterData.SpawnInterval);
 			Assert.AreNotEqual(emitterStayingSame.EmitterData.Acceleration.Values,
 				emitterChanging.EmitterData.Acceleration.Values);
 			Assert.AreNotEqual(emitterStayingSame.EmitterData.Color.Values,
 				emitterChanging.EmitterData.Color.Values);
+			Assert.AreNotEqual(emitterStayingSame.EmitterData.StartRotation, emitterChanging.EmitterData.StartRotation);
 		}
 
 		[Test]

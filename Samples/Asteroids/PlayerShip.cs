@@ -20,12 +20,10 @@ namespace Asteroids
 		{
 			Add(new Velocity2D(Vector2D.Zero, MaximumPlayerVelocity));
 			RenderLayer = (int)AsteroidsRenderLayer.Player;
-			projectileMaterial = ContentLoader.Load<Material>("Missile");
 			timeLastShot = GlobalTime.Current.Milliseconds;
 		}
 
 		private const float MaximumPlayerVelocity = .5f;
-		private readonly Material projectileMaterial;
 		private float timeLastShot;
 
 		public void ShipAccelerate(float amount = 1)
@@ -53,10 +51,12 @@ namespace Asteroids
 			MoveUpdate();
 			if (!IsFiring || !(GlobalTime.Current.Milliseconds - 1 / CadenceShotsPerMilliSec > timeLastShot))
 				return;
+			//ncrunch: no coverage start, content Mock can't use exists which is needed for ParticleSystem
 			new Projectile(DrawArea.Center, Rotation);
 			timeLastShot = GlobalTime.Current.Milliseconds;
 			if (ProjectileFired != null)
 				ProjectileFired.Invoke();
+			//ncrunch: no coverage end
 		}
 
 		private const float CadenceShotsPerMilliSec = 0.003f;

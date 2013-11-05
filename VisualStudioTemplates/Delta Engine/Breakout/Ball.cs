@@ -12,10 +12,13 @@ using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// The player interacts with the ball with his paddle and navigates it to destroy bricks.
+	/// </summary>
 	public class Ball : Sprite
 	{
-		public Ball(Paddle paddle) : base(new Material(Shader.Position2DColorUV, "Ball"), 
-			Rectangle.Zero)
+		public Ball(Paddle paddle)
+			: base(new Material(Shader.Position2DColorUV,"Ball"), Rectangle.Zero)
 		{
 			this.paddle = paddle;
 			fireBallSound = ContentLoader.Load<Sound>("PaddleBallStart");
@@ -65,6 +68,7 @@ namespace $safeprojectname$
 			UpdateOnPaddle();
 			velocity = Vector2D.Zero;
 		}
+
 		public class RunBall : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
@@ -76,17 +80,14 @@ namespace $safeprojectname$
 						ball.UpdateOnPaddle();
 					else
 						ball.UpdateInFlight(Time.Delta);
+
 					const float Aspect = 1;
 					ball.DrawArea = Rectangle.FromCenter(ball.Position, new Size(Height / Aspect, Height));
 				}
 			}
 		}
-		public Vector2D Position
-		{
-			get;
-			protected set;
-		}
 
+		public Vector2D Position { get; protected set; }
 		public static readonly Size BallSize = new Size(Height);
 		private const float Height = Radius * 2.0f;
 		internal const float Radius = 0.02f;
@@ -110,6 +111,7 @@ namespace $safeprojectname$
 			else if (Position.Y > 1.0f - Radius)
 				HandleBorderCollision(Direction.Bottom);
 		}
+
 		protected enum Direction
 		{
 			Left,
@@ -117,6 +119,7 @@ namespace $safeprojectname$
 			Right,
 			Bottom,
 		}
+
 		protected void ReflectVelocity(Direction collisionSide)
 		{
 			switch (collisionSide)
@@ -142,7 +145,7 @@ namespace $safeprojectname$
 			if (collisionAtBorder == Direction.Bottom)
 				ResetBall();
 			else
-				collisionSound.Play(0.5f);
+				collisionSound.Play();
 		}
 
 		private void HandlePaddleCollision()
@@ -154,9 +157,8 @@ namespace $safeprojectname$
 		private bool IsInAreaOfPaddle()
 		{
 			if (Position.Y + Radius > paddle.Position.Y && velocity.Y > 0)
-				return Position.X + Radius > paddle.Position.X - Paddle.HalfWidth && Position.X - 
-					Radius < paddle.Position.X + Paddle.HalfWidth;
-
+				return Position.X + Radius > paddle.Position.X - Paddle.HalfWidth &&
+					Position.X - Radius < paddle.Position.X + Paddle.HalfWidth;
 			return false;
 		}
 
@@ -166,9 +168,8 @@ namespace $safeprojectname$
 			velocity.Y = -Math.Abs(velocity.Y) * SpeedYIncrease;
 			float speed = velocity.Length;
 			if (speed > MaximumScalarSpeed)
-				velocity *= MaximumScalarSpeed / speed;
-
-			collisionSound.Play(0.6f);
+				velocity *= MaximumScalarSpeed / speed; //ncrunch: no coverage
+			collisionSound.Play();
 		}
 
 		private const float SpeedYIncrease = 1.015f;

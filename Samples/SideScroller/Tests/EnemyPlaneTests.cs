@@ -1,6 +1,6 @@
-﻿using DeltaEngine.Content;
-using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
+using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
 namespace SideScroller.Tests
@@ -10,45 +10,37 @@ namespace SideScroller.Tests
 		[SetUp]
 		public void CreateEnemyPlane()
 		{
-			var foeTexture = new Material(Shader.Position2DColorUV, EnemyTextureName);
-			enemy = new EnemyPlane(foeTexture, new Vector2D(1.2f, 0.5f));
-			enemy.EnemyFiredShot += d => DoSomehting();
+			enemy = new EnemyPlane(new Vector2D(1.2f, 0.5f));
 		}
 
 		private const string EnemyTextureName = "EnemyPlane";
 		private EnemyPlane enemy;
-		private static void DoSomehting() {}
 
 		[Test]
 		public void LowerLifeWhenHitByBullet()
 		{
-			var foeTexture = new Material(Shader.Position2DColorUV, EnemyTextureName);
-			enemy = new EnemyPlane(foeTexture, new Vector2D(1.2f, 0.5f));
+			enemy = new EnemyPlane(new Vector2D(1.2f, 0.5f));
 			Assert.AreEqual(5, enemy.Hitpoints);
 			enemy.CheckIfHitAndReact(new Vector2D(1.2f, 0.5f));
-			enemy.EnemyFiredShot += d => DoSomehting();
 			Assert.AreEqual(4, enemy.Hitpoints);
 		}
 
 		[Test]
 		public void DefeatEnemyPlane()
 		{
-			var foeTexture = new Material(Shader.Position2DColorUV, EnemyTextureName);
-			enemy = new EnemyPlane(foeTexture, new Vector2D(1.2f, 0.9f));
-			for (int i = 0; i < 7; i++)
-				enemy.CheckIfHitAndReact(new Vector2D(1.2f, 0.9f));
-			AdvanceTimeAndUpdateEntities(0.3f);
+			enemy = new EnemyPlane(new Vector2D(1.2f, 0.9f));
+			bool defeated = false;
+			enemy.Destroyed += () => { defeated = true; };
+			enemy.ReceiveAttack(5);
 			Assert.LessOrEqual(enemy.Hitpoints, 0);
-			Assert.IsFalse(enemy.IsActive);
+			Assert.IsTrue(defeated);
 		}
 
 		[Test]
-		public void EnemyPlaneMovesThroughLeftSideOfScreen()
+		public void EnemyDespawnsOutsideScreenArea()
 		{
-			var foeTexture = new Material(Shader.Position2DColorUV, EnemyTextureName);
-			enemy = new EnemyPlane(foeTexture, new Vector2D(0.2f, 0.9f));
-			enemy.EnemyFiredShot += d => DoSomehting();
-			AdvanceTimeAndUpdateEntities(0.7f);
+			enemy = new EnemyPlane(new Vector2D(ScreenSpace.Current.Left - enemy.DrawArea.Width, 0.5f));
+			AdvanceTimeAndUpdateEntities();
 			Assert.IsFalse(enemy.IsActive);
 		}
 	}

@@ -1,7 +1,10 @@
 using DeltaEngine.Platforms;
-
+// ncrunch: no coverage start
 namespace $safeprojectname$
 {
+	/// <summary>
+	/// Displays a number of colored moving logo sprites bouncing around.
+	/// </summary>
 	internal class Program : App
 	{
 		public Program()

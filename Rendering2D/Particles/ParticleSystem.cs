@@ -15,11 +15,8 @@ namespace DeltaEngine.Rendering2D.Particles
 			AttachedEmitters = new List<ParticleEmitter>();
 			foreach (string emitterName in emittersToLoad.emitterNames)
 			{
-				if (ContentLoader.Exists(emitterName, ContentType.ParticleEmitter))
-				{
-					var emitterData = ContentLoader.Load<ParticleEmitterData>(emitterName);
-					AttachEmitter(new ParticleEmitter(emitterData, Position));
-				}
+				var emitterData = ContentLoader.Load<ParticleEmitterData>(emitterName);
+				AttachEmitter(new ParticleEmitter(emitterData, Position));
 			}
 		}
 

@@ -25,7 +25,6 @@ namespace $safeprojectname$
 			for (int x = 0; x < board.Width; x++)
 				for (int y = 0; y < board.Height; y++)
 					AddColorIfAvailable(x, y);
-
 			return availableColors;
 		}
 
@@ -34,7 +33,7 @@ namespace $safeprojectname$
 		private void GetHomeColors()
 		{
 			for (int i = 0; i < homeSquares.Length; i++)
-				homeColors [i] = board.GetColor(homeSquares [i]);
+				homeColors[i] = board.GetColor(homeSquares[i]);
 		}
 
 		private void AddColorIfAvailable(int x, int y)

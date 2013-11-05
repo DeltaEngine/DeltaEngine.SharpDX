@@ -1,13 +1,14 @@
 ﻿using System;
 using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 
 namespace DeltaEngine.Input
 {
 	/// <summary>
 	/// Allows a mouse flick to be detected.
 	/// </summary>
-	public class MouseFlickTrigger : InputTrigger
+	public class MouseFlickTrigger : InputTrigger, MouseTrigger
 	{
 		public MouseFlickTrigger() {}
 
@@ -24,7 +25,30 @@ namespace DeltaEngine.Input
 			Start<Mouse>();
 		}
 
-		public float PressTime { get; set; }
-		public Vector2D StartPosition { get; set; }
+		public float PressTime { get; private set; }
+		public Vector2D StartPosition { get; private set; }
+
+		public void HandleWithMouse(Mouse mouse)
+		{
+			if (mouse.LeftButton == State.Pressing)
+				SetFlickPositionAndResetTime(mouse.Position);
+			else if (StartPosition != Vector2D.Unused && mouse.LeftButton != State.Released)
+			{
+				PressTime += Time.Delta;
+				if (mouse.LeftButton == State.Releasing &&
+					StartPosition.DistanceTo(mouse.Position) > PositionEpsilon && PressTime < 0.3f)
+					Invoke();
+			}
+			else
+				SetFlickPositionAndResetTime(Vector2D.Unused);
+		}
+
+		private const float PositionEpsilon = 0.0025f;
+
+		private void SetFlickPositionAndResetTime(Vector2D position)
+		{
+			StartPosition = position;
+			PressTime = 0;
+		}
 	}
 }

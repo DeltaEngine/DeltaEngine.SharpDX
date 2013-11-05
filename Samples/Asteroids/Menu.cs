@@ -53,11 +53,13 @@ namespace Asteroids
 			Add(startButton);
 		}
 
+		//ncrunch: no coverage start
 		private void TryInvokeGameStart()
 		{
 			if (InitGame != null)
 				InitGame();
 		}
+		//ncrunch: no coverage end
 
 		public event Action InitGame;
 
@@ -70,6 +72,7 @@ namespace Asteroids
 			Add(howToButton);
 		}
 
+		//ncrunch: no coverage start
 		private void ShowHowToPlaySubMenu()
 		{
 			if (howToPlay == null)
@@ -91,7 +94,6 @@ namespace Asteroids
 				SetViewportBackground("AsteroidsMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
-				Hide();
 			}
 
 			private readonly Theme menuTheme;
@@ -123,6 +125,7 @@ namespace Asteroids
 				Add(backButton);
 			}
 		}
+		//ncrunch: no coverage end
 
 		private void AddHighscores()
 		{
@@ -133,6 +136,7 @@ namespace Asteroids
 			Add(highscoreButton);
 		}
 
+		//ncrunch: no coverage start
 		private void ShowHighScoresSubMenu()
 		{
 			if (highscore == null)
@@ -157,7 +161,6 @@ namespace Asteroids
 				scoreboard.RenderLayer = renderLayer + 2;
 				Add(scoreboard);
 				AddBackButton();
-				Hide();
 			}
 
 			private readonly Theme menuTheme;
@@ -184,6 +187,7 @@ namespace Asteroids
 				Add(backButton);
 			}
 		}
+		//ncrunch: no coverage end
 
 		private void AddQuitButton()
 		{
@@ -194,11 +198,14 @@ namespace Asteroids
 			Add(quitButton);
 		}
 
+		//ncrunch: no coverage start
 		private void TryInvokeQuit()
 		{
 			if (QuitGame != null)
 				QuitGame();
 		}
+		//ncrunch: no coverage end
+
 
 		public event Action QuitGame;
 

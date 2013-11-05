@@ -32,7 +32,6 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.IsFalse(numbers1.Compare(null));
 			Assert.IsFalse(numbers1.Compare(numbers3));
 			Assert.IsFalse(numbers3.Compare(numbers1));
-
 			byte[] optionalData = null;
 			Assert.IsTrue(optionalData.Compare(null));
 		}

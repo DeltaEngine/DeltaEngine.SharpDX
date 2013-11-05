@@ -82,7 +82,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			if (mouse == null)
 				return; //ncrunch: no coverage
 			SetMouseState(State.Pressing, Vector2D.Half);
-			Assert.AreEqual(Color.LightBlue, button.Color);
+			Assert.IsTrue(button.State.IsPressed);
 		}
 
 		private void SetMouseState(State state, Vector2D position)
@@ -91,7 +91,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 				return; //ncrunch: no coverage
 			mouse.SetPosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
-			AdvanceTimeAndUpdateEntities(0.1f);
+			AdvanceTimeAndUpdateEntities();
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -111,7 +111,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			PressAndReleaseMouse(new Vector2D(0.53f, 0.52f), new Vector2D(0.53f, 0.52f));
 			Assert.IsTrue(clicked);
 			Assert.IsTrue(button.State.RelativePointerPosition.IsNearlyEqual(new Vector2D(0.6f, 0.7f)));
-			Assert.AreEqual(Color.LightGray, button.Color);
 			Assert.IsFalse(button.State.IsPressed);
 		}
 
@@ -153,7 +152,6 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Assert.IsFalse(clicked);
 			Assert.IsFalse(button.State.IsInside);
 			Assert.AreEqual(Vector2D.Zero, button.State.RelativePointerPosition);
-			Assert.AreEqual(Color.DarkGray, button.Color);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -188,8 +186,27 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			Assert.AreEqual("ControlUpdater",
 				loadedButton.GetActiveBehaviors()[1].GetShortNameOrFullNameIfNotFound());
 			Assert.AreEqual(1, loadedButton.GetDrawBehaviors().Count);
-			Assert.AreEqual("SpriteBatchRenderer",
+			Assert.AreEqual("SpriteRenderer",
 				loadedButton.GetDrawBehaviors()[0].GetShortNameOrFullNameIfNotFound());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(button);
+			var loadedButton = (Button)stream.CreateFromMemoryStream();
+			Assert.AreEqual(Center, loadedButton.DrawArea);
+			Assert.AreEqual("Click Me", loadedButton.Text);
+		}
+
+		[Test]
+		public void DrawLoadedButton()
+		{
+			button.Text = "Original";
+			var stream = BinaryDataExtensions.SaveToMemoryStream(button);
+			var loadedButton = (Button)stream.CreateFromMemoryStream();
+			loadedButton.Text = "Loaded";
+			loadedButton.DrawArea = loadedButton.DrawArea.Move(0.0f, 0.15f);
 		}
 	}
 }

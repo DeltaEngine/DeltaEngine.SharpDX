@@ -8,29 +8,13 @@ namespace SideScroller.Tests
 {
 	internal class PlaneTests : TestWithMocksOrVisually
 	{
-		[Test]
-		public void FireShotEvent()
-		{
-			InitPlayerPlane();
-			bool shotfired = false;
-			playerPlane.PlayerFiredShot += point =>
-			{
-				Assert.AreEqual(playerPlane.Get<Rectangle>().Center, point);
-				shotfired = true;
-			};
-			playerPlane.IsFireing = true;
-			AdvanceTimeAndUpdateEntities(0.2f);
-			Assert.IsTrue(shotfired);
-		}
 
 		private void InitPlayerPlane()
 		{
-			var material = new Material(Shader.Position2DColorUV, PlaneTextureName);
-			playerPlane = new PlayerPlane(material, Vector2D.Half);
+			playerPlane = new PlayerPlane(Vector2D.Half);
 		}
 
 		private PlayerPlane playerPlane;
-		private const string PlaneTextureName = "PlayerPlane";
 
 		[Test]
 		public void MovePlaneVertically()

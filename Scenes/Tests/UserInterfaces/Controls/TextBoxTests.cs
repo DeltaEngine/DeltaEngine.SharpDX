@@ -1,8 +1,10 @@
 ﻿using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.UserInterfaces.Controls;
 using NUnit.Framework;
 
@@ -161,9 +163,39 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test]
 		public void RenderTextBoxAttachedToMouse()
 		{
-			new Command(
-				point => topTextBox.DrawArea = //ncrunch: no coverage
-					Rectangle.FromCenter(point, topTextBox.DrawArea.Size)).Add(new MouseMovementTrigger());
+			new Command(point => topTextBox.DrawArea = //ncrunch: no coverage
+				Rectangle.FromCenter(point, topTextBox.DrawArea.Size)).Add(new MouseMovementTrigger());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void SaveAndLoad()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(topTextBox);
+			var loadedTextBox = (TextBox)stream.CreateFromMemoryStream();
+			Assert.AreEqual(Top, loadedTextBox.DrawArea);
+			Assert.AreEqual("Hello", loadedTextBox.Text);
+			Assert.AreEqual(2, loadedTextBox.RenderLayer);
+			Assert.IsTrue(loadedTextBox.State.CanHaveFocus);
+			Assert.AreEqual(topTextBox.children.Count, loadedTextBox.children.Count);
+		}
+
+		[Test]
+		public void DrawLoadedTextBox()
+		{
+			topTextBox.Text = "Original";
+			bottomTextBox.IsActive = false;
+			var stream = BinaryDataExtensions.SaveToMemoryStream(topTextBox);
+			var loadedTextBox = (TextBox)stream.CreateFromMemoryStream();
+			loadedTextBox.Text = "Loaded";
+			loadedTextBox.DrawArea = loadedTextBox.DrawArea.Move(0.0f, 0.15f);
+		}
+
+		[Test]
+		public void ChangingFontTextChangesChild()
+		{
+			var text = new FontText(Font.Default, "Hello", Rectangle.HalfCentered);
+			topTextBox.Set(text);
+			Assert.AreEqual(text, topTextBox.children[0].Entity2D);
 		}
 	}
 }

@@ -48,18 +48,12 @@ namespace DeltaEngine.Entities
 				if (value == RenderLayer)
 					return;
 				Set(value);
-				EntitiesRunner.Current.ChangeRenderLayer(this, drawBehaviors);
+				if (IsVisible)
+					EntitiesRunner.Current.ChangeRenderLayer(this, drawBehaviors);
 			}
 		}
 
 		public const int DefaultRenderLayer = 0;
-
-		protected internal override List<object> GetComponentsForSaving()
-		{
-			var componentsForSaving = base.GetComponentsForSaving();
-			componentsForSaving.Add(RenderLayer);
-			return componentsForSaving;
-		}
 
 		internal void InvokeNextUpdateStarted()
 		{

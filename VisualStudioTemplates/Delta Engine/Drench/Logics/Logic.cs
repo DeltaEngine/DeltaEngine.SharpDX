@@ -15,12 +15,7 @@ namespace $safeprojectname$.Logics
 			turns = new int[homeSquares.Length];
 		}
 
-		internal Board Board
-		{
-			get;
-			set;
-		}
-
+		internal Board Board { get; set; }
 		internal readonly AvailableColorFinder availableColorFinder;
 		protected readonly Vector2D[] homeSquares;
 		protected readonly int[] turns;
@@ -39,17 +34,15 @@ namespace $safeprojectname$.Logics
 		}
 
 		public abstract void Pass();
-
 		public abstract void MakeMove(Color color);
-		public class CannotMakeMoveWhenGameIsOver : Exception
-		{
-		}
+
+		public class CannotMakeMoveWhenGameIsOver : Exception {}
+
 		protected void CheckForGameOver()
 		{
 			for (int i = 0; i < homeSquares.Length; i++)
 				if (HasPlayerAnyValidMoves(i))
 					return;
-
 			GameOver();
 		}
 
@@ -60,30 +53,17 @@ namespace $safeprojectname$.Logics
 				GameFinished();
 		}
 
-		public bool IsGameOver
-		{
-			get;
-			private set;
-		}
-
+		public bool IsGameOver { get; private set; }
 		public event Action GameFinished;
 
 		public int GetPlayerScore(int player)
 		{
-			return Board.GetConnectedColorsCount(homeSquares [player]);
+			return Board.GetConnectedColorsCount(homeSquares[player]);
 		}
 
-		public int ActivePlayer
-		{
-			get;
-			protected set;
-		}
+		public int ActivePlayer { get; protected set; }
 
-		public bool LastPlayerPassed
-		{
-			get;
-			protected set;
-		}
+		public bool LastPlayerPassed { get; protected set; }
 
 		internal bool HasPlayerAnyValidMoves(int player)
 		{
@@ -99,14 +79,14 @@ namespace $safeprojectname$.Logics
 		private bool IsValidMove(int player, Color color)
 		{
 			Board clone = Board.Clone();
-			clone.SetColor(homeSquares [player], color);
-			return clone.GetConnectedColorsCount(homeSquares [player]) > 
-				Board.GetConnectedColorsCount(homeSquares [player]);
+			clone.SetColor(homeSquares[player], color);
+			return clone.GetConnectedColorsCount(homeSquares[player]) >
+				Board.GetConnectedColorsCount(homeSquares[player]);
 		}
 
 		public int GetPlayerTurnsTaken(int player)
 		{
-			return turns [player];
+			return turns[player];
 		}
 	}
 }

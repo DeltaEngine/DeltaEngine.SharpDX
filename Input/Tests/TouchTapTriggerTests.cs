@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
@@ -16,6 +17,20 @@ namespace DeltaEngine.Input.Tests
 			var ellipse = new Ellipse(new Rectangle(0.1f, 0.1f, 0.1f, 0.1f), Color.Red);
 			new Command(() => ellipse.Center = Vector2D.Half).Add(new TouchTapTrigger());
 			new Command(() => ellipse.Center = Vector2D.Zero).Add(new TouchPressTrigger(State.Released));
+		}
+
+		[Test]
+		public void InvokeTouch()
+		{
+			var touch = Resolve<MockTouch>();
+			var trigger = new TouchTapTrigger();
+			bool wasInvoked = false;
+			new Command(() => wasInvoked = true).Add(trigger);
+			touch.SetTouchState(0, State.Pressing, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities();
+			touch.SetTouchState(0, State.Releasing, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities();
+			Assert.IsTrue(wasInvoked);
 		}
 	}
 }

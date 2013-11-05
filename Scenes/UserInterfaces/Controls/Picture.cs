@@ -1,5 +1,4 @@
-﻿using System;
-using DeltaEngine.Content;
+﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Scenes.UserInterfaces.Controls
@@ -9,10 +8,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 	/// </summary>
 	public class Picture : Control
 	{
-		protected Picture()
-		{
-			Theme = Theme.Default;
-		}
+		protected Picture() {}
 
 		public Picture(Theme theme, Material material, Rectangle drawArea)
 			: base(drawArea)
@@ -24,17 +20,7 @@ namespace DeltaEngine.Scenes.UserInterfaces.Controls
 		protected Theme Theme
 		{
 			set { Set(value); }
-			get
-			{
-				try
-				{
-					return Get<Theme>();
-				}
-				catch
-				{
-					return null;
-				}
-			}
+			get { return Get<Theme>(); }
 		}
 
 		public void SetAppearanceWithoutInterpolation(Material material)

@@ -29,6 +29,19 @@ namespace GhostWars
 		public int Level { get; private set; }
 		public Team Team { get; set; }
 
+		public override bool IsActive
+		{
+			get
+			{
+				return base.IsActive;
+			}
+			set
+			{
+				NumberText.IsActive = value;
+				base.IsActive = value;
+			}
+		}
+
 		public int NumberOfGhosts
 		{
 			get { return numberOfGhosts; }
