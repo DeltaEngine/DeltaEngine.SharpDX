@@ -188,8 +188,12 @@ namespace DeltaEngine.Extensions
 
 		public static bool IsStartedFromNunitConsole()
 		{
-			string currentDomainName = AppDomain.CurrentDomain.FriendlyName;
-			return currentDomainName == "NUnit Domain" || currentDomainName.StartsWith("test-domain-");
+			return AppDomain.CurrentDomain.FriendlyName.StartsWith("test-domain-");
+		}
+
+		public static bool IsStartedFromTeamCityNUnitLauncher()
+		{
+			return AppDomain.CurrentDomain.FriendlyName == "NUnit Domain";
 		}
 
 		/// <summary>

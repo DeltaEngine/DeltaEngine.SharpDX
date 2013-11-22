@@ -9,42 +9,28 @@ using DeltaEngine.ScreenSpaces;
 namespace $safeprojectname$
 {
 	/// <summary>
-	/// Game Logics and initialization for $safeprojectname$
+	/// Game Logic and initialization for Asteroids
 	/// </summary>
 	public class Game : Scene
 	{
 		public Game(Window window)
 		{
-			this.window = window;
-			window.ViewportPixelSize = Settings.Current.Resolution;
-			screenSpace = new Camera2DScreenSpace(window);
-			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1)
-				? 1 / window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
 			highScores = new int[10];
 			TryLoadingHighscores();
 			SetUpBackground();
 			mainMenu = new Menu();
 			mainMenu.InitGame += StartGame;
 			mainMenu.QuitGame += window.CloseAfterFrame;
-			InteractionLogics = new InteractionLogics();
+			InteractionLogic = new InteractionLogic();
 			mainMenu.UpdateHighscoreDisplay(highScores);
-			//ncrunch: no coverage start
-			window.ViewportSizeChanged += size =>
-			{
-				Settings.Current.Resolution = size;
-				if (GameState == GameState.MainMenu)
-					screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio;
-			};
-			//ncrunch: no coverage end
 		}
 
 		private int[] highScores;
 		private readonly Menu mainMenu;
-		private readonly Camera2DScreenSpace screenSpace;
-		private readonly Window window;
 
 		private void TryLoadingHighscores()
 		{
+			/*currently unused
 			var highscorePath = GetHighscorePath();
 			if (!File.Exists(highscorePath))
 				return; //ncrunch: no coverage, can't use files in mocks
@@ -53,13 +39,16 @@ namespace $safeprojectname$
 				var reader = new StreamReader(stream);
 				GetHighscoresFromString(reader.ReadToEnd());
 			}
+			 */
 		}
 
+		/*unused
 		private static string GetHighscorePath()
 		{
 			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-				"DeltaEngine", "$safeprojectname$", "Highscores");
+				"DeltaEngine", "Asteroids", "Highscores");
 		}
+		 */
 
 		public void GetHighscoresFromString(string highscoreString)
 		{
@@ -82,11 +71,10 @@ namespace $safeprojectname$
 		{
 			mainMenu.Hide();
 			Show();
-			screenSpace.Zoom = 1.0f;
 			controls = new Controls(this);
 			score = 0;
 			GameState = GameState.Playing;
-			InteractionLogics.BeginGame();
+			InteractionLogic.BeginGame();
 			SetUpEvents();
 			controls.SetControlsToState(GameState);
 			HudInterface = new HudInterface();
@@ -94,8 +82,8 @@ namespace $safeprojectname$
 
 		private void SetUpEvents()
 		{
-			InteractionLogics.GameOver += () => { GameOver(); };
-			InteractionLogics.IncreaseScore += increase =>
+			InteractionLogic.GameOver += GameOver;
+			InteractionLogic.IncreaseScore += increase =>
 			{
 				score += increase;
 				HudInterface.SetScoreText(score);
@@ -104,13 +92,13 @@ namespace $safeprojectname$
 
 		private Controls controls;
 		private int score;
-		public InteractionLogics InteractionLogics { get; private set; }
+		public InteractionLogic InteractionLogic { get; private set; }
 		public GameState GameState;
 		public HudInterface HudInterface { get; private set; }
 
 		private void SetUpBackground()
 		{
-			SetQuadraticBackground("$safeprojectname$Background");
+			SetQuadraticBackground("AsteroidsBackground");
 		}
 
 		public void GameOver()
@@ -118,8 +106,8 @@ namespace $safeprojectname$
 			if (GameState == GameState.GameOver)
 				return;
 			RefreshHighScores();
-			InteractionLogics.PauseUpdate();
-			InteractionLogics.Player.IsActive = false;
+			InteractionLogic.PauseUpdate();
+			InteractionLogic.Player.Dispose();
 			GameState = GameState.GameOver;
 			controls.SetControlsToState(GameState);
 			HudInterface.SetGameOverText();
@@ -127,26 +115,13 @@ namespace $safeprojectname$
 
 		public void RestartGame()
 		{
-			InteractionLogics.Restart();
+			InteractionLogic.Restart();
 			score = 0;
 			HudInterface.SetScoreText(score);
-			HudInterface.SetIngameMode();
+			HudInterface.SetInGameMode();
 			GameState = GameState.Playing;
 			controls.SetControlsToState(GameState);
 		}
-
-		//ncrunch: no coverage start
-		public void BackToMenu()
-		{
-			Hide();
-			InteractionLogics.DisposeObjects();
-			controls.SetControlsToState(GameState.MainMenu);
-			HudInterface.Dispose();
-			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1)
-				? 1 / window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
-			mainMenu.Show();
-		}
-		//ncrunch: no coverage end
 
 		private void RefreshHighScores()
 		{
@@ -155,7 +130,38 @@ namespace $safeprojectname$
 			SaveHighScore();
 		}
 
+		private void SaveHighScore()
+		{
+			/*currently unused
+			var highscoreFilePath = GetHighscorePath();
+			PathExtensions.CreateDirectoryIfNotExists(Path.GetDirectoryName(highscoreFilePath));
+			using (FileStream highscoreFile = File.Create(highscoreFilePath))
+			{
+				var writer = new StreamWriter(highscoreFile);
+				writer.Write(CreateHighscoreString());
+				writer.Flush();
+			}
+			 */
+		}
+
+		private string CreateHighscoreString()
+		{
+			var stringOfScores = highScores[0].ToString(CultureInfo.InvariantCulture);
+			for (int i = 1; i < highScores.Length; i++)
+				stringOfScores += ", " + highScores[i].ToString(CultureInfo.InvariantCulture);
+			return stringOfScores;
+		}
+
 		//ncrunch: no coverage start
+		public void BackToMenu()
+		{
+			Hide();
+			InteractionLogic.Dispose();
+			controls.SetControlsToState(GameState.MainMenu);
+			HudInterface.Dispose();
+			mainMenu.Show();
+		}
+
 		private void AddLastScoreToHighscoreIfQualified()
 		{
 			if (score <= highScores[highScores.Length - 1])
@@ -181,26 +187,6 @@ namespace $safeprojectname$
 					highScores[i] = scoreBuffer[i - 1];
 				else
 					highScores[i] = scoreBuffer[i];
-		}
-		//ncrunch: no coverage end
-
-		private void SaveHighScore()
-		{
-			var highscoreFilePath = GetHighscorePath();
-			using (FileStream highscoreFile = File.Create(highscoreFilePath))
-			{
-				var writer = new StreamWriter(highscoreFile);
-				writer.Write(CreateHighscoreString());
-				writer.Flush();
-			}
-		}
-
-		private string CreateHighscoreString()
-		{
-			var stringOfScores = highScores[0].ToString(CultureInfo.InvariantCulture);
-			for (int i = 1; i < highScores.Length; i++)
-				stringOfScores += ", " + highScores[i].ToString(CultureInfo.InvariantCulture);
-			return stringOfScores;
 		}
 	}
 }

@@ -7,13 +7,12 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Trigger implementation for GamePad Button events.
 	/// </summary>
-	public class GamePadButtonTrigger : Trigger
+	public class GamePadButtonTrigger : InputTrigger
 	{
 		public GamePadButtonTrigger(GamePadButton button, State state = State.Pressing)
 		{
 			Button = button;
 			State = state;
-			Start<GamePad>();
 		}
 
 		public GamePadButton Button { get; internal set; }
@@ -30,5 +29,10 @@ namespace DeltaEngine.Input
 		}
 
 		public class CannotCreateGamePadTriggerWithoutKey : Exception {}
+
+		protected override void StartInputDevice()
+		{
+			Start<GamePad>();
+		}
 	}
 }

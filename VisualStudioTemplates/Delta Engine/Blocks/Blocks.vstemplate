@@ -9,12 +9,13 @@
 		<CreateNewFolder>true</CreateNewFolder>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<DefaultName>Blocks</DefaultName>
-		<Icon>BlocksIcon.ico</Icon>
+		<Icon>Blocks.ico</Icon>
 	</TemplateData>
 	<TemplateContent>
 		<Project File="Blocks.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="false" TargetFileName="BlocksIcon.ico">BlocksIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="Blocks.ico">Blocks.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="BlocksIcon72x72.png">BlocksIcon72x72.png</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Brick.cs">Brick.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Controller.cs">Controller.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="FruitBlocksContent.cs">FruitBlocksContent.cs</ProjectItem>

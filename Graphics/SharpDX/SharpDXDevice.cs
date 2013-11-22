@@ -197,6 +197,7 @@ namespace DeltaEngine.Graphics.SharpDX
 
 		public override void EnableDepthTest()
 		{
+			Context.Rasterizer.State = states.GetNoCullingRasterizerState(nativeDevice);
 			var description = new DepthStencilStateDescription
 			{
 				IsDepthEnabled = true,

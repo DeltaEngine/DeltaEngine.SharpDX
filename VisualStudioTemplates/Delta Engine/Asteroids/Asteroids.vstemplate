@@ -9,17 +9,18 @@
 		<CreateNewFolder>true</CreateNewFolder>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<DefaultName>Asteroids</DefaultName>
-		<Icon>AsteroidsIcon.ico</Icon>
+		<Icon>Asteroids.ico</Icon>
 	</TemplateData>
 	<TemplateContent>
 		<Project File="Asteroids.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="false" TargetFileName="AsteroidsIcon.ico">AsteroidsIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="Asteroids.ico">Asteroids.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="AsteroidsIcon72x72.png">AsteroidsIcon72x72.png</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Asteroid.cs">Asteroid.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Controls.cs">Controls.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GameState.cs">GameState.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="InteractionLogics.cs">InteractionLogics.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="InteractionLogic.cs">InteractionLogic.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="HudInterface.cs">HudInterface.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Menu.cs">Menu.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="PlayerShip.cs">PlayerShip.cs</ProjectItem>

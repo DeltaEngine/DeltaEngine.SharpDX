@@ -18,7 +18,7 @@ namespace DeltaEngine.Content.Xml.Tests
 		{
 			var memoryStream = new MemoryStream();
 			var writer = new BinaryWriter(memoryStream);
-			writer.Write(new XmlData("MyData").ToXmlString());
+			writer.Write(new XmlData("MyData").ToString());
 			memoryStream.Seek(0, SeekOrigin.Begin);
 			var file = new XmlFile(memoryStream);
 			Assert.AreEqual("MyData", file.Root.Name);
@@ -31,7 +31,7 @@ namespace DeltaEngine.Content.Xml.Tests
 			var file = new XmlFile(data);
 			file.Save("file.xml");
 			XmlData loaded = new XmlFile("file.xml").Root;
-			Assert.AreEqual(data.ToXmlString(), loaded.ToXmlString());
+			Assert.AreEqual(data.ToString(), loaded.ToString());
 		}
 
 		private static XmlData CreateTestXmlData()

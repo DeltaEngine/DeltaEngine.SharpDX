@@ -2,8 +2,8 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
-using DeltaEngine.Scenes.UserInterfaces.EntityDebugger;
+using DeltaEngine.Scenes.Controls;
+using DeltaEngine.Scenes.EntityDebugger;
 using NUnit.Framework;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger

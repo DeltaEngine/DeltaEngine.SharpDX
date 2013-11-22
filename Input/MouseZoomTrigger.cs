@@ -1,11 +1,20 @@
-﻿using DeltaEngine.Commands;
+﻿using System;
+using DeltaEngine.Commands;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Input
 {
 	public class MouseZoomTrigger : ZoomTrigger, MouseTrigger
 	{
-		public MouseZoomTrigger(string unusedButRequiredByDynamicCreation = "") { }
+		public MouseZoomTrigger() { }
+
+		public MouseZoomTrigger(string empty)
+		{
+			if (!String.IsNullOrEmpty(empty))
+				throw new MouseZoomTriggerHasNoParameters();
+		}
+
+		public class MouseZoomTriggerHasNoParameters : Exception {}
 
 		protected override void StartInputDevice()
 		{

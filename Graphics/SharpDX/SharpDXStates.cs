@@ -90,7 +90,7 @@ namespace DeltaEngine.Graphics.SharpDX
 		public RasterizerState GetNoCullingRasterizerState(DXDevice device)
 		{
 			return rasterizerState3D ??
-				(rasterizerState3D = new RasterizerState(device, GetRasterizer(CullMode.None)));
+				(rasterizerState3D = new RasterizerState(device, GetRasterizer(CullMode.Front)));
 		}
 
 		private RasterizerState rasterizerState3D;

@@ -2,7 +2,7 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Platforms;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls

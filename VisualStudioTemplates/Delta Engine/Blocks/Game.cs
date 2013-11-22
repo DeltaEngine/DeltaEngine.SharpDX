@@ -11,72 +11,49 @@ namespace $safeprojectname$
 	/// </summary>
 	public class Game
 	{
-		public Game(Window window, $safeprojectname$Content content)
+		public Game(Window window)
 		{
-			this.window = window;
-			screenSpace = new Camera2DScreenSpace(window);
-			this.content = content;
-			screenSpace.Zoom = (window.ViewportPixelSize.AspectRatio > 1)
-				? 1 / window.ViewportPixelSize.AspectRatio : window.ViewportPixelSize.AspectRatio;
-			var menu = new MainMenu(content);
+			content = new FruitBlocksContent();
+			menu = new MainMenu(content);
 			menu.InitGame += () =>
-			{ //ncrunch: no coverage start
+			{
+				//ncrunch: no coverage start
 				menu.Hide();
 				StartGame();
 			}; //ncrunch: no coverage end
 			menu.QuitGame += window.CloseAfterFrame;
-			window.ViewportSizeChanged +=
-				size =>
-				{ 
-					if(IsInGame)
-						screenSpace.Zoom = //ncrunch: no coverage
-							(size.AspectRatio > 1) ? 1.8f / size.AspectRatio : 1.8f * size.AspectRatio;
-					else
-						screenSpace.Zoom = (size.AspectRatio > 1) ? 1 / size.AspectRatio : size.AspectRatio; };
+			window.Title = "Fruit Blocks";
+			menu.SwitchContent += SwitchContent;
 		}
 
+		private MainMenu menu;
 		public UserInterface UserInterface { get; private set; }
 		public Controller Controller { get; private set; }
 		public bool IsInGame { get; set; }
-		private readonly Window window;
-		private readonly $safeprojectname$Content content;
-		private readonly Camera2DScreenSpace screenSpace;
-
+		private BlocksContent content;
 
 		public void StartGame()
 		{
 			UserInterface = new UserInterface(content);
 			Controller = new Controller(DisplayMode, content);
-			window.ViewportSizeChanged += ShowCorrectSceneForAspect;
 			IsInGame = true;
-			screenSpace.Zoom *= 1.8f;
 			Initialize();
 		}
 
 		private void Initialize()
 		{
 			SetDisplayMode();
-			ShowCorrectSceneForAspect(window.ViewportPixelSize);
 			SetControllerEvents();
 			SetInputEvents();
 		}
 
 		private void SetDisplayMode()
 		{
-			window.Title = "Fruit $safeprojectname$";
 			var aspectRatio = ScreenSpace.Current.Viewport.Aspect;
 			DisplayMode = aspectRatio >= 1.0f ? Orientation.Landscape : Orientation.Portrait;
 		}
 
 		protected Orientation DisplayMode { get; set; }
-
-		private void ShowCorrectSceneForAspect(Size size)
-		{
-			if (size.AspectRatio >= 1.0f)
-				UserInterface.ShowUserInterfaceLandscape();
-			else
-				UserInterface.ShowUserInterfacePortrait(); //ncrunch: no coverage
-		}
 
 		private void SetControllerEvents()
 		{
@@ -154,6 +131,11 @@ namespace $safeprojectname$
 		{
 			commands[7].Add(new TouchPositionTrigger());
 			commands[8].Add(new TouchPositionTrigger(State.Releasing));
+		}
+
+		public void SwitchContent(bool switched)
+		{
+			content = switched ? new JewelBlocksContent() : (BlocksContent)new FruitBlocksContent();
 		}
 	}
 }

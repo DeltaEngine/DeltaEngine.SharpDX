@@ -31,7 +31,7 @@ namespace DeltaEngine.Multimedia
 			return newInstance != null && currentInstance != null;
 		}
 
-		public virtual void Dispose()
+		public override void Dispose()
 		{
 			if (currentPlayingMusic != null)
 				currentPlayingMusic.Dispose();

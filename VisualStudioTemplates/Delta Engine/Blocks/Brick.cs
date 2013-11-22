@@ -14,7 +14,7 @@ namespace $safeprojectname$
 			: base(material, Rectangle.Zero)
 		{
 			Offset = offset;
-			RenderLayer = (int)$safeprojectname$.RenderLayer.Grid;
+			RenderLayer = (int)Blocks.RenderLayer.Grid;
 			this.displayMode = displayMode;
 		}
 

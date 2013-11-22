@@ -22,6 +22,6 @@ namespace DeltaEngine.Content
 			return Values.ContainsKey(attributeName) ? Values[attributeName].Convert<T>() : defaultValue;
 		}
 
-		public readonly Dictionary<string, string> Values = new Dictionary<string, string>();
+		public Dictionary<string, string> Values = new Dictionary<string, string>();
 	}
 }

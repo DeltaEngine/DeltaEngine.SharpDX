@@ -65,9 +65,8 @@ namespace DeltaEngine.Platforms
 				throw new FileNotFoundException(
 					"Unable to approve test as no image was generated and saved after the first frame.",
 					firstFrameApprovalImageFilename);
-			approvedImageFileName =
-				firstFrameApprovalImageFilename.Replace("." + GetType().Name.Replace("Resolver", ""),
-					".approved");
+			string extension = "." + GetType().Name.Replace("Resolver", "");
+			approvedImageFileName = firstFrameApprovalImageFilename.Replace(extension, ".approved");
 			if (File.Exists(approvedImageFileName))
 				CompareImages();
 			else

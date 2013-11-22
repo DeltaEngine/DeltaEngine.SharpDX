@@ -6,7 +6,7 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls

@@ -35,7 +35,7 @@
     <StartupObject>Insight.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>InsightAppXhdpi.ico</ApplicationIcon>
+    <ApplicationIcon>InsightIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,14 +75,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="InsightAppXhdpi.ico" />
+    <Content Include="InsightIcon.ico" />
+    <Content Include="InsightIcon72x72.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Content.cs" />
-    <Compile Include="MenuWithScenes.cs" />
-    <Compile Include="MenuWithoutScenes.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="StatisticsApp.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

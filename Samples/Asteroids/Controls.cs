@@ -17,14 +17,13 @@ namespace Asteroids
 		}
 
 		private readonly Game game;
-
 		private readonly Command[] controlCommands;
 		private int commandsInUse;
 
 		public void SetControlsToState(GameState state)
 		{
 			for (int i = 0; i < commandsInUse; i++)
-				controlCommands[i].IsActive = false;
+				controlCommands[i].Dispose();
 			commandsInUse = 0;
 			switch (state)
 			{
@@ -54,13 +53,12 @@ namespace Asteroids
 		private void SteerPlayerAnalogue(Vector2D direction)
 		{
 			if(direction.Y > 0)
-			game.InteractionLogics.Player.ShipAccelerate(direction.Y * 0.7f);
+			game.InteractionLogic.Player.ShipAccelerate(direction.Y * 0.7f);
 			if (direction.X > 0)
-				game.InteractionLogics.Player.SteerRight(direction.X * 0.7f);
+				game.InteractionLogic.Player.SteerRight(direction.X * 0.7f);
 			if(direction.X < 0)
-				game.InteractionLogics.Player.SteerLeft(-direction.X * 0.7f);
-		}
-		//ncrunch: no coverage end
+				game.InteractionLogic.Player.SteerLeft(-direction.X * 0.7f);
+		} //ncrunch: no coverage end
 
 		private void AddPlayerAccelerationControl()
 		{
@@ -120,28 +118,27 @@ namespace Asteroids
 		//ncrunch: no coverage start
 		private void PlayerForward()
 		{
-			game.InteractionLogics.Player.ShipAccelerate();
+			game.InteractionLogic.Player.ShipAccelerate();
 		}
 
 		private void PlayerSteerLeft()
 		{
-			game.InteractionLogics.Player.SteerLeft();
+			game.InteractionLogic.Player.SteerLeft();
 		}
 
 		private void PlayerSteerRight()
 		{
-			game.InteractionLogics.Player.SteerRight();
+			game.InteractionLogic.Player.SteerRight();
 		}
 
 		private void PlayerBeginFireing()
 		{
-			game.InteractionLogics.Player.IsFiring = true;
+			game.InteractionLogic.Player.IsFiring = true;
 		}
 
 		private void PlayerHoldFire()
 		{
-			game.InteractionLogics.Player.IsFiring = false;
+			game.InteractionLogic.Player.IsFiring = false;
 		}
-		//ncrunc: no coverage end
 	}
 }

@@ -120,7 +120,12 @@ namespace DeltaEngine.Platforms.Windows
 		public Size ViewportPixelSize
 		{
 			get { return new Size(panel.ClientSize.Width, panel.ClientSize.Height); }
-			set { SetResolution(value + (TotalPixelSize - ViewportPixelSize)); }
+			set
+			{
+				if (ViewportPixelSize == value)
+					return;
+				SetResolution(value + (TotalPixelSize - ViewportPixelSize));
+			}
 		}
 
 		public Size TotalPixelSize

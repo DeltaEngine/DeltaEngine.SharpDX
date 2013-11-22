@@ -20,33 +20,27 @@ namespace DeltaEngine.Input
 		{
 			if (!IsAvailable)
 				return; //ncrunch: no coverage
-			ProcessKeyTriggers(entities);
-			ProcessInputHandling(entities);
+			foreach (Entity entity in entities)
+			{
+				ProcessKeyTrigger(entity);
+				ProcessInputHandling(entity);
+			}
+			newlyPressedKeys.Clear();
 			UpdateKeyStates();
 		}
 
-		private void ProcessKeyTriggers(IEnumerable<Entity> entities)
+		private void ProcessKeyTrigger(Entity entity)
 		{
-			foreach (Entity entity in entities)
-			{
-				var trigger = entity as KeyTrigger;
-				if (trigger != null && GetKeyState(trigger.Key) == trigger.State)
-					trigger.Invoke();
-			}
+			var trigger = entity as KeyTrigger;
+			if (trigger != null && GetKeyState(trigger.Key) == trigger.State)
+				trigger.Invoke();
 		}
 
-		private void ProcessInputHandling(IEnumerable<Entity> entities)
+		private void ProcessInputHandling(Entity entity)
 		{
-			foreach (Entity entity in entities)
-			{
-				var keyEntity = entity as KeyboardControllable;
-				if (keyEntity != null && keyEntity.IsEnabled && keyEntity.HasFocus)
-				{
-					keyEntity.Text = HandleInput(keyEntity.Text);
-					return;
-				}
-			}
-			newlyPressedKeys.Clear();
+			var keyEntity = entity as KeyboardControllable;
+			if (keyEntity != null)
+				keyEntity.UpdateTextFromKeyboardInput(HandleInput);
 		}
 
 		public string HandleInput(string inputText)

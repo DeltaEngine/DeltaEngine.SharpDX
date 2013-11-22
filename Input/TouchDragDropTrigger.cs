@@ -1,22 +1,33 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Input
 {
 	/// <summary>
 	/// Drag and Drop events with Touch.
 	/// </summary>
-	public class TouchDragDropTrigger : Trigger, TouchTrigger
+	public class TouchDragDropTrigger : InputTrigger, TouchTrigger
 	{
 		public TouchDragDropTrigger(Rectangle startArea)
 		{
 			StartArea = startArea;
 			StartDragPosition = Vector2D.Unused;
-			Start<Touch>();
 		}
 
 		public Rectangle StartArea { get; private set; }
 		public Vector2D StartDragPosition { get; set; }
+
+		public TouchDragDropTrigger(string startArea)
+		{
+			StartArea = startArea.Convert<Rectangle>();
+			StartDragPosition = Vector2D.Unused;
+		}
+
+		protected override void StartInputDevice()
+		{
+			Start<Touch>();
+		}
 
 		public void HandleWithTouch(Touch touch)
 		{
@@ -31,10 +42,8 @@ namespace DeltaEngine.Input
 
 		private void InvokeIfMovedFarEnough(Vector2D position)
 		{
-			if(StartDragPosition.DistanceTo(position) > PositionEpsilon)
+			if (StartDragPosition.DistanceTo(position) > PositionEpsilon)
 				Invoke();
 		}
-
-		private const float PositionEpsilon = 0.0025f;
 	}
 }

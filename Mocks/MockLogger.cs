@@ -11,6 +11,7 @@ namespace DeltaEngine.Mocks
 		public override void Write(MessageType messageType, string message)
 		{
 			NumberOfMessages++;
+			LastMessage = message;
 			Lines.Add(CreateMessageTypePrefix(messageType) + message);
 		}
 

@@ -132,9 +132,8 @@ namespace DeltaEngine.Core
 		private static Object LoadEntity(Type type, BinaryReader reader)
 		{
 			subTypeToCreate = type;
-			var entity =
-				Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
-					CultureInfo.CurrentCulture) as Entity;
+			var entity = Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
+				CultureInfo.CurrentCulture) as Entity;
 			var createFromComponents = LoadArray(null, typeof(List<object>), reader) as List<object>;
 			entity.SetComponents(createFromComponents);
 			LoadEntityTags(reader, entity);

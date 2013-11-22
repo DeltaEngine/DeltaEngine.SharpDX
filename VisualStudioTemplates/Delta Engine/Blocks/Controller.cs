@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering2D;
 
 namespace $safeprojectname$
 {
 	/// <summary>
 	/// Handles the falling and upcoming blocks.
 	/// </summary>
-	public sealed class Controller : Entity
+	public class Controller : Entity
 	{
-		public Controller(Orientation displayMode, $safeprojectname$Content content)
+		public Controller(Orientation displayMode, BlocksContent content)
 		{
 			this.content = content;
 			this.displayMode = displayMode;
@@ -21,7 +20,7 @@ namespace $safeprojectname$
 			Start<InteractionHandler>();
 		}
 
-		public readonly $safeprojectname$Content content;
+		public readonly BlocksContent content;
 		public readonly Orientation displayMode;
 
 		public event Action<int> AddToScore;
@@ -184,6 +183,8 @@ namespace $safeprojectname$
 
 		public void RotateBlockAntiClockwiseIfPossible()
 		{
+			if(FallingBlock == null)
+				return;
 			FallingBlock.RotateAntiClockwise();
 			if (Get<Grid>().IsValidPosition(FallingBlock))
 				Get<Soundbank>().BlockMoved.Play();

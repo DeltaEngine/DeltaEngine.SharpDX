@@ -37,59 +37,101 @@
     <Reference Include="Autofac">
       <HintPath>..\packages\Autofac.3.1.1\lib\net40\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Content.Online">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Content.Online.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Content.Xml">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Content.Xml.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Graphics">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Graphics.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Graphics.SharpDX">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Graphics.SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Input">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Input.SharpDX">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Input.SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Logging">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Multimedia.SharpDX">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Multimedia.SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Networking">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Networking.Messages">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Networking.Messages.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Platforms">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Platforms.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering2D">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Rendering2D.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering2D.Shapes">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Rendering2D.Shapes.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering2D.Fonts">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.Rendering2D.Fonts.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.WindowsSharpDX">
-      <HintPath>..\packages\DeltaEngine.SharpDX.0.9.9.9\lib\net40\DeltaEngine.WindowsSharpDX.dll</HintPath>
-    </Reference>
     <Reference Include="NVorbis">
       <HintPath>..\packages\NVorbis.0.7.2\lib\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Content.Disk">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Content.Disk.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Content.Online">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Content.Online.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Content.Xml">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Content.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Graphics">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Graphics.SharpDX">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Graphics.SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Input">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Input.SharpDX">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Input.SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Input.Windows">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Input.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Logging">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Multimedia.MusicStreams">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Multimedia.MusicStreams.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Multimedia.SharpDX">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Multimedia.SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Networking">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Networking.Messages">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Networking.Messages.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Platforms">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Platforms.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Platforms.Windows">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Platforms.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering2D">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Rendering2D.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering2D.Fonts">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Rendering2D.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering2D.Particles">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Rendering2D.Particles.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Rendering2D.Shapes">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Rendering2D.Shapes.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.Scenes">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.Scenes.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaEngine.WindowsSharpDX">
+      <HintPath>..\packages\DeltaEngine.SharpDX.1.0.0.0\lib\net40\DeltaEngine.WindowsSharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\packages\SharpDX.2.5.0\lib\net40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler">
+      <HintPath>..\packages\SharpDX.D3DCompiler.2.5.0\lib\net40\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1">
+      <HintPath>..\packages\SharpDX.Direct2D1.2.5.0\lib\net40\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>..\packages\SharpDX.Direct3D11.2.5.0\lib\net40\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\packages\SharpDX.DXGI.2.5.0\lib\net40\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DirectInput">
+      <HintPath>..\packages\SharpDX.DirectInput.2.5.0\lib\net40\SharpDX.DirectInput.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XInput">
+      <HintPath>..\packages\SharpDX.XInput.2.5.0\lib\net40\SharpDX.XInput.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XAudio2">
+      <HintPath>..\packages\SharpDX.XAudio2.2.5.0\lib\net40\SharpDX.XAudio2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

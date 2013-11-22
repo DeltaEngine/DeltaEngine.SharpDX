@@ -15,11 +15,12 @@
 		<Project File="GhostWars.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
 				<ProjectItem ReplaceParameters="false" TargetFileName="GhostWars.ico">GhostWars.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="GhostWarsIcon72x72.png">GhostWarsIcon72x72.png</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Effects.cs">Effects.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GameLogic.cs">GameLogic.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="GameState.cs">GameState.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="MainMenu.cs">MainMenu.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="Game.cs">Game.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Team.cs">Team.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Tree.cs">Tree.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="TreeManager.cs">TreeManager.cs</ProjectItem>

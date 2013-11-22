@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 using NUnit.Framework;
 
@@ -26,7 +27,7 @@ namespace DeltaEngine.Platforms.Tests
 
 		private static string SettingsFilePath
 		{
-			get { return Path.Combine(AssemblyExtensions.GetMyDocumentsAppFolder(), "Settings.xml"); }
+			get { return Path.Combine(Settings.GetMyDocumentsAppFolder(), "Settings.xml"); }
 		}
 
 		[Test, CloseAfterFirstFrame]

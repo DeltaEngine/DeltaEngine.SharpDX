@@ -430,8 +430,8 @@ namespace DeltaEngine.Entities
 		public List<Entity> GetAllEntities()
 		{
 			var entities = new List<Entity>();
-			foreach (var enity in prioritizedEntities)
-				entities.AddRange(enity.entities);
+			foreach (var entity in prioritizedEntities)
+				entities.AddRange(entity.entities);
 			return entities;
 		}
 	}

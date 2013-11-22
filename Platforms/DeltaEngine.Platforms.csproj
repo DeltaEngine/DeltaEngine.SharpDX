@@ -91,7 +91,6 @@
     <Compile Include="InAppPurchase.cs" />
     <Compile Include="NetworkState.cs" />
     <Compile Include="ProductData.cs" />
-    <Compile Include="ProfilingMode.cs" />
     <Compile Include="Resolver.cs" />
     <Compile Include="SystemInformation.cs" />
   </ItemGroup>

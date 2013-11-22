@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace DeltaEngine.Extensions
@@ -110,6 +111,26 @@ namespace DeltaEngine.Extensions
 		public List<T> ToList()
 		{
 			return data;
+		}
+
+		public bool Exists(Predicate<T> match)
+		{
+			return data.Exists(match);
+		}
+
+		public T Find(Predicate<T> match)
+		{
+			return data.Find(match);
+		}
+
+		public void RemoveAll(Predicate<T> match)
+		{
+			data.RemoveAll(match);
+		}
+
+		public List<T> FindAll(Predicate<T> match)
+		{
+			return data.FindAll(match);
 		}
 	}
 }

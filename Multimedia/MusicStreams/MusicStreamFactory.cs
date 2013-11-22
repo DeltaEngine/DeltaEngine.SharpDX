@@ -4,7 +4,7 @@ namespace DeltaEngine.Multimedia.MusicStreams
 {
 	public sealed class MusicStreamFactory
 	{
-		public BaseMusicStream Load(Stream stream, string filepath)
+		public BaseMusicStream Load(Stream stream)
 		{
 			if (OggMusicStream.IsOggStream(stream))
 				return new OggMusicStream(stream);

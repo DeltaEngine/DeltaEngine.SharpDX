@@ -17,7 +17,7 @@ namespace Asteroids.Tests
 		public void SetIngameOrGameOver()
 		{
 			var hudIngame = new HudInterface();
-			hudIngame.SetIngameMode();
+			hudIngame.SetInGameMode();
 			var hudGameOver = new HudInterface();
 			hudGameOver.SetGameOverText();
 		}

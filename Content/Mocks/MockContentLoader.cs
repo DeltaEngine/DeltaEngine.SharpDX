@@ -9,7 +9,7 @@ using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Vertices;
 using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.Scenes;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 
 namespace DeltaEngine.Content.Mocks
 {
@@ -68,6 +68,8 @@ namespace DeltaEngine.Content.Mocks
 				stream = new MemoryStream(Encoding.Default.GetBytes(MockSpineSkeleton.Text));
 			else if (content.Name.Contains("Theme"))
 				stream = SaveTestTheme();
+			else if (content.Name.Contains("MyMaterial"))
+				return stream = SaveMaterial();
 			return stream;
 		}
 
@@ -250,9 +252,18 @@ namespace DeltaEngine.Content.Mocks
 			return data;
 		}
 
+		private static Stream SaveMaterial()
+		{
+			var image = Create<Image>(new ImageCreationData(new Size(8, 8)));
+			var material = new Material(Load<Shader>(Shader.Position2DColorUV), image, new Size(8, 8));
+			var data = BinaryDataExtensions.SaveToMemoryStream(material);
+			data.Seek(0, SeekOrigin.Begin);
+			return data;
+		}
+
 		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
-			if (IsNoMetaDataAllowed(contentName, contentClassType))
+			if (IsNoMetaDataAllowed(contentName, contentClassType) || string.IsNullOrEmpty(contentName))
 				return null;
 			ContentType contentType = ConvertClassTypeToContentType(contentClassType);
 			if (contentType == ContentType.Material || contentName.Contains("NewMaterial"))
@@ -273,7 +284,7 @@ namespace DeltaEngine.Content.Mocks
 				return CreateShaderData(contentName);
 			if (contentType == ContentType.Sound)
 				return CreateSoundData(contentName);
-			if (contentType == ContentType.ParticleSystem)
+			if (contentType == ContentType.ParticleSystem || contentName.Contains("LoadParticleSystem"))
 				return CreateParticleSystemMetaData(contentName);
 			return new ContentMetaData { Name = contentName, Type = contentType };
 		}

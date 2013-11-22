@@ -40,10 +40,7 @@ namespace DeltaEngine.ScreenSpaces
 		private readonly Window window;
 		protected Size viewportPixelSize;
 
-		protected virtual void Update(Size newViewportSize)
-		{
-			viewportPixelSize = newViewportSize;
-		}
+		protected abstract void Update(Size newViewportSize);
 
 		protected void RaiseViewportSizeChanged()
 		{

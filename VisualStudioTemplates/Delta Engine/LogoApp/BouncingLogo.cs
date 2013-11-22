@@ -16,12 +16,17 @@ namespace $safeprojectname$
 			: base(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"), Vector2D.Half)
 		{
 			Color = Color.GetRandomColor();
-			Add(new SimplePhysics.Data
+			var data = new SimplePhysics.Data
 			{
 				RotationSpeed = random.Get(-50, 50),
 				Velocity = new Vector2D(random.Get(-0.4f, 0.4f), random.Get(-0.4f, 0.4f)),
-				Bounced = () => { if (sound.NumberOfPlayingInstances < 4) sound.Play(0.1f); }
-			});
+				Bounced = () =>
+				{
+					if (sound.NumberOfPlayingInstances < 4)
+						sound.Play(0.1f);
+				}
+			};
+			Add(data);
 			Start<SimplePhysics.BounceIfAtScreenEdge>();
 			Start<SimplePhysics.Rotate>();
 			new Command(Command.Click, position => Center = position);

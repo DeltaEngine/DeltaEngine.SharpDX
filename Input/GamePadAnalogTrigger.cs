@@ -23,7 +23,7 @@ namespace DeltaEngine.Input
 			Analog = gamePadAnalog.Convert<GamePadAnalog>();
 		}
 
-		public class CannotCreateGamePadStickTriggerWithoutGamePadStick : Exception { }
+		public class CannotCreateGamePadStickTriggerWithoutGamePadStick : Exception {}
 
 		protected override void StartInputDevice()
 		{

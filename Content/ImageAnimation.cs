@@ -31,7 +31,10 @@ namespace DeltaEngine.Content
 			if (Frames == null)
 				return;
 			foreach (Image frame in Frames)
+			{
+				if(frame != null)
 				frame.Dispose();
+			}
 			Frames = null;
 		}
 

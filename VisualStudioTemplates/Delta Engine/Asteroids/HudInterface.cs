@@ -1,7 +1,6 @@
 using System.Globalization;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.ScreenSpaces;
 
@@ -11,16 +10,14 @@ namespace $safeprojectname$
 	{
 		public HudInterface()
 		{
-			hudFont = ContentLoader.Load<Font>("Tahoma30");
-			ScoreDisplay = new FontText(hudFont, "0",
-				new Rectangle(ScreenSpace.Current.Viewport.Left, ScreenSpace.Current.Viewport.Top, 0.1f,
-					0.05f));
-			ScoreDisplay.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+			ScoreDisplay = new FontText(ContentLoader.Load<Font>("Tahoma30"), "0",
+				new Rectangle(ScreenSpace.Current.Viewport.Left, ScreenSpace.Current.Viewport.Top + 0.01f,
+					0.1f, 0.05f));
+			ScoreDisplay.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			GameOverText = new FontText(ContentLoader.Load<Font>("Verdana12"), "", Rectangle.FromCenter(0.5f, 0.5f, 0.8f, 0.4f));
-			GameOverText.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+			GameOverText.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 		}
 
-		private readonly Font hudFont;
 		public FontText ScoreDisplay { get; private set; }
 
 		public void SetScoreText(int score)
@@ -36,15 +33,15 @@ namespace $safeprojectname$
 
 		public FontText GameOverText { get; private set; }
 
-		public void SetIngameMode()
+		public void SetInGameMode()
 		{
 			GameOverText.IsVisible = false;
 		}
 
 		public void Dispose()
 		{
-			GameOverText.IsActive = false;
-			ScoreDisplay.IsActive = false;
+			GameOverText.Dispose();
+			ScoreDisplay.Dispose();
 		}
 	}
 }

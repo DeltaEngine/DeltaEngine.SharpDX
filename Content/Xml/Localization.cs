@@ -3,7 +3,7 @@
 namespace DeltaEngine.Content.Xml
 {
 	/// <summary>
-	/// For localizing an application to a region.
+	/// For localizing an application to a language.
 	/// </summary>
 	public class Localization : XmlContent
 	{

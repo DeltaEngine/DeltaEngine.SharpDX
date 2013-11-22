@@ -7,7 +7,7 @@ namespace DeltaEngine.Input
 	/// </summary>
 	public class MouseMessage
 	{
-		protected MouseMessage() {}//ncrunch: no coverage
+		protected MouseMessage() {} //ncrunch: no coverage
 
 		public MouseMessage(Vector2D position, int scrollWheel, MouseButton[] pressedButtons = null)
 		{

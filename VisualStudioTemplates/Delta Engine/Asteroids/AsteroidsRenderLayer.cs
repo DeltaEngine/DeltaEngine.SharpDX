@@ -1,11 +1,11 @@
 namespace $safeprojectname$
 {
-	public enum $safeprojectname$RenderLayer
+	public enum AsteroidsRenderLayer
 	{
 		Background = 0,
 		Rockets = 1,
 		Player = 3,
-		$safeprojectname$ = 5,
+		Asteroids = 5,
 		UserInterface = 6
 	}
 }

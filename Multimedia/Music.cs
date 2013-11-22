@@ -48,6 +48,7 @@ namespace DeltaEngine.Multimedia
 
 		public abstract float DurationInSeconds { get; }
 		public abstract float PositionInSeconds { get; }
+		protected const int NumberOfBuffers = 2;
 
 		protected override void DisposeData()
 		{

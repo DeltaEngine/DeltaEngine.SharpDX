@@ -7,12 +7,11 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Allows a simple touch to be detected.
 	/// </summary>
-	public class TouchPressTrigger : Trigger, TouchTrigger
+	public class TouchPressTrigger : InputTrigger, TouchTrigger
 	{
 		public TouchPressTrigger(State state = State.Pressing)
 		{
 			State = state;
-			Start<Touch>();
 		}
 
 		public State State { get; internal set; }
@@ -20,13 +19,17 @@ namespace DeltaEngine.Input
 		public TouchPressTrigger(string state)
 		{
 			State = String.IsNullOrEmpty(state) ? State.Pressing : state.Convert<State>();
-			Start<Touch>();
 		}
 
 		public void HandleWithTouch(Touch touch)
 		{
 			if (touch.GetState(0) == State)
 				Invoke();
+		}
+
+		protected override void StartInputDevice()
+		{
+			Start<Touch>();
 		}
 	}
 }

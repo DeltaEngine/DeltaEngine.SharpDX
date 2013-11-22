@@ -26,26 +26,6 @@ namespace DeltaEngine.Platforms
 		//ncrunch: no coverage start (for performance reasons)
 		protected void RegisterCommonEngineSingletons()
 		{
-#if DEBUG
-			TryRegisterCommonEngineSingletons();
-#else
-			//some machines with missing frameworks initialization will crash and need useful error messages
-			try
-			{
-				TryRegisterCommonEngineSingletons();
-			}
-			catch (Exception exception)
-			{
-				Logger.Error(exception);
-				if (StackTraceExtensions.IsStartedFromNunitConsole())
-					throw;
-				DisplayMessageBoxAndCloseApp("Fatal Runtime Error", exception);
-			}
-#endif
-		}
-
-		private void TryRegisterCommonEngineSingletons()
-		{
 			LoadFileSettingsAndCommands();
 			CreateOnlineService();
 			CreateDefaultLoggers();
@@ -61,8 +41,8 @@ namespace DeltaEngine.Platforms
 		{
 			instancesToDispose.Add(settings = new FileSettings());
 			RegisterInstance(settings);
-			Settings.Current = settings;
 			ContentIsReady += () => ContentLoader.Load<InputCommands>("DefaultCommands");
+			ContentIsReady += () => Window.ViewportPixelSize = settings.Resolution;
 		}
 
 		protected Settings settings;
@@ -321,7 +301,7 @@ namespace DeltaEngine.Platforms
 			}
 		}
 
-		private void DisplayMessageBoxAndCloseApp(string title, Exception exception)
+		internal void DisplayMessageBoxAndCloseApp(string title, Exception exception)
 		{
 			if (IsShowingMessageBoxClosedWithIgnore(title, exception))
 				return;

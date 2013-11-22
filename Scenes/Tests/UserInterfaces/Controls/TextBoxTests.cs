@@ -5,7 +5,7 @@ using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
@@ -22,8 +22,10 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 
 		private TextBox topTextBox;
 		private TextBox bottomTextBox;
+		//ncrunch: no coverage start
 		private static readonly Rectangle Top = Rectangle.FromCenter(0.5f, 0.4f, 0.3f, 0.1f);
 		private static readonly Rectangle Bottom = Rectangle.FromCenter(0.5f, 0.6f, 0.3f, 0.1f);
+		//ncrunch: no coverage end
 
 		private void InitializeKeyboardAndMouse()
 		{

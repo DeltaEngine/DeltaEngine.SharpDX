@@ -318,8 +318,26 @@ namespace DeltaEngine.Platforms
 				hintText += "Exception details:\n";
 				return hintText;
 			}
+
+			const string DirectX9NotSupportedFromSlimDX = "D3DERR_INVALIDCALL: Invalid call";
+			if (ex.ToString().Contains(DirectX9NotSupportedFromSlimDX))
+			{
+				string hintText = "Please verify that your video card supports DirectX 9.0c or higher," +
+					" your driver is up to date and you have installed the latest DirectX runtime.\n\n";
+				hintText += "Exception details:\n";
+				return hintText;
+			}
+
+			const string DirectX11NotSupportedFromSharpDX = "DXGI_ERROR_UNSUPPORTED/Unsupported";
+			if (ex.ToString().Contains(DirectX11NotSupportedFromSharpDX))
+			{
+				string hintText = "Please verify that your video card supports DirectX 11," +
+					" your driver is up to date and you have installed the latest DirectX runtime.\n\n";
+				hintText += "Exception details:\n";
+				return hintText;
+			}
 			return "";
-		} // ncrunch: no coverage end
+		}		// ncrunch: no coverage end
 
 		public const string ErrorWasCopiedToClipboardMessage =
 			"\n\nMessage was logged and copied to the clipboard.";

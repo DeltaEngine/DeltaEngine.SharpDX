@@ -1,12 +1,12 @@
 namespace $safeprojectname$
 {
 	/// <summary>
-	/// Loads Fruit$safeprojectname$ related content and settings
+	/// Loads FruitBlocks related content and settings
 	/// </summary>
-	public class Fruit$safeprojectname$Content : $safeprojectname$Content
+	public class FruitBlocksContent : BlocksContent
 	{
-		public Fruit$safeprojectname$Content()
-			: base("Fruit$safeprojectname$_")
+		public FruitBlocksContent()
+			: base("FruitBlocks_")
 		{
 			DoBricksSplitInHalfWhenRowFull = true;
 		}

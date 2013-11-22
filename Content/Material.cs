@@ -40,7 +40,11 @@ namespace DeltaEngine.Content
 			DefaultColor = defaultColor;
 			RenderingCalculator = new RenderingCalculator();
 			if (!String.IsNullOrEmpty(imageOrAnimationName))
-				DetermineUseCaseData(imageOrAnimationName);
+				try
+				{
+					DetermineUseCaseData(imageOrAnimationName);
+				}
+				catch (Exception) { }//ncrunch: no coverage
 		}
 
 		private void DetermineUseCaseData(string imageOrAnimationName)
@@ -92,27 +96,21 @@ namespace DeltaEngine.Content
 			set
 			{
 				if (value == null)
-					SetNullDiffuseMap();
+				{
+					diffuseMap = null;
+					RenderingCalculator = new RenderingCalculator();
+				}
 				else
-					SetDiffuseMap(value);
+				{
+					diffuseMap = value.AtlasImage ?? value;
+					pixelSize = value.PixelSize;
+					RenderingCalculator = value.RenderingCalculator;
+				}
 			}
-		}
-
-		private void SetNullDiffuseMap()
-		{
-			diffuseMap = null;
-			RenderingCalculator = new RenderingCalculator();
 		}
 
 		private Image diffuseMap;
 		internal Size pixelSize;
-
-		private void SetDiffuseMap(Image value)
-		{
-			diffuseMap = value.AtlasImage ?? value;
-			pixelSize = value.PixelSize;
-			RenderingCalculator = value.RenderingCalculator;
-		}
 
 		/// <summary>
 		/// Special constructor for creating custom shaders and images or reusing existing instances.

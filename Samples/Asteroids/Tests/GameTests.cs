@@ -24,7 +24,7 @@ namespace Asteroids.Tests
 			game.GameOver();
 			game.GameOver();
 			Assert.AreEqual(GameState.GameOver, game.GameState);
-			Assert.IsFalse(game.InteractionLogics.Player.IsActive);
+			Assert.IsFalse(game.InteractionLogic.Player.IsActive);
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -44,7 +44,6 @@ namespace Asteroids.Tests
 			game = new Game(window);
 			game.StartGame();
 			window.ViewportPixelSize = new Size(800,600);
-			Assert.AreEqual(1, (ScreenSpace.Current as Camera2DScreenSpace).Zoom);
 		}
 
 		//ncrunch: no coverage start
@@ -65,7 +64,7 @@ namespace Asteroids.Tests
 		public void IncreaseScoreToScoreBoard()
 		{
 			CreateAndStartGame();
-			game.InteractionLogics.IncrementScore(1);
+			game.InteractionLogic.IncrementScore(1);
 			Assert.AreEqual("1", game.HudInterface.ScoreDisplay.Text);
 		}
 

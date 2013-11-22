@@ -35,6 +35,8 @@ namespace DeltaEngine.Mocks
 			get { return currentSize; }
 			set
 			{
+				if (currentSize == value)
+					return;
 				currentSize = value;
 				if (ViewportSizeChanged != null)
 					ViewportSizeChanged(currentSize);

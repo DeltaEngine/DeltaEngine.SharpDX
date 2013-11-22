@@ -5,7 +5,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -19,7 +19,7 @@ namespace $safeprojectname$
 			AddHowToPlay();
 			AddQuitButton();
 			AddHighscores();
-			SetViewportBackground("$safeprojectname$MainMenuBackground");
+			SetViewportBackground("AsteroidsMainMenuBackground");
 			AddMenuLogo();
 		}
 
@@ -35,10 +35,10 @@ namespace $safeprojectname$
 
 		private void AddMenuLogo()
 		{
-			var material = new Material(Shader.Position2DColorUV, "$safeprojectname$MainMenuLogo");
+			var material = new Material(Shader.Position2DColorUV, "AsteroidsMainMenuLogo");
 			var gameLogo= new Sprite(material,
-				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.2f, 0.8f, 0.2f));
-			gameLogo.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.1f, 0.5f, 0.14f));
+			gameLogo.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(gameLogo);
 		}
 
@@ -47,9 +47,9 @@ namespace $safeprojectname$
 		private void AddStartButton()
 		{
 			var startButton = new Button(menuTheme,
-				new Rectangle(0.25f, ScreenSpace.Current.Top + 0.34f, 0.5f, 0.12f), "Start Game");
+				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.24f, 0.3f, 0.08f), "Start Game");
 			startButton.Clicked += TryInvokeGameStart;
-			startButton.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+			startButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(startButton);
 		}
 
@@ -66,9 +66,9 @@ namespace $safeprojectname$
 		private void AddHowToPlay()
 		{
 			var howToButton = new Button(menuTheme,
-				new Rectangle(0.25f, ScreenSpace.Current.Top + 0.46f, 0.5f, 0.12f), "How To Play");
+				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.32f, 0.3f, 0.08f), "How To Play");
 			howToButton.Clicked += ShowHowToPlaySubMenu;
-			howToButton.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+			howToButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(howToButton);
 		}
 
@@ -77,7 +77,7 @@ namespace $safeprojectname$
 		{
 			if (howToPlay == null)
 				howToPlay = new HowToPlaySubMenu(this, menuTheme,
-					(int)$safeprojectname$RenderLayer.UserInterface + 10);
+					(int)AsteroidsRenderLayer.UserInterface + 10);
 			howToPlay.Show();
 			Hide();
 		}
@@ -91,7 +91,7 @@ namespace $safeprojectname$
 				this.parent = parent;
 				this.menuTheme = menuTheme;
 				this.renderLayer = renderLayer;
-				SetViewportBackground("$safeprojectname$MainMenuBackground");
+				SetViewportBackground("AsteroidsMainMenuBackground");
 				AddControlDescription();
 				AddBackButton();
 			}
@@ -115,7 +115,7 @@ namespace $safeprojectname$
 			private void AddBackButton()
 			{
 				var backButton = new Button(menuTheme,
-					new Rectangle(0.25f, ScreenSpace.Current.Bottom - 0.2f, 0.5f, 0.12f), "Back");
+					Rectangle.FromCenter(0.5f, ScreenSpace.Current.Bottom - 0.1f, 0.3f, 0.08f), "Back");
 				backButton.RenderLayer = renderLayer + 1;
 				backButton.Clicked += () =>
 				{
@@ -124,15 +124,14 @@ namespace $safeprojectname$
 				};
 				Add(backButton);
 			}
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private void AddHighscores()
 		{
 			var highscoreButton = new Button(menuTheme,
-				new Rectangle(0.25f, ScreenSpace.Current.Top + 0.58f, 0.5f, 0.12f), "Highscores");
+				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.4f, 0.3f, 0.08f), "Highscores");
 			highscoreButton.Clicked += ShowHighScoresSubMenu;
-			highscoreButton.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+			highscoreButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(highscoreButton);
 		}
 
@@ -141,7 +140,7 @@ namespace $safeprojectname$
 		{
 			if (highscore == null)
 				highscore = new HighscoreSubMenu(this, menuTheme,
-					(int)$safeprojectname$RenderLayer.UserInterface + 10);
+					(int)AsteroidsRenderLayer.UserInterface + 10);
 			highscore.UpdateScoreText(ScoreboardText);
 			highscore.Show();
 			Hide();
@@ -156,8 +155,8 @@ namespace $safeprojectname$
 				this.parent = parent;
 				this.menuTheme = menuTheme;
 				this.renderLayer = renderLayer;
-				SetViewportBackground("$safeprojectname$MainMenuBackground");
-				scoreboard = new FontText(Font.Default, "", Vector2D.Half);
+				SetViewportBackground("AsteroidsMainMenuBackground");
+				scoreboard = new FontText(Font.Default, "", new Vector2D(0.5f, 0.45f));
 				scoreboard.RenderLayer = renderLayer + 2;
 				Add(scoreboard);
 				AddBackButton();
@@ -171,13 +170,13 @@ namespace $safeprojectname$
 			public void UpdateScoreText(string text)
 			{
 				if(scoreboard != null)
-				scoreboard.Text = text;
+					scoreboard.Text = text;
 			}
 
 			private void AddBackButton()
 			{
 				var backButton = new Button(menuTheme,
-					new Rectangle(0.25f, ScreenSpace.Current.Bottom - 0.2f, 0.5f, 0.12f), "Back");
+					Rectangle.FromCenter(0.5f, ScreenSpace.Current.Bottom - 0.1f, 0.3f, 0.08f), "Back");
 				backButton.RenderLayer = renderLayer + 1;
 				backButton.Clicked += () =>
 				{
@@ -186,15 +185,14 @@ namespace $safeprojectname$
 				};
 				Add(backButton);
 			}
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private void AddQuitButton()
 		{
 			var quitButton = new Button(menuTheme,
-				new Rectangle(0.25f, ScreenSpace.Current.Top + 0.7f, 0.5f, 0.12f), "Quit Game");
+				Rectangle.FromCenter(0.5f, ScreenSpace.Current.Top + 0.48f, 0.3f, 0.08f), "Quit Game");
 			quitButton.Clicked += TryInvokeQuit;
-			quitButton.RenderLayer = (int)$safeprojectname$RenderLayer.UserInterface;
+			quitButton.RenderLayer = (int)AsteroidsRenderLayer.UserInterface;
 			Add(quitButton);
 		}
 
@@ -203,9 +201,7 @@ namespace $safeprojectname$
 		{
 			if (QuitGame != null)
 				QuitGame();
-		}
-		//ncrunch: no coverage end
-
+		} //ncrunch: no coverage end
 
 		public event Action QuitGame;
 

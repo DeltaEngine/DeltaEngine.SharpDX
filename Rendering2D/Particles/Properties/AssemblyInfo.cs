@@ -10,6 +10,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
 [assembly: Guid("070b91c4-92d4-494d-96b2-0ee037f95d8d")]
-[assembly: AssemblyVersion("0.9.9.9")]
-[assembly: AssemblyFileVersion("0.9.9.9")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: InternalsVisibleTo("DeltaEngine.Rendering3D.Particles.Tests")]

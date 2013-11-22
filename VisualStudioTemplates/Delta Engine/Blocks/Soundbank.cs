@@ -7,7 +7,7 @@ namespace $safeprojectname$
 	/// </summary>
 	public class Soundbank
 	{
-		public Soundbank($safeprojectname$Content content)
+		public Soundbank(BlocksContent content)
 		{
 			BlockAffixed = content.Load<Sound>("BlockAffixed");
 			BlockCouldntMove = content.Load<Sound>("BlockCantMove");

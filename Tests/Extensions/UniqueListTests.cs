@@ -139,6 +139,40 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.AreEqual(copiedUniqueList[1], 5);
 			Assert.AreEqual(copiedUniqueList[2], 7);
 		}
+
+		[Test]
+		public void PredicateExistsInUniqueList()
+		{
+			var list = new UniqueList<int>() { 1, 5, 9, 7, 3 };
+			Predicate<int> pre = x => x == 5;
+			Assert.IsTrue(list.Exists(pre));
+		}
+
+		[Test]
+		public void FindPredicateInUniqueList()
+		{
+			var list = new UniqueList<int>() { 7, 5, 3, 9, 1, 4 };
+			Predicate<int> pre = x => x == 4;
+			Assert.AreEqual(list.Find(pre), 4);
+		}
+
+		[Test]
+		public void RemoveAllMatchedItemsInUniqueList()
+		{
+			var list = new UniqueList<int>() { 3, 6, 9, 8, 4, 1, 2 };
+			Predicate<int> pre = x => x == 3;
+			list.RemoveAll(pre);
+			Assert.AreEqual(list.Count, 6);
+		}
+
+		[Test]
+		public void FindAllPredicatesInUniqueList()
+		{
+			var list = new UniqueList<int>() { 1, 4, 7, 5, 2, 6 };
+			Predicate<int> pre = x => x == 1;
+			var result = list.FindAll(pre);
+			Assert.AreEqual(result.Count, 1);
+		}
 	}
 
 	public static class TestEnumerable

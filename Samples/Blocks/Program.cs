@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Core;
-using DeltaEngine.Multimedia;
 using DeltaEngine.Platforms;
 
 namespace Blocks
@@ -9,17 +8,14 @@ namespace Blocks
 	/// </summary>
 	public class Program : App
 	{
-		//ncrunch: no coverage start
 		public Program()
 		{
-			var blocksContent = new FruitBlocksContent();
-			new Game(Resolve<Window>(), blocksContent);
+			new Game(Resolve<Window>());
 		}
 
 		public static void Main()
 		{
 			new Program().Run();
 		}
-		//ncrunch: no coverage end
 	}
 }

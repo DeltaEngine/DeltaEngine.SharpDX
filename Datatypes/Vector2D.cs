@@ -95,7 +95,7 @@ namespace DeltaEngine.Datatypes
 		{
 			return vector1.X == vector2.X && vector1.Y == vector2.Y;
 		}
-
+		
 		[Pure]
 		public bool Equals(Vector2D other)
 		{

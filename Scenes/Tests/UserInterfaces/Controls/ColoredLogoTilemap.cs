@@ -1,7 +1,7 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 {

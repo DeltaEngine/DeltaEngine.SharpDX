@@ -18,7 +18,6 @@ namespace DeltaEngine.Input.Windows
 			for (int index = 0; index < deviceCount; index++)
 				if (IsDeviceMouseDevice(index, rawInputDeviceListHandle))
 					numberOfMice++;
-
 			Marshal.FreeHGlobal(rawInputDeviceListHandle);
 			return numberOfMice;
 		}

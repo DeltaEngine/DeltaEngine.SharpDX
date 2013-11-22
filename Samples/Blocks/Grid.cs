@@ -35,7 +35,6 @@ namespace Blocks
 		{
 			foreach (Brick brick in block.Bricks.Where(brick => !IsOccupied(brick)))
 				AffixBrick(brick);
-
 			RemoveFilledRows();
 			return removedRows;
 		}
@@ -88,13 +87,12 @@ namespace Blocks
 					MoveBrickDown(x, y);
 
 			removedRows++;
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private void RemoveBrick(int x, int y)
 		{
 			var brick = bricks[x, y];
-			brick.IsActive = false;
+			brick.Dispose();
 			bricks[x, y] = null;
 			if (content.DoBricksSplitInHalfWhenRowFull)
 				AddPairOfFallingBricks(brick); //ncrunch: no coverage
@@ -125,8 +123,7 @@ namespace Blocks
 			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
 			var material = new Material(shader, image, image.PixelSize);
 			AddFallingBrick(brick, material);
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private static void AddFallingBrick(Entity2D brick, Material material)
 		{
@@ -136,13 +133,14 @@ namespace Blocks
 				RenderLayer = (int)RenderLayer.FallingBrick,
 			};
 			var random = Randomizer.Current;
-			fallingBrick.Add(new SimplePhysics.Data
+			var data = new SimplePhysics.Data
 			{
 				Velocity = new Vector2D(random.Get(-0.5f, 0.5f), random.Get(-1.0f, 0.0f)),
 				RotationSpeed = random.Get(-360, 360),
 				Duration = 5.0f,
 				Gravity = new Vector2D(0.0f, 2.0f)
-			});
+			};
+			fallingBrick.Add(data);
 			fallingBrick.Start<SimplePhysics.Move>();
 		}
 
@@ -152,11 +150,9 @@ namespace Blocks
 			bricks[x, y] = bricks[x, y - 1];
 			if (bricks[x, y] == null)
 				return;
-
 			bricks[x, y].TopLeftGridCoord.Y++;
 			bricks[x, y].UpdateDrawArea();
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private void AddZoomingBrick(Sprite brick)
 		{
@@ -172,7 +168,6 @@ namespace Blocks
 			foreach (Brick brick in block.Bricks)
 				if (IsOutsideTheGrid(brick) || IsOccupied(brick))
 					return false;
-
 			return true;
 		}
 
@@ -187,7 +182,6 @@ namespace Blocks
 			block.Top = 1;
 			List<int> validStartingColumns = content.DoBlocksStartInARandomColumn
 				? GetAllValidStartingColumns(block) : GetMiddleColumnIfValid(block);
-
 			return validStartingColumns;
 		}
 
@@ -198,10 +192,8 @@ namespace Blocks
 			for (int x = 0; x < Width; x++)
 				if (IsAValidStartingColumn(block, x))
 					validStartingColumns.Add(x);
-
 			return validStartingColumns;
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		private bool IsAValidStartingColumn(Block block, int column)
 		{
@@ -225,7 +217,6 @@ namespace Blocks
 			for (int x = 0; x < Width; x++)
 				if (bricks[x, 0] != null)
 					return true;
-
 			return false;
 		}
 
@@ -237,7 +228,7 @@ namespace Blocks
 						RemoveBrick(x, y);
 			var remainingBricks = EntitiesRunner.Current.GetEntitiesOfType<Brick>();
 			foreach (var brick in remainingBricks)
-				brick.IsActive = false;
+				brick.Dispose();
 		}
 	}
 }

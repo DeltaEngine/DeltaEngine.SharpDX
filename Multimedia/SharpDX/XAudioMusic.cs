@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 using DeltaEngine.Multimedia.MusicStreams;
 using SharpDX.Multimedia;
@@ -27,7 +26,7 @@ namespace DeltaEngine.Multimedia.SharpDX
 				var stream = new MemoryStream();
 				fileData.CopyTo(stream);
 				stream.Position = 0;
-				musicStream = new MusicStreamFactory().Load(stream, Path.Combine("Content", Name));
+				musicStream = new MusicStreamFactory().Load(stream);
 				source = new SourceVoice((device as XAudioDevice).XAudio2,
 					new WaveFormat(musicStream.Samplerate, 16, musicStream.Channels), false);
 			}
@@ -49,7 +48,6 @@ namespace DeltaEngine.Multimedia.SharpDX
 		}
 
 		private StreamBuffer[] buffers;
-		private const int NumberOfBuffers = 2;
 
 		protected override void PlayNativeMusic(float volume)
 		{

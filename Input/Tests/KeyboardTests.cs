@@ -5,7 +5,7 @@ using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests

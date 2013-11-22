@@ -4,6 +4,7 @@ using DeltaEngine.Commands;
 using DeltaEngine.Content;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 using DeltaEngine.Input;
@@ -22,7 +23,7 @@ using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Mocks;
 using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Platforms.Mocks
@@ -77,7 +78,7 @@ namespace DeltaEngine.Platforms.Mocks
 			Command.Register(Command.Drag, new MouseDragTrigger());
 			Command.Register(Command.Flick, new TouchFlickTrigger());
 			Command.Register(Command.Pinch, new TouchPinchTrigger());
-			Command.Register(Command.Hold, new TouchHoldTrigger());
+			Command.Register(Command.Hold, new TouchHoldTrigger(Rectangle.One));
 			Command.Register(Command.DoubleClick, new MouseDoubleClickTrigger());
 			Command.Register(Command.Rotate, new TouchRotateTrigger());
 			Command.Register(Command.Zoom, new MouseZoomTrigger());

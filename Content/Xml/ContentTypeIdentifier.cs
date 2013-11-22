@@ -35,10 +35,6 @@ namespace DeltaEngine.Content.Xml
 					return DetermineTypeForXmlFile(XDocument.Load(fileName)); //ncrunch: no coverage
 				case ".json":
 					return ContentType.Json;
-				case ".fbx":
-				case ".obj":
-				case ".dae":
-					return ContentType.Model;
 				case ".deltamesh":
 					return ContentType.Mesh;
 				case ".deltaparticle":
@@ -52,9 +48,13 @@ namespace DeltaEngine.Content.Xml
 				case ".deltascene":
 					return ContentType.Scene; //ncrunch: no coverage
 			}
+#if DEBUG
 			Logger.Warning("Unknown content type, unable to proceed : " +
 				Path.GetFileName(fileName));
 			throw new UnsupportedContentFileFoundCannotParseType(extension);
+#else
+			return ContentType.JustStore;
+#endif
 		}
 
 		public class UnsupportedContentFileFoundCannotParseType : Exception

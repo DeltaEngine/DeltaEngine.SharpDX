@@ -58,20 +58,20 @@ namespace DeltaEngine.Rendering2D.Particles
 		public void DisposeEmitter(ParticleEmitter emitter)
 		{
 			AttachedEmitters.Remove(emitter);
-			emitter.IsActive = false;
+			emitter.Dispose();
 		}
 
 		public void DisposeEmitter(int indexOfEmitter)
 		{
 			var emitter = AttachedEmitters[indexOfEmitter];
 			AttachedEmitters.RemoveAt(indexOfEmitter);
-			emitter.IsActive = false;
+			emitter.Dispose();
 		}
 
 		public void DisposeSystem()
 		{
 			foreach (var attachedEmitter in AttachedEmitters)
-				attachedEmitter.IsActive = false;
+				attachedEmitter.Dispose();
 			AttachedEmitters.Clear();
 		}
 	}

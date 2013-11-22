@@ -10,42 +10,65 @@ using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
 {
-	//ncrunch: no coverage start
 	/// <summary>
 	/// Game object representing the projectiles fired by the player
 	/// </summary>
-	public class Projectile : Entity2D
+	public sealed class Projectile : Entity2D
 	{
+		//ncrunch: no coverage start
 		public Projectile(Vector2D startPosition, float angle)
 			: base(Rectangle.FromCenter(startPosition, new Size(.02f)))
 		{
 			Rotation = angle;
 			RenderLayer = (int)AsteroidsRenderLayer.Rockets;
-			missileAndTrails =
-				new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MissileEffect"));
+			// ParticleSystemData can very well be loaded by a ContentLoader, unused for simplicity in M5
+			//missileAndTrails =
+			//	new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MissileEffect"));
+			missileAndTrails = new ParticleSystem();
+			var rocketData = new ParticleEmitterData
+			{
+				ParticleMaterial = ContentLoader.Load<Material>("Missile2D"),
+				Size = new RangeGraph<Size>(new Size(0.025f, 0.025f), new Size(0.025f, 0.025f)),
+				LifeTime = 0,
+				SpawnInterval = 0.001f,
+				MaximumNumberOfParticles = 1
+			};
+			var trailData = new ParticleEmitterData
+			{
+				ParticleMaterial = ContentLoader.Load<Material>("Projectile2D"),
+				Size = new RangeGraph<Size>(new Size(0.02f, 0.03f), new Size(0.02f, 0.04f)),
+				StartPosition =
+					new RangeGraph<Vector3D>(new Vector3D(0.0f, 0.02f, 0.0f), new Vector3D(0.0f, 0.02f, 0.0f)),
+				LifeTime = 2.2f,
+				SpawnInterval = 0.2f,
+				MaximumNumberOfParticles = 8
+			};
+			missileAndTrails.AttachEmitter(new ParticleEmitter(trailData, Vector3D.Zero));
+			missileAndTrails.AttachEmitter(new ParticleEmitter(rocketData, Vector3D.Zero));
 			missileAndTrails.AttachedEmitters[0].EmitterData.DoParticlesTrackEmitter = true;
 			missileAndTrails.AttachedEmitters[1].EmitterData.DoParticlesTrackEmitter = true;
 			foreach (var emitter in missileAndTrails.AttachedEmitters)
 				emitter.EmitterData.StartRotation =
 					new RangeGraph<ValueRange>(new ValueRange(Rotation, Rotation),
 						new ValueRange(Rotation, Rotation));
-			Add(new SimplePhysics.Data
+			var data = new SimplePhysics.Data
 			{
 				Gravity = Vector2D.Zero,
 				Velocity =
 					new Vector2D(MathExtensions.Sin(angle) * ProjectileVelocity,
 						-MathExtensions.Cos(angle) * ProjectileVelocity)
-			});
+			};
+			Add(data);
 			Start<MoveAndDisposeOnBorderCollision>();
 		}
 
 		private const float ProjectileVelocity = .5f;
 		private readonly ParticleSystem missileAndTrails;
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			missileAndTrails.DisposeSystem();
-			IsActive = false;
+			base.Dispose();
 		}
 
 		private class MoveAndDisposeOnBorderCollision : UpdateBehavior
@@ -78,6 +101,4 @@ namespace Asteroids
 			}
 		}
 	}
-
-	//ncrunch: no coverage end
 }

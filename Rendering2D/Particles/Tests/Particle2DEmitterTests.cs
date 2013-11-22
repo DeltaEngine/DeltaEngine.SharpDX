@@ -15,14 +15,15 @@ namespace DeltaEngine.Rendering2D.Particles.Tests
 {
 	internal class Particle2DEmitterTests : TestWithMocksOrVisually
 	{
-		[Test]
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
 		public void Render1000Particles()
 		{
 			CreateDataAndEmitter(1000, 0.01f, 10);
 			emitter.Position = new Vector2D(0.5f, 0.4f);
 			Rectangle fpsDrawArea = Rectangle.FromCenter(0.5f, 0.25f, 0.2f, 0.2f);
 			new FpsDisplay(emitter, fpsDrawArea);
-		}
+		} //ncrunch: no coverage end
 
 		private void CreateDataAndEmitter(int maxParticles = 1, float spawnInterval = 0.01f,
 			float lifeTime = 0.002f)

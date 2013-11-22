@@ -17,9 +17,9 @@ namespace $safeprojectname$
 			this.start = start;
 			this.target = target;
 			sprites = new Sprite[waveSize];
-			var ghostMaterial = new Material(Shader.Position2DColorUV, "Ghost") { DefaultColor = color };
+			var ghostMaterial = ContentLoader.Load<Material>("GhostMaterial");
 			for (int num = 0; num < waveSize; num++)
-				sprites[num] = CreateSpriteWithOrientation(ghostMaterial);
+				sprites[num] = CreateSpriteWithOrientation(ghostMaterial, color);
 			UpdatePriority = Priority.Low;
 		}
 
@@ -27,9 +27,10 @@ namespace $safeprojectname$
 		private readonly Vector2D target;
 		private readonly Sprite[] sprites;
 
-		private Sprite CreateSpriteWithOrientation(Material ghostMaterial)
+		private Sprite CreateSpriteWithOrientation(Material ghostMaterial, Color color)
 		{
 			var newSprite = new Sprite(ghostMaterial, start) { RenderLayer = 1 };
+			newSprite.Color = color;
 			if (GameLogic.GhostSize != 1.0f)
 				newSprite.Size *= GameLogic.GhostSize;
 			if (start.X > target.X)
@@ -96,14 +97,14 @@ namespace $safeprojectname$
 			get { return runTime * Speed > start.DistanceTo(target); }
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			if (TargetReached != null)
 				TargetReached(Attacker, sprites.Length);
 			TargetReached = null;
 			foreach (Sprite sprite in sprites)
-				sprite.IsActive = false;
-			IsActive = false;
+				sprite.Dispose();
+			base.Dispose();
 		}
 
 		public Action<object, int> TargetReached;

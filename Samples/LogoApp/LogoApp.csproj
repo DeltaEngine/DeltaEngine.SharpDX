@@ -35,32 +35,16 @@
     <StartupObject>LogoApp.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>LogoAppIcon.ico</ApplicationIcon>
+    <ApplicationIcon>LogoApp.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Content\Disk\DeltaEngine.Content.Disk.csproj">
-      <Project>{EE9847E1-9C76-4ACE-B531-D3EA84F7D741}</Project>
-      <Name>DeltaEngine.Content.Disk</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DeltaEngine.csproj">
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Graphics\DeltaEngine.Graphics.csproj">
-      <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
-      <Name>DeltaEngine.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Input\DeltaEngine.Input.csproj">
-      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
-      <Name>DeltaEngine.Input</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
-      <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
-      <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
       <Project>{05569371-855C-4667-8228-20491337C431}</Project>
@@ -68,7 +52,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LogoAppIcon.ico" />
+    <Content Include="LogoApp.ico" />
+    <Content Include="LogoAppIcon72x72.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

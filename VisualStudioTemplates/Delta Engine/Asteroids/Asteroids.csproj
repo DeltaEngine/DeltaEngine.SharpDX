@@ -32,7 +32,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>AsteroidsIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Asteroids.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -64,7 +64,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AsteroidsIcon.ico" />
+    <Content Include="Asteroids.ico" />
+    <Content Include="AsteroidsIcon72x72.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Controls.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="InteractionLogics.cs" />
+    <Compile Include="InteractionLogic.cs" />
     <Compile Include="HudInterface.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="PlayerShip.cs" />

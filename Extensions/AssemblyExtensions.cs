@@ -11,16 +11,6 @@ namespace DeltaEngine.Extensions
 	public static class AssemblyExtensions
 	{
 		//ncrunch: no coverage start
-		public static string GetMyDocumentsAppFolder()
-		{
-			var appPath = Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DeltaEngine",
-				GetEntryAssemblyForProjectName());
-			if (!Directory.Exists(appPath))
-				Directory.CreateDirectory(appPath);
-			return appPath;
-		}
-
 		public static string GetTestNameOrProjectName()
 		{
 			return testOrProjectName ?? (testOrProjectName = StackTraceExtensions.GetEntryName());
@@ -66,11 +56,11 @@ namespace DeltaEngine.Extensions
 				ThirdPartyLibsPartialNames.Any(name.StartsWith);
 		}
 
-		private static readonly string[] ThirdPartyLibsFullNames = new[] { "OpenAL32", "wrap_oal",
+		private static readonly string[] ThirdPartyLibsFullNames = { "OpenAL32", "wrap_oal",
 			"libEGL", "libgles", "libGLESv2", "csogg", "csvorbis", "Autofac", "Moq", "OpenTK",
 			"Newtonsoft.Json", "NVorbis", "Ionic.Zip" };
 
-		private static readonly string[] ThirdPartyLibsPartialNames = new[] { "libvlc",
+		private static readonly string[] ThirdPartyLibsPartialNames = { "libvlc",
 			"DynamicProxyGen", "Anonymously Hosted", "Pencil.Gaming", "AvalonDock", "Farseer",
 			"MvvmLight", "SharpDX", "SlimDX", "ToyMp3", "EntityFramework", "NHibernate", "Approval",
 			"System.IO.Abstractions", "AsfMojo", "SharpCompress", "WPFLocalizeExtension",

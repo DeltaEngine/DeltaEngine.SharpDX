@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Rendering2D;
 
 namespace Blocks
 {
 	/// <summary>
 	/// Handles the falling and upcoming blocks.
 	/// </summary>
-	public sealed class Controller : Entity
+	public class Controller : Entity
 	{
 		public Controller(Orientation displayMode, BlocksContent content)
 		{
@@ -184,6 +183,8 @@ namespace Blocks
 
 		public void RotateBlockAntiClockwiseIfPossible()
 		{
+			if(FallingBlock == null)
+				return;
 			FallingBlock.RotateAntiClockwise();
 			if (Get<Grid>().IsValidPosition(FallingBlock))
 				Get<Soundbank>().BlockMoved.Play();

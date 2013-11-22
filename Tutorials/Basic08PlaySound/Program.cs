@@ -13,7 +13,7 @@ namespace DeltaEngine.Tutorials.Basic08PlaySound
 		{
 			var sound = ContentLoader.Load<Sound>("DefaultSound");
 			new FontText(Font.Default, "Click to play sound", Rectangle.HalfCentered);
-			new Command(Command.Click, sound.Play);
+			new Command(Command.Click, () => sound.Play());
 		}
 
 		public static void Main()

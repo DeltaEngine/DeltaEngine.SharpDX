@@ -11,13 +11,14 @@ namespace DeltaEngine.Platforms.Tests
 {
 	public class OrientationTests : TestWithMocksOrVisually
 	{
-		[Test]
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
 		public void TestDrawAreaWhenChangingOrientationToPortrait()
 		{
+			Resolve<Window>().ViewportPixelSize = new Size(480, 800);
 			new Ellipse(new Rectangle(0.7f, 0.7f, 0.1f, 0.1f), Color.Red);
 			RunAfterFirstFrame(() =>
 			{
-				Resolve<Window>().ViewportPixelSize = new Size(480, 800);
 				var screen = ScreenSpace.Current;
 				Assert.AreEqual(typeof(QuadraticScreenSpace), screen.GetType());
 				var quadSize = screen.FromPixelSpace(new Vector2D(0, 0));
@@ -39,7 +40,7 @@ namespace DeltaEngine.Platforms.Tests
 				"Actual: " + actual + ", Expected: " + expected);
 		}
 
-		[Test, CloseAfterFirstFrame]
+		[Test, Category("Slow"), CloseAfterFirstFrame]
 		public void TestDrawAreaWhenChangingOrientationToLandscape()
 		{
 			new Ellipse(new Rectangle(0.7f, 0.7f, 0.1f, 0.1f), Color.Red);
@@ -58,11 +59,11 @@ namespace DeltaEngine.Platforms.Tests
 			});
 		}
 
-		[Test]
-		public void ChangeOrientaion()
+		[Test, Category("Slow")]
+		public void ChangeOrientation()
 		{
-			var line = new Line2D(Vector2D.Zero, Vector2D.One, Color.Green);
 			var window = Resolve<Window>();
+			var line = new Line2D(Vector2D.Zero, Vector2D.One, Color.Green);
 			window.BackgroundColor = Color.Blue;
 			new Command(() => window.ViewportPixelSize = new Size(800, 480)).Add(new KeyTrigger(Key.A));
 			new Command(() => window.ViewportPixelSize = new Size(480, 800)).Add(new KeyTrigger(Key.B));

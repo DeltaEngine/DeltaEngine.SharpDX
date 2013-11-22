@@ -7,13 +7,12 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Trigger implementation for Keyboard events.
 	/// </summary>
-	public class KeyTrigger : Trigger
+	public class KeyTrigger : InputTrigger
 	{
 		public KeyTrigger(Key key, State state = State.Pressing)
 		{
 			Key = key;
 			State = state;
-			Start<Keyboard>();
 		}
 
 		public Key Key { get; internal set; }
@@ -26,9 +25,13 @@ namespace DeltaEngine.Input
 				throw new CannotCreateKeyTriggerWithoutKey();
 			Key = parameters[0].Convert<Key>();
 			State = parameters.Length > 1 ? parameters[1].Convert<State>() : State.Pressing;
-			Start<Keyboard>();
 		}
 
 		public class CannotCreateKeyTriggerWithoutKey : Exception {}
+
+		protected override void StartInputDevice()
+		{
+			Start<Keyboard>();
+		}
 	}
 }

@@ -163,10 +163,13 @@ namespace Blocks.Tests
 			Assert.IsTrue(sounds.GameLost.IsAnyInstancePlaying);
 		}
 
-		[Test]
-		public void NoValidStartingPosoition()
+		[Test, CloseAfterFirstFrame]
+		public void CurrentBlockBeingNullWillNotCrashMovement()
 		{
-			
+			controller.FallingBlock = null;
+			Assert.DoesNotThrow(controller.MoveBlockLeftIfPossible);
+			Assert.DoesNotThrow(controller.MoveBlockRightIfPossible);
+			Assert.DoesNotThrow(controller.RotateBlockAntiClockwiseIfPossible);
 		}
 	}
 }

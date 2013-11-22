@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Commands;
-using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.ScreenSpaces;
 
@@ -34,9 +33,10 @@ namespace DeltaEngine.Input
 
 		public void HandleWithMouse(Mouse mouse)
 		{
-			if (mouse.GetButtonState(Button) == State.Pressing)
+			if (mouse.GetButtonState(Button) == State.Pressing &&
+				ScreenSpace.Current.Viewport.Contains(mouse.Position))
 				StartPosition = mouse.Position;
-			else if (StartPosition != Vector2D.Unused && mouse.GetButtonState(Button) != State.Released)
+			else if (mouse.GetButtonState(Button) != State.Released)
 				UpdateWhileDragging(mouse);
 			else
 				Reset();
@@ -45,8 +45,6 @@ namespace DeltaEngine.Input
 		private void UpdateWhileDragging(Mouse mouse)
 		{
 			var movementDirection = StartPosition.DirectionTo(Position);
-			if (movementDirection.Length <= PositionEpsilon)
-				return;
 			Position = mouse.Position;
 			if (IsDragDirectionCorrect(movementDirection))
 				DoneDragging = mouse.GetButtonState(Button) == State.Releasing;
@@ -54,11 +52,8 @@ namespace DeltaEngine.Input
 				Invoke();
 		}
 
-		private const float PositionEpsilon = 0.0025f;
-
 		private void Reset()
 		{
-			StartPosition = Vector2D.Unused;
 			DoneDragging = false;
 		}
 	}

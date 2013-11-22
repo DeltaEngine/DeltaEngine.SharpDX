@@ -14,7 +14,7 @@ namespace DeltaEngine.Logging
 		public TextFileLogger()
 			: base(true)
 		{
-			filePath = Path.Combine(AssemblyExtensions.GetMyDocumentsAppFolder(), LogFilename);
+			filePath = Path.Combine(Settings.GetMyDocumentsAppFolder(), LogFilename);
 		}
 
 		private readonly string filePath;

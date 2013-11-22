@@ -42,7 +42,7 @@ namespace GhostWars
 			if (entities.Count > 0)
 				PlayClickSound();
 			foreach (var entity in entities)
-				entity.IsActive = false;
+				entity.Dispose();
 			entities.Clear();
 			menuScene.Clear();
 		}
@@ -66,7 +66,8 @@ namespace GhostWars
 
 		private void AddMenuOption(Action clickAction, string buttonName, Vector2D position)
 		{
-			var buttonRect = Rectangle.FromCenter(position, new Size(0.29f, 0.0525f));
+			var buttonImage = ContentLoader.Load<Image>(buttonName + "Default");
+			var buttonRect = Rectangle.FromCenter(position, new Size(0.05f * buttonImage.PixelSize.AspectRatio, 0.05f));
 			var button = new Sprite(buttonName + "Default", buttonRect);
 			button.RenderLayer = 10;
 			AddEntity(button);
@@ -77,6 +78,23 @@ namespace GhostWars
 			}));
 			AddEntity(
 				new Command(pos => UpdateSpriteImage(button, buttonName, pos)).Add(
+					new MouseMovementTrigger()));
+		}
+
+		private void AddSubmenuBackButton()
+		{
+			var buttonRect = new Rectangle(ScreenSpace.Current.Viewport.Left + 0.025f,
+				ScreenSpace.Current.Viewport.Bottom - 0.075f, 0.125f, 0.05f);
+			var button = new Sprite("Back" + "Default", buttonRect);
+			button.RenderLayer = 10;
+			AddEntity(button);
+			AddEntity(new Command(Command.Click, point =>
+			{
+				if (buttonRect.Contains(point))
+					CreateMainMenu();
+			}));
+			AddEntity(
+				new Command(pos => UpdateSpriteImage(button, "Back", pos)).Add(
 					new MouseMovementTrigger()));
 		}
 
@@ -103,7 +121,7 @@ namespace GhostWars
 		{
 			Clear();
 			AddEntity(new Sprite("GhostWarsHowToPlay", ScreenSpace.Current.Viewport));
-			AddEntity(new Command(Command.Click, CreateMainMenu));
+			AddSubmenuBackButton();
 		}
 
 		private void OnSingleplayer()
@@ -120,6 +138,7 @@ namespace GhostWars
 			AddLevelSelection(2, clickAreas[1]);
 			AddLevelSelection(3, clickAreas[2]);
 			AddEntity(new Command(Command.Click, position => SinglePlayerMenuClick(position, clickAreas)));
+			AddSubmenuBackButton();
 		}
 
 		private void AddLevelSelection(int levelNumber, Rectangle mapDrawArea)
@@ -136,11 +155,8 @@ namespace GhostWars
 			for (int i = 0; i < clickAreas.Length; i++)
 			{
 				if (clickAreas[i].Contains(position))
-				{
 					StartGame(i + 1);
-					return;
-				}
-				CreateMainMenu();
+
 			}
 		}
 
@@ -208,7 +224,7 @@ namespace GhostWars
 		{
 			Clear();
 			AddEntity(new Sprite("CreditsBackground", ScreenSpace.Current.Viewport));
-			AddEntity(new Command(Command.Click, CreateMainMenu));
+			AddSubmenuBackButton();
 		}
 
 		public static GameState State { get; set; }
@@ -227,11 +243,6 @@ namespace GhostWars
 		public void RestartGame()
 		{
 			StartGame(CurrentLevel);
-		}
-
-		public bool IsPauseable
-		{
-			get { return true; }
 		}
 	}
 }

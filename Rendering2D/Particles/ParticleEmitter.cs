@@ -16,7 +16,7 @@ namespace DeltaEngine.Rendering2D.Particles
 			ElapsedSinceLastSpawn = emitterData.SpawnInterval;
 			if (emitterData.ParticleMaterial == null)
 			{
-				base.IsActive = false;
+				base.Dispose();
 				throw new UnableToCreateWithoutMaterial();
 			}
 			Position = spawnPosition;
@@ -373,7 +373,7 @@ namespace DeltaEngine.Rendering2D.Particles
 					var duration = entity.Get<Duration>();
 					duration.Elapsed += Time.Delta;
 					if (duration.Elapsed > duration.Value)
-						entity.IsActive = false;
+						entity.Dispose();
 					entity.Set(duration);
 				}
 			}

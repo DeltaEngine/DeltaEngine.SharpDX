@@ -4,7 +4,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls

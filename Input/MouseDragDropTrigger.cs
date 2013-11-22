@@ -9,14 +9,13 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Drag and Drop events with Mouse.
 	/// </summary>
-	public class MouseDragDropTrigger : Trigger, MouseTrigger
+	public class MouseDragDropTrigger : InputTrigger, MouseTrigger
 	{
 		public MouseDragDropTrigger(Rectangle startArea, MouseButton button)
 		{
 			StartArea = startArea;
 			Button = button;
 			StartDragPosition = Vector2D.Unused;
-			Start<Mouse>();
 		}
 
 		public Rectangle StartArea { get; private set; }
@@ -31,7 +30,6 @@ namespace DeltaEngine.Input
 			StartArea = BuildParameterStringForRectangle(parameters).Convert<Rectangle>();
 			Button = parameters.Length > 4 ? parameters[4].Convert<MouseButton>() : MouseButton.Left;
 			StartDragPosition = Vector2D.Unused;
-			Start<Mouse>();
 		}
 
 		private static string BuildParameterStringForRectangle(IList<string> parameters)
@@ -53,6 +51,9 @@ namespace DeltaEngine.Input
 					StartDragPosition = Vector2D.Unused;
 		}
 
-		private const float PositionEpsilon = 0.0025f;
+		protected override void StartInputDevice()
+		{
+			Start<Mouse>();
+		}
 	}
 }

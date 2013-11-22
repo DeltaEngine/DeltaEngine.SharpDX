@@ -18,7 +18,7 @@ namespace DeltaEngine.ScreenSpaces
 
 		protected override void Update(Size newViewportSize)
 		{
-			base.Update(newViewportSize);
+			viewportPixelSize = newViewportSize;
 			pixelToRelativeScale = 1.0f / viewportPixelSize;
 			RaiseViewportSizeChanged();
 		}

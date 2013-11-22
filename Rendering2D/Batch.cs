@@ -139,6 +139,8 @@ namespace DeltaEngine.Rendering2D
 		private bool HasSomethingToRender(Sprite sprite)
 		{
 			var data = sprite.Get<RenderingData>();
+			if (data == null)
+				return false; //ncrunch: no coverage, only happens with broken material data in the Editor
 			drawArea = data.DrawArea;
 			uv = data.AtlasUV;
 			isAtlasRotated = data.IsAtlasRotated;

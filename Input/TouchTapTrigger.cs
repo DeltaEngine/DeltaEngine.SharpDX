@@ -1,16 +1,22 @@
-﻿using DeltaEngine.Commands;
+﻿using System;
+using DeltaEngine.Commands;
 
 namespace DeltaEngine.Input
 {
 	/// <summary>
 	/// Allows a touch tap to be detected.
 	/// </summary>
-	public class TouchTapTrigger : Trigger, TouchTrigger
+	public class TouchTapTrigger : InputTrigger, TouchTrigger
 	{
-		public TouchTapTrigger()
+		public TouchTapTrigger() {}
+
+		public TouchTapTrigger(string empty)
 		{
-			Start<Touch>();
+			if (!String.IsNullOrEmpty(empty))
+				throw new TouchTapTriggerHasNoParameters();
 		}
+
+		public class TouchTapTriggerHasNoParameters : Exception {}
 
 		public void HandleWithTouch(Touch touch)
 		{
@@ -23,5 +29,9 @@ namespace DeltaEngine.Input
 		}
 
 		private State lastState;
+		protected override void StartInputDevice()
+		{
+			Start<Touch>();
+		}
 	}
 }

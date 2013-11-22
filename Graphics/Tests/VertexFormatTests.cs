@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Content;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Graphics.Vertices;
 using NUnit.Framework;
 
@@ -292,6 +293,14 @@ namespace DeltaEngine.Graphics.Tests
 		public void CheckPosition3DNormalUVLightmapFormat()
 		{
 			Assert.AreEqual(VertexFormat.Position3DNormalUVLightmap.Stride, 40);
+		}
+
+		[Test]
+		public void LerpShouldReturnARenderingDataObject()
+		{
+			var data = new RenderingData();
+			var newRenderingDataObject = data.Lerp(data, 0.5f);
+			Assert.IsNotNull(newRenderingDataObject);
 		}
 	}
 }

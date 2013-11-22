@@ -7,10 +7,11 @@ namespace $safeprojectname$
 	/// </summary>
 	public class UserInterface : IDisposable
 	{
-		public UserInterface($safeprojectname$Content content)
+		public UserInterface(BlocksContent content)
 		{
 			userInterfaceLandscape = new UserInterfaceLandscape(content);
 			userInterfacePortrait = new UserInterfacePortrait(content);
+			ShowUserInterfaceLandscape();
 		}
 
 		private readonly UserInterfaceLandscape userInterfaceLandscape;

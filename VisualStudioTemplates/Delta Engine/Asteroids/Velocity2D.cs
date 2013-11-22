@@ -16,8 +16,8 @@ namespace $safeprojectname$
 			this.maximumSpeed = maximumSpeed;
 		}
 
-		public Vector2D velocity;
-		public readonly float maximumSpeed;
+		private Vector2D velocity;
+		private readonly float maximumSpeed;
 
 		public Vector2D Velocity
 		{

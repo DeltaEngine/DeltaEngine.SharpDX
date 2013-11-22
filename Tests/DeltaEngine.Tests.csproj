@@ -66,6 +66,8 @@
     <Compile Include="Content\FakeImageContentLoaderTests.cs" />
     <Compile Include="Content\FakeShader.cs" />
     <Compile Include="Content\MaterialTests.cs" />
+    <Compile Include="Core\ConsoleLoggerTests.cs" />
+    <Compile Include="Core\ProcessRunnerTests.cs" />
     <Compile Include="Extensions\PathExtensionsTests.cs" />
     <Compile Include="Commands\CommandTests.cs" />
     <Compile Include="Content\FakeContentLoader.cs" />

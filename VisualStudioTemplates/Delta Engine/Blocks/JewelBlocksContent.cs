@@ -1,11 +1,11 @@
 namespace $safeprojectname$
 {
 	/// <summary>
-	/// Loads Jewel$safeprojectname$ related content and settings
+	/// Loads JewelBlocks related content and settings
 	/// </summary>
-	public class Jewel$safeprojectname$Content : $safeprojectname$Content
+	public class JewelBlocksContent : BlocksContent
 	{
-		public Jewel$safeprojectname$Content()
-			: base("Jewel$safeprojectname$_") {}
+		public JewelBlocksContent()
+			: base("JewelBlocks_") {}
 	}
 }

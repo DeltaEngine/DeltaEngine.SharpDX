@@ -2,7 +2,9 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Rendering2D.Shapes;
+using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -68,7 +70,9 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void DragMouseIsPressingSetPosition()
 		{
-			var mouse = Resolve<MockMouse>();
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage
+			var mouse = (MockMouse)Resolve<Mouse>();
 			var trigger = new MouseDragTrigger();
 			new Command(() => { }).Add(trigger);
 			mouse.SetButtonState(MouseButton.Left, State.Pressing);
@@ -85,7 +89,9 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void DragMouseHorizontally()
 		{
-			var mouse = Resolve<MockMouse>();
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage start
+			var mouse = (MockMouse)Resolve<Mouse>();
 			var trigger = new MouseDragTrigger(MouseButton.Left, DragDirection.Horizontal);
 			new Command(() => { }).Add(trigger);
 			mouse.SetPosition(new Vector2D(0.3f, 0.5f));
@@ -102,15 +108,17 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void DragMouseVertically()
 		{
-			var mouse = Resolve<MockMouse>();
+			if (resolver.GetType() != typeof(MockResolver))
+				return; //ncrunch: no coverage start
+			var mouse = (MockMouse)Resolve<Mouse>();
 			var trigger = new MouseDragTrigger(MouseButton.Left, DragDirection.Vertical);
-			new Command(() => { }).Add(trigger);
-			mouse.SetPosition(new Vector2D(0.3f, 0.2f));
+			new Command(() => {}).Add(trigger);
+			mouse.SetPosition(new Vector2D(0.3f, ScreenSpace.Current.Top + 0.1f));
 			mouse.SetButtonState(MouseButton.Left, State.Pressing);
 			AdvanceTimeAndUpdateEntities();
-			mouse.SetPosition(new Vector2D(0.3f, 0.6f));
+			mouse.SetPosition(new Vector2D(0.3f, ScreenSpace.Current.Bottom - 0.1f));
 			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(trigger.Position, mouse.Position);
+			Assert.AreEqual(mouse.Position, trigger.Position);
 			mouse.SetButtonState(MouseButton.Left, State.Releasing);
 			AdvanceTimeAndUpdateEntities();
 			Assert.IsTrue(trigger.DoneDragging);

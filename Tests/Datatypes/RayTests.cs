@@ -26,7 +26,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void CanConvertToStringAndBack()
 		{
-			var ray = new Ray(Vector3D.UnitX, Vector3D.Up);
+			var ray = new Ray(Vector3D.UnitX, Vector3D.UnitY);
 			var stringRay = ray.ToString();
 			Assert.AreEqual("Ray({1, 0, 0},{0, 1, 0})", stringRay);
 			var retrievedRay = new Ray(stringRay);

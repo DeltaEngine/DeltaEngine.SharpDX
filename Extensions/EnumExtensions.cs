@@ -38,5 +38,14 @@ namespace DeltaEngine.Extensions
 			Logger.Warning("Failed to parse enum value " + text + ", using default: " + defaultValue);
 			return defaultValue;
 		}
+
+		public static int GetIndex<T>(T searchEnumValue)
+		{
+			var list = new List<T>(GetEnumValues<T>());
+			for (int index = 0; index < list.Count; index++)
+				if (list[index].Equals(searchEnumValue))
+					return index;
+			return -1;
+		}
 	}
 }

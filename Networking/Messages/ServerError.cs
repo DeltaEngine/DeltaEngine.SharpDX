@@ -5,7 +5,7 @@
 	/// </summary>
 	public class ServerError
 	{
-		protected ServerError() { }
+		protected ServerError() {}
 
 		public ServerError(string error)
 		{
@@ -16,7 +16,7 @@
 
 		public override string ToString()
 		{
-			return "ServerError: " + Error;
+			return "Server Error: " + Error;
 		}
-	} 
+	}
 }

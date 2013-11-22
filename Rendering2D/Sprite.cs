@@ -69,14 +69,16 @@ namespace DeltaEngine.Rendering2D
 		public override sealed Entity Add<T>(T component)
 		{
 			if (typeof(T) == typeof(RenderingData))
-				throw new ComponentOfTheSameTypeAddedMoreThanOnce();
+				throw new RenderingDataComponentAddingIsNotSupported();
 			return base.Add(component);
 		}
+
+		public class RenderingDataComponentAddingIsNotSupported : Exception {}
 
 		public override sealed T Get<T>()
 		{
 			if (EntitiesRunner.Current.State == UpdateDrawState.Draw &&
-				typeof(T) == typeof(RenderingData))
+				typeof(T) == typeof(RenderingData) && lastRenderingData != null)
 				return (T)(object)lastRenderingData.Lerp(renderingData,
 					EntitiesRunner.CurrentDrawInterpolation);
 			if (typeof(T) == typeof(RenderingData))

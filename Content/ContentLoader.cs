@@ -228,9 +228,10 @@ namespace DeltaEngine.Content
 				current.resources.Clear();
 		}
 
-		protected void ClearBufferedRessources()
+		//ncrunch: no coverage start, only used in the EditorContentLoader
+		protected void ClearBufferedResources()
 		{
-			if(resources != null)
+			if (resources != null)
 				resources.Clear();
 		}
 	}

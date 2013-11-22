@@ -31,7 +31,7 @@ namespace DeltaEngine.Input
 			State = parameters.Length > 1 ? parameters[1].Convert<State>() : State.Pressing;
 		}
 
-		public class CannotCreateMouseButtonTriggerWithoutButton : Exception { }
+		public class CannotCreateMouseButtonTriggerWithoutButton : Exception {}
 
 		protected override void StartInputDevice()
 		{

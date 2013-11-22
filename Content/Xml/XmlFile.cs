@@ -27,19 +27,19 @@ namespace DeltaEngine.Content.Xml
 			Root = new XmlData(XDocument.Load(fileStream).Root);
 		}
 
-		public void Save(string filePath)
+		public void Save(string filePath, bool createWithDocumentHeader = false)
 		{
 			using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write,
 				FileShare.ReadWrite))
 			using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
-				Root.XRootElement.Document.Save(writer);
+				Root.CreateRootXElement(createWithDocumentHeader).Document.Save(writer);
 		}
 
 		public MemoryStream ToMemoryStream()
 		{
 			var stream = new MemoryStream();
 			var writer = new StreamWriter(stream, new UTF8Encoding(false));
-			Root.XRootElement.Document.Save(writer);
+			Root.CreateRootXElement().Document.Save(writer);
 			stream.Position = 0;
 			return stream;
 		}

@@ -163,5 +163,34 @@ namespace DeltaEngine.Tests.Extensions
 		{
 			Assert.Throws<NotSupportedException>(() => "false,false".Convert<List<bool>>());
 		}
+
+		[Test]
+		public void ConvertNullStringToDictionaryReturns()
+		{
+			const string ArrayOfStrings = null;
+			var dictionary = ArrayOfStrings.Convert<Dictionary<string, string>>();
+			Assert.IsInstanceOf<Dictionary<string, string>>(dictionary);
+		}
+
+		[Test]
+		public void ConvertStringToDictionary()
+		{
+			const string ArrayOfStrings = "FirstKey;FirstValue;SecondKey;SecondValue";
+			var dictionary = ArrayOfStrings.Convert<Dictionary<string, string>>();
+			Assert.IsTrue(dictionary.ContainsKey("FirstKey"));
+			Assert.IsTrue(dictionary.ContainsValue("SecondValue"));
+		}
+
+		[Test]
+		public void ConvertDictionaryToString()
+		{
+			var dictionary = new Dictionary<string, string>();
+			dictionary.Add("FirstKey","FirstValue");
+			dictionary.Add("SecondKey","SecondValue");
+			var arrayOfStrings = StringExtensions.ToInvariantString(dictionary);
+			Assert.AreEqual(41, arrayOfStrings.Length);
+			Assert.AreEqual(8, arrayOfStrings.IndexOf(';'));
+			Assert.AreEqual(29, arrayOfStrings.LastIndexOf(';'));
+		}
 	}
 }

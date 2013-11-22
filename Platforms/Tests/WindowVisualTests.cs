@@ -64,16 +64,17 @@ namespace DeltaEngine.Platforms.Tests
 		}
 
 		[Test]
-		public void ShowColoredEllipse()
-		{
-			new Ellipse(new Rectangle(Vector2D.Half, Size.Half), Color.Red);
-		}
-
-		[Test]
 		public void ShowCursorAndToggleHideWhenClicking()
 		{
 			bool showCursor = true;
 			new Command(() => window.ShowCursor = showCursor = !showCursor).Add(new MouseButtonTrigger());
+		}
+
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
+		public void ShowColoredEllipse()
+		{
+			new Ellipse(new Rectangle(Vector2D.Half, Size.Half), Color.Red);
 		}
 	}
 }

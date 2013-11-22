@@ -9,12 +9,13 @@
 		<CreateNewFolder>true</CreateNewFolder>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<DefaultName>LogoApp</DefaultName>
-		<Icon>LogoAppIcon.ico</Icon>
+		<Icon>LogoApp.ico</Icon>
 	</TemplateData>
 	<TemplateContent>
 		<Project File="LogoApp.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="false" TargetFileName="LogoAppIcon.ico">LogoAppIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="LogoApp.ico">LogoApp.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="LogoAppIcon72x72.png">LogoAppIcon72x72.png</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="BouncingLogo.cs">BouncingLogo.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 			</Folder>

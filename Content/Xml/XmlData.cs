@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 using DeltaEngine.Extensions;
@@ -9,8 +10,15 @@ namespace DeltaEngine.Content.Xml
 	/// <summary>
 	/// Simplified Xml handling
 	/// </summary>
+	[DebuggerDisplay(
+		"XmlData: {DeltaEngine.Extensions.StringExtensions.MaxStringLength(ToString(), 200)}")]
 	public class XmlData
 	{
+		static XmlData()
+		{
+			StringExtensions.AddConvertTypeCreation(typeof(XmlData), value => new XmlSnippet(value).Root);
+		}
+
 		protected XmlData()
 		{
 			Children = new List<XmlData>();
@@ -168,7 +176,7 @@ namespace DeltaEngine.Content.Xml
 			foreach (XmlData child in Children)
 			{
 				if ((anyDescendant || child.Name.Compare(childName)) &&
-					child.GetAttributeValue(attribute.Name) == attribute.Value)
+						child.GetAttributeValue(attribute.Name) == attribute.Value)
 					return child;
 				XmlData childOfChild = child.GetDescendant(attribute, childName);
 				if (childOfChild != null)
@@ -227,28 +235,18 @@ namespace DeltaEngine.Content.Xml
 			Attributes.Clear();
 		}
 
-		public override string ToString()
+		public XElement CreateRootXElement(bool createWithDocumentHeader = false)
 		{
-			return "XmlData=" + Name + ": " + XRootElement.ToString().MaxStringLength(200);
+			var root = new XElement(Name);
+			if (!string.IsNullOrEmpty(Value))
+				root.Value = Value;
+			XDocument doc = createWithDocumentHeader
+				? new XDocument(new XDeclaration("1.0", "utf-8", null)) : new XDocument();
+			doc.Add(root);
+			AddXAttributes(root);
+			AddXChildren(root, doc);
+			return root;
 		}
-
-		public XElement XRootElement
-		{
-			get
-			{
-				var root = new XElement(Name);
-				if (!string.IsNullOrEmpty(Value))
-					root.Value = Value;
-				XDocument doc = XDocumentHasHeader
-					? new XDocument(new XDeclaration("1.0", "utf-8", null)) : new XDocument();
-				doc.Add(root);
-				AddXAttributes(root);
-				AddXChildren(root, doc);
-				return root;
-			}
-		}
-
-		public bool XDocumentHasHeader { get; set; }
 
 		private void AddXAttributes(XElement root)
 		{
@@ -272,9 +270,14 @@ namespace DeltaEngine.Content.Xml
 			return root;
 		}
 
-		public string ToXmlString()
+		public override string ToString()
 		{
-			XDocument doc = XRootElement.Document;
+			return ToString(false);
+		}
+
+		public string ToString(bool createWithDocumentHeader)
+		{
+			XDocument doc = CreateRootXElement(createWithDocumentHeader).Document;
 			return doc == null ? "" : doc.ToString();
 		}
 	}

@@ -7,6 +7,12 @@
 	/// </summary>
 	public struct AtlasRegion
 	{
+		public AtlasRegion(Rectangle uv)
+			: this()
+		{
+			UV = uv;
+		}
+
 		public Rectangle UV { get; set; }
 		public float PadLeft { get; set; }
 		public float PadRight { get; set; }

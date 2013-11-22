@@ -55,10 +55,23 @@ namespace DeltaEngine.Extensions
 			if (type.IsEnum)
 				return (T)Enum.Parse(type, value);
 			if (type == typeof(DateTime))
-				return (T)(DateTime.Parse(value) as object);
+				return (T)(DateExtensions.Parse(value) as object);
 			if (RegisteredConvertCallbacks.ContainsKey(type))
 				return (T)RegisteredConvertCallbacks[type](value);
+			if (type == typeof(Dictionary<string, string>))
+				return ConvertStringToDictionary<T>(value);
 			throw new NotSupportedException("Type " + type + " was not registered for conversion!");
+		}
+
+		private static T ConvertStringToDictionary<T>(string value)
+		{
+			var dictionary = new Dictionary<string, string>();
+			if (value == null)
+				return (T)(dictionary as object);
+			string[] splitValues = value.Split(';');
+			for (int i = 0; i < splitValues.Length - 1; i += 2)
+				dictionary.Add(splitValues[i], splitValues[i + 1]);
+			return (T)(dictionary as object);
 		}
 
 		private static readonly Dictionary<Type, Func<string, object>> RegisteredConvertCallbacks =
@@ -76,7 +89,18 @@ namespace DeltaEngine.Extensions
 				return ((decimal)someObj).ToString(NumberFormatInfo.InvariantInfo);
 			if (someObj is DateTime)
 				return ((DateTime)someObj).ToString(CultureInfo.InvariantCulture);
+			if (someObj is Dictionary<string, string>)
+				return ConvertDictionaryToString(someObj);
 			return someObj.ToString();
+		}
+
+		private static string ConvertDictionaryToString(object someObj)
+		{
+			var dictionary = someObj as Dictionary<string, string>;
+			string separatedValues = "";
+			foreach (string key in dictionary.Keys)
+				separatedValues += (separatedValues == "" ? "" : ";") + key + ";" + dictionary[key];
+			return separatedValues;
 		}
 
 		public static float[] SplitIntoFloats(this string value)

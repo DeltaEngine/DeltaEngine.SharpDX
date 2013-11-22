@@ -7,14 +7,17 @@ namespace DeltaEngine.Content.Xml.Tests
 {
 	public class ContentTypeIdentifierTests
 	{
-		[TestCase("Image.png", ContentType.Image), TestCase("Sound.wav", ContentType.Sound),
-		TestCase("Animation.gif", ContentType.JustStore), TestCase("Music.wma", ContentType.Music),
-		TestCase("Video.mp4", ContentType.Video), TestCase("Json.json", ContentType.Json),
-		TestCase("Model.fbx", ContentType.Model), TestCase("Mesh.deltamesh", ContentType.Mesh),
-		TestCase("Particle.deltaparticle", ContentType.ParticleEmitter),
-		TestCase("Shader.deltashader", ContentType.Shader),
-		TestCase("Material.deltamaterial", ContentType.Material),
-		TestCase("Geometry.deltageometry", ContentType.Geometry)]
+		[TestCase("Image.png", ContentType.Image)]
+		[TestCase("Sound.wav", ContentType.Sound)]
+		[TestCase("Animation.gif", ContentType.JustStore)]
+		[TestCase("Music.wma", ContentType.Music)]
+		[TestCase("Video.mp4", ContentType.Video)]
+		[TestCase("Json.json", ContentType.Json)]
+		[TestCase("Mesh.deltamesh", ContentType.Mesh)]
+		[TestCase("Particle.deltaparticle", ContentType.ParticleEmitter)]
+		[TestCase("Shader.deltashader", ContentType.Shader)]
+		[TestCase("Material.deltamaterial", ContentType.Material)]
+		[TestCase("Geometry.deltageometry", ContentType.Geometry)]
 		public void CheckPngFileIsOfImageType(string fileName, ContentType contentType)
 		{
 			var type = ContentTypeIdentifier.ExtensionToType(fileName);

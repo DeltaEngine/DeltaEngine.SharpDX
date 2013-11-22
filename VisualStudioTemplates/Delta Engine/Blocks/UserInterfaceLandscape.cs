@@ -12,7 +12,7 @@ namespace $safeprojectname$
 	/// </summary>
 	public class UserInterfaceLandscape : Scene
 	{
-		public UserInterfaceLandscape($safeprojectname$Content content)
+		public UserInterfaceLandscape(BlocksContent content)
 		{
 			this.content = content;
 			AddBackground();
@@ -21,7 +21,7 @@ namespace $safeprojectname$
 			AddScore();
 		}
 
-		private readonly $safeprojectname$Content content;
+		private readonly BlocksContent content;
 
 		private void AddBackground()
 		{

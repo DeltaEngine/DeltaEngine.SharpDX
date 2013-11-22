@@ -1,5 +1,5 @@
 ﻿using DeltaEngine.Platforms;
-// ncrunch: no coverage start
+
 namespace LogoApp
 {
 	/// <summary>

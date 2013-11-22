@@ -18,6 +18,19 @@ namespace DeltaEngine.Input.Tests
 		private MockMouse mouse;
 
 		[Test]
+		public void EmptyCtorCallShouldDoNothing()
+		{
+			Assert.DoesNotThrow(() =>new MouseZoomTrigger(""));
+		}
+
+		[Test]
+		public void NonEmptyCtorCallShouldTrowException()
+		{
+			Assert.Throws<MouseZoomTrigger.MouseZoomTriggerHasNoParameters>(
+				() => new MouseZoomTrigger("DeltaEngine"));
+		}
+
+		[Test]
 		public void ResizeEllipseByZoomTrigger()
 		{
 			var ellipse = new Ellipse(Vector2D.Half, 0.1f, 0.1f, Color.Red);

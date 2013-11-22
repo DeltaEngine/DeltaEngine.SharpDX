@@ -32,7 +32,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>GhostWarsIcon.ico</ApplicationIcon>
+    <ApplicationIcon>GhostWars.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GhostWars.ico" />
+    <Content Include="GhostWarsIcon72x72.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="GameLogic.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="MainMenu.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="TreeManager.cs" />

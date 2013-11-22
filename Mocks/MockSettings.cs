@@ -13,8 +13,13 @@ namespace DeltaEngine.Mocks
 		{
 			values = new Dictionary<string, string>();
 			Current = this;
-			RapidUpdatesPerSecond = 20;
+			SetRapidUpdatesPerSecondToUpdatesPerSecondForBetterPerformance();
 			wasChanged = false;
+		}
+
+		private void SetRapidUpdatesPerSecondToUpdatesPerSecondForBetterPerformance()
+		{
+			RapidUpdatesPerSecond = UpdatesPerSecond;
 		}
 
 		private readonly Dictionary<string, string> values;

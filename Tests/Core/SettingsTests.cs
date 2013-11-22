@@ -104,5 +104,13 @@ namespace DeltaEngine.Tests.Core
 			Assert.AreEqual("content.server.ip", settings.OnlineServiceIp);
 			Assert.AreEqual(13, settings.OnlineServicePort);
 		}
+
+		[Test]
+		public void CheckMyDocumentsAppFolder()
+		{
+			string deltaEngineDocumentsFolder = Settings.GetMyDocumentsAppFolder();
+			Assert.That(deltaEngineDocumentsFolder,
+				Is.StringEnding(@"\Documents\DeltaEngine\DeltaEngine.Tests"));
+		}
 	}
 }

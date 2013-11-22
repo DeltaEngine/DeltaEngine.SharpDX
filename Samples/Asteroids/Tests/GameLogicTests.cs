@@ -13,15 +13,15 @@ namespace Asteroids.Tests
 		public void InitGameLogic()
 		{
 			Resolve<Window>();
-			interactionLogics = new InteractionLogics();
+			interactionLogic = new InteractionLogic();
 		}
 
-		private InteractionLogics interactionLogics;
+		private InteractionLogic interactionLogic;
 
 		[Test, CloseAfterFirstFrame]
 		public void AsteroidCreatedWhenTimeReached()
 		{
-			interactionLogics.BeginGame();
+			interactionLogic.BeginGame();
 			AdvanceTimeAndUpdateEntities(1.1f);
 			Assert.GreaterOrEqual(EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count, 1);
 		}
@@ -32,7 +32,7 @@ namespace Asteroids.Tests
 		{
 			var projectile = new Projectile(Vector2D.Half, 0);
 			EntitiesRunner.Current.GetEntitiesOfType<Projectile>().Add(projectile);
-			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
+			interactionLogic.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
 			AdvanceTimeAndUpdateEntities(1.0f);
 			Assert.IsFalse(projectile.IsActive);
 		}
@@ -42,18 +42,18 @@ namespace Asteroids.Tests
 		public void PlayerShipAndAsteroidCollidingResultsInGameOver()
 		{
 			bool gameOver = false;
-			interactionLogics.BeginGame();
-			interactionLogics.GameOver += () => { gameOver = true; };
-			interactionLogics.Player.Set(new Rectangle(Vector2D.Half, new Size(.05f)));
-			interactionLogics.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
-			AdvanceTimeAndUpdateEntities(0.2f);
+			interactionLogic.BeginGame();
+			interactionLogic.GameOver += () => { gameOver = true; };
+			interactionLogic.Player.Set(new Rectangle(Vector2D.Half, new Size(.05f)));
+			interactionLogic.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
+			AdvanceTimeAndUpdateEntities();
 			Assert.IsTrue(gameOver);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void InteractionLogicsIsPauseable()
 		{
-			Assert.IsTrue(interactionLogics.IsPauseable);
+			Assert.IsTrue(interactionLogic.IsPauseable);
 		}
 	}
 }

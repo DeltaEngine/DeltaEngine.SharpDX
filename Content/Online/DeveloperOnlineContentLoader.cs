@@ -141,12 +141,13 @@ namespace DeltaEngine.Content.Online
 
 		protected void SendCheckProjectContent()
 		{
-			if (ProjectMetaDataFile.Root.GetAttributeValue("Name") == "DeltaEngine.Editor")
+			string contentProjectName = ProjectMetaDataFile.Root.GetAttributeValue("Name");
+			if (contentProjectName == "DeltaEngine" || contentProjectName == "DeltaEngine.Editor")
 				return;
-			connection.Send(new CheckProjectContent(ProjectMetaDataFile.Root.ToXmlString()));
+			connection.Send(new CheckProjectContent(ProjectMetaDataFile.Root.ToString()));
 		}
 
-		protected void VerifyProject(SetProject newProject)
+		private void VerifyProject(SetProject newProject)
 		{
 			if (newProject.Permissions == ProjectPermissions.None)
 				throw new NoPermissionToUseProject(newProject.ProjectName);

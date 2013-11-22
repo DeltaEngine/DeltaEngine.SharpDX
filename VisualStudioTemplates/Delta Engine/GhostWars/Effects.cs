@@ -6,7 +6,7 @@ using DeltaEngine.Rendering2D.Particles;
 namespace $safeprojectname$
 {
 	/// <summary>
-	/// Collection of methods to create effects used in the $safeprojectname$ game.
+	/// Collection of methods to create effects used in the GhostWars game.
 	/// </summary>
 	public static class Effects
 	{

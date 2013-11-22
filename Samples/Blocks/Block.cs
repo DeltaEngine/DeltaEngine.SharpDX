@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -35,7 +34,6 @@ namespace Blocks
 			Bricks = new List<Brick> { newBrick };
 			for (int i = 1; i < numberOfBricks; i++)
 				AddBrick(Bricks[i - 1], material);
-
 			ShiftToTopLeft();
 		}
 
@@ -50,12 +48,21 @@ namespace Blocks
 		private void AddBrick(Brick lastBrick, Material material)
 		{
 			Brick newBrick;
+			bool anyBrickAtNewOffset;
 			do
+			{
 				newBrick = new Brick(material, lastBrick.Offset + GetRandomOffset(), displayMode)
 				{
 					IsActive = false
-				}; while (Bricks.Any(brick => brick.Offset == newBrick.Offset));
-
+				};
+				anyBrickAtNewOffset = false;
+				foreach (Brick brick in Bricks)
+					if (brick.Offset == newBrick.Offset)
+					{
+						anyBrickAtNewOffset = true;
+						break;
+					}
+			} while (anyBrickAtNewOffset);
 			Bricks.Add(newBrick);
 			newBrick.IsActive = true;
 		}
@@ -69,20 +76,37 @@ namespace Blocks
 
 		private void ShiftToTopLeft()
 		{
-			var left = (int)Bricks.Min(brick => brick.Offset.X);
-			var top = (int)Bricks.Min(brick => brick.Offset.Y);
+			float left = float.MaxValue;
+			float top = float.MaxValue;
+			foreach (var brick in Bricks)
+			{
+				if (brick.Offset.X < left)
+					left = brick.Offset.X;
+				if (brick.Offset.Y < top)
+					top = brick.Offset.Y;
+			}
 			foreach (Brick brick in Bricks)
 				brick.Offset = new Vector2D(brick.Offset.X - left, brick.Offset.Y - top);
-
 			UpdateCenter();
 		}
 
 		private void UpdateCenter()
 		{
-			float minX = Bricks.Min(brick => brick.Offset.X);
-			float maxX = Bricks.Max(brick => brick.Offset.X);
-			float minY = Bricks.Min(brick => brick.Offset.Y);
-			float maxY = Bricks.Max(brick => brick.Offset.Y);
+			float minX = float.MaxValue;
+			float maxX = float.MinValue;
+			float minY = float.MaxValue;
+			float maxY = float.MinValue;
+			foreach (var brick in Bricks)
+			{
+				if (brick.Offset.X < minX)
+					minX = brick.Offset.X;
+				if (brick.Offset.Y < minY)
+					minY = brick.Offset.Y;
+				if (brick.Offset.X > maxX)
+					maxX = brick.Offset.X;
+				if (brick.Offset.Y > maxY)
+					maxY = brick.Offset.Y;
+			}
 			center = new Vector2D((minX + maxX + 1) / 2, (minY + maxY + 1) / 2);
 		}
 
@@ -120,7 +144,6 @@ namespace Blocks
 			Vector2D oldCenter = center;
 			foreach (Brick brick in Bricks)
 				brick.Offset = new Vector2D(-brick.Offset.Y, brick.Offset.X);
-
 			ShiftToTopLeft();
 			Left += (int)oldCenter.X - (int)center.X;
 		}
@@ -130,7 +153,6 @@ namespace Blocks
 			Vector2D oldCenter = center;
 			foreach (Brick brick in Bricks)
 				brick.Offset = new Vector2D(brick.Offset.Y, -brick.Offset.X);
-
 			ShiftToTopLeft();
 			Left += (int)oldCenter.X - (int)center.X;
 		}
@@ -142,12 +164,14 @@ namespace Blocks
 				brick.UpdateDrawArea();
 		}
 
+		/// <summary>
+		/// For debugging purposes the current brick can be displayed with ASCII characters.
+		/// </summary>
 		public override string ToString()
 		{
 			string result = "";
 			for (int y = 0; y < Bricks.Count; y++)
 				result += LineToString(y);
-
 			return result;
 		}
 
@@ -155,8 +179,16 @@ namespace Blocks
 		{
 			string line = y > 0 ? "/" : "";
 			for (int x = 0; x < Bricks.Count; x++)
-				line += Bricks.Any(brick => brick.Offset == new Vector2D(x, y)) ? 'O' : '.';
-
+			{
+				bool any = false;
+				foreach (Brick brick in Bricks)
+					if (brick.Offset == new Vector2D(x, y))
+					{
+						any = true;
+						break;
+					}
+				line += any ? "O" : ".";
+			}
 			return line;
 		}
 	}

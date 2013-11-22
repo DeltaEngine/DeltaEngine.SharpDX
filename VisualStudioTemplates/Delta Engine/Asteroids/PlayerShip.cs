@@ -19,7 +19,7 @@ namespace $safeprojectname$
 				new Size(.05f)))
 		{
 			Add(new Velocity2D(Vector2D.Zero, MaximumPlayerVelocity));
-			RenderLayer = (int)$safeprojectname$RenderLayer.Player;
+			RenderLayer = (int)AsteroidsRenderLayer.Player;
 			timeLastShot = GlobalTime.Current.Milliseconds;
 		}
 
@@ -66,7 +66,7 @@ namespace $safeprojectname$
 		private void MoveUpdate()
 		{
 			var velocity2D = Get<Velocity2D>();
-			velocity2D.velocity -= velocity2D.velocity * PlayerDecelFactor * Time.Delta;
+			velocity2D.Velocity -= velocity2D.Velocity * PlayerDecelFactor * Time.Delta;
 			var nextRect = CalculateRectAfterMove(Time.Delta);
 			MoveEntity(nextRect);
 			Set(velocity2D);
@@ -74,7 +74,7 @@ namespace $safeprojectname$
 
 		private Rectangle CalculateRectAfterMove(float deltaT)
 		{
-			return new Rectangle(DrawArea.TopLeft + Get<Velocity2D>().velocity * deltaT, Size);
+			return new Rectangle(DrawArea.TopLeft + Get<Velocity2D>().Velocity * deltaT, Size);
 		}
 
 		private void MoveEntity(Rectangle rect)
@@ -98,7 +98,7 @@ namespace $safeprojectname$
 		{
 			if (rect.Right <= borders.Right)
 				return;
-			vel.velocity.X = -0.02f;
+			vel.Velocity = new Vector2D(-0.02f, vel.Velocity.Y);
 			rect.Right = borders.Right;
 		}
 
@@ -106,7 +106,7 @@ namespace $safeprojectname$
 		{
 			if (rect.Left >= borders.Left)
 				return;
-			vel.velocity.X = 0.02f;
+			vel.Velocity = new Vector2D(0.02f, vel.Velocity.Y);
 			rect.Left = borders.Left;
 		}
 
@@ -114,7 +114,7 @@ namespace $safeprojectname$
 		{
 			if (rect.Top >= borders.Top)
 				return;
-			vel.velocity.Y = 0.02f;
+			vel.Velocity = new Vector2D(vel.Velocity.X, 0.02f);
 			rect.Top = borders.Top;
 		}
 
@@ -122,7 +122,7 @@ namespace $safeprojectname$
 		{
 			if (rect.Bottom <= borders.Bottom)
 				return;
-			vel.velocity.Y = -0.02f;
+			vel.Velocity = new Vector2D(vel.Velocity.X, -0.02f);
 			rect.Bottom = borders.Bottom;
 		}
 

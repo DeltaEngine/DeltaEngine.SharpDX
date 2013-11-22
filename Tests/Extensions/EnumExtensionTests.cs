@@ -34,5 +34,21 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.AreEqual(TestEnum.AnotherValue, "AnotherValue".TryParse(TestEnum.AnotherValue));
 			Assert.AreEqual(TestEnum.SomeValue, "InvalidValue".TryParse(TestEnum.SomeValue));
 		}
+
+		[Test]
+		public void GetIndex()
+		{
+			Assert.AreEqual(0, EnumExtensions.GetIndex(FlagsEnum.Red));
+			Assert.AreEqual(1, EnumExtensions.GetIndex(FlagsEnum.Green));
+			Assert.AreEqual(2, EnumExtensions.GetIndex(FlagsEnum.Blue));
+			Assert.AreEqual(-1, EnumExtensions.GetIndex((FlagsEnum)17));
+		}
+
+		private enum FlagsEnum
+		{
+			Red = 1,
+			Green = 2,
+			Blue = 4
+		}
 	}
 }

@@ -1,9 +1,7 @@
 ﻿using DeltaEngine.Commands;
-using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering2D;
 
 namespace DeltaEngine.Tutorials.Entities05Tags
 {
@@ -19,12 +17,6 @@ namespace DeltaEngine.Tutorials.Entities05Tags
 				foreach (Earth entity in EntitiesRunner.Current.GetEntitiesWithTag("EarthToggle"))
 					entity.IsPlaying = !entity.IsPlaying;
 			});
-		}
-
-		public class Earth : Sprite
-		{
-			public Earth(Vector2D position)
-				: base(ContentLoader.Load<Material>("Earth"), position) {}
 		}
 
 		public static void Main()

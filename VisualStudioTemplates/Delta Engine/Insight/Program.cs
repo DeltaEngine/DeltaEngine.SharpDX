@@ -7,7 +7,7 @@ namespace $safeprojectname$
 	{
 		public Program()
 		{
-			new Game(Resolve<Window>());
+			new StatisticsApp(Resolve<Window>());
 		}
 
 		public static void Main()

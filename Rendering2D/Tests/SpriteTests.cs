@@ -93,8 +93,8 @@ namespace DeltaEngine.Rendering2D.Tests
 				sprite.Material.DiffuseMap.PixelSize == MockContentSize);
 		}
 
-		private static readonly Size DiskContentSize = new Size(128, 128);
-		private static readonly Size MockContentSize = new Size(4, 4);
+		private static readonly Size DiskContentSize = new Size(128, 128); //ncrunch: no coverage
+		private static readonly Size MockContentSize = new Size(4, 4); //ncrunch: no coverage
 
 		[Test, CloseAfterFirstFrame]
 		public void ChangingMaterialChangesImageAndBlendMode()
@@ -284,7 +284,7 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void AddingUVCalculatorResultsThrowsException()
 		{
 			var sprite = new Sprite("DeltaEngineLogo", Rectangle.One);
-			Assert.Throws<Entity.ComponentOfTheSameTypeAddedMoreThanOnce>(
+			Assert.Throws<Sprite.RenderingDataComponentAddingIsNotSupported>(
 				() => sprite.Add(new RenderingData()));
 		}
 

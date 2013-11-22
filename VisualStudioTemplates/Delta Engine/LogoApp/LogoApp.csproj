@@ -35,33 +35,22 @@
     <StartupObject>$safeprojectname$.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>LogoAppIcon.ico</ApplicationIcon>
+    <ApplicationIcon>LogoApp.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DeltaEngine.Content.Disk">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Content.Disk.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
     </Reference>
-    <Reference Include="DeltaEngine.Graphics">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Graphics.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Input">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Input.dll</HintPath>
-    </Reference>
     <Reference Include="DeltaEngine.Rendering2D">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering2D.Shapes">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.Shapes.dll</HintPath>
     </Reference>
     <Reference Include="DeltaEngine.WindowsSharpDX">
 	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.WindowsSharpDX.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LogoAppIcon.ico" />
+    <Content Include="LogoApp.ico" />
+    <Content Include="LogoAppIcon72x72.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

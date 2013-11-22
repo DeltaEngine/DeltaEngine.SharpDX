@@ -9,12 +9,11 @@ namespace DeltaEngine.Input
 	/// Fires once when the mouse has not moved for a prescribed period. Ideally used in tandem with
 	/// MouseMovementTrigger to cancel the logic raised on a hover.
 	/// </summary>
-	public class MouseHoverTrigger : Trigger, MouseTrigger
+	public class MouseHoverTrigger : InputTrigger, MouseTrigger
 	{
 		public MouseHoverTrigger(float hoverTime = DefaultHoverTime)
 		{
 			HoverTime = hoverTime;
-			Start<Mouse>();
 		}
 
 		public float HoverTime { get; private set; }
@@ -24,6 +23,10 @@ namespace DeltaEngine.Input
 		{
 			var parameters = hoverTime.SplitAndTrim(new[] { ' ' });
 			HoverTime = parameters.Length == 1 ? parameters[0].Convert<float>() : DefaultHoverTime;
+		}
+
+		protected override void StartInputDevice()
+		{
 			Start<Mouse>();
 		}
 
@@ -51,7 +54,5 @@ namespace DeltaEngine.Input
 			Elapsed += Time.Delta;
 			return Elapsed >= HoverTime;
 		}
-
-		private const float PositionEpsilon = 0.0025f;
 	}
 }

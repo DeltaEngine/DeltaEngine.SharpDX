@@ -18,5 +18,6 @@ namespace DeltaEngine.Core
 		Physics,
 		AI,
 		Text,
+		AvailableRAM
 	}
 }

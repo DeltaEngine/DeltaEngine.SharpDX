@@ -86,8 +86,7 @@ namespace DeltaEngine.Content.Disk.Tests
 		private static XmlData CreateXmlEntryAndFile()
 		{
 			var xml = new XmlData("ContentMetaData");
-			xml.AddAttribute("Name", "Test");
-			xml.AddAttribute("Type", "Xml");
+			xml.AddAttribute("Name", "Test").AddAttribute("Type", "Xml");
 			const string Filename = "Test.xml";
 			using (var textWriter = File.CreateText(Path.Combine("Content", Filename)))
 				textWriter.WriteLine("<Test></Test>");
@@ -127,7 +126,6 @@ namespace DeltaEngine.Content.Disk.Tests
 		[Test]
 		public void LastTimeUpdatedShouldBeSet()
 		{
-			var x = DateTime.Now;
 			Assert.Greater(image.MetaData.LastTimeUpdated, DateTime.Now.AddSeconds(-2));
 		}
 

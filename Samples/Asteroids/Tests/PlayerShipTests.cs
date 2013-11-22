@@ -18,9 +18,9 @@ namespace Asteroids.Tests
 		[Test, CloseAfterFirstFrame]
 		public void Accelerate()
 		{
-			Vector2D originalVelocity = playerShip.Get<Velocity2D>().velocity;
+			Vector2D originalVelocity = playerShip.Get<Velocity2D>().Velocity;
 			playerShip.ShipAccelerate();
-			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D>().velocity);
+			Assert.AreNotEqual(originalVelocity, playerShip.Get<Velocity2D>().Velocity);
 		}
 
 		[Test, CloseAfterFirstFrame]

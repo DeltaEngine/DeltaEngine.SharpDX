@@ -24,10 +24,13 @@ namespace $safeprojectname$
 			if (MainMenu.State != GameState.CountDown)
 				MainMenu.State = GameState.Game;
 			statusText = new FontText(MainMenu.Font, "",
-				Rectangle.FromCenter(new Vector2D(0.5f, 0.25f), new Size(0.2f))) { RenderLayer = 5 };
+				Rectangle.FromCenter(new Vector2D(0.5f, 0.25f), new Size(0.2f)));
+			statusText.RenderLayer = 5;
 			statusText.Color = Team.HumanYellow.ToColor();
-			gameScene.Add(new Sprite(new Material(Shader.Position2DUV, "Logo"),
-				new Rectangle(0.02f, 0.205f, 0.15f, 0.15f)) { RenderLayer = -15 });
+			var logo = new Sprite(new Material(Shader.Position2DUV, "Logo"),
+				new Rectangle(0.02f, 0.205f, 0.15f, 0.15f));
+			logo.RenderLayer = -15;
+			gameScene.Add(logo);
 			CreateArrowSelectionAndBars();
 			OnClickSelectTree();
 		}
@@ -62,10 +65,12 @@ namespace $safeprojectname$
 				Rectangle.Zero);
 			bars = new[]
 			{
-				new FilledRect(barsArea, Team.HumanYellow.ToColor()) { RenderLayer = -20 },
-				new FilledRect(barsArea, Team.ComputerPurple.ToColor()) { RenderLayer = -20 },
-				new FilledRect(barsArea, Team.ComputerTeal.ToColor()) { RenderLayer = -20 }
+				new FilledRect(barsArea, Team.HumanYellow.ToColor()),
+				new FilledRect(barsArea, Team.ComputerPurple.ToColor()),
+				new FilledRect(barsArea, Team.ComputerTeal.ToColor())
 			};
+			foreach (var bar in bars)
+				bar.RenderLayer = -20;
 			UpdateBars();
 		}
 
@@ -121,7 +126,7 @@ namespace $safeprojectname$
 			if (startTree.Team != MainMenu.PlayerTeam || targetTree == startTree ||
 				MainMenu.State != GameState.Game || startTree.Center.DistanceTo(end) < 0.05f)
 				return;
-			arrow.IsActive = false;
+			arrow.Dispose();
 			arrow = Effects.CreateArrow(startTree.Center, targetTree.Center);
 			arrow.Color = startTree.Team.ToColor();
 			arrow.IsVisible = !dragDone;

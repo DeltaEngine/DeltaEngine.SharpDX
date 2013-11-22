@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
@@ -48,10 +49,15 @@ namespace DeltaEngine.Commands
 		private static IEnumerable<Trigger> LoadTriggersForCommand(string commandName)
 		{
 			Trigger[] loadedTriggers;
-			ContentLoader.Exists("DefaultCommands");
+			InvokeContentLoaderToMakeSureCommandsInitializationAlreadyHappened();
 			if (RegisteredCommands.Current.TryGetValue(commandName, out loadedTriggers))
 				return loadedTriggers;
 			throw new CommandNameWasNotRegistered();
+		}
+
+		private static void InvokeContentLoaderToMakeSureCommandsInitializationAlreadyHappened()
+		{
+			ContentLoader.Exists("DefaultCommands");
 		}
 
 		public class CommandNameWasNotRegistered : Exception {}
@@ -148,7 +154,7 @@ namespace DeltaEngine.Commands
 
 		public void Update()
 		{
-			Trigger invokedTrigger = triggers.Find(t => t.WasInvokedThisTick);
+			Trigger invokedTrigger = triggers.FirstOrDefault(t => t.WasInvokedThisTick);
 			if (invokedTrigger == null)
 				return;
 			var positionTrigger = invokedTrigger as PositionTrigger;

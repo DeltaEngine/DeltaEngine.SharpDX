@@ -11,7 +11,7 @@ namespace DeltaEngine.Content
 	public class RenderingCalculator : IEquatable<RenderingCalculator>
 	{
 		internal RenderingCalculator()
-			: this(new AtlasRegion { UV = Rectangle.One }) {}
+			: this(new AtlasRegion(Rectangle.One)) {}
 
 		public RenderingCalculator(AtlasRegion region)
 		{

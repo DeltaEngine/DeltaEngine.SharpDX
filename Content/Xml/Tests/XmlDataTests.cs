@@ -300,7 +300,7 @@ namespace DeltaEngine.Content.Xml.Tests
 		public void ToStringProperty()
 		{
 			var root = CreateShallowTestXmlData();
-			Assert.AreEqual(@"XmlData=Child1: <Child1 Attr1=""Value1"" Attr2=""Value2"">Tom</Child1>",
+			Assert.AreEqual(@"<Child1 Attr1=""Value1"" Attr2=""Value2"">Tom</Child1>",
 				root.Children[0].ToString());
 		}
 
@@ -308,7 +308,7 @@ namespace DeltaEngine.Content.Xml.Tests
 		public void ToXmlString()
 		{
 			XmlData root = CreateDeepTestXmlData();
-			Assert.AreEqual(Root, root.ToXmlString());
+			Assert.AreEqual(Root, root.ToString());
 		}
 
 		private const string Root =

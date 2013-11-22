@@ -28,7 +28,7 @@ namespace DeltaEngine.Tests.Core
 		{
 			time = new StopwatchTime();
 			time.Update();
-			Assert.IsTrue(time.Milliseconds < 2, time.Milliseconds.ToString());
+			Assert.IsTrue(time.Milliseconds < 2, "Milliseconds=" + time.Milliseconds);
 		}
 		
 		[Test]

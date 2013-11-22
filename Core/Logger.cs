@@ -116,7 +116,7 @@ namespace DeltaEngine.Core
 			LastMessage = message;
 		}
 
-		public string LastMessage { get; private set; }
+		public string LastMessage { get; protected set; }
 		public int NumberOfRepeatedMessagesIgnored { get; private set; }
 
 		private static void WarnIfNoLoggersAreAttached(string message)

@@ -35,7 +35,7 @@
     <StartupObject>Blocks.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>BlocksIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Blocks.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -83,7 +83,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BlocksIcon.ico" />
+    <Content Include="Blocks.ico" />
+    <Content Include="BlocksIcon72x72.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -42,7 +42,6 @@ namespace DeltaEngine.Input
 
 		public float PressTime { get; private set; }
 		public Vector2D StartPosition { get; private set; }
-		private const float PositionEpsilon = 0.0025f;
 
 		private void SetFlickPositionAndResetTime(Vector2D position)
 		{

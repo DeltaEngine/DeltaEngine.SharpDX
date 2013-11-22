@@ -11,6 +11,7 @@ namespace Blocks
 		{
 			userInterfaceLandscape = new UserInterfaceLandscape(content);
 			userInterfacePortrait = new UserInterfacePortrait(content);
+			ShowUserInterfaceLandscape();
 		}
 
 		private readonly UserInterfaceLandscape userInterfaceLandscape;

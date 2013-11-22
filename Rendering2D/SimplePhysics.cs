@@ -61,7 +61,7 @@ namespace DeltaEngine.Rendering2D
 				entity.Center += physics.Velocity * Time.Delta;
 				physics.Elapsed += Time.Delta;
 				if (physics.Duration > 0.0f && physics.Elapsed >= physics.Duration)
-					entity.IsActive = false;
+					entity.Dispose();
 			}
 		}
 

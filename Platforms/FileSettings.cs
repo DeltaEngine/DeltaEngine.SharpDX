@@ -14,7 +14,9 @@ namespace DeltaEngine.Platforms
 		//ncrunch: no coverage start
 		public FileSettings()
 		{
-			filePath = Path.Combine(AssemblyExtensions.GetMyDocumentsAppFolder(), SettingsFilename);
+			if (Current == null)
+				Current = this;
+			filePath = Path.Combine(GetMyDocumentsAppFolder(), SettingsFilename);
 			if (File.Exists(filePath))
 				data = new XmlFile(filePath).Root; //ncrunch: no coverage
 			else
@@ -34,7 +36,6 @@ namespace DeltaEngine.Platforms
 			if (dataChangedBeforeLoading != null)
 				foreach (var child in dataChangedBeforeLoading.Children)
 					SetValue(child.Name, child.Value); //ncrunch: no coverage
-			wasChanged = true;
 		}
 
 		public override void Save()

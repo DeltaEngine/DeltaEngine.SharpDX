@@ -98,16 +98,16 @@ namespace DeltaEngine.Content
 
 		private void CreateUVCalculator(Rectangle uv)
 		{
-			RenderingCalculator =
-				new RenderingCalculator(new AtlasRegion
-				{
-					UV = uv,
-					PadLeft = GetFloatOrZero("PadLeft"),
-					PadRight = GetFloatOrZero("PadRight"),
-					PadTop = GetFloatOrZero("PadTop"),
-					PadBottom = GetFloatOrZero("PadBottom"),
-					IsRotated = MetaData.Get("Rotated", "").ToLowerInvariant() == "true"
-				});
+			var atlasRegion = new AtlasRegion
+			{
+				UV = uv,
+				PadLeft = GetFloatOrZero("PadLeft"),
+				PadRight = GetFloatOrZero("PadRight"),
+				PadTop = GetFloatOrZero("PadTop"),
+				PadBottom = GetFloatOrZero("PadBottom"),
+				IsRotated = MetaData.Get("Rotated", "").ToLowerInvariant() == "true"
+			};
+			RenderingCalculator = new RenderingCalculator(atlasRegion);
 		}
 
 		private float GetFloatOrZero(string metaDataKey)
@@ -118,17 +118,18 @@ namespace DeltaEngine.Content
 
 		protected void WarnAboutWrongAlphaFormat(bool imageHasAlphaFormat)
 		{
-			if (HasAlpha && !imageHasAlphaFormat)
-				Logger.Warning("Image '" + Name +
-					"' is supposed to have alpha pixels, but the image pixel format is not using alpha.");
-			else if (!HasAlpha && imageHasAlphaFormat)
-				Logger.Warning("Image '" + Name +
-					"' is supposed to have no alpha pixels, but the image pixel format is using alpha.");
+			//Disabled for M5 release due image server conversion not being enabled right now
+			//if (HasAlpha && !imageHasAlphaFormat)
+			//	Logger.Warning("Image '" + Name +
+			//		"' is supposed to have alpha pixels, but the image pixel format is not using alpha.");
+			//else if (!HasAlpha && imageHasAlphaFormat)
+			//	Logger.Warning("Image '" + Name +
+			//		"' is supposed to have no alpha pixels, but the image pixel format is using alpha.");
 		}
 
 		protected bool HasAlpha
 		{
-			get { return BlendMode == BlendMode.Normal || BlendMode == BlendMode.AlphaTest; }
+			get { return BlendMode == BlendMode.Normal || BlendMode == BlendMode.AlphaTest; } //ncrunch: no coverage
 		}
 
 		protected override void CreateDefault()

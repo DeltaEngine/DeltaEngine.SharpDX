@@ -6,12 +6,37 @@ using DeltaEngine.Input.Windows;
 using DeltaEngine.Multimedia.SharpDX;
 using DeltaEngine.Platforms.Windows;
 using DeltaEngine.Rendering2D;
+#if !DEBUG 
+using System;
+using DeltaEngine.Core;
+using DeltaEngine.Extensions;
+#endif
 
 namespace DeltaEngine.Platforms
 {
 	internal class SharpDXResolver : AppRunner
 	{
 		public SharpDXResolver()
+		{
+#if DEBUG
+			InitializeSharpDX();
+#else
+			// Some machines with missing frameworks initialization will crash, we need useful errors
+			try
+			{
+				InitializeSharpDX();
+			}
+			catch (Exception exception)
+			{
+				Logger.Error(exception);
+				if (StackTraceExtensions.IsStartedFromNunitConsole())
+					throw;
+				DisplayMessageBoxAndCloseApp("Fatal SharpDX Initialization Error", exception);
+			}
+#endif
+		}
+
+		private void InitializeSharpDX()
 		{
 			RegisterCommonEngineSingletons();
 			RegisterSingleton<FormsWindow>();

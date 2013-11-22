@@ -1,6 +1,7 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Input
 {
@@ -20,7 +21,14 @@ namespace DeltaEngine.Input
 		private const float DefaultHoldTime = 1.0f;
 		public float Elapsed { get; set; }
 
-		public TouchHoldTrigger(string parameter = "") {}
+		public TouchHoldTrigger(string holdAreaAndTime)
+		{
+			var parameters = holdAreaAndTime.SplitAndTrim(new[] { ' ' });
+			if (parameters.Length > 1)
+				HoldArea = parameters[0].Convert<Rectangle>();
+			if (parameters.Length > 2)
+				HoldTime = parameters[1].Convert<float>();
+		}
 
 		protected override void StartInputDevice()
 		{
@@ -46,8 +54,6 @@ namespace DeltaEngine.Input
 				touch.GetState(0) == State.Pressed &&
 				startPosition.DistanceTo(touch.GetPosition(0)) < PositionEpsilon;
 		}
-
-		private const float PositionEpsilon = 0.0025f;
 
 		public bool IsHovering()
 		{

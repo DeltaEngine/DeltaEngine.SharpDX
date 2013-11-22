@@ -50,12 +50,6 @@ namespace DeltaEngine.Datatypes
 		public static readonly Vector3D UnitY = new Vector3D(0, 1, 0);
 		public static readonly Vector3D UnitZ = new Vector3D(0, 0, 1);
 		public static readonly Vector3D MinusOne = new Vector3D(-1, -1, -1);
-		public static readonly Vector3D Right = new Vector3D(1, 0, 0);
-		public static readonly Vector3D Left = new Vector3D(-1, 0, 0);
-		public static readonly Vector3D Up = new Vector3D(0, 1, 0);
-		public static readonly Vector3D Down = new Vector3D(0, -1, 0);
-		public static readonly Vector3D Forward = new Vector3D(0, 0, 1);
-		public static readonly Vector3D Backward = new Vector3D(0, 0, -1);
 		public static readonly int SizeInBytes = Marshal.SizeOf(typeof(Vector3D));
 
 		public static float Dot(Vector3D vector1, Vector3D vector2)

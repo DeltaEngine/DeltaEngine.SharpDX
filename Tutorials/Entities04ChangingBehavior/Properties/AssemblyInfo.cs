@@ -2,5 +2,5 @@
 using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DeltaEngine.Tutorials.Entities04ChangingBehavior")]
 [assembly: Guid("34a73557-64c8-4ccb-8609-28bf473d660e")]
-[assembly: AssemblyVersion("0.9.9.9")]
-[assembly: AssemblyFileVersion("0.9.9.9")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

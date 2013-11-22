@@ -6,7 +6,7 @@ using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Platforms.Tests;
-using DeltaEngine.Scenes.UserInterfaces.Terminal;
+using DeltaEngine.Scenes.Terminal;
 using NUnit.Framework;
 
 namespace DeltaEngine.Scenes.Tests.UserInterfaces.Terminal

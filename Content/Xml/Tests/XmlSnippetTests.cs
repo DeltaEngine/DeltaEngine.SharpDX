@@ -7,9 +7,9 @@ namespace DeltaEngine.Content.Xml.Tests
 		[Test]
 		public void ToAndFromXmlSnippetLeavesTextUnchanged()
 		{
-			var snippet = CreateTestXmlData().ToXmlString();
+			var snippet = CreateTestXmlData().ToString();
 			var xmlSnippet = new XmlSnippet(snippet);
-			Assert.AreEqual(snippet, xmlSnippet.Root.ToXmlString());
+			Assert.AreEqual(snippet, xmlSnippet.Root.ToString());
 		}
 
 		private static XmlData CreateTestXmlData()
@@ -40,9 +40,9 @@ namespace DeltaEngine.Content.Xml.Tests
 		[Test]
 		public void IgnoresLeadingJunk()
 		{
-			var snippet = CreateTestXmlData().ToXmlString();
+			var snippet = CreateTestXmlData().ToString();
 			var xmlSnippet = new XmlSnippet("blahblah" + snippet);
-			Assert.AreEqual(snippet, xmlSnippet.Root.ToXmlString());
+			Assert.AreEqual(snippet, xmlSnippet.Root.ToString());
 		}
 	}
 }

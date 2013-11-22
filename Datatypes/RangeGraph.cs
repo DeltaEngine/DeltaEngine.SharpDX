@@ -14,7 +14,12 @@ namespace DeltaEngine.Datatypes
 			: base(minimum, maximum) {}
 
 		public RangeGraph(T value)
-			: this(new List<T> { value }) {}
+			: this(CreateListFromValue(value)) {}
+
+		private static List<T> CreateListFromValue(T value)
+		{
+			return new List<T> { value };
+		}
 
 		public RangeGraph(List<T> values)
 			: base(values) {}

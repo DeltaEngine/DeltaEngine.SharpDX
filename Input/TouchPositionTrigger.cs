@@ -1,4 +1,6 @@
-﻿using DeltaEngine.Commands;
+﻿using System;
+using DeltaEngine.Commands;
+using DeltaEngine.Extensions;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Input
@@ -14,6 +16,11 @@ namespace DeltaEngine.Input
 		}
 
 		public State State { get; private set; }
+
+		public TouchPositionTrigger(string state)
+		{
+			State = String.IsNullOrEmpty(state) ? State.Pressing : state.Convert<State>();
+		}
 
 		protected override void StartInputDevice()
 		{

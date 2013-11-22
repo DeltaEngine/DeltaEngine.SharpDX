@@ -5,7 +5,7 @@ using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Scenes.UserInterfaces.Controls;
+using DeltaEngine.Scenes.Controls;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Scenes
@@ -45,7 +45,7 @@ namespace DeltaEngine.Scenes
 		public void Remove(Entity2D control)
 		{
 			controls.Remove(control);
-			control.IsActive = false;
+			control.Dispose();
 		}
 
 		public void Show()

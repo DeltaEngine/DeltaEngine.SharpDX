@@ -74,7 +74,7 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void CreateAnimatedSpriteNoImages()
 		{
 			Assert.Throws<ImageAnimation.NoImagesGivenNeedAtLeastOne>(
-				() => new Material(Shader.Position2DUV, "ImageAnimationNoImages"));
+				() => ContentLoader.Load<ImageAnimation>("ImageAnimationNoImages"));
 		}
 
 		[Test, CloseAfterFirstFrame]

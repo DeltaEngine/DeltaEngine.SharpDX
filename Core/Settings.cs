@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 
@@ -20,6 +21,16 @@ namespace DeltaEngine.Core
 		}
 
 		protected bool wasChanged;
+
+		public static string GetMyDocumentsAppFolder()
+		{
+			var appPath = Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DeltaEngine",
+				AssemblyExtensions.GetEntryAssemblyForProjectName());
+			if (!Directory.Exists(appPath))
+				Directory.CreateDirectory(appPath); //ncrunch: no coverage
+			return appPath;
+		}
 
 		public Size Resolution
 		{

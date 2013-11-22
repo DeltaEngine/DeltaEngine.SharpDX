@@ -21,7 +21,7 @@ namespace DeltaEngine.Logging.Tests
 
 		private static string LogFilePath
 		{
-			get { return Path.Combine(AssemblyExtensions.GetMyDocumentsAppFolder(), "Log.txt"); }
+			get { return Path.Combine(Settings.GetMyDocumentsAppFolder(), "Log.txt"); }
 		}
 
 		private TextFileLogger logger;

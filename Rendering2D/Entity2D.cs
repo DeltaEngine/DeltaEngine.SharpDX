@@ -123,7 +123,8 @@ namespace DeltaEngine.Rendering2D
 			if (EntitiesRunner.Current.State == UpdateDrawState.Draw && typeof(T) == typeof(float))
 				return (T)(object)GetLastRotation().Lerp(Rotation, EntitiesRunner.CurrentDrawInterpolation);
 			if (EntitiesRunner.Current.State == UpdateDrawState.Draw && typeof(T) == typeof(Vector2D))
-				return (T)(object)GetLerpedRotationCenter();
+				return (T)(object)GetLastRotationCenter().Lerp(RotationCenter,
+					EntitiesRunner.CurrentDrawInterpolation);
 			if (typeof(T) == typeof(Rectangle))
 				return (T)(object)DrawArea;
 			if (typeof(T) == typeof(Color))
@@ -152,13 +153,6 @@ namespace DeltaEngine.Rendering2D
 					}
 				lastTickLerpComponents.Add(value);
 			}
-		}
-
-		private Vector2D GetLerpedRotationCenter()
-		{
-			Vector2D rotationCenter = base.Contains<Vector2D>()
-				? (Vector2D)components.Find(c => c is Vector2D) : DrawArea.Center;
-			return GetLastRotationCenter().Lerp(rotationCenter, EntitiesRunner.CurrentDrawInterpolation);
 		}
 
 		public override sealed bool Contains<T>()

@@ -24,7 +24,7 @@ namespace Blocks.Tests
 			mockMouse = mockResolver.Resolve<MockMouse>();
 			mockTouch = mockResolver.Resolve<MockTouch>();
 			content = new JewelBlocksContent();
-			game = new Game(Resolve<Window>(), content);
+			game = new Game(Resolve<Window>());
 		}
 
 		private Orientation displayMode;
@@ -211,57 +211,5 @@ namespace Blocks.Tests
 			game.Controller.FallingBlock = null;
 			mockKeyboard.SetKeyboardState(Key.CursorRight, State.Pressing);
 		}
-
-		//		[Test]
-		//		public void CursorUpRotatesBlock()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					using (Randomizer.Use(new FixedRandom()))
-		//					{
-		//						InitializeBlocks(screenSpace, game.Controller, content);
-		//						mockResolver.input.SetKeyboardState(Key.CursorUp, State.Pressing);
-		//						Assert.AreEqual("OOOO/..../..../....", game.Controller.FallingBlock.ToString());
-		//						mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//						Assert.AreEqual("O.../O.../O.../O...", game.Controller.FallingBlock.ToString());
-		//					}
-		//				});
-		//		}
-		//		[Test]
-		//		public void TopHalfClickRotatesBlock()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					Assert.AreEqual("OOOO/..../..../....", game.Controller.FallingBlock.ToString());
-		//					mockResolver.input.SetMousePosition(new Vector2D(0.5f, 0.4f));
-		//					mockResolver.input.SetMouseButtonState(MouseButton.Left, State.Pressing);
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.AreEqual("O.../O.../O.../O...", game.Controller.FallingBlock.ToString());
-		//				});
-		//		}
-
-		//		[Test]
-		//		public void TopHalfTouchRotatesBlock()
-		//		{
-		//			Start(typeof(MockResolver),
-		//				(ScreenSpace screenSpace, Game game, JewelBlocksContent content) =>
-		//				{
-		//					InitializeBlocks(screenSpace, game.Controller, content);
-		//					Assert.AreEqual("OOOO/..../..../....", game.Controller.FallingBlock.ToString());
-		//					mockResolver.input.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.4f));
-		//					mockResolver.AdvanceTimeAndExecuteRunners(0.01f);
-		//					Assert.AreEqual("O.../O.../O.../O...", game.Controller.FallingBlock.ToString());
-		//				});
-		//		}
-
-		//		[TestFixtureTearDown]
-		//		public void TearDown()
-		//		{
-		//			if (fixedRandomScope != null)
-		//				fixedRandomScope.Dispose();
-		//		}
 	}
 }

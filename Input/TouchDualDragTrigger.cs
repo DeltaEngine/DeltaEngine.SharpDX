@@ -70,8 +70,6 @@ namespace DeltaEngine.Input
 			return firstMovement.Length <= PositionEpsilon || secondMovement.Length <= PositionEpsilon;
 		}
 
-		private const float PositionEpsilon = 0.0025f;
-
 		private void Reset()
 		{
 			StartPosition = Vector2D.Unused;

@@ -1,19 +1,30 @@
-﻿using DeltaEngine.Commands;
+﻿using System;
+using DeltaEngine.Commands;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Input
 {
 	/// <summary>
 	/// Allows mouse button tap to be tracked.
 	/// </summary>
-	public class MouseTapTrigger : Trigger, MouseTrigger
+	public class MouseTapTrigger : InputTrigger, MouseTrigger
 	{
 		public MouseTapTrigger(MouseButton button)
 		{
 			Button = button;
-			Start<Mouse>();
 		}
 
 		public MouseButton Button { get; private set; }
+
+		public MouseTapTrigger(string button)
+		{
+			Button = String.IsNullOrEmpty(button) ? MouseButton.Left : button.Convert<MouseButton>();
+		}
+
+		protected override void StartInputDevice()
+		{
+			Start<Mouse>();
+		}
 
 		public void HandleWithMouse(Mouse mouse)
 		{

@@ -50,7 +50,7 @@ namespace DeltaEngine.Entities
 		{
 			if (dictionary.ContainsKey(behavior))
 			{
-				if (entity != null)
+				if (entity != null && !dictionary[behavior].Contains(entity))
 					dictionary[behavior].Add(entity);
 			}
 			else

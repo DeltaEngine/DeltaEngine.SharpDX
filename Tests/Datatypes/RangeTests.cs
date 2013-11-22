@@ -64,7 +64,7 @@ namespace DeltaEngine.Tests.Datatypes
 		[Test]
 		public void ResultOfToStringCanConvertBackVector3D()
 		{
-			var rangeVector3D = new Range<Vector3D>(Vector3D.Zero, Vector3D.Right);
+			var rangeVector3D = new Range<Vector3D>(Vector3D.Zero, Vector3D.UnitX);
 			var converted3D = rangeVector3D.ToString();
 			var rangeRetrieved3D = new Range<Vector3D>(converted3D);
 			Assert.AreEqual("({0, 0, 0},{1, 0, 0})", converted3D);

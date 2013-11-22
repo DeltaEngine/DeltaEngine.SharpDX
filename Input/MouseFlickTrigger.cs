@@ -43,8 +43,6 @@ namespace DeltaEngine.Input
 				SetFlickPositionAndResetTime(Vector2D.Unused);
 		}
 
-		private const float PositionEpsilon = 0.0025f;
-
 		private void SetFlickPositionAndResetTime(Vector2D position)
 		{
 			StartPosition = position;

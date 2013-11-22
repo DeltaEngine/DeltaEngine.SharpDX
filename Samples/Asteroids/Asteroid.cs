@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
@@ -16,28 +15,27 @@ namespace Asteroids
 	/// </summary>
 	public class Asteroid : Sprite
 	{
-		public Asteroid(InteractionLogics interactionLogics,
-			int sizeModifier = 1)
-			: this(CreateDrawArea(Randomizer.Current, sizeModifier), interactionLogics, sizeModifier) {}
+		public Asteroid(InteractionLogic interactionLogic, int sizeModifier = 1)
+			: this(CreateDrawArea(Randomizer.Current, sizeModifier), interactionLogic, sizeModifier) {}
 
-		public Asteroid(Vector2D position, InteractionLogics interactionLogics, int sizeModifier = 1)
-			: this(
-				Rectangle.FromCenter(position, new Size(0.1f / sizeModifier)), interactionLogics,
+		public Asteroid(Vector2D position, InteractionLogic interactionLogic, int sizeModifier = 1)
+			: this(Rectangle.FromCenter(position, new Size(0.1f / sizeModifier)), interactionLogic,
 				sizeModifier) {}
 
-		private Asteroid(Rectangle drawArea, InteractionLogics interactionLogics, int sizeModifier)
+		private Asteroid(Rectangle drawArea, InteractionLogic interactionLogic, int sizeModifier)
 			: base(new Material(Shader.Position2DColorUV, "Asteroid"), drawArea)
 		{
 			var randomizer = Randomizer.Current;
-			this.interactionLogics = interactionLogics;
+			this.interactionLogic = interactionLogic;
 			this.sizeModifier = sizeModifier;
 			RenderLayer = (int)AsteroidsRenderLayer.Asteroids;
-			Add(new SimplePhysics.Data
+			var data = new SimplePhysics.Data
 			{
 				Gravity = Vector2D.Zero,
 				Velocity = GetInitialVelocity(randomizer),
 				RotationSpeed = randomizer.Get(.1f, 50)
-			});
+			};
+			Add(data);
 			Start<SimplePhysics.Move>();
 			Start<MoveCrossingScreenEdges>();
 			Start<SimplePhysics.Rotate>();
@@ -45,11 +43,10 @@ namespace Asteroids
 
 		private static Rectangle CreateDrawArea(Randomizer randomizer, int sizeModifier)
 		{
-			var rand = new Random();
 			var randomPosition =
 				new Vector2D(
-					rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Left - .1f : ScreenSpace.Current.Right,
-					rand.Next(-100, 100) > 0 ? ScreenSpace.Current.Top - .1f : ScreenSpace.Current.Bottom);
+					randomizer.Get(-100, 100) > 0 ? ScreenSpace.Current.Left - .1f : ScreenSpace.Current.Right,
+					randomizer.Get(-100, 100) > 0 ? ScreenSpace.Current.Top - .1f : ScreenSpace.Current.Bottom);
 			var modifiedSize = new Size(.1f / sizeModifier);
 			return new Rectangle(randomPosition, modifiedSize);
 		}
@@ -63,13 +60,13 @@ namespace Asteroids
 		}
 
 		public readonly int sizeModifier;
-		private readonly InteractionLogics interactionLogics;
+		private readonly InteractionLogic interactionLogic;
 
 		public void Fracture()
 		{
 			if (sizeModifier < 3)
-				interactionLogics.CreateAsteroidsAtPosition(DrawArea.Center, sizeModifier + 1);
-			interactionLogics.IncrementScore(1);
+				interactionLogic.CreateAsteroidsAtPosition(DrawArea.Center, sizeModifier + 1);
+			interactionLogic.IncrementScore(1);
 			IsActive = false;
 		}
 
