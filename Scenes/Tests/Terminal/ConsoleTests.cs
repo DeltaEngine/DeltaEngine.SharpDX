@@ -9,7 +9,7 @@ using DeltaEngine.Platforms.Tests;
 using DeltaEngine.Scenes.Terminal;
 using NUnit.Framework;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.Terminal
+namespace DeltaEngine.Scenes.Tests.Terminal
 {
 	public class ConsoleTests : TestWithMocksOrVisually
 	{

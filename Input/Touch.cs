@@ -22,6 +22,7 @@ namespace DeltaEngine.Input
 		private void InvokeTriggersForEntity(Entity entity)
 		{
 			HandleTriggerOfType<TouchPressTrigger>(entity);
+			HandleTriggerOfType<TouchDoubleTapTrigger>(entity);
 			HandleTriggerOfType<TouchMovementTrigger>(entity);
 			HandleTriggerOfType<TouchPositionTrigger>(entity);
 			HandleTriggerOfType<TouchTapTrigger>(entity);

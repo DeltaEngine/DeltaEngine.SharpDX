@@ -64,6 +64,14 @@ namespace DeltaEngine.Rendering2D.Tests
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
+		public void RenderSpriteWithRedOutline()
+		{
+			var sprite = new Sprite(logoMaterial, Rectangle.HalfCentered);
+			sprite.Add(new OutlineColor(Color.Red));
+			sprite.OnDraw<DrawPolygon2DOutlines>();
+		}
+
+		[Test, ApproveFirstFrameScreenshot]
 		public void RenderInactivatedAndReactivatedSprite()
 		{
 			var sprite = new Sprite(logoMaterial, Rectangle.HalfCentered);

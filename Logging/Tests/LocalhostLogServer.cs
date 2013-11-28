@@ -16,7 +16,7 @@ namespace DeltaEngine.Logging.Tests
 		{
 			var logInfo = message as LogInfoMessage;
 			if (message is LoginRequest)
-				client.Send(new LoginSuccessful("localhost"));
+				client.Send(new LoginSuccessful("localhost", ""));
 			if (logInfo != null)
 				LastMessage = logInfo;
 		}

@@ -25,7 +25,7 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="BlocksContent.cs">BlocksContent.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="MainMenu.cs">MainMenu.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="RenderLayer.cs">RenderLayer.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="BlocksRenderLayer.cs">BlocksRenderLayer.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Block.cs">Block.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Soundbank.cs">Soundbank.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="UserInterface.cs">UserInterface.cs</ProjectItem>

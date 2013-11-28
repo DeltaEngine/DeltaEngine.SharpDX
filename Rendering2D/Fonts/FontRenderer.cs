@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
@@ -49,7 +48,8 @@ namespace DeltaEngine.Rendering2D.Fonts
 				return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft).X;
 			if (alignment == HorizontalAlignment.Right)
 				return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopRight).X - size.Width;
-			return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.Center).X - (size.Width / 2).Round();
+			// ReSharper disable once PossibleLossOfFraction
+			return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.Center).X - (int)size.Width / 2;
 		}
 
 		private float GetVerticalPosition(FontText text)
@@ -58,8 +58,9 @@ namespace DeltaEngine.Rendering2D.Fonts
 			if (alignment == VerticalAlignment.Top)
 				return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.TopLeft).Y;
 			if (alignment == VerticalAlignment.Bottom)
-				return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft).Y - size.Height;
-			return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.Center).Y - (size.Height / 2).Round();
+				return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.BottomLeft).Y - (int)size.Height;
+			// ReSharper disable once PossibleLossOfFraction
+			return ScreenSpace.Current.ToPixelSpaceRounded(drawArea.Center).Y - (int)size.Height / 2;
 		}
 
 		private void AddIndicesAndVerticesForGlyph(Batch batch, GlyphDrawData glyph)

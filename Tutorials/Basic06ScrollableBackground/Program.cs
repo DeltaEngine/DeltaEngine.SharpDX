@@ -9,8 +9,8 @@ namespace DeltaEngine.Tutorials.Basic06ScrollableBackground
 	{
 		public Program()
 		{
-			new Sprite(ContentLoader.Load<Material>("Road"),
-				Rectangle.One).StartMovingUV(new Vector2D(0, -0.8f));
+			new Sprite(ContentLoader.Load<Material>("Road"), Rectangle.One).StartMovingUV(new Vector2D(
+				0, -0.8f));
 		}
 
 		public static void Main()

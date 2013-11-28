@@ -8,7 +8,7 @@ using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
+namespace DeltaEngine.Scenes.Tests.Controls
 {
 	public class TextBoxTests : TestWithMocksOrVisually
 	{
@@ -198,6 +198,16 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 			var text = new FontText(Font.Default, "Hello", Rectangle.HalfCentered);
 			topTextBox.Set(text);
 			Assert.AreEqual(text, topTextBox.children[0].Entity2D);
+		}
+
+		[Test]
+		public void CheckRightKeys()
+		{
+			var textBox = new TextBox(Rectangle.One, "test");
+			textBox.IsEnabled = true;
+			textBox.State.HasFocus = true;
+			new Command(() => textBox.Text = keyboard.HandleInput(textBox.Text)).Add(
+				new KeyTrigger(Key.None, State.Released));
 		}
 	}
 }

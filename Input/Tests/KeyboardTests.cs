@@ -5,7 +5,6 @@ using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -153,16 +152,6 @@ namespace DeltaEngine.Input.Tests
 		public void VerifyUnknownKeyPressIsIgnored()
 		{
 			VerifyKeyPressIsHandled("1234", "1234", Key.CapsLock);
-		}
-
-		[Test]
-		public void CheckRightKeys()
-		{
-			var textBox = new TextBox(Rectangle.One, "test");
-			textBox.IsEnabled = true;
-			textBox.State.HasFocus = true;
-			new Command(() => textBox.Text = keyboard.HandleInput(textBox.Text)).Add(
-				new KeyTrigger(Key.None, State.Released));
 		}
 	}
 }

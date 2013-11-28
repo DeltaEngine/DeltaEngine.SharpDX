@@ -12,7 +12,7 @@ namespace DeltaEngine.Logging
 	public class TextFileLogger : Logger
 	{
 		public TextFileLogger()
-			: base(true)
+			: base(!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 		{
 			filePath = Path.Combine(Settings.GetMyDocumentsAppFolder(), LogFilename);
 		}
@@ -48,7 +48,7 @@ namespace DeltaEngine.Logging
 				writer.WriteLine("NumberOfRepeatedMessagesIgnored=" + NumberOfRepeatedMessagesIgnored);
 			writer.Close();
 			writer = null;
-			if (ExceptionExtensions.IsDebugMode && !StackTraceExtensions.StartedFromNCrunch)
+			if (ExceptionExtensions.IsDebugMode && !StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 				OpenLogFileInEditor(); //ncrunch: no coverage
 		}
 

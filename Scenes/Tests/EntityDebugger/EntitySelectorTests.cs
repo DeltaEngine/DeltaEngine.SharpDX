@@ -7,7 +7,7 @@ using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes.EntityDebugger;
 using NUnit.Framework;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
+namespace DeltaEngine.Scenes.Tests.EntityDebugger
 {
 	internal class EntitySelectorTests : TestWithMocksOrVisually
 	{

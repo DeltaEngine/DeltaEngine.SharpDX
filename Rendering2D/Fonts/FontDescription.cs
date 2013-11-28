@@ -24,10 +24,11 @@ namespace DeltaEngine.Rendering2D.Fonts
 
 		private void LoadFromXmlData()
 		{
+			var fontImagePixelSize = FontMapPixelSize;
 			foreach (var child in data.Children)
 				if (child.Name == "Glyphs")
 					foreach (var glyphData in child.Children)
-						LoadGlyph(glyphData, FontMapPixelSize);
+						LoadGlyph(glyphData, fontImagePixelSize);
 				else if (child.Name == "Kernings")
 					foreach (var kerningData in child.Children)
 						LoadKerning(kerningData);
@@ -46,6 +47,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 			glyph.PrecomputedFontMapUV = Rectangle.BuildUVRectangle(glyph.UV, fontMapSize);
 			GlyphDictionary.Add(character, glyph);
 		}
+
 		//ncrunch: no coverage start
 		public void LoadKerning(XmlData kerningData)
 		{
@@ -55,12 +57,11 @@ namespace DeltaEngine.Rendering2D.Fonts
 			if (firstChar == '\0' || secondChar == '\0' || kerningDistance == 0)
 				throw new InvalidDataException("Unable to add kerning " + firstChar + " and " + secondChar +
 					" with distance=" + kerningDistance);
-
 			Glyph glyph;
 			if (GlyphDictionary.TryGetValue(firstChar, out glyph))
 				glyph.Kernings.Add(secondChar, kerningDistance);
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
+
 		public string FontFamilyName
 		{
 			get { return data.GetAttributeValue("Family", "Verdana"); }

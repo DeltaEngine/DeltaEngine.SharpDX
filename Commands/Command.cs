@@ -4,7 +4,6 @@ using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
-using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Commands
 {
@@ -14,25 +13,20 @@ namespace DeltaEngine.Commands
 	/// </summary>
 	public class Command : Entity, Updateable
 	{
-		static Command()
-		{
-			RegisteredCommands.Use(new Dictionary<string, Trigger[]>());
-		}
-
-		private static readonly ThreadStatic<Dictionary<string, Trigger[]>> RegisteredCommands =
-			new ThreadStatic<Dictionary<string, Trigger[]>>();
-
 		public static void Register(string commandName, params Trigger[] commandTriggers)
 		{
 			if (string.IsNullOrEmpty(commandName))
 				throw new ArgumentNullException("commandName");
 			if (commandTriggers == null || commandTriggers.Length == 0)
 				throw new UnableToRegisterCommandWithoutTriggers(commandName);
-			if (RegisteredCommands.Current.ContainsKey(commandName))
-				RegisteredCommands.Current[commandName] = commandTriggers;
+			if (RegisteredCommands.ContainsKey(commandName))
+				RegisteredCommands[commandName] = commandTriggers;
 			else
-				RegisteredCommands.Current.Add(commandName, commandTriggers);
+				RegisteredCommands.Add(commandName, commandTriggers);
 		}
+
+		private static readonly Dictionary<string, Trigger[]> RegisteredCommands =
+			new Dictionary<string, Trigger[]>();
 
 		public class UnableToRegisterCommandWithoutTriggers : Exception
 		{
@@ -46,16 +40,24 @@ namespace DeltaEngine.Commands
 			triggers.AddRange(LoadTriggersForCommand(commandName));
 		}
 
+		public Command(Action action)
+		{
+			this.action = action;
+			UpdatePriority = Priority.First;
+		}
+
+		private readonly Action action;
+		
 		private static IEnumerable<Trigger> LoadTriggersForCommand(string commandName)
 		{
 			Trigger[] loadedTriggers;
-			InvokeContentLoaderToMakeSureCommandsInitializationAlreadyHappened();
-			if (RegisteredCommands.Current.TryGetValue(commandName, out loadedTriggers))
+			InvokeNonEditorContentLoaderToMakeSureCommandsInitializationHappened();
+			if (RegisteredCommands.TryGetValue(commandName, out loadedTriggers))
 				return loadedTriggers;
 			throw new CommandNameWasNotRegistered();
 		}
 
-		private static void InvokeContentLoaderToMakeSureCommandsInitializationAlreadyHappened()
+		private static void InvokeNonEditorContentLoaderToMakeSureCommandsInitializationHappened()
 		{
 			ContentLoader.Exists("DefaultCommands");
 		}
@@ -68,26 +70,6 @@ namespace DeltaEngine.Commands
 			triggers.AddRange(LoadTriggersForCommand(commandName));
 		}
 
-		public Command(string commandName, Action<Vector2D, Vector2D, bool> dragAction)
-			: this(dragAction)
-		{
-			triggers.AddRange(LoadTriggersForCommand(commandName));
-		}
-
-		public Command(string commandName, Action<float> zoomAction)
-			: this(zoomAction)
-		{
-			triggers.AddRange(LoadTriggersForCommand(commandName));
-		}
-
-		public Command(Action action)
-		{
-			this.action = action;
-			UpdatePriority = Priority.First;
-		}
-
-		private readonly Action action;
-
 		public Command(Action<Vector2D> positionAction)
 		{
 			this.positionAction = positionAction;
@@ -96,6 +78,12 @@ namespace DeltaEngine.Commands
 
 		private readonly Action<Vector2D> positionAction;
 
+		public Command(string commandName, Action<Vector2D, Vector2D, bool> dragAction)
+			: this(dragAction)
+		{
+			triggers.AddRange(LoadTriggersForCommand(commandName));
+		}
+
 		public Command(Action<Vector2D, Vector2D, bool> dragAction)
 		{
 			this.dragAction = dragAction;
@@ -103,6 +91,12 @@ namespace DeltaEngine.Commands
 		}
 
 		private readonly Action<Vector2D, Vector2D, bool> dragAction;
+
+		public Command(string commandName, Action<float> zoomAction)
+			: this(zoomAction)
+		{
+			triggers.AddRange(LoadTriggersForCommand(commandName));
+		}
 
 		public Command(Action<float> zoomAction)
 		{

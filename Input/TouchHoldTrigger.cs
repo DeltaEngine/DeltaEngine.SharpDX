@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Commands;
+﻿using System.Collections.Generic;
+using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
@@ -23,11 +24,28 @@ namespace DeltaEngine.Input
 
 		public TouchHoldTrigger(string holdAreaAndTime)
 		{
-			var parameters = holdAreaAndTime.SplitAndTrim(new[] { ' ' });
-			if (parameters.Length > 1)
-				HoldArea = parameters[0].Convert<Rectangle>();
-			if (parameters.Length > 2)
-				HoldTime = parameters[1].Convert<float>();
+			string[] parameters = holdAreaAndTime.SplitAndTrim(new[] { ' ', ',' });
+			if (parameters.Length > 3)
+				HoldArea = GetWishedNumberOfElements(parameters, 4).ToText().Convert<Rectangle>();
+			if (parameters.Length > 4)
+				HoldTime = parameters[4].Convert<float>();
+		}
+
+		/// <summary>
+		/// Custom solution to imitate Linq.Enumerable.Take(maxNumberOfElements) as long as our
+		/// code conversion is able to support it, see case 10287
+		/// </summary>
+		private static IList<T> GetWishedNumberOfElements<T>(IList<T> elements, int maxNumberOfElements)
+		{
+			if (elements.Count <= maxNumberOfElements)
+				return elements;
+			var newList = new List<T>();
+			foreach (T element in elements)
+				if (newList.Count < maxNumberOfElements)
+					newList.Add(element);
+				else
+					break;
+			return newList;
 		}
 
 		protected override void StartInputDevice()

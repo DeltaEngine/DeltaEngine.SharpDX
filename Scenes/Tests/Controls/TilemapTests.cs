@@ -10,7 +10,7 @@ using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
+namespace DeltaEngine.Scenes.Tests.Controls
 {
 	public class TilemapTests : TestWithMocksOrVisually
 	{

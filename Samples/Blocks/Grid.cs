@@ -130,7 +130,7 @@ namespace Blocks
 			var fallingBrick = new Sprite(material, brick.DrawArea)
 			{
 				Color = brick.Color,
-				RenderLayer = (int)RenderLayer.FallingBrick,
+				RenderLayer = (int)BlocksRenderLayer.FallingBrick,
 			};
 			var random = Randomizer.Current;
 			var data = new SimplePhysics.Data

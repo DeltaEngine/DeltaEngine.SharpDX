@@ -3,7 +3,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
+namespace DeltaEngine.Scenes.Tests.EntityDebugger
 {
 	internal class BouncingLogo : Sprite
 	{

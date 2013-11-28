@@ -1,7 +1,7 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Content.Mocks;
-using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Mocks;
 using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
@@ -72,8 +72,13 @@ namespace DeltaEngine.Tests.Content
 		public void TestSettingsBasedRenderSize()
 		{
 			material.RenderSizeMode = RenderSizeMode.SizeForSettingsResolution;
-			Assert.AreEqual(0.15625f, material.MaterialRenderSize.Width);
-			Assert.AreEqual(0.15625f, material.MaterialRenderSize.Height);
+			AssertMaterialRenderSize(material, ExceptionExtensions.IsDebugMode ? 0.15625f : 0.078125f);
+		}
+
+		private static void AssertMaterialRenderSize(Material material, float dimension)
+		{
+			Assert.AreEqual(dimension, material.MaterialRenderSize.Width);
+			Assert.AreEqual(dimension, material.MaterialRenderSize.Height);
 		}
 	}
 }

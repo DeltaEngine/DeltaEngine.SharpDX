@@ -32,7 +32,6 @@ namespace Blocks
 		{
 			if (!filenameWithPrefix.StartsWith(Prefix))
 				throw new FilenameWrongPrefixException();
-
 			return filenameWithPrefix.Substring(Prefix.Length);
 		}
 

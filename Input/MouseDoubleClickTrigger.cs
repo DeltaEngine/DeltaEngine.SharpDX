@@ -1,41 +1,57 @@
 ﻿using System;
 using DeltaEngine.Commands;
+using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
+using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Input
 {
 	/// <summary>
-	/// Allows mouse button presses to be tracked.
+	/// Allows mouse double clicks to be tracked.
 	/// </summary>
-	public class MouseDoubleClickTrigger : PositionTrigger
+	public class MouseDoubleClickTrigger : PositionTrigger, MouseTrigger
 	{
-		public MouseDoubleClickTrigger(State state)
-			: this(MouseButton.Left, state) {}
-
-		public MouseDoubleClickTrigger(MouseButton button = MouseButton.Left,
-			State state = State.Pressing)
+		public MouseDoubleClickTrigger(MouseButton button = MouseButton.Left)
 		{
 			Button = button;
-			State = state;
 		}
 
-		public MouseButton Button { get; internal set; }
-		public State State { get; internal set; }
+		public MouseButton Button { get; private set; }
 
-		public MouseDoubleClickTrigger(string buttonAndState)
+		public MouseDoubleClickTrigger(string button)
 		{
-			var parameters = buttonAndState.SplitAndTrim(new[] { ' ' });
-			if (parameters.Length == 0)
-				throw new CannotCreateMouseButtonTriggerWithoutButton();
-			Button = parameters[0].Convert<MouseButton>();
-			State = parameters.Length > 1 ? parameters[1].Convert<State>() : State.Pressing;
+			Button = String.IsNullOrEmpty(button) ? MouseButton.Left : button.Convert<MouseButton>();
 		}
-
-		public class CannotCreateMouseButtonTriggerWithoutButton : Exception {}
 
 		protected override void StartInputDevice()
 		{
 			Start<Mouse>();
 		}
+
+		public void HandleWithMouse(Mouse mouse)
+		{
+			State currentState = mouse.GetButtonState(Button);
+			if ((lastState == State.Pressing || lastState == State.Pressed) &&
+				currentState == State.Releasing)
+			{
+				if (!firstClickDetected)
+					firstClickDetected = true;
+				else
+				{
+					if (elapsedAfterFirstClick < 0.2f && ScreenSpace.Current.Viewport.Contains(mouse.Position))
+						Invoke();
+					firstClickDetected = false;
+				}
+			}
+			lastState = currentState;
+			if (firstClickDetected)
+				elapsedAfterFirstClick += Time.Delta;
+			else
+				elapsedAfterFirstClick = 0f;
+		}
+
+		private State lastState;
+		private bool firstClickDetected;
+		private float elapsedAfterFirstClick;
 	}
 }

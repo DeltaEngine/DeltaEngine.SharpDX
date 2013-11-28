@@ -3,7 +3,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.Controls;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
+namespace DeltaEngine.Scenes.Tests.Controls
 {
 	/// <summary>
 	/// A simple tilemap with colored deltaengine logos

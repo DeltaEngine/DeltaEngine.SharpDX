@@ -17,7 +17,8 @@ namespace DeltaEngine.Platforms
 			if (Current == null)
 				Current = this;
 			filePath = Path.Combine(GetMyDocumentsAppFolder(), SettingsFilename);
-			if (File.Exists(filePath))
+			CustomSettingsExists = File.Exists(filePath);
+			if (CustomSettingsExists)
 				data = new XmlFile(filePath).Root; //ncrunch: no coverage
 			else
 			{

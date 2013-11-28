@@ -6,7 +6,7 @@ using DeltaEngine.Rendering2D;
 namespace $safeprojectname$
 {
 	/// <summary>
-	/// This represents a brick within a block
+	/// Represents a brick within a block
 	/// </summary>
 	public class Brick : Sprite
 	{
@@ -14,7 +14,7 @@ namespace $safeprojectname$
 			: base(material, Rectangle.Zero)
 		{
 			Offset = offset;
-			RenderLayer = (int)Blocks.RenderLayer.Grid;
+			RenderLayer = (int)BlocksRenderLayer.Grid;
 			this.displayMode = displayMode;
 		}
 

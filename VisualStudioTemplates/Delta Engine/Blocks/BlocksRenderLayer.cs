@@ -3,7 +3,7 @@ namespace $safeprojectname$
 	/// <summary>
 	/// The various rendering layers. Higher layers overdraw lower ones 
 	/// </summary>
-	public enum RenderLayer
+	public enum BlocksRenderLayer
 	{
 		Background,
 		Foreground,

@@ -6,7 +6,7 @@ using DeltaEngine.Scenes.Controls;
 using DeltaEngine.Scenes.EntityDebugger;
 using NUnit.Framework;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.EntityDebugger
+namespace DeltaEngine.Scenes.Tests.EntityDebugger
 {
 	internal class EntityWriterTests : TestWithMocksOrVisually
 	{

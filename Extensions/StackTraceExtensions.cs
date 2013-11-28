@@ -11,25 +11,25 @@ namespace DeltaEngine.Extensions
 	/// </summary>
 	public static class StackTraceExtensions
 	{
-		public static bool StartedFromNCrunch
+		public static bool StartedFromNCrunchOrNunitConsole
 		{
 			get
 			{
 				if (alreadyCheckedIfStartedFromNCrunch)
-					return wasStartedFromNCrunch;
+					return wasStartedFromNCrunchOrNunit;
 				alreadyCheckedIfStartedFromNCrunch = true;
-				wasStartedFromNCrunch = IsStartedFromNCrunch();
-				return wasStartedFromNCrunch;
+				wasStartedFromNCrunchOrNunit = IsStartedFromNCrunch() || IsStartedFromNunitConsole();
+				return wasStartedFromNCrunchOrNunit;
 			}
 		}
 
 		private static bool alreadyCheckedIfStartedFromNCrunch;
-		private static bool wasStartedFromNCrunch;
+		private static bool wasStartedFromNCrunchOrNunit;
 
 		/// <summary>
 		/// See http://www.ncrunch.net/documentation/troubleshooting_ncrunch-specific-overrides
 		/// </summary>
-		private static bool IsStartedFromNCrunch()
+		public static bool IsStartedFromNCrunch()
 		{
 			return Environment.GetEnvironmentVariable("NCrunch") == "1";
 		}
@@ -186,24 +186,27 @@ namespace DeltaEngine.Extensions
 			return null;
 		}
 
-		public static bool IsStartedFromNunitConsole()
+		private static bool IsStartedFromNunitConsole()
 		{
-			return AppDomain.CurrentDomain.FriendlyName.StartsWith("test-domain-");
+			string domainName = AppDomain.CurrentDomain.FriendlyName;
+			return domainName.StartsWith("test-domain-") || domainName == "NUnit Domain";
 		}
 
-		public static bool IsStartedFromTeamCityNUnitLauncher()
+		/// <summary>
+		/// Set by TeamCity to run Tests for CI builds with Mocks because it's faster
+		/// </summary>
+		public static bool ForceUseOfMockResolver()
 		{
-			return AppDomain.CurrentDomain.FriendlyName == "NUnit Domain";
+			return IsStartedFromNCrunch() ||
+				Environment.GetEnvironmentVariable("RunAllTestsWithMocks") == "1";
 		}
 
 		/// <summary>
 		/// Since we do not initialize or run the resolver in a test, we need to set the current unit
 		/// test name up beforehand so we can find out if the test uses ApproveFirstFrameScreenshot.
 		/// </summary>
-		public static void SetUnitTestName(string fullName, bool forceOverwrite = false)
+		public static void SetUnitTestName(string fullName)
 		{
-			if (!forceOverwrite && unitTestClassName != null && unitTestClassName.EndsWith("Tests"))
-				return;
 			var nameParts = fullName.Split(new[] { '.' });
 			unitTestMethodName = nameParts[nameParts.Length - 1];
 			unitTestClassName = nameParts[nameParts.Length - 2];
@@ -234,7 +237,7 @@ namespace DeltaEngine.Extensions
 		{
 			get
 			{
-				if (!(!StartedFromNCrunch))
+				if (StartedFromNCrunchOrNunitConsole)
 					return false;
 				return new StackTrace().GetFrames().Any(IsMethodMainOrStart);
 			}

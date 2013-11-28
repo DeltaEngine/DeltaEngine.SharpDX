@@ -55,6 +55,8 @@ namespace DeltaEngine.Content
 		private void ExtractMetaData()
 		{
 			PixelSize = MetaData.Get("PixelSize", DefaultTextureSize);
+			if (PixelSize.Width == 0)
+				PixelSize = new Size(128, 128);
 			BlendMode = MetaData.Get("BlendMode", BlendMode.Normal);
 			UseMipmaps = MetaData.Get("UseMipmaps", false);
 			AllowTiling = MetaData.Get("AllowTiling", false);

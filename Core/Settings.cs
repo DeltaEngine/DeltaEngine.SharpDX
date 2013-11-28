@@ -21,6 +21,7 @@ namespace DeltaEngine.Core
 		}
 
 		protected bool wasChanged;
+		public bool CustomSettingsExists { get; protected set; }
 
 		public static string GetMyDocumentsAppFolder()
 		{

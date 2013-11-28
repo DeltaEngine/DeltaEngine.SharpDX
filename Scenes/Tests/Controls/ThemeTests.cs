@@ -6,7 +6,7 @@ using DeltaEngine.Platforms;
 using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
+namespace DeltaEngine.Scenes.Tests.Controls
 {
 	public class ThemeTests : TestWithMocksOrVisually
 	{
@@ -44,7 +44,7 @@ namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
 		[Test, CloseAfterFirstFrame]
 		public void SaveAndLoadMockThemeViaContentLoader()
 		{
-			if (!StackTraceExtensions.StartedFromNCrunch)
+			if (!StackTraceExtensions.IsStartedFromNCrunch())
 				return; // ncrunch: no coverage
 			var theme = ContentLoader.Load<Theme>("TestTheme");
 			Assert.AreEqual(Color.Blue, theme.SelectBox.DefaultColor);

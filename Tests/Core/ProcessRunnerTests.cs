@@ -5,8 +5,10 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Core
 {
+	[Ignore]
 	public class ProcessRunnerTests
 	{
+		//ncrunch: no coverage start, dangerous to execute with ncrunch as we have to redirect output
 		[Test]
 		public void DefaultWorkingDirectory()
 		{
@@ -34,7 +36,9 @@ namespace DeltaEngine.Tests.Core
 			processRunner.StandardOutputEvent +=
 				outputMessage => logger.Write(Logger.MessageType.Info, outputMessage);
 			processRunner.Start();
-			Assert.IsTrue(logger.LastMessage.Contains("Dir(s)"), logger.LastMessage);
+			Assert.IsTrue(
+				logger.LastMessage.Contains("Dir(s)") || logger.LastMessage.Contains("Verzeichnis(se)"),
+				logger.LastMessage);
 		}
 
 		[Test]

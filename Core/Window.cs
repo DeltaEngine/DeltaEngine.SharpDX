@@ -6,7 +6,7 @@ namespace DeltaEngine.Core
 	/// <summary>
 	/// Window form the application is running in. In Windows this is done with Windows Forms or WPF.
 	/// </summary>
-	public interface Window
+	public interface Window : IDisposable
 	{
 		string Title { get; set; }
 		bool IsVisible { get; }

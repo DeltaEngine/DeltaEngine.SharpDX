@@ -4,8 +4,8 @@ using DeltaEngine.Datatypes;
 namespace DeltaEngine.Rendering2D.Fonts
 {
 	/// <summary>
-	/// Entity used to render text on screen. Can be aligned horizontally and vertically within
-	/// a draw area. Can also contain line breaks.
+	/// Entity used to render text on screen. Can be aligned horizontally and vertically within a
+	/// draw area. Can also contain line breaks.
 	/// </summary>
 	public class FontText : Entity2D
 	{
@@ -37,7 +37,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 				Name = name;
 			}
 
-			public string Name { get; set; }
+			public string Name { get; private set; }
 		}
 
 		public string Text

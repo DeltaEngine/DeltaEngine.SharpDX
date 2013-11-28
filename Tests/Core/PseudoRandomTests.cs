@@ -23,7 +23,8 @@ namespace DeltaEngine.Tests.Core
 			}
 		}
 
-		[Test]
+		//ncrunch: no coverage start
+		[Test, Category("Slow")]
 		public void RandomIntSanityTest()
 		{
 			var random = new PseudoRandom();
@@ -36,7 +37,7 @@ namespace DeltaEngine.Tests.Core
 				Assert.IsTrue(wasChosen[i]);
 		}
 
-		[Test]
+		[Test, Category("Slow")]
 		public void RandomFloatSanityTest()
 		{
 			var random = new PseudoRandom();

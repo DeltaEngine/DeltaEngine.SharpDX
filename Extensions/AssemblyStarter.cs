@@ -113,7 +113,7 @@ namespace DeltaEngine.Extensions
 		{
 			var methods = type.GetMethods();
 			var instance = Activator.CreateInstance(type);
-			StackTraceExtensions.SetUnitTestName(type.FullName + "." + methodName, true);
+			StackTraceExtensions.SetUnitTestName(type.FullName + "." + methodName);
 			RunMethodWithAttribute(instance, methods, SetUpAttribute);
 			methods.FirstOrDefault(method => method.Name == methodName).Invoke(instance, parameters);
 			RunMethodWithAttribute(instance, methods, TearDownAttribute);

@@ -41,6 +41,17 @@ namespace DeltaEngine.Input.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
+		public void CreateFromString()
+		{
+			var trigger = new TouchHoldTrigger("");
+			Assert.AreEqual(Rectangle.Zero, trigger.HoldArea);
+			Assert.AreEqual(0f, trigger.HoldTime);
+			trigger = new TouchHoldTrigger("0.1, 0.2, 0.3, 0.4 10.4");
+			Assert.AreEqual(new Rectangle(0.1f, 0.2f, 0.3f, 0.4f), trigger.HoldArea);
+			Assert.AreEqual(10.4f, trigger.HoldTime);
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void IsHovering()
 		{
 			var trigger = new TouchHoldTrigger(Rectangle.One, 0.5f);

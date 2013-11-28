@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Commands;
+﻿using System.Threading;
+using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
@@ -118,7 +119,7 @@ namespace DeltaEngine.Input.Tests
 
 		[Test]
 		public void TestPausable()
-		{			
+		{
 			var command = new Command(() => { });
 			Assert.IsFalse(command.IsPauseable);
 		}

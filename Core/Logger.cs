@@ -54,8 +54,8 @@ namespace DeltaEngine.Core
 			foreach (Logger logger in RegisteredLoggers.Current)
 				if (logger.GetType() == thisType)
 				{
-					if (thisType.Name.StartsWith("Mock"))
-						RemoveMockLoggerFromPreviousFailingTest();
+					if (thisType.Name.StartsWith("Mock") || thisType.Name.StartsWith("TextFile"))
+						RemoveExistingLoggerFromPreviousFailingTest();
 					else
 						throw new LoggerWasAlreadyAttached();
 					break;
@@ -63,7 +63,7 @@ namespace DeltaEngine.Core
 			RegisteredLoggers.Current.Add(this);
 		}
 
-		private void RemoveMockLoggerFromPreviousFailingTest()
+		private void RemoveExistingLoggerFromPreviousFailingTest()
 		{
 			foreach (Logger logger in RegisteredLoggers.Current)
 				if (logger.GetType() == GetType())

@@ -38,5 +38,14 @@ namespace DeltaEngine.Input.Tests
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CreateFromString()
+		{
+			var trigger = new MouseTapTrigger("Right");
+			Assert.AreEqual(MouseButton.Right, trigger.Button);
+			trigger = new MouseTapTrigger("");
+			Assert.AreEqual(MouseButton.Left, trigger.Button);
+		}
 	}
 }

@@ -150,9 +150,9 @@ namespace DeltaEngine.Content.Online
 		private void VerifyProject(SetProject newProject)
 		{
 			if (newProject.Permissions == ProjectPermissions.None)
-				throw new NoPermissionToUseProject(newProject.ProjectName);
-			ProjectName = newProject.ProjectName;
-			ProjectMetaDataFile.Root.UpdateAttribute("Name", newProject.ProjectName);
+				throw new NoPermissionToUseProject(newProject.Name);
+			ProjectName = newProject.Name;
+			ProjectMetaDataFile.Root.UpdateAttribute("Name", newProject.Name);
 			SaveXmlFile();
 		}
 

@@ -138,8 +138,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Tutorials.Basic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Tutorials.Basic08PlaySound", "Tutorials\Basic08PlaySound\DeltaEngine.Tutorials.Basic08PlaySound.csproj", "{AACEC6A5-3A59-40B8-961E-8B41C31D2BDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Tutorials.Basic09PlayMusic", "Tutorials\Basic09PlayMusic\DeltaEngine.Tutorials.Basic09PlayMusic.csproj", "{B0428CE5-1624-4686-980E-FB25382C8CFA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Tutorials.Entities01OwnEntity", "Tutorials\Entities01OwnEntity\DeltaEngine.Tutorials.Entities01OwnEntity.csproj", "{98303931-EC4A-41C3-B4D8-13EDA627393B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaEngine.Tutorials.Entities02AttachingBehavior", "Tutorials\Entities02AttachingBehavior\DeltaEngine.Tutorials.Entities02AttachingBehavior.csproj", "{45632720-46C9-4F43-A2DF-736C8543952D}"
@@ -442,10 +440,6 @@ Global
 		{AACEC6A5-3A59-40B8-961E-8B41C31D2BDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AACEC6A5-3A59-40B8-961E-8B41C31D2BDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AACEC6A5-3A59-40B8-961E-8B41C31D2BDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0428CE5-1624-4686-980E-FB25382C8CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0428CE5-1624-4686-980E-FB25382C8CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0428CE5-1624-4686-980E-FB25382C8CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0428CE5-1624-4686-980E-FB25382C8CFA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98303931-EC4A-41C3-B4D8-13EDA627393B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98303931-EC4A-41C3-B4D8-13EDA627393B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98303931-EC4A-41C3-B4D8-13EDA627393B}.Release|Any CPU.ActiveCfg = Release|Any CPU

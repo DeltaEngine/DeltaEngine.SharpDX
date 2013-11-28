@@ -32,5 +32,13 @@ namespace DeltaEngine.Input.Tests
 			AdvanceTimeAndUpdateEntities();
 			Assert.IsTrue(wasInvoked);
 		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CreateFromString()
+		{
+			Assert.DoesNotThrow(() => new TouchTapTrigger(""));
+			Assert.Throws<TouchTapTrigger.TouchTapTriggerHasNoParameters>(
+				() => new TouchTapTrigger("Right"));
+		}
 	}
 }

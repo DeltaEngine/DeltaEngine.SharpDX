@@ -7,7 +7,7 @@ using DeltaEngine.Platforms;
 using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
 
-namespace DeltaEngine.Scenes.Tests.UserInterfaces.Controls
+namespace DeltaEngine.Scenes.Tests.Controls
 {
 	public class InteractiveButtonTests : TestWithMocksOrVisually
 	{

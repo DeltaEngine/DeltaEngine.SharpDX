@@ -85,7 +85,7 @@
     <Compile Include="BlocksContent.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="RenderLayer.cs" />
+    <Compile Include="BlocksRenderLayer.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Soundbank.cs" />
     <Compile Include="UserInterface.cs" />

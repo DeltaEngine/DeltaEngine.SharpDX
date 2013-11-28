@@ -35,7 +35,7 @@
     <StartupObject>Insight.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>InsightIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Insight.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,7 +75,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="InsightIcon.ico" />
+    <Content Include="Insight.ico" />
     <Content Include="InsightIcon72x72.png" />
   </ItemGroup>
   <ItemGroup>

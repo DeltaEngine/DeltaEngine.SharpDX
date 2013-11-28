@@ -8,11 +8,13 @@
 	{
 		private LoginSuccessful() {}
 
-		public LoginSuccessful(string userName)
+		public LoginSuccessful(string userName, string imagePath)
 		{
 			UserName = userName;
+			AccountImagePath = imagePath;
 		}
 
 		public string UserName { get; private set; }
+		public string AccountImagePath { get; set; }
 	}
 }

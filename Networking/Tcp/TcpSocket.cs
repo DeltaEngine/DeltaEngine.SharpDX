@@ -202,9 +202,9 @@ namespace DeltaEngine.Networking.Tcp
 		/// <summary>
 		/// The amount of bytes where the packed data start to be smaller than the original one is
 		/// around 500 bytes, but there is also overhead in compressing and decompressing data, so it
-		/// only makes sense for at least 8kb of data (e.g. sending big network files).
+		/// only makes sense for at least 200kb of data (e.g. sending big network files).
 		/// </summary>
-		public const int MinimumByteDataLengthToZip = 1024 * 8;
+		public const int MinimumByteDataLengthToZip = 1024 * 200;
 
 		private void TrySendAllMessagesInTheQueue()
 		{

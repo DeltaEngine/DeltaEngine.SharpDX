@@ -24,7 +24,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 
 		public void Draw(List<DrawableEntity> visibleEntities)
 		{
-			foreach (var entity in visibleEntities)
+			foreach (Entity2D entity in visibleEntities)
 				AddToBatch(entity);
 			if (vertices.Count == 0)
 				return;
@@ -32,14 +32,20 @@ namespace DeltaEngine.Rendering2D.Shapes
 			vertices.Clear();
 		}
 
-		private void AddToBatch(DrawableEntity entity)
+		private void AddToBatch(Entity2D entity)
 		{
 			var color = entity.Get<OutlineColor>().Value;
 			List<Vector2D> points = null;
 			if (entity.Contains<List<Vector2D>>())
 				points = entity.Get<List<Vector2D>>();
 			if (points == null || points.Count <= 1)
-				return;
+			{
+				points = new List<Vector2D>();
+				points.Add(entity.DrawArea.TopLeft);
+				points.Add(entity.DrawArea.TopRight);
+				points.Add(entity.DrawArea.BottomRight);
+				points.Add(entity.DrawArea.BottomLeft);
+			}
 			lastPoint = points[points.Count - 1];
 			foreach (Vector2D point in points)
 				AddLine(point, color);

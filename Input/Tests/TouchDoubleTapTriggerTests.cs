@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
@@ -22,6 +23,32 @@ namespace DeltaEngine.Input.Tests
 		public void Create()
 		{
 			Assert.DoesNotThrow(() => new TouchDoubleTapTrigger());
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CreateFromString()
+		{
+			Assert.DoesNotThrow(() => new TouchDoubleTapTrigger(""));
+			Assert.Throws<TouchDoubleTapTrigger.TouchDoubleTapTriggerHasNoParameters>(
+				() => new TouchDoubleTapTrigger("Right"));
+		}
+
+		[Test]
+		public void InvokeDoubleTap()
+		{
+			var touch = Resolve<MockTouch>();
+			var trigger = new TouchDoubleTapTrigger();
+			bool wasInvoked = false;
+			new Command(() => wasInvoked = true).Add(trigger);
+			touch.SetTouchState(0, State.Pressing, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities();
+			touch.SetTouchState(0, State.Releasing, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities();
+			touch.SetTouchState(0, State.Pressing, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities();
+			touch.SetTouchState(0, State.Releasing, Vector2D.Half);
+			AdvanceTimeAndUpdateEntities();
+			Assert.IsTrue(wasInvoked);
 		}
 	}
 }

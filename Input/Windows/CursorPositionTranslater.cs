@@ -43,11 +43,16 @@ namespace DeltaEngine.Input.Windows
 		{
 			position = ScreenSpace.Current.ToPixelSpace(position);
 			var newScreenPosition = ToSysPoint(position);
-			if ((IntPtr)window.Handle != IntPtr.Zero)
+			if (WindowHandleIsValidIntPtr())
 				//ncrunch: no coverage start
 				NativeMethods.ClientToScreen((IntPtr)window.Handle, ref newScreenPosition);
 				//ncrunch: no coverage end
 			return FromSysPoint(newScreenPosition);
+		}
+
+		private bool WindowHandleIsValidIntPtr()
+		{
+			return window.Handle is IntPtr && (IntPtr)window.Handle != IntPtr.Zero;
 		}
 
 		private static Vector2D FromSysPoint(SysPoint position)
@@ -58,7 +63,7 @@ namespace DeltaEngine.Input.Windows
 		internal Vector2D FromScreenPositionToScreenSpace(Vector2D position)
 		{
 			var screenPoint = ToSysPoint(position);
-			if ((IntPtr)window.Handle != IntPtr.Zero)
+			if (WindowHandleIsValidIntPtr())
 				//ncrunch: no coverage start
 				NativeMethods.ScreenToClient((IntPtr)window.Handle, ref screenPoint);
 					//ncrunch: no coverage end

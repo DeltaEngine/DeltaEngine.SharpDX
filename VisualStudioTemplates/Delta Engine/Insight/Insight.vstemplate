@@ -9,12 +9,12 @@
 		<CreateNewFolder>true</CreateNewFolder>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<DefaultName>Insight</DefaultName>
-		<Icon>InsightIcon.ico</Icon>
+		<Icon>Insight.ico</Icon>
 	</TemplateData>
 	<TemplateContent>
 		<Project File="Insight.csproj" ReplaceParameters="true">
 			<Folder Name="" TargetFolderName="">
-				<ProjectItem ReplaceParameters="false" TargetFileName="InsightIcon.ico">InsightIcon.ico</ProjectItem>
+				<ProjectItem ReplaceParameters="false" TargetFileName="Insight.ico">Insight.ico</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="InsightIcon72x72.png">InsightIcon72x72.png</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="StatisticsApp.cs">StatisticsApp.cs</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>

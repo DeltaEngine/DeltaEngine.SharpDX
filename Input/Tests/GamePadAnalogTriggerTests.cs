@@ -1,4 +1,6 @@
-﻿using DeltaEngine.Commands;
+﻿using System;
+using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
@@ -12,8 +14,9 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void MovingSticksTranslatesCircle()
 		{
-			var ellipseLeft = new Ellipse(new Rectangle(0.1f, 0.1f, 0.1f, 0.1f), Color.Green);
-			var ellipseRight = new Ellipse(new Rectangle(0.1f, 0.1f, 0.1f, 0.1f), Color.Blue);
+			Logger.Info("MovingSticksTranslatesCircle");
+			var ellipseLeft = new Ellipse(new Rectangle(0.4f, 0.5f, 0.1f, 0.1f), Color.Green);
+			var ellipseRight = new Ellipse(new Rectangle(0.6f, 0.5f, 0.1f, 0.1f), Color.Blue);
 			new Command(pos => ellipseLeft.Center = pos * 0.2f + Vector2D.Half).Add(
 				new GamePadAnalogTrigger(GamePadAnalog.LeftThumbStick));
 			new Command(pos => ellipseRight.Center = pos * 0.2f + Vector2D.Half).Add(
@@ -23,9 +26,14 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void PressingTriggersUpdatesValues()
 		{
+			Console.WriteLine("dsfgsdf");
+
+
+
+			Logger.Info("PressingTriggersUpdatesValues");
 			var font = Font.Default;
-			var leftTrigger = new FontText(font, "", new Rectangle(0.2f, 0.5f, 0.2f, 0.2f));
-			var rightTrigger = new FontText(font, "", new Rectangle(0.7f, 0.5f, 0.2f, 0.2f));
+			var leftTrigger = new FontText(font, "left", new Rectangle(0.2f, 0.5f, 0.2f, 0.2f));
+			var rightTrigger = new FontText(font, "right", new Rectangle(0.7f, 0.5f, 0.2f, 0.2f));
 			new Command(pos => leftTrigger.Text = "Left Trigger = " + pos.X).Add(
 				new GamePadAnalogTrigger(GamePadAnalog.LeftTrigger));
 			new Command(pos => rightTrigger.Text = "Right Trigger = " + pos.X).Add(

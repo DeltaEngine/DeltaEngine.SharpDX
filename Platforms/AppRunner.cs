@@ -101,8 +101,9 @@ namespace DeltaEngine.Platforms
 
 		private void OnTimeout()
 		{
-			OnConnectionError("Content Service Connection " + settings.OnlineServiceIp + ":" +
-				settings.OnlineServicePort + " timed out.");
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+				OnConnectionError("Content Service Connection " + settings.OnlineServiceIp + ":" +
+					settings.OnlineServicePort + " timed out.");
 		}
 
 		private void OnError(string serverMessage)
@@ -151,7 +152,7 @@ namespace DeltaEngine.Platforms
 				WaitUntilContentFromOnlineServiceIsReady();
 			if (!ContentLoader.HasValidContentForStartup())
 			{
-				if (StackTraceExtensions.IsStartedFromNunitConsole())
+				if (StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 					throw new Exception("No local content available - Unable to continue: " + connectionError);
 				Window.ShowMessageBox("No local content available", "Unable to continue: " +
 					(connectionError ?? "No content found, please put content in the Content folder"),
@@ -260,7 +261,7 @@ namespace DeltaEngine.Platforms
 		{
 			Drawing.NumberOfDynamicVerticesDrawnThisFrame = 0;
 			Drawing.NumberOfDynamicDrawCallsThisFrame = 0;
-			if (Debugger.IsAttached || StackTraceExtensions.StartedFromNCrunch)
+			if (Debugger.IsAttached || StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 				entities.UpdateAndDrawAllEntities(DrawEverythingInCurrentLayer);
 			else
 				TryUpdateAndDrawAllEntities();
@@ -295,7 +296,7 @@ namespace DeltaEngine.Platforms
 				Logger.Error(exception);
 				if (exception.IsWeak())
 					return;
-				if (StackTraceExtensions.IsStartedFromNunitConsole())
+				if (StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 					throw;
 				DisplayMessageBoxAndCloseApp("Fatal Runtime Error", exception);
 			}
@@ -306,7 +307,7 @@ namespace DeltaEngine.Platforms
 			if (IsShowingMessageBoxClosedWithIgnore(title, exception))
 				return;
 			Dispose();
-			if (!StackTraceExtensions.StartedFromNCrunch)
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 				Environment.Exit((int)ExitCode.UpdateAndDrawTickFailed);
 		}
 

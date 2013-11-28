@@ -31,7 +31,7 @@ namespace Blocks
 			SetViewportBackground(material);
 		}
 
-		private const int Background = (int)RenderLayer.Background;
+		private const int Background = (int)BlocksRenderLayer.Background;
 
 		private void AddGrid()
 		{
@@ -85,7 +85,7 @@ namespace Blocks
 		{
 			Text = new FontText(ContentLoader.Load<Font>("Verdana12"), "", scoreWindow.DrawArea)
 			{
-				RenderLayer = (int)RenderLayer.Foreground
+				RenderLayer = (int)BlocksRenderLayer.Foreground
 			};
 		}
 

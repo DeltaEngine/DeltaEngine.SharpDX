@@ -42,7 +42,7 @@ namespace DeltaEngine.Platforms
 
 		private static IEnumerable<Assembly> TryLoadAllUnloadedAssemblies(Assembly[] loadedAssemblies)
 		{
-			if (StackTraceExtensions.StartedFromNCrunch)
+			if (StackTraceExtensions.ForceUseOfMockResolver())
 				return loadedAssemblies;
 			//ncrunch: no coverage start
 			var assemblies = new List<Assembly>(loadedAssemblies);

@@ -2,7 +2,6 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -23,15 +22,7 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void DragTouchToCreateRectangles()
 		{
-			var rectangle = new FilledRect(Rectangle.Unused, Color.GetRandomColor());
-			new Command((start, end, done) =>
-			//ncrunch: no coverage start
-			{
-				rectangle.DrawArea = Rectangle.FromCorners(start, end);
-				if (done)
-					rectangle = new FilledRect(Rectangle.Unused, Color.GetRandomColor());
-			}).Add(new TouchDragTrigger());
-			//ncrunch: no coverage end
+			MouseDragTriggerTests.DragToCreateRectangles(new TouchDragTrigger());
 		}
 
 		[Test, CloseAfterFirstFrame]

@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using DeltaEngine.Core;
 
 namespace DeltaEngine.Multimedia.Mocks
 {
@@ -13,7 +12,7 @@ namespace DeltaEngine.Multimedia.Mocks
 
 		protected override void LoadData(Stream fileData) {}
 
-		protected override void PlayNativeMusic(float volume)
+		protected override void PlayNativeMusic()
 		{
 			MusicStopCalled = false;
 		}
@@ -30,6 +29,8 @@ namespace DeltaEngine.Multimedia.Mocks
 		{
 			MusicStopCalled = true;
 		}
+
+		protected override void SetPlayingVolume(float value) {}
 
 		public override bool IsPlaying()
 		{

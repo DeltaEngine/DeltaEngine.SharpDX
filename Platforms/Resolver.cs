@@ -227,7 +227,7 @@ namespace DeltaEngine.Platforms
 			{
 				Logger.Error(ex);
 				if (Debugger.IsAttached || baseType == typeof(Window) ||
-					StackTraceExtensions.StartedFromNCrunch)
+					StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 					throw new ResolvingFailed(ex.InnerException ?? ex);
 				//ncrunch: no coverage start
 				ShowInitializationErrorBox(baseType, ex.InnerException ?? ex);
@@ -305,7 +305,7 @@ namespace DeltaEngine.Platforms
 			if (window.ShowMessageBox(Header, text, new[] { "Ignore", "Abort" }) != "Abort")
 				return;
 			Dispose();
-			if (!StackTraceExtensions.StartedFromNCrunch)
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 				Environment.Exit((int)AppRunner.ExitCode.InitializationError);
 		}
 

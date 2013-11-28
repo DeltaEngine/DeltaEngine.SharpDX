@@ -47,8 +47,11 @@ namespace DeltaEngine.Platforms.Tests
 		public void ExecuteCommandWithAnInvalidParameter()
 		{
 			string result = consoleCommands.ExecuteCommand("AddFloats 1 a");
-			Assert.AreEqual(
-				"Error: Can't process parameter no. 2: 'Input string was not in a correct format.'", result);
+			const string expectedEnglish =
+				"Error: Can't process parameter no. 2: 'Input string was not in a correct format.'";
+			const string expectedGerman =
+				"Error: Can't process parameter no. 2: 'Die Eingabezeichenfolge hat das falsche Format.'";
+			Assert.IsTrue(expectedEnglish.Equals(result) || expectedGerman.Equals(result));
 		}
 
 		[Test]

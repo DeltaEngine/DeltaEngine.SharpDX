@@ -14,27 +14,27 @@ namespace DeltaEngine.Multimedia
 		{
 			this.device = device;
 			Loop = false;
+			cachedVolume = Settings.Current.MusicVolume;
 		}
 
 		protected readonly SoundDevice device;
+		protected float cachedVolume;
 
 		public void Play()
 		{
 			device.RegisterCurrentMusic(this);
-			cachedVolume = Settings.Current.MusicVolume;
-			PlayNativeMusic(cachedVolume);
+			PlayNativeMusic();
+			SetPlayingVolume(cachedVolume);
 		}
-
-		protected float cachedVolume;
 
 		public void Play(float volume)
 		{
 			device.RegisterCurrentMusic(this);
-			PlayNativeMusic(volume);
-			cachedVolume = volume;
+			PlayNativeMusic();
+			Volume = volume;
 		}
 
-		protected abstract void PlayNativeMusic(float volume);
+		protected abstract void PlayNativeMusic();
 
 		public void Stop()
 		{
@@ -66,6 +66,19 @@ namespace DeltaEngine.Multimedia
 		}
 
 		public Action StreamFinished;
+
+		public float Volume
+		{
+			get { return cachedVolume; }
+			set
+			{
+				cachedVolume = value;
+				if (IsPlaying())
+					SetPlayingVolume(cachedVolume);
+			}
+		}
+
+		protected abstract void SetPlayingVolume(float value);
 
 		public bool Loop { protected get; set; }
 

@@ -23,6 +23,15 @@ namespace DeltaEngine.Input.Tests
 			Assert.AreEqual(State.Pressed, trigger.State);
 		}
 
+		[Test, CloseAfterFirstFrame]
+		public void CreateFromString()
+		{
+			var trigger = new TouchPositionTrigger("Pressed");
+			Assert.AreEqual(State.Pressed, trigger.State);
+			trigger = new TouchPositionTrigger("");
+			Assert.AreEqual(State.Pressing, trigger.State);
+		}
+
 		[Test]
 		public void InvokeTouch()
 		{

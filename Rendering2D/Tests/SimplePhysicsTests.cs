@@ -33,6 +33,7 @@ namespace DeltaEngine.Rendering2D.Tests
 				Duration = 1.0f
 			});
 			sprite.Start<SimplePhysics.Move>();
+			sprite.Start<SimplePhysics.KillAfterDurationReached>();
 			sprite.Color = Color.Red;
 			return sprite;
 		}

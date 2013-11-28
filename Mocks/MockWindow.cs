@@ -104,5 +104,7 @@ namespace DeltaEngine.Mocks
 		{
 			Logger.Info("Copied to mock clipboard: " + text);
 		}
+
+		public void Dispose() {}
 	}
 }

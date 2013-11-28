@@ -24,7 +24,7 @@ namespace DeltaEngine.Networking.Tests
 
 		private static void Pause()
 		{
-			if (!StackTraceExtensions.StartedFromNCrunch)
+			if (!StackTraceExtensions.IsStartedFromNCrunch())
 				Thread.Sleep(25); //ncrunch: no coverage
 		}
 
@@ -109,7 +109,7 @@ namespace DeltaEngine.Networking.Tests
 		[Test, CloseAfterFirstFrame]
 		public void WithTwoClientsWhenOneClientMessagesTheServerItIsEchoedToTheOtherClient()
 		{
-			if (!StackTraceExtensions.StartedFromNCrunch)
+			if (!StackTraceExtensions.IsStartedFromNCrunch())
 				return; //ncrunch: no coverage
 			var clientSession2 = Messaging.JoinSession(Address, Port);
 			clientSession2.SendMessage("welcome");
@@ -143,7 +143,7 @@ namespace DeltaEngine.Networking.Tests
 		[Test, CloseAfterFirstFrame]
 		public void WhenTwoServersExistMessagesAreSentToTheCorrectOne()
 		{
-			if (!StackTraceExtensions.StartedFromNCrunch)
+			if (!StackTraceExtensions.IsStartedFromNCrunch())
 				return; //ncrunch: no coverage
 			MessagingSession serverSession2 = Messaging.StartSession(Port + 1);
 			MessagingSession clientSession2 = Messaging.JoinSession(Address, Port + 1);

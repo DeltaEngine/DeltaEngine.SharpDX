@@ -18,23 +18,33 @@ namespace $safeprojectname$
 
 		public void CreateAppMenu()
 		{
-			topSegment = new Sprite(MainBg, Rectangle.Zero);
-			userStats = new Sprite(UserStatsMaterial, Rectangle.Zero);
-			topLocation = new Sprite(TopLocationMaterial, Rectangle.Zero);
+			mainBg = new Material(Shader.Position2DColorUV, "MainBg");
+			userStatsMaterial = new Material(Shader.Position2DColorUV, "ButtonUserStats");
+			topLocationMaterial = new Material(Shader.Position2DColorUV, "ButtonTopLocation");
+			topSegmentUserStatsMaterial = new Material(Shader.Position2DColorUV, "UserStatsBg");
+			userStatButtonPressedMaterial = new Material(Shader.Position2DColorUV,
+				"ButtonUserStatsPressed");
+			topSegmentTopLocationMaterial = new Material(Shader.Position2DColorUV, "TopLocationBg");
+			topLocationButtonPressedMaterial = new Material(Shader.Position2DColorUV,
+				"ButtonTopLocationsPressed");
+			topSegment = new Sprite(mainBg, Rectangle.Zero);
+			userStats = new Sprite(userStatsMaterial, Rectangle.Zero);
+			topLocation = new Sprite(topLocationMaterial, Rectangle.Zero);
 			PositionControls();
 			new Command(Command.Click, ButtonClick);
 			ScreenSpace.Current.ViewportSizeChanged += PositionControls;
 		}
 
+		private Material mainBg;
+		private Material userStatsMaterial;
+		private Material topLocationMaterial;
+		private Material topSegmentUserStatsMaterial;
+		private Material userStatButtonPressedMaterial;
+		private Material topSegmentTopLocationMaterial;
+		private Material topLocationButtonPressedMaterial;
 		private Sprite topSegment;
 		private Sprite userStats;
 		private Sprite topLocation;
-
-		private static readonly Material MainBg = new Material(Shader.Position2DColorUV, "MainBg");
-		private static readonly Material UserStatsMaterial = new Material(Shader.Position2DColorUV,
-			"ButtonUserStats");
-		private static readonly Material TopLocationMaterial = new Material(
-			Shader.Position2DColorUV, "ButtonTopLocation");
 
 		private void PositionControls()
 		{
@@ -67,27 +77,16 @@ namespace $safeprojectname$
 
 		private void ClickUserStatButton()
 		{
-			topSegment.Material = TopSegmentUserStatsMaterial;
-			userStats.Material = UserStatButtonPressedMaterial;
-			topLocation.Material = TopLocationMaterial;
+			topSegment.Material = topSegmentUserStatsMaterial;
+			userStats.Material = userStatButtonPressedMaterial;
+			topLocation.Material = topLocationMaterial;
 		}
-
-		private static readonly Material TopSegmentUserStatsMaterial =
-			new Material(Shader.Position2DColorUV, "UserStatsBg");
-
-		private static readonly Material UserStatButtonPressedMaterial =
-			new Material(Shader.Position2DColorUV, "ButtonUserStatsPressed");
 
 		private void ClickTopLocationButton()
 		{
-			topSegment.Material = TopSegmentTopLocationMaterial;
-			userStats.Material = UserStatsMaterial;
-			topLocation.Material = TopLocationButtonPressedMaterial;
+			topSegment.Material = topSegmentTopLocationMaterial;
+			userStats.Material = userStatsMaterial;
+			topLocation.Material = topLocationButtonPressedMaterial;
 		}
-
-		private static readonly Material TopSegmentTopLocationMaterial =
-			new Material(Shader.Position2DColorUV, "TopLocationBg");
-		private static readonly Material TopLocationButtonPressedMaterial =
-			new Material(Shader.Position2DColorUV, "ButtonTopLocationsPressed");
 	}
 }

@@ -19,7 +19,8 @@ namespace DeltaEngine.Content
 				throw new ContentNameMissing();
 #if DEBUG
 			//ncrunch: no coverage start
-			if (!StackTraceExtensions.StartedFromNCrunch && !contentName.StartsWith("<Generated"))
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole &&
+				!contentName.StartsWith("<Generated"))
 			{
 				StackFrame[] frames = new StackTrace().GetFrames();
 				if (frames != null && frames.All(f => f.GetMethod().DeclaringType != typeof(ContentLoader)))

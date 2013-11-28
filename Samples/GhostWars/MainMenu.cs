@@ -33,7 +33,7 @@ namespace GhostWars
 				trees.RemoveTrees();
 			AddMenuBackground();
 			AddMenuOption(OnHowToPlay, "HowToPlay", new Vector2D(0.5f, 0.50f));
-			AddMenuOption(OnSingleplayer, "SinglePlayer", new Vector2D(0.5f, 0.57f));
+			AddMenuOption(OnSingleplayer, "Singleplayer", new Vector2D(0.5f, 0.57f));
 			AddMenuOption(OnCredits, "Credits", new Vector2D(0.5f, 0.64f));
 		}
 
@@ -81,7 +81,7 @@ namespace GhostWars
 					new MouseMovementTrigger()));
 		}
 
-		private void AddSubmenuBackButton()
+		private void AddSubMenuBackButton()
 		{
 			var buttonRect = new Rectangle(ScreenSpace.Current.Viewport.Left + 0.025f,
 				ScreenSpace.Current.Viewport.Bottom - 0.075f, 0.125f, 0.05f);
@@ -121,7 +121,7 @@ namespace GhostWars
 		{
 			Clear();
 			AddEntity(new Sprite("GhostWarsHowToPlay", ScreenSpace.Current.Viewport));
-			AddSubmenuBackButton();
+			AddSubMenuBackButton();
 		}
 
 		private void OnSingleplayer()
@@ -138,7 +138,7 @@ namespace GhostWars
 			AddLevelSelection(2, clickAreas[1]);
 			AddLevelSelection(3, clickAreas[2]);
 			AddEntity(new Command(Command.Click, position => SinglePlayerMenuClick(position, clickAreas)));
-			AddSubmenuBackButton();
+			AddSubMenuBackButton();
 		}
 
 		private void AddLevelSelection(int levelNumber, Rectangle mapDrawArea)
@@ -224,7 +224,7 @@ namespace GhostWars
 		{
 			Clear();
 			AddEntity(new Sprite("CreditsBackground", ScreenSpace.Current.Viewport));
-			AddSubmenuBackButton();
+			AddSubMenuBackButton();
 		}
 
 		public static GameState State { get; set; }

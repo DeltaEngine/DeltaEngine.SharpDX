@@ -14,14 +14,19 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void DragMouseToCreateRectangles()
 		{
+			DragToCreateRectangles(new MouseDragTrigger());
+		}
+
+		internal static void DragToCreateRectangles(InputTrigger trigger)
+		{
 			var rectangle = new FilledRect(Rectangle.Unused, Color.GetRandomColor());
-			//ncrunch: no coverage start
 			new Command((start, end, done) =>
+			//ncrunch: no coverage start
 			{
 				rectangle.DrawArea = Rectangle.FromCorners(start, end);
 				if (done)
 					rectangle = new FilledRect(Rectangle.Unused, Color.GetRandomColor());
-			}).Add(new MouseDragTrigger());
+			}).Add(trigger);
 			//ncrunch: no coverage end
 		}
 

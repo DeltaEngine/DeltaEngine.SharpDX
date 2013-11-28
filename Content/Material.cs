@@ -195,7 +195,14 @@ namespace DeltaEngine.Content
 				return; // ncrunch: no coverage
 			DetermineUseCaseData(imageOrAnimationName);
 			if (DiffuseMap != null)
-				DiffuseMap.BlendMode = MetaData.Get("BlendMode", "Normal").TryParse(BlendMode.Normal);
+				try
+				{
+					DiffuseMap.BlendMode = MetaData.Get("BlendMode", "Normal").TryParse(BlendMode.Normal);
+				}
+				catch (Exception)
+				{
+					DiffuseMap.BlendMode = BlendMode.Normal;
+				}
 			LoadLightMap();
 		}
 

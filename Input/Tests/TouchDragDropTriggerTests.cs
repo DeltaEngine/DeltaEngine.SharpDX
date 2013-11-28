@@ -61,6 +61,14 @@ namespace DeltaEngine.Input.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
+		public void CreateFromString()
+		{
+			var trigger = new TouchDragDropTrigger("0.1 0.2 0.3 0.4");
+			Assert.AreEqual(new Rectangle(0.1f, 0.2f, 0.3f, 0.4f), trigger.StartArea);
+			Assert.AreEqual(Vector2D.Unused, trigger.StartDragPosition);
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void DragDropCloseToStartPointWillDoNothing()
 		{
 			Vector2D startPoint = -Vector2D.One;

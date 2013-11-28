@@ -30,8 +30,9 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void GetInputCommands()
 		{
-			var inputCommands = ContentLoader.Load<InputCommands>("InputCommands");
-			Assert.AreEqual(ContentType.InputCommand, inputCommands.MetaData.Type);
+			var inputCommands = ContentLoader.Load<InputCommands>("DefaultCommands");
+			if (inputCommands.MetaData != null)
+				Assert.AreEqual(ContentType.InputCommand, inputCommands.MetaData.Type);
 		}
 	}
 }

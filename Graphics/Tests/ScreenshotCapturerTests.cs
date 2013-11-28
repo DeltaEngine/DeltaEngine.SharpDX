@@ -19,7 +19,7 @@ namespace DeltaEngine.Graphics.Tests
 				Resolve<Device>().Present();
 				var capturer = Resolve<ScreenshotCapturer>();
 				capturer.MakeScreenshot(ScreenshotFileName);
-				if (!StackTraceExtensions.StartedFromNCrunch)
+				if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 					Process.Start(ScreenshotFileName); //ncrunch: no coverage
 				else
 					Assert.AreEqual(ScreenshotFileName, (capturer as MockScreenshotCapturer).LastFilename);

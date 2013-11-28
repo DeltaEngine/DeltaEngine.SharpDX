@@ -14,6 +14,7 @@ namespace DeltaEngine.Tutorials.Entities09Enemies
 			var data = new SimplePhysics.Data { Gravity = new Vector2D(0.0f, 0.1f), Duration = 10 };
 			Add(data);
 			Start<SimplePhysics.Move>();
+			Start<SimplePhysics.KillAfterDurationReached>();
 		}
 	}
 }

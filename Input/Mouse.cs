@@ -40,6 +40,7 @@ namespace DeltaEngine.Input
 		private void InvokeTriggersForEntity(Entity entity)
 		{
 			HandleTriggerOfType<MouseButtonTrigger>(entity);
+			HandleTriggerOfType<MouseDoubleClickTrigger>(entity);
 			HandleTriggerOfType<MouseDragTrigger>(entity);
 			HandleTriggerOfType<MouseDragDropTrigger>(entity);
 			HandleTriggerOfType<MouseHoldTrigger>(entity);

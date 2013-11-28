@@ -180,7 +180,7 @@ namespace DeltaEngine.Platforms.Windows
 		private static extern void SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int left, int top,
 			int width, int height, uint flags);
 
-		private void SetResolution(Size displaySize)
+		protected virtual void SetResolution(Size displaySize)
 		{
 			ResizeCentered(displaySize);
 			if (FullscreenChanged != null)
@@ -224,7 +224,6 @@ namespace DeltaEngine.Platforms.Windows
 			{
 				if (remDisabledShowCursor != value)
 					return;
-
 				remDisabledShowCursor = !value;
 				if (remDisabledShowCursor)
 					Cursor.Hide();
@@ -235,9 +234,9 @@ namespace DeltaEngine.Platforms.Windows
 
 		private bool remDisabledShowCursor;
 
-		public string ShowMessageBox(string caption, string message, string[] buttons)
+		public virtual string ShowMessageBox(string caption, string message, string[] buttons)
 		{
-			if (StackTraceExtensions.IsStartedFromNunitConsole())
+			if (StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 				throw new Exception(caption + " " + message);
 			var buttonCombination = MessageBoxButtons.OK;
 			if (buttons.Contains("Cancel"))

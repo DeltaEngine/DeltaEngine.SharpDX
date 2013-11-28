@@ -7,13 +7,13 @@
 	{
 		private SetProject() {}
 
-		public SetProject(string projectName, ProjectPermissions permissions)
+		public SetProject(string name, ProjectPermissions permissions)
 		{
-			ProjectName = projectName;
+			Name = name;
 			Permissions = permissions;
 		}
 
-		public string ProjectName { get; private set; }
+		public string Name { get; private set; }
 		public ProjectPermissions Permissions { get; private set; }
 	}
 }

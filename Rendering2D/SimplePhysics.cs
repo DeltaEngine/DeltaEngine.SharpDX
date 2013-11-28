@@ -42,7 +42,6 @@ namespace DeltaEngine.Rendering2D
 
 		/// <summary>
 		/// Causes an Entity2D to move and fall under gravity.
-		/// When the duration is complete it removes the Entity from the Entity System
 		/// </summary>
 		public class Move : UpdateBehavior
 		{
@@ -59,6 +58,25 @@ namespace DeltaEngine.Rendering2D
 			{
 				physics.Velocity += physics.Gravity * Time.Delta;
 				entity.Center += physics.Velocity * Time.Delta;
+			}
+		}
+
+		/// <summary>
+		/// When the duration is complete it removes the Entity from the Entity System.
+		/// </summary>
+		public class KillAfterDurationReached : UpdateBehavior
+		{
+			public KillAfterDurationReached()
+				: base(Priority.First) {}
+
+			public override void Update(IEnumerable<Entity> entities)
+			{
+				foreach (Entity2D entity in entities)
+					UpdateDuration(entity, entity.Get<Data>());
+			}
+
+			private static void UpdateDuration(Entity2D entity, Data physics)
+			{
 				physics.Elapsed += Time.Delta;
 				if (physics.Duration > 0.0f && physics.Elapsed >= physics.Duration)
 					entity.Dispose();
