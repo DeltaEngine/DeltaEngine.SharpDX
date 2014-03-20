@@ -45,9 +45,9 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\WindowsSlimDX\DeltaEngine.WindowsSlimDX.csproj">
-      <Project>{C12EBE75-67B5-4257-8A6E-C844601746E8}</Project>
-      <Name>DeltaEngine.WindowsSlimDX</Name>
+    <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
+      <Project>{05569371-855C-4667-8228-20491337C431}</Project>
+      <Name>DeltaEngine.WindowsSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

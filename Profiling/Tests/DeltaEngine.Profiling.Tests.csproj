@@ -52,9 +52,9 @@
       <Project>{462DC673-E132-4A82-B49B-EC353D25B409}</Project>
       <Name>DeltaEngine.Profiling</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
-      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
-      <Name>DeltaEngine.TestWithSlimDX</Name>
+    <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
+      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
+      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

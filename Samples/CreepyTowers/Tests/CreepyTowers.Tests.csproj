@@ -99,9 +99,9 @@
       <Project>{448B33E7-759E-4A40-B9A5-3CFD1E1F9446}</Project>
       <Name>CreepyTowers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
-      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
-      <Name>DeltaEngine.TestWithSlimDX</Name>
+    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
+      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
+      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

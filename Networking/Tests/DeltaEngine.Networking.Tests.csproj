@@ -59,9 +59,9 @@
       <Project>{1797C45C-F96B-4F95-BAAC-400910CAB473}</Project>
       <Name>DeltaEngine.Networking.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
-      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
-      <Name>DeltaEngine.TestWithSlimDX</Name>
+    <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
+      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
+      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

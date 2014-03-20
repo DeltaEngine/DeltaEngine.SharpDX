@@ -75,9 +75,9 @@
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
       <Name>DeltaEngine.Scenes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
-      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
-      <Name>DeltaEngine.TestWithSlimDX</Name>
+    <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
+      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
+      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

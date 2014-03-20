@@ -49,10 +49,6 @@
       <Project>{EA4135BF-0FFF-4714-ACC1-DEBB8381739F}</Project>
       <Name>DeltaEngine.Physics3D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\WindowsSlimDX\DeltaEngine.WindowsSlimDX.csproj">
-      <Project>{C12EBE75-67B5-4257-8A6E-C844601746E8}</Project>
-      <Name>DeltaEngine.WindowsSlimDX</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
@@ -68,6 +64,10 @@
     <ProjectReference Include="..\..\Rendering3D\Shapes\DeltaEngine.Rendering3D.Shapes.csproj">
       <Project>{C9CB5DFF-6BF8-4BC8-9148-FBC85FF5A203}</Project>
       <Name>DeltaEngine.Rendering3D.Shapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
+      <Project>{05569371-855C-4667-8228-20491337C431}</Project>
+      <Name>DeltaEngine.WindowsSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

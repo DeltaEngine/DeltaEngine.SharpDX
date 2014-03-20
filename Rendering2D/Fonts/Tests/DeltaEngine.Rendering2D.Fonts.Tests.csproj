@@ -67,9 +67,9 @@
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
-      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
-      <Name>DeltaEngine.TestWithSlimDX</Name>
+    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
+      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
+      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -75,9 +75,9 @@
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
       <Name>DeltaEngine.Scenes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\WindowsSlimDX\DeltaEngine.WindowsSlimDX.csproj">
-      <Project>{C12EBE75-67B5-4257-8A6E-C844601746E8}</Project>
-      <Name>DeltaEngine.WindowsSlimDX</Name>
+    <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
+      <Project>{05569371-855C-4667-8228-20491337C431}</Project>
+      <Name>DeltaEngine.WindowsSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
