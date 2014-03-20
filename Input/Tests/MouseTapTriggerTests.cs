@@ -8,44 +8,33 @@ namespace DeltaEngine.Input.Tests
 {
 	public class MouseTapTriggerTests : TestWithMocksOrVisually
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			mouse = Resolve<Mouse>() as MockMouse;
-			if (mouse != null)
-				mouse.SetPosition(Vector2D.Zero);
-			AdvanceTimeAndUpdateEntities();
-		}
-
-		private MockMouse mouse;
-
 		[Test, CloseAfterFirstFrame]
 		public void Tap()
 		{
+			var mouse = Resolve<Mouse>() as MockMouse;
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			bool wasTapped = false;
 			new Command(() => wasTapped = true).Add(new MouseTapTrigger(MouseButton.Left));
-			SetMouseState(State.Pressing, Vector2D.Half);
+			SetMouseState(mouse, State.Pressing, Vector2D.Half);
 			Assert.IsFalse(wasTapped);
-			SetMouseState(State.Releasing, Vector2D.Half);
+			SetMouseState(mouse, State.Releasing, Vector2D.Half);
 			Assert.IsTrue(wasTapped);
 		}
 
-		private void SetMouseState(State state, Vector2D position)
+		private void SetMouseState(MockMouse mouse, State state, Vector2D position)
 		{
-			if (mouse == null)
-				return; //ncrunch: no coverage
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
 
-		[Test, CloseAfterFirstFrame]
-		public void CreateFromString()
+		[Test]
+		public void CreateMouseTapTriggerBySendingButtonName()
 		{
-			var trigger = new MouseTapTrigger("Right");
-			Assert.AreEqual(MouseButton.Right, trigger.Button);
-			trigger = new MouseTapTrigger("");
-			Assert.AreEqual(MouseButton.Left, trigger.Button);
+			var trigger = new MouseTapTrigger(MouseButton.Middle.ToString());
+			Assert.AreEqual(MouseButton.Middle, trigger.Button);
 		}
+
 	}
 }

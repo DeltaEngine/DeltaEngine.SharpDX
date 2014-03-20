@@ -32,12 +32,17 @@ namespace DeltaEngine.Tests.Extensions
 		{
 			try
 			{
-				throw new InvalidOperationException();
-			}
+				TryMakeSureFatalExceptionsAreRethrown();
+			} // ncrunch: no coverage
 			catch (Exception ex)
 			{
 				Assert.IsTrue(ex.IsFatal());
 			}
+		}
+
+		private static void TryMakeSureFatalExceptionsAreRethrown()
+		{
+			throw new InvalidOperationException();
 		}
 
 		[Test]
@@ -45,13 +50,18 @@ namespace DeltaEngine.Tests.Extensions
 		{
 			try
 			{
-				throw new ArgumentNullException();
-			}
+				TryRethrowWeakExceptionIfNoDebuggerIsAttached();
+			} // ncrunch: no coverage
 			catch (Exception ex)
 			{
 				// This will fail if debugger is attached, but that is expected
 				Assert.IsTrue(ex.IsWeak());
 			}
+		}
+
+		private static void TryRethrowWeakExceptionIfNoDebuggerIsAttached()
+		{
+			throw new ArgumentNullException();
 		}
 
 		[Test]

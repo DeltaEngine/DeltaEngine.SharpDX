@@ -22,6 +22,7 @@ namespace DeltaEngine.Core
 
 		protected bool wasChanged;
 		public bool CustomSettingsExists { get; protected set; }
+		public virtual void LoadDefaultSettings() {}
 
 		public static string GetMyDocumentsAppFolder()
 		{
@@ -43,7 +44,14 @@ namespace DeltaEngine.Core
 
 		public static Size DefaultResolution
 		{
-			get { return ExceptionExtensions.IsDebugMode ? new Size(640, 360) : new Size(1280, 720); }
+			get
+			{
+				if (StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+					return new Size(320, 180);
+				//ncrunch: no coverage start
+				return ExceptionExtensions.IsDebugMode ? new Size(640, 360) : new Size(1280, 720);
+				//ncrunch: no coverage end
+			}
 		}
 
 		public abstract void SetValue(string name, object value);
@@ -90,9 +98,12 @@ namespace DeltaEngine.Core
 			set { SetValue("ColorBufferBits", value); }
 		}
 
+		/// <summary>
+		/// 4 works on most frameworks, but some have AA disabled, use 0 to keep all frameworks in sync
+		/// </summary>
 		public int AntiAliasingSamples
 		{
-			get { return GetValue("AntiAliasingSamples", 4); }
+			get { return GetValue("AntiAliasingSamples", 0); }
 			set { SetValue("AntiAliasingSamples", value); }
 		}
 
@@ -137,6 +148,12 @@ namespace DeltaEngine.Core
 		public bool UseVSync
 		{
 			get { return LimitFramerate > 0 && LimitFramerate <= 120; }
+		}
+
+		public bool UseOnlineLogging
+		{
+			get { return GetValue("UseOnlineLogging", true); }
+			set { SetValue("UseOnlineLogging", value); }
 		}
 	}
 }

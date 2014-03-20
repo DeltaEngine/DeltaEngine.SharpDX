@@ -6,14 +6,14 @@ namespace DeltaEngine.Input.Windows.Tests
 	public class WindowsKeyboardTests : TestWithMocksOrVisually
 	{
 		[SetUp]
-		public void CreateWindowsKeayboard()
+		public void CreateWindowsKeyboard()
 		{
 			keyboard = new WindowsKeyboard();
 		}
 
 		private WindowsKeyboard keyboard;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateKeyboard()
 		{
 			var trigger = new KeyTrigger(Key.A);
@@ -21,14 +21,14 @@ namespace DeltaEngine.Input.Windows.Tests
 			AdvanceTimeAndUpdateEntities();
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DisposeSetsUnavailable()
 		{
 			keyboard.Dispose();
 			Assert.IsFalse(keyboard.IsAvailable);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateKeyStates()
 		{
 			var mockKeyboard = new MockWindowsKeyboard();

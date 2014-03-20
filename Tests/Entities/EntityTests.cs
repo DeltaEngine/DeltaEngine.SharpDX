@@ -129,8 +129,6 @@ namespace DeltaEngine.Tests.Entities
 			{
 				Set(1 + Get<int>());
 			}
-
-			public bool IsPauseable { get { return true; } }
 		}
 
 		[Test]

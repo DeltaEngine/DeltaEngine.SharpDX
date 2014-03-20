@@ -21,6 +21,8 @@ namespace DeltaEngine.Logging
 
 		public override void Write(MessageType messageType, string message)
 		{
+			if(!Settings.Current.UseOnlineLogging)
+				return;
 			if (message.StartsWith("Server Error: ") || message.StartsWith("No content available."))
 				return;
 			if (!connection.IsConnected)

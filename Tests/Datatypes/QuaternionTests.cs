@@ -168,5 +168,23 @@ namespace DeltaEngine.Tests.Datatypes
 			var rotationQuaternion = Quaternion.FromRotationMatrix(rotationMatrix);
 			Assert.AreEqual(eulerAngles, rotationQuaternion.ToEuler());
 		}
+
+		[Test]
+		public void CalculatedAxesAndAnglesCorrect()
+		{
+			VerifyAxisAngle(Vector3D.UnitZ, 90);
+			VerifyAxisAngle(new Vector3D(-1.0f, 2.3f, 4.5f), 270);
+		}
+
+		private static void VerifyAxisAngle(Vector3D axis, float angle)
+		{
+			axis.Normalize();
+			var quaternion = Quaternion.FromAxisAngle(axis, angle);
+			Assert.AreEqual(angle, quaternion.CalculateAxisAngle(), 0.0001f);
+			var calculatedAxis = quaternion.CalculateRotationAxis();
+			Assert.AreEqual(axis.X, calculatedAxis.X, 0.0001f);
+			Assert.AreEqual(axis.Y, calculatedAxis.Y, 0.0001f);
+			Assert.AreEqual(axis.Z, calculatedAxis.Z, 0.0001f);
+		}
 	}
 }

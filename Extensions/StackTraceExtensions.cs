@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -32,6 +33,11 @@ namespace DeltaEngine.Extensions
 		public static bool IsStartedFromNCrunch()
 		{
 			return Environment.GetEnvironmentVariable("NCrunch") == "1";
+		}
+
+		public static bool StartedFromNUnitConsoleButNotFromNCrunch
+		{
+			get { return StartedFromNCrunchOrNunitConsole && !IsStartedFromNCrunch(); }
 		}
 
 		/// <summary>
@@ -117,9 +123,9 @@ namespace DeltaEngine.Extensions
 
 		private static string GetNamespaceNameFromClassName(string fullClassName)
 		{
-			var result = System.IO.Path.GetFileNameWithoutExtension(fullClassName);
+			var result = Path.GetFileNameWithoutExtension(fullClassName);
 			while (result.Contains(".Tests."))
-				result = System.IO.Path.GetFileNameWithoutExtension(result); //ncrunch: no coverage
+				result = Path.GetFileNameWithoutExtension(result); //ncrunch: no coverage
 			return result;
 		}
 

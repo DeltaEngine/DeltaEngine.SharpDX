@@ -52,17 +52,17 @@
       <Project>{BF968F20-246B-4F86-BB7B-377FD4B47A9F}</Project>
       <Name>DeltaEngine.Platforms.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DeltaEngine.Input.csproj">
+    <ProjectReference Include="..\..\..\Input\DeltaEngine.Input.csproj">
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Input.Windows.csproj">
+    <ProjectReference Include="..\..\..\Input\Windows\DeltaEngine.Input.Windows.csproj">
       <Project>{C0D2430E-714D-476C-80E7-5C80A7FA68EE}</Project>
       <Name>DeltaEngine.Input.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
+    <ProjectReference Include="..\..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
+      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
+      <Name>DeltaEngine.TestWithSlimDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

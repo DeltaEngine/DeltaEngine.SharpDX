@@ -13,7 +13,7 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		[Test]
 		public void SquareWindowWithQuadraticSpace()
 		{
-			new QuadraticScreenSpace(window);
+			ScreenSpace.Current = new QuadraticScreenSpace(window);
 			window.ViewportPixelSize = new Size(100, 100);
 			Assert.AreEqual(Vector2D.Zero, ScreenSpace.Current.TopLeft);
 			Assert.AreEqual(Vector2D.One, ScreenSpace.Current.BottomRight);
@@ -150,11 +150,11 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		[Test]
 		public void TestAspectRatio()
 		{
-			new QuadraticScreenSpace(window);
+			var screen = new QuadraticScreenSpace(window);
 			window.ViewportPixelSize = new Size(800, 800);
-			Assert.AreEqual(1f, ScreenSpace.Current.AspectRatio);
+			Assert.AreEqual(1f, screen.AspectRatio);
 			window.ViewportPixelSize = new Size(1920, 1080);
-			Assert.AreEqual(0.5625f, ScreenSpace.Current.AspectRatio);
+			Assert.AreEqual(0.5625f, screen.AspectRatio);
 		}
 	}
 }

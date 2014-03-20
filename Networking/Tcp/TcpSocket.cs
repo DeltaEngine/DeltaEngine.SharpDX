@@ -38,8 +38,8 @@ namespace DeltaEngine.Networking.Tcp
 		internal const int ReceiveBufferSize = 65536;
 		private readonly DataCollector dataCollector;
 		private bool isDisposed;
-		public float Timeout { get; set; }
-		private const float DefaultTimeout = 3.0f;
+		public float Timeout { get; private set; }
+		private const float DefaultTimeout = 5.0f;
 
 		private void OnObjectFinished(MessageData dataContainer)
 		{
@@ -51,7 +51,7 @@ namespace DeltaEngine.Networking.Tcp
 				object receivedMessage;
 				try
 				{
-					receivedMessage = dataReader.Create();
+					receivedMessage = TryReceiveMessage(dataReader);
 				}
 				catch (Exception ex)
 				{
@@ -63,6 +63,11 @@ namespace DeltaEngine.Networking.Tcp
 				else
 					throw new NobodyIsUsingTheDataReceivedEvent(receivedMessage);
 			}
+		}
+
+		private static object TryReceiveMessage(BinaryReader dataReader)
+		{
+			return dataReader.Create();
 		}
 
 		public event Action<object> DataReceived;
@@ -96,6 +101,7 @@ namespace DeltaEngine.Networking.Tcp
 
 		public class UnableToConnectSocketIsAlreadyInUse : Exception {}
 
+		protected event Action TimedOut;
 		private string connectionTargetAddress;
 
 		private void TryConnect(EndPoint targetAddress)
@@ -106,13 +112,16 @@ namespace DeltaEngine.Networking.Tcp
 			if (TimedOut != null)
 				ThreadExtensions.Start(() =>
 				{
-					Thread.Sleep((int)(Timeout * 1000));
-					if (IsConnected)
+					if(waitForTimeoutHandle.WaitOne((int)(Timeout * 1000)))
+						return;
+					if (IsConnected || isDisposed)
 						return;
 					TimedOut();
 					Dispose();
 				});
 		}
+
+		private readonly AutoResetEvent waitForTimeoutHandle = new AutoResetEvent(false);
 
 		private void SocketConnectionComplete(object sender, SocketAsyncEventArgs socketAsyncEventArgs)
 		{
@@ -129,8 +138,7 @@ namespace DeltaEngine.Networking.Tcp
 		}
 
 		public event Action Connected;
-		protected event Action TimedOut;
-
+		
 		/// <summary>
 		/// Send any object to the receiving side. When byte data is big enough and compression is
 		/// allowed (not already compressed file data) the data will be send compressed via Zip.
@@ -139,7 +147,7 @@ namespace DeltaEngine.Networking.Tcp
 		{
 			try
 			{
-				SendOrEnqueueData(data, allowToCompressMessage);
+				TrySendOrEnqueueData(data, allowToCompressMessage);
 			}
 			catch (SocketException)
 			{
@@ -147,7 +155,7 @@ namespace DeltaEngine.Networking.Tcp
 			}
 		}
 
-		private void SendOrEnqueueData(object data, bool allowToCompressMessage)
+		private void TrySendOrEnqueueData(object data, bool allowToCompressMessage)
 		{
 			lock (syncObject)
 			{
@@ -210,13 +218,18 @@ namespace DeltaEngine.Networking.Tcp
 		{
 			try
 			{
-				while (messages.Count > 0)
-					SendDataThroughNativeSocket(messages.Dequeue(), true);
+				TrySendDataThroughNativeSocket();
 			}
 			catch (Exception ex)
 			{
 				Logger.Warning("Failed to send all messages in queue: " + ex.Message);
 			}
+		}
+
+		private void TrySendDataThroughNativeSocket()
+		{
+			while (messages.Count > 0)
+				SendDataThroughNativeSocket(messages.Dequeue(), true);
 		}
 
 		public void WaitForData()
@@ -225,12 +238,17 @@ namespace DeltaEngine.Networking.Tcp
 				return;
 			try
 			{
-				nativeSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivingBytes, null);
+				TryBeginReceive();
 			}
 			catch (SocketException)
 			{
 				Logger.Warning("Server Error: occurred when setting the socket to receive data");
 			}
+		}
+
+		private void TryBeginReceive()
+		{
+			nativeSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivingBytes, null);
 		}
 
 		private void ReceivingBytes(IAsyncResult asyncResult)
@@ -280,6 +298,7 @@ namespace DeltaEngine.Networking.Tcp
 				return;
 			isDisposed = true;
 			nativeSocket.Close();
+			waitForTimeoutHandle.Set();
 			if (Disconnected != null)
 				Disconnected();
 		}

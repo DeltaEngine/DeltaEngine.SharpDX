@@ -39,27 +39,19 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Graphics\DeltaEngine.Graphics.csproj">
-      <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
-      <Name>DeltaEngine.Graphics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering2D\Mocks\DeltaEngine.Rendering2D.Mocks.csproj">
-      <Project>{27C9A179-531F-41FB-8257-8396061C751B}</Project>
-      <Name>DeltaEngine.Rendering2D.Mocks</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rendering2D\Particles\DeltaEngine.Rendering2D.Particles.csproj">
-      <Project>{E3385412-7C8E-4A11-AA80-798F9FF89EFE}</Project>
-      <Name>DeltaEngine.Rendering2D.Particles</Name>
+    <ProjectReference Include="..\..\Rendering3D\Particles\DeltaEngine.Rendering3D.Particles.csproj">
+      <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
+      <Name>DeltaEngine.Rendering3D.Particles</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
       <Name>DeltaEngine.Scenes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xml\DeltaEngine.Content.Xml.csproj">
+    <ProjectReference Include="..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
       <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
       <Name>DeltaEngine.Content.Xml</Name>
     </ProjectReference>

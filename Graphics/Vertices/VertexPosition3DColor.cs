@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Graphics.Vertices
@@ -6,6 +7,7 @@ namespace DeltaEngine.Graphics.Vertices
 	/// <summary>
 	/// Simplest vertex format with just 3D positions and vertex colors (12 + 4 bytes).
 	/// </summary>
+	[DebuggerDisplay("VertexPosition3DColor({Position}, {Color})")]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexPosition3DColor : Lerp<VertexPosition3DColor>, Vertex
 	{

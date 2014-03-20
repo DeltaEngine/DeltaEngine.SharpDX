@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Runtime.InteropServices;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
@@ -10,9 +11,11 @@ namespace DeltaEngine.Datatypes
 	/// Min and max vector for a 3D bounding box. Can also be used to calculate a BoundingSphere.
 	/// </summary>
 	[DebuggerDisplay("BoundingBox(Min={Min}, Max={Max})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct BoundingBox : IEquatable<BoundingBox>
 	{
 		public BoundingBox(Vector3D min, Vector3D max)
+			: this()
 		{
 			Min = min;
 			Max = max;
@@ -22,6 +25,7 @@ namespace DeltaEngine.Datatypes
 		public Vector3D Max;
 
 		public BoundingBox(IList<Vector3D> points)
+			: this()
 		{
 			if (points == null || points.Count == 0)
 				throw new NoPointsSpecified();

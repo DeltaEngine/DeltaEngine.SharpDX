@@ -22,7 +22,9 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void InvokeTouch()
 		{
-			var touch = Resolve<MockTouch>();
+			var touch = Resolve<Touch>() as MockTouch;
+			if (touch == null)
+				return; //ncrunch: no coverage
 			var trigger = new TouchTapTrigger();
 			bool wasInvoked = false;
 			new Command(() => wasInvoked = true).Add(trigger);
@@ -33,12 +35,11 @@ namespace DeltaEngine.Input.Tests
 			Assert.IsTrue(wasInvoked);
 		}
 
-		[Test, CloseAfterFirstFrame]
-		public void CreateFromString()
+		[Test]
+		public void TouchTapTrigger()
 		{
-			Assert.DoesNotThrow(() => new TouchTapTrigger(""));
 			Assert.Throws<TouchTapTrigger.TouchTapTriggerHasNoParameters>(
-				() => new TouchTapTrigger("Right"));
+				() => new TouchTapTrigger("NotAnEmptyString"));
 		}
 	}
 }

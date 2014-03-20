@@ -18,7 +18,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			var components = new List<object>();
 			components.Add(Rectangle.One);
 			components.Add(true);
-			var material = new Material(Shader.Position2DUV, "DeltaEngineLogo");
+			var material = new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo");
 			components.Add(material);
 			components.Add(material.DiffuseMap.BlendMode);
 			components.Add(new RenderingData());

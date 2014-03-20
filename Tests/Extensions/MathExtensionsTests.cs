@@ -1,4 +1,5 @@
-﻿using DeltaEngine.Extensions;
+﻿using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Extensions
@@ -162,6 +163,15 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.AreEqual(180, MathExtensions.WrapRotationToMinus180ToPlus180(180));
 			Assert.AreEqual(-90, MathExtensions.WrapRotationToMinus180ToPlus180(270));
 			Assert.AreEqual(0, MathExtensions.WrapRotationToMinus180ToPlus180(720));
+		}
+
+		[Test]
+		public void LineToLineIntersection()
+		{
+			Assert.IsTrue(MathExtensions.IsLineIntersectingWith(-Vector2D.UnitX, Vector2D.UnitX,
+				-Vector2D.UnitY, Vector2D.UnitY));
+			Assert.IsFalse(MathExtensions.IsLineIntersectingWith(-Vector2D.UnitX, Vector2D.UnitX,
+				new Vector2D(-1, 1), new Vector2D(1, 1)));
 		}
 	}
 }

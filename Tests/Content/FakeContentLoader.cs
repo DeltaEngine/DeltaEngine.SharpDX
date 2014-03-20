@@ -7,11 +7,10 @@ namespace DeltaEngine.Tests.Content
 	{
 		private FakeContentLoader()
 		{
-			contentPath = "NoPath";
+			ContentProjectPath = "NoPath";
 		}
 
-		public override ContentMetaData GetMetaData(string contentName,
-			Type contentClassType = null)
+		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
 			var metaData = new ContentMetaData { Type = ContentType.Xml };
 			if (contentName.Contains("WrongPath"))
@@ -23,6 +22,11 @@ namespace DeltaEngine.Tests.Content
 		protected override bool HasValidContentAndMakeSureItIsLoaded()
 		{
 			return true;
+		}
+
+		public override DateTime LastTimeUpdated
+		{
+			get { return DateTime.Now; }
 		}
 	}
 }

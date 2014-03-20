@@ -18,19 +18,13 @@ namespace DeltaEngine.Platforms
 				Current = this;
 			filePath = Path.Combine(GetMyDocumentsAppFolder(), SettingsFilename);
 			CustomSettingsExists = File.Exists(filePath);
-			if (CustomSettingsExists)
-				data = new XmlFile(filePath).Root; //ncrunch: no coverage
-			else
-			{
-				data = new XmlData("Settings");
-				AppRunner.ContentIsReady += LoadDefaultSettings;
-			}
+			data = CustomSettingsExists ? new XmlFile(filePath).Root : new XmlData("Settings");
 		}
 
 		private readonly string filePath;
 		private XmlData data;
 
-		private void LoadDefaultSettings()
+		public override void LoadDefaultSettings()
 		{
 			var dataChangedBeforeLoading = data;
 			data = ContentLoader.Load<XmlContent>("DefaultSettings").Data;

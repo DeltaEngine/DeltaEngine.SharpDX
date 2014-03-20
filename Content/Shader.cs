@@ -1,4 +1,7 @@
-﻿using DeltaEngine.Datatypes;
+﻿using System;
+using System.IO;
+using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Content
 {
@@ -7,29 +10,75 @@ namespace DeltaEngine.Content
 	/// This base class has no functionality, some common functionality can be found in
 	/// ShaderWithFormat. Provide multiple framework specific shader codes if creating manually.
 	/// </summary>
-	public abstract class Shader : ContentData
+	public abstract class Shader : ContentData, IEquatable<Shader>
 	{
-		protected Shader(string contentName)
-			: base(contentName) { }
+		protected Shader(ShaderCreationData data)
+			: base("<Generated" + data.Flags + "Shader>")
+		{
+			Data = data;
+			// ReSharper disable DoNotCallOverridableMethodsInConstructor
+			FillShaderCode();
+		}
 
-		public abstract void SetModelViewProjectionMatrix(Matrix matrix);
+		protected ShaderCreationData Data { get; set; }
+		public ShaderFlags Flags
+		{
+			get { return Data.Flags; }
+		}
+
+		protected override void LoadData(Stream fileData)
+		{
+			Data = new BinaryReader(fileData).Create() as ShaderCreationData;
+			FillShaderCode();
+			TryCreateShader();
+		}
+
+		protected abstract void FillShaderCode();
+
+		protected void TryCreateShader()
+		{
+			try
+			{
+				CreateShader();
+			}
+			catch (Exception ex)
+			{
+				string reason = String.IsNullOrEmpty(ex.Message) ? ex.ToString() : ex.Message;
+				throw new ShaderCreationHasFailed(reason);
+			}
+		}
+		protected abstract void CreateShader();
+
+		public class ShaderCreationHasFailed : Exception
+		{
+			public ShaderCreationHasFailed(string error)
+				: base(error) {}
+		}
+
+		public abstract void SetModelViewProjection(Matrix model, Matrix view, Matrix projection);
+		public abstract void SetModelViewProjection(Matrix matrix);
 		public abstract void SetJointMatrices(Matrix[] jointMatrices);
 		public abstract void SetDiffuseTexture(Image texture);
 		public abstract void SetLightmapTexture(Image texture);
-		public abstract void SetLightPosition(Vector3D vector);
-		public abstract void SetViewPosition(Vector3D vector);
+		public abstract void SetSunLight(SunLight light);
+		public abstract void ApplyFogSettings(FogSettings fogSettings);
 		public abstract void Bind();
 		public abstract void BindVertexDeclaration();
 
-		public const string Position2DUV = "Position2DUV";
-		public const string Position2DColorUV = "Position2DColorUV";
-		public const string Position2DColor = "Position2DColor";
-		public const string Position3DUV = "Position3DUV";
-		public const string Position3DColorUV = "Position3DColorUV";
-		public const string Position3DColor = "Position3DColor";
-		public const string Position3DNormalUV = "Position3DNormalUV";
-		public const string Position3DNormalUVLightmap = "Position3DNormalUVLightmap";
-		public const string Position3DColorSkinned = "Position3DColorSkinned";
-		public const string Position3DUVSkinned = "Position3DUVSkinned";
+		public override bool Equals(object other)
+		{
+			return other is Shader && Equals((Shader)other);
+		}
+
+		public bool Equals(Shader other)
+		{
+			return other != null && Flags == other.Flags;
+		}
+
+		// ncrunch: no coverage start
+		public override int GetHashCode()
+		{
+			return (Data != null ? Data.GetHashCode() : 0);
+		}
 	}
 }

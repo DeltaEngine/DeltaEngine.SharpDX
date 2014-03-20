@@ -15,9 +15,8 @@ namespace DeltaEngine.Tests.Content
 
 		protected override void DisposeData() {}
 		protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) {}
-		protected override void LoadImage(Stream fileData) {}
-		public override void Fill(Color[] colors) {}
-		public override void Fill(byte[] rgbaColors) {}
+		protected override void TryLoadImage(Stream fileData) {}
+		public override void FillRgbaData(byte[] rgbaColors) {}
 		protected override void SetSamplerState() {}
 	}
 }

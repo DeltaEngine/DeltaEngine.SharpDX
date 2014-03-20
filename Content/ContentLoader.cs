@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using DeltaEngine.Core;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Content
 {
@@ -34,15 +35,16 @@ namespace DeltaEngine.Content
 				current.Dispose();
 			resolver = null;
 			Type = null;
-			contentPath = "Content";
 		}
 
 		protected ContentLoader()
 		{
 			current = this;
+			ContentProjectPath = Path.Combine("Content",
+				AssemblyExtensions.GetEntryAssemblyForProjectName());
 		}
 
-		protected internal static string contentPath = "Content";
+		public string ContentProjectPath { get; protected set; }
 
 		public static Content Load<Content>(string contentName) where Content : ContentData
 		{
@@ -115,8 +117,7 @@ namespace DeltaEngine.Content
 			return contentData;
 		}
 
-		public abstract ContentMetaData GetMetaData(string contentName,
-			Type contentClassType = null);
+		public abstract ContentMetaData GetMetaData(string contentName, Type contentClassType = null);
 
 		private void LoadMetaDataAndContent(ContentData contentData)
 		{
@@ -146,16 +147,22 @@ namespace DeltaEngine.Content
 		{
 			if (String.IsNullOrEmpty(content.MetaData.LocalFilePath))
 				return Stream.Null;
-			string filePath = Path.Combine(contentPath, content.MetaData.LocalFilePath);
+			string filePath = Path.Combine(ContentProjectPath, content.MetaData.LocalFilePath);
 			try
 			{
-				return File.OpenRead(filePath);
+				return TryGetContentDataStream(filePath);
 			}
 			catch (Exception ex)
 			{
 				throw new ContentFileDoesNotExist(filePath, ex);
 			}
 		}
+
+		// ncrunch: no coverage start
+		private static Stream TryGetContentDataStream(string filePath)
+		{
+			return File.OpenRead(filePath);
+		} // ncrunch: no coverage end
 
 		public class ContentFileDoesNotExist : Exception
 		{
@@ -195,6 +202,7 @@ namespace DeltaEngine.Content
 		public virtual void Dispose()
 		{
 			current = null;
+			resolver = null;
 		}
 
 		public static string ContentLocale
@@ -219,13 +227,17 @@ namespace DeltaEngine.Content
 
 		protected string ContentMetaDataFilePath
 		{
-			get { return Path.Combine(contentPath, "ContentMetaData.xml"); }
+			get { return Path.Combine(ContentProjectPath, "ContentMetaData.xml"); }
 		}
 
-		public static void RemoveResource(string key)
+		public abstract DateTime LastTimeUpdated { get; }
+
+		public bool StartedToRequestOnlineContent { get; protected set; }
+
+		public static void RemoveResource(string contentName)
 		{
-			if (current.resources.ContainsKey(key))
-				current.resources.Clear();
+			if (current.resources.ContainsKey(contentName))
+				current.resources.Remove(contentName);
 		}
 
 		//ncrunch: no coverage start, only used in the EditorContentLoader

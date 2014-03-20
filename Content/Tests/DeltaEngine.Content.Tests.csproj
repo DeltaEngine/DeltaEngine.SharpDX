@@ -43,25 +43,17 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Graphics\Mocks\DeltaEngine.Graphics.Mocks.csproj">
-      <Project>{F4D2EF4F-24F2-4D4A-BC93-78B0C5AD19A4}</Project>
-      <Name>DeltaEngine.Graphics.Mocks</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Mocks\DeltaEngine.Mocks.csproj">
       <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
       <Name>DeltaEngine.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mocks\DeltaEngine.Content.Mocks.csproj">
+    <ProjectReference Include="..\..\Content\Mocks\DeltaEngine.Content.Mocks.csproj">
       <Project>{BA0A7803-4A15-416E-BC93-69F5B9DFC4A5}</Project>
       <Name>DeltaEngine.Content.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xml\DeltaEngine.Content.Xml.csproj">
+    <ProjectReference Include="..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
       <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
       <Name>DeltaEngine.Content.Xml</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

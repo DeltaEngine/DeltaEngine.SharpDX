@@ -28,6 +28,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragTouch()
 		{
+			if (touch == null)
+				return; //ncrunch: no coverage
 			bool isFinished = false;
 			new Command((start, end, done) => isFinished = done).Add(new TouchDragTrigger());
 			SetTouchState(State.Pressing, Vector2D.Zero);
@@ -36,9 +38,19 @@ namespace DeltaEngine.Input.Tests
 			Assert.IsTrue(isFinished);
 		}
 
+		private void SetTouchState(State state, Vector2D position)
+		{
+			if (touch == null)
+				return; //ncrunch: no coverage
+			touch.SetTouchState(0, state, position);
+			AdvanceTimeAndUpdateEntities();
+		}
+
 		[Test, CloseAfterFirstFrame]
 		public void IfDistanceIsToSmallNothingWillHappen()
 		{
+			if (touch == null)
+				return; //ncrunch: no coverage
 			bool isFinished = false;
 			new Command((start, end, done) => isFinished = done).Add(new TouchDragTrigger());
 			SetTouchState(State.Pressing, Vector2D.Zero);
@@ -50,6 +62,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragTouchHorizontal()
 		{
+			if (touch == null)
+				return; //ncrunch: no coverage
 			bool isFinished = false;
 			new Command((start, end, done) => isFinished = done).Add(
 				new TouchDragTrigger(DragDirection.Horizontal));
@@ -62,6 +76,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragTouchVertical()
 		{
+			if (touch == null)
+				return; //ncrunch: no coverage
 			bool isFinished = false;
 			new Command((start, end, done) => isFinished = done).Add(
 				new TouchDragTrigger(DragDirection.Vertical));
@@ -69,14 +85,6 @@ namespace DeltaEngine.Input.Tests
 			SetTouchState(State.Pressed, new Vector2D(0, 1));
 			SetTouchState(State.Releasing, new Vector2D(0, 1));
 			Assert.IsTrue(isFinished);
-		}
-
-		private void SetTouchState(State state, Vector2D position)
-		{
-			if (touch == null)
-				return; //ncrunch: no coverage
-			touch.SetTouchState(0, state, position);
-			AdvanceTimeAndUpdateEntities();
 		}
 
 		[Test, CloseAfterFirstFrame]

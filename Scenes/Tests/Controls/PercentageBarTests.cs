@@ -15,7 +15,6 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			bar = new PercentageBar(Center, PercentileColors);
 		}
 
-		//ncrunch: no coverage start
 		private PercentageBar bar;
 		private static readonly Rectangle Center = new Rectangle(Left, Top, Width, Height);
 		private const float Left = 0.3f;
@@ -25,8 +24,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		private static readonly Color LowColor = Color.Red;
 		private static readonly Color MidColor = Color.Yellow;
 		private static readonly Color HighColor = Color.Green;
-		private static readonly Color[] PercentileColors = new[] { LowColor, MidColor, HighColor };
-		//ncrunch: no coverage end
+		private static readonly Color[] PercentileColors = { LowColor, MidColor, HighColor };
 
 		[Test]
 		public void RenderShrinkingLeftAlignedBar()
@@ -34,7 +32,6 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			bar.Start<Shrink>();
 		}
 
-		//ncrunch: no coverage start
 		private class Shrink : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
@@ -43,7 +40,6 @@ namespace DeltaEngine.Scenes.Tests.Controls
 					bar.Value -= ShrinkSpeed * Time.Delta;
 			}
 		}
-		//ncrunch: no coverage end
 
 		private const int ShrinkSpeed = 25;
 

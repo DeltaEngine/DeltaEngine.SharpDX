@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace DeltaEngine.Extensions
@@ -9,11 +8,6 @@ namespace DeltaEngine.Extensions
 	/// </summary>
 	public static class ArrayExtensions
 	{
-		public static bool Contains<T>(this Array array, T value)
-		{
-			return array != null && array.Cast<T>().Contains(value);
-		}
-
 		public static bool Compare<T>(this IEnumerable<T> array1, IEnumerable<T> array2)
 		{
 			return array1 == null && array2 == null ||
@@ -38,6 +32,19 @@ namespace DeltaEngine.Extensions
 			{
 				result = default(Value);
 			}
+			return result;
+		}
+
+		public static T[] Insert<T>(this T[] array, T value, int insertIndex)
+		{
+			var result = new T[array.Length + 1];
+			for (int i = 0; i < result.Length; i++)
+				if (i == insertIndex)
+					result[i] = value;
+				else if (i > insertIndex)
+					result[i] = array[i - 1];
+				else
+					result[i] = array[i];
 			return result;
 		}
 	}

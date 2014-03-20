@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -16,34 +17,22 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[SetUp]
 		public void SetUp()
 		{
-			label = new Label(Center, "Hello World");
+			label = new Label(Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f), "Hello World");
 		}
 
 		private Label label;
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
+		public void SettingInvalidComponentHasNoEffect()
+		{
+			Assert.DoesNotThrow(() => label.Set(null));
+		}
+
+		[Test]
 		public void RenderGrowingLabel()
 		{
 			label.Start<Grow>();
 		}
-
-		//ncrunch: no coverage start
-		private class Grow : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (Label label in entities)
-				{
-					var center = label.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
-					var size = label.DrawArea.Size * (1.0f + Time.Delta / 10);
-					label.DrawArea = Rectangle.FromCenter(center, size);
-				}
-			}
-		}
-
-		//ncrunch: no coverage end
-
-		private static readonly Rectangle Center = Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f);
 
 		[Test, CloseAfterFirstFrame]
 		public void InitialText()
@@ -106,12 +95,11 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			label.Start<ChangeLabelText>();
 		}
 
-		//ncrunch: no coverage start
 		private class ChangeLabelText : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
 			{
-				foreach (Label label in entities)
+				foreach (var label in entities.OfType<Label>())
 				{
 					string isInside = label.State.IsInside ? "Inside" : "Outside";
 					label.Text = isInside + " - Relative Mouse Position: " +
@@ -119,8 +107,6 @@ namespace DeltaEngine.Scenes.Tests.Controls
 				}
 			}
 		}
-
-		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void ColorDoesNotInterpolateAtCreation()
@@ -133,7 +119,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		{
 			var stream = BinaryDataExtensions.SaveToMemoryStream(label);
 			var loadedLabel = (Label)stream.CreateFromMemoryStream();
-			Assert.AreEqual(Center, loadedLabel.DrawArea);
+			Assert.AreEqual(Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f), loadedLabel.DrawArea);
 			Assert.AreEqual("Hello World", loadedLabel.Text);
 			Assert.AreEqual(label.children.Count, loadedLabel.children.Count);
 		}

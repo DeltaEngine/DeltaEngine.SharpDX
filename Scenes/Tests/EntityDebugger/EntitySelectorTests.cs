@@ -51,12 +51,6 @@ namespace DeltaEngine.Scenes.Tests.EntityDebugger
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void IsNotPausable()
-		{
-			Assert.IsFalse(selector.IsPauseable);
-		}
-
-		[Test, CloseAfterFirstFrame]
 		public void ClickingEntitySelectsItForReadingAndDoesNotPauseApp()
 		{
 			if (mouse == null)
@@ -69,7 +63,7 @@ namespace DeltaEngine.Scenes.Tests.EntityDebugger
 
 		private void Click(Vector2D position)
 		{
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Right, State.Pressing);
 			AdvanceTimeAndUpdateEntities();
 		}

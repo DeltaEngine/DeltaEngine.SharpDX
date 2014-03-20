@@ -34,17 +34,17 @@ namespace Asteroids.Tests
 			Assert.Greater(playerShip.Rotation, originalAngle);
 		}
 
-		//ncrunch: no coverage start
-		[Test, CloseAfterFirstFrame, Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void FireRocket()
 		{
+			if(IsMockResolver)
+				return; //ncrunch: no coverage start
 			bool firedRocket = false;
 			playerShip.ProjectileFired += () => { firedRocket = true; };
 			playerShip.IsFiring = true;
-			AdvanceTimeAndUpdateEntities(2);
+			AdvanceTimeAndUpdateEntities(1f);
 			Assert.IsTrue(firedRocket);
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void HittingBordersTopLeft()

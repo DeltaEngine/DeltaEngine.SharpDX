@@ -47,7 +47,7 @@ namespace DeltaEngine.Content.Xml.Tests
 
 		private static ContentMetaData GetMinimumTestContentMetaData()
 		{
-			return new ContentMetaData 
+			return new ContentMetaData
 			{
 				Name = "ImageObject",
 				Type = ContentType.Image,

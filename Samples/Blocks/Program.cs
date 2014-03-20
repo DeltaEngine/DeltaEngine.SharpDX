@@ -8,6 +8,7 @@ namespace Blocks
 	/// </summary>
 	public class Program : App
 	{
+		//ncrunch: no coverage start, this is equal to the default DE app initialization
 		public Program()
 		{
 			new Game(Resolve<Window>());
@@ -17,5 +18,6 @@ namespace Blocks
 		{
 			new Program().Run();
 		}
+		//ncrunch: no coverage end
 	}
 }

@@ -20,7 +20,7 @@ namespace DeltaEngine.Content.Xml
 		{
 			try
 			{
-				Data = new XmlData(XDocument.Load(fileData).Root);
+				Data = TryLoadData(fileData);
 			}
 			catch (Exception ex)
 			{
@@ -29,6 +29,11 @@ namespace DeltaEngine.Content.Xml
 					throw new XmlContentNotFound(Name, ex); //ncrunch: no coverage
 				Data = new XmlData(Name);
 			}
+		}
+
+		private static XmlData TryLoadData(Stream fileData)
+		{
+			return new XmlData(XDocument.Load(fileData).Root);
 		}
 
 		//ncrunch: no coverage start

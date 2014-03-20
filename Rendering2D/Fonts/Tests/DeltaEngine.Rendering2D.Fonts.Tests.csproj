@@ -55,21 +55,21 @@
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
       <Name>DeltaEngine.Platforms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DeltaEngine.Rendering2D.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\Shapes\DeltaEngine.Rendering2D.Shapes.csproj">
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Rendering2D.Fonts.csproj">
+    <ProjectReference Include="..\..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
+    <ProjectReference Include="..\..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
+      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
+      <Name>DeltaEngine.TestWithSlimDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -87,8 +87,8 @@ namespace DeltaEngine.Tests.Commands
 		public void CommandWithPositionAction()
 		{
 			var trigger = new MockPositionTrigger();
-			var CommandName = RegisterCommand(trigger);
-			new Command(CommandName, delegate(Vector2D point) { actionPerformed = true; });
+			var commandName = RegisterCommand(trigger);
+			new Command(commandName, delegate(Vector2D point) { actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
 
@@ -106,8 +106,8 @@ namespace DeltaEngine.Tests.Commands
 		public void CommandWithDragAction()
 		{
 			var trigger = new MockDragTrigger();
-			var CommandName = RegisterCommand(trigger);
-			new Command(CommandName, delegate(Vector2D point, Vector2D dims, bool test) 
+			var commandName = RegisterCommand(trigger);
+			new Command(commandName, delegate(Vector2D point, Vector2D dims, bool test)
 				{ actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
@@ -116,8 +116,8 @@ namespace DeltaEngine.Tests.Commands
 		public void CommandWithZoomAction()
 		{
 			var trigger = new MockZoomTrigger();
-			var CommandName = RegisterCommand(trigger);
-			new Command(CommandName, delegate(float zoom) { actionPerformed = true; });
+			var commandName = RegisterCommand(trigger);
+			new Command(commandName, delegate(float zoom) { actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
 
@@ -125,8 +125,8 @@ namespace DeltaEngine.Tests.Commands
 		public void CommandWithPositionctionMock()
 		{
 			var trigger = new MockTrigger();
-			var CommandName = RegisterCommand(trigger);
-			new Command(CommandName, delegate(Vector2D point) { actionPerformed = true; });
+			var commandName = RegisterCommand(trigger);
+			new Command(commandName, delegate(Vector2D point) { actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
 
@@ -134,8 +134,8 @@ namespace DeltaEngine.Tests.Commands
 		public void CommandWithDragActionMock()
 		{
 			var trigger = new MockTrigger();
-			var CommandName = RegisterCommand(trigger);
-			new Command(CommandName, delegate(Vector2D point, Vector2D dims, bool test) 
+			var commandName = RegisterCommand(trigger);
+			new Command(commandName, delegate(Vector2D point, Vector2D dims, bool test)
 				{ actionPerformed = true; });
 			AssertActionPerformed(trigger);
 		}
@@ -159,18 +159,22 @@ namespace DeltaEngine.Tests.Commands
 			AssertActionPerformed(trigger);
 		}
 
-		public class MockPositionTrigger : PositionTrigger
+		public class MockPositionTrigger : InputTrigger, PositionTrigger
 		{
-			protected override void StartInputDevice() { }
+			protected override void StartInputDevice() {}
+			public Vector2D Position { get; set; }
 		}
 
-		public class MockDragTrigger : DragTrigger {
+		public class MockDragTrigger : DragTrigger
+		{
 			protected override void StartInputDevice() {}
 		}
 
-		public class MockZoomTrigger : ZoomTrigger {
+		public class MockZoomTrigger : InputTrigger, ZoomTrigger
+		{
 			protected override void StartInputDevice() {}
-		}		
+			public float ZoomAmount { get; set; }
+		}
 
 		[Test]
 		public void RegisterCommandWithSeveralTriggers()

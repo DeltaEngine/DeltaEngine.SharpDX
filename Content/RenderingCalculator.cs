@@ -64,6 +64,8 @@ namespace DeltaEngine.Content
 
 		private static Rectangle Flip(Rectangle uv, FlipMode flipMode)
 		{
+			if (flipMode == FlipMode.HorizontalAndVertical)
+				return new Rectangle(uv.Right, uv.Bottom, -uv.Width, -uv.Height);
 			if (flipMode == FlipMode.Horizontal)
 				return new Rectangle(uv.Right, uv.Top, -uv.Width, uv.Height);
 			if (flipMode == FlipMode.Vertical)

@@ -3,7 +3,7 @@
 namespace DeltaEngine.Entities
 {
 	/// <summary>
-	/// Goes through all entities of a specfic type each update tick.
+	/// Goes through all entities of a specific type each update tick.
 	/// </summary>
 	public abstract class UpdateBehavior
 	{

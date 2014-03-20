@@ -35,13 +35,18 @@ namespace DeltaEngine.Datatypes
 			Values = new T[partitions.Length / 2];
 			try
 			{
-				for (int i = 1; i < partitions.Length; i += 2)
-					Values[i / 2] = (T)Activator.CreateInstance(typeof(T), partitions[i]);
+				TryCreateInstance(partitions);
 			}
 			catch (Exception)
 			{
 				throw new TypeInStringNotEqualToInitializedType();
 			}
+		}
+
+		private void TryCreateInstance(string[] partitions)
+		{
+			for (int i = 1; i < partitions.Length; i += 2)
+				Values[i / 2] = (T)Activator.CreateInstance(typeof(T), partitions[i]);
 		}
 
 		public override T GetInterpolatedValue(float interpolation)

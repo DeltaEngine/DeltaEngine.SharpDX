@@ -7,7 +7,6 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Scenes.Controls;
 using NUnit.Framework;
@@ -20,7 +19,7 @@ namespace DeltaEngine.Scenes.Tests
 		public void SetUp()
 		{
 			scene = new Scene();
-			material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			material = new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo");
 			window = Resolve<Window>();
 		}
 
@@ -28,15 +27,16 @@ namespace DeltaEngine.Scenes.Tests
 		private Material material;
 		private Window window;
 
+		
 		[Test, CloseAfterFirstFrame]
 		public void LoadSceneWithoutAnyControls()
 		{
 			var loadedScene = ContentLoader.Load<Scene>("EmptyScene");
 			Assert.AreEqual("EmptyScene", loadedScene.Name);
 			Assert.AreEqual(0, loadedScene.Controls.Count);
-		}
+		} 
 
-		[Test, CloseAfterFirstFrame]
+		[Test]
 		public void LoadSceneWithAButton()
 		{
 			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
@@ -53,8 +53,9 @@ namespace DeltaEngine.Scenes.Tests
 			Assert.AreEqual(1, loadedScene.Controls.Count);
 			Assert.AreEqual(typeof(Button), loadedScene.Controls[0].GetType());
 		}
+
 		[Test, CloseAfterFirstFrame]
-		public void LoadSceneWithAButtonAndCHangeTheFontText()
+		public void LoadSceneWithAButtonAndChangeTheFontText()
 		{
 			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButtonWithDifferentFontText");
 			Assert.AreEqual("SceneWithAButtonWithDifferentFontText", loadedScene.Name);
@@ -146,7 +147,7 @@ namespace DeltaEngine.Scenes.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
-		public void HidingSceneDeactivatesControls()
+		public void HidingSceneHidesControls()
 		{
 			var label = new Sprite(material, Rectangle.One) { IsActive = true };
 			var control = new EmptyControl { IsActive = true };
@@ -155,14 +156,14 @@ namespace DeltaEngine.Scenes.Tests
 			scene.Hide();
 			scene.Hide();
 			Assert.AreEqual(2, scene.Controls.Count);
-			Assert.IsFalse(label.IsActive);
-			Assert.IsFalse(control.IsActive);
+			Assert.IsFalse(label.IsVisible);
+			Assert.IsFalse(control.IsVisible);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ControlsDoNotRespondToInputWhenSceneIsHidden()
 		{
-			if(resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			var button = CreateButton();
 			scene.Add(button);
@@ -178,24 +179,31 @@ namespace DeltaEngine.Scenes.Tests
 			var theme = new Theme
 			{
 				Button =
-					new Material(Shader.Position2DColorUV, "DeltaEngineLogo") { DefaultColor = NormalColor },
+					new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo")
+					{
+						DefaultColor = NormalColor
+					},
 				ButtonMouseover =
-					new Material(Shader.Position2DColorUV, "DeltaEngineLogo")
+					new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo")
 					{
 						DefaultColor = MouseoverColor
 					},
 				ButtonPressed =
-					new Material(Shader.Position2DColorUV, "DeltaEngineLogo") { DefaultColor = PressedColor }
+					new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo")
+					{
+						DefaultColor = PressedColor
+					}
 			};
 			return new Button(theme, Small);
 		}
 
+		private static readonly Rectangle Small = Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f);
 		private static readonly Color MouseoverColor = Color.White;
 		private static readonly Color PressedColor = Color.Red;
 
 		private void SetMouseState(State state, Vector2D position)
 		{
-			Resolve<MockMouse>().SetPosition(position);
+			Resolve<MockMouse>().SetNativePosition(position);
 			Resolve<MockMouse>().SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
@@ -203,7 +211,7 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ControlsDoNotRespondToInputWhenInBackground()
 		{
-			if (resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			var button = CreateButton();
 			scene.Add(button);
@@ -215,7 +223,7 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ControlsRespondToInputWhenBroughtBackToForeground()
 		{
-			if (resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			var button = CreateButton();
 			scene.Add(button);
@@ -228,7 +236,7 @@ namespace DeltaEngine.Scenes.Tests
 		[Test]
 		public void DrawButtonWhichChangesColorAndSize()
 		{
-			if (resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			var button = CreateButton();
 			button.Start<ChangeSizeDynamically>();
@@ -236,9 +244,6 @@ namespace DeltaEngine.Scenes.Tests
 			AdvanceTimeAndUpdateEntities();
 			button.State.IsPressed = true;
 		}
-
-		private static readonly Rectangle Small = Rectangle.FromCenter(0.5f, 0.5f, 0.3f, 0.1f);
-		private static readonly Rectangle Big = Rectangle.FromCenter(0.5f, 0.5f, 0.36f, 0.12f);
 
 		private class ChangeSizeDynamically : UpdateBehavior
 		{
@@ -255,15 +260,18 @@ namespace DeltaEngine.Scenes.Tests
 			}
 		}
 
+		private static readonly Rectangle Big = Rectangle.FromCenter(0.5f, 0.5f, 0.36f, 0.12f);
+
 		[Test, CloseAfterFirstFrame]
 		public void ChangeBackgroundImage()
 		{
 			Assert.AreEqual(0, scene.Controls.Count);
-			var background = new Material(Shader.Position2DColorUV, "SimpleMainMenuBackground");
+			var background = new Material(ShaderFlags.Position2DColoredTextured,
+				"SimpleMainMenuBackground");
 			scene.SetQuadraticBackground(background);
 			Assert.AreEqual(1, scene.Controls.Count);
 			Assert.AreEqual(background, ((Sprite)scene.Controls[0]).Material);
-			var logo = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			var logo = new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo");
 			scene.SetQuadraticBackground(logo);
 			Assert.AreEqual(1, scene.Controls.Count);
 			Assert.AreEqual(logo, ((Sprite)scene.Controls[0]).Material);
@@ -320,6 +328,58 @@ namespace DeltaEngine.Scenes.Tests
 			scene.SetViewportBackground("CheckerboardImage288x512");
 			window.ViewportPixelSize = new Size(512, 288);
 			scene.SetViewportBackground("CheckerboardImage512x288");
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void DisposingSceneClearsIt()
+		{
+			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
+			var button = loadedScene.Controls[0] as Button;
+			loadedScene.Dispose();
+			Assert.AreEqual(0, loadedScene.Controls.Count);
+			Assert.IsFalse(button.IsActive);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void LoadingDisposedSceneRecreatesIt()
+		{
+			var loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
+			loadedScene.Dispose();
+			loadedScene = ContentLoader.Load<Scene>("SceneWithAButton");
+			Assert.AreEqual(1, loadedScene.Controls.Count);
+			Assert.IsTrue(loadedScene.Controls[0].IsActive);
+		}
+
+		[Test]
+		public void ClickingFullscreenIconShouldNotCreateInputEvents()
+		{
+			var button = new Button(Rectangle.One);
+			button.Start<ReportMouseState>();
+		}
+
+		private class ReportMouseState : UpdateBehavior
+		{
+			public ReportMouseState(Mouse mouse)
+			{
+				this.mouse = mouse;
+			}
+
+			private readonly Mouse mouse;
+
+			public override void Update(IEnumerable<Entity> buttons)
+			{
+				foreach (var entity in buttons)
+				{
+					var button = (Button)entity;
+					var state = mouse.GetButtonState(MouseButton.Left);
+					if (!button.Contains<State>())
+						button.Add(state);
+					if (button.Get<State>() == state)
+						return;
+					button.Text += "\n" + state + " " + mouse.Position; //ncrunch: no coverage start
+					button.Set(state);
+				} //ncrunch: no coverage end
+			}
 		}
 	}
 }

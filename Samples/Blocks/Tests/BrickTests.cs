@@ -18,9 +18,7 @@ namespace Blocks.Tests
 			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f
 				? Orientation.Landscape : Orientation.Portrait;
 			content = new JewelBlocksContent();
-			var image = content.Load<Image>("Block1");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			material = new Material(shader, image, image.PixelSize);
+			material = new Material(ShaderFlags.Position2DColoredTextured, "Block1");
 		}
 
 		private Orientation displayMode;

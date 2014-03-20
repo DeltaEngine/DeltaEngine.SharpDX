@@ -16,16 +16,36 @@ namespace DeltaEngine.Core
 		internal static void SaveDataType(object data, Type type, BinaryWriter writer)
 		{
 			topLevelTypeToSave = type;
-			TrySaveData(data, type, writer);
+			SaveData(data, type, writer);
 		}
 
 		private static Type topLevelTypeToSave;
 
-		private static void TrySaveData(object data, Type type, BinaryWriter writer)
+		private static void SaveData(object data, Type type, BinaryWriter writer)
+		{
+			if (type.NeedToSaveDataLength())
+				SaveDataWithHeader(data, type, writer);
+			else
+				SaveDataBody(data, type, writer);
+		}
+
+		private static void SaveDataWithHeader(object data, Type type, BinaryWriter writer)
+		{
+			using (var memoryStream = new MemoryStream())
+			using (var memoryWriter = new BinaryWriter(memoryStream))
+			{
+				SaveDataBody(data, type, memoryWriter);
+				writer.Write((int)memoryStream.Length);
+				memoryStream.Seek(0, SeekOrigin.Begin);
+				memoryStream.CopyTo(writer.BaseStream);
+			}
+		}
+
+		private static void SaveDataBody(object data, Type type, BinaryWriter writer)
 		{
 			try
 			{
-				SaveData(data, type, writer);
+				TrySaveData(data, type, writer);
 			}
 			catch (Exception ex)
 			{
@@ -33,20 +53,14 @@ namespace DeltaEngine.Core
 			}
 		}
 
-		internal class UnableToSave : Exception
-		{
-			public UnableToSave(object data, Exception exception)
-				: base(data.ToString(), exception) {}
-		}
-
-		private static void SaveData(object data, Type type, BinaryWriter writer)
+		private static void TrySaveData(object data, Type type, BinaryWriter writer)
 		{
 			if (data == null)
 				throw new NullReferenceException();
 			if (data is ContentData)
 			{
 				var justSaveContentName = topLevelTypeToSave != type &&
-					!(data as ContentData).Name.StartsWith("<Generated");
+																	!(data as ContentData).Name.StartsWith("<Generated");
 				writer.Write(justSaveContentName);
 				if (justSaveContentName)
 				{
@@ -85,6 +99,12 @@ namespace DeltaEngine.Core
 				SaveDictionary(data as IDictionary, writer);
 			else if (type.IsClass || type.IsValueType)
 				SaveClassData(data, type, writer);
+		}
+
+		internal class UnableToSave : Exception
+		{
+			public UnableToSave(object data, Exception exception)
+				: base(data.ToString(), exception) {}
 		}
 
 		private static void SaveEntity(Entity entity, BinaryWriter writer)
@@ -198,7 +218,7 @@ namespace DeltaEngine.Core
 		private static void SaveCustomMaterial(object data, BinaryWriter writer)
 		{
 			var material = data as Material;
-			writer.Write(material.Shader.Name);
+			writer.Write((int)material.Shader.Flags);
 			var isCustomImage = material.DiffuseMap == null || material.DiffuseMap.Name.StartsWith("<");
 			writer.Write((byte)(material.DiffuseMap == null ? 2 : isCustomImage ? 1 : 0));
 			if (isCustomImage)
@@ -280,7 +300,7 @@ namespace DeltaEngine.Core
 			if (arrayType == ArrayElementType.AllTypesAreTheSame)
 				writer.Write(list[0].GetShortNameOrFullNameIfNotFound());
 			foreach (object value in list)
-				TrySaveData(value, firstElementType, writer);
+				SaveData(value, firstElementType, writer);
 		}
 
 		private static void SaveArrayWhenAllElementsAreNotTheSameType(IEnumerable list,
@@ -304,7 +324,7 @@ namespace DeltaEngine.Core
 			writer.Write(value.GetShortNameOrFullNameIfNotFound());
 			writer.Write(value != null);
 			if (value != null)
-				TrySaveData(value, BinaryDataExtensions.GetTypeOrObjectType(value), writer);
+				SaveData(value, BinaryDataExtensions.GetTypeOrObjectType(value), writer);
 		}
 
 		private static void SaveDictionary(IDictionary data, BinaryWriter writer)
@@ -345,8 +365,8 @@ namespace DeltaEngine.Core
 					writer.Write(pair.Key.GetShortNameOrFullNameIfNotFound());
 					writer.Write(pair.Value.GetShortNameOrFullNameIfNotFound());
 				}
-				TrySaveData(pair.Key, keyType, writer);
-				TrySaveData(pair.Value, valueType, writer);
+				SaveData(pair.Key, keyType, writer);
+				SaveData(pair.Value, valueType, writer);
 			}
 		}
 
@@ -364,8 +384,8 @@ namespace DeltaEngine.Core
 					writer.Write(pair.Key.GetShortNameOrFullNameIfNotFound());
 				}
 				writer.Write(pair.Value.GetShortNameOrFullNameIfNotFound());
-				TrySaveData(pair.Key, keyType, writer);
-				TrySaveData(pair.Value, BinaryDataExtensions.GetTypeOrObjectType(pair.Value), writer);
+				SaveData(pair.Key, keyType, writer);
+				SaveData(pair.Value, BinaryDataExtensions.GetTypeOrObjectType(pair.Value), writer);
 			}
 		}
 
@@ -387,7 +407,7 @@ namespace DeltaEngine.Core
 						(field.FieldType == typeof(object) && fieldType == typeof(string)))
 						writer.Write(fieldData.GetShortNameOrFullNameIfNotFound());
 				}
-				TrySaveData(fieldData, fieldType, writer);
+				SaveData(fieldData, fieldType, writer);
 			}
 		}
 	}

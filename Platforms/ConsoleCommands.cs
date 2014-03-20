@@ -20,11 +20,9 @@ namespace DeltaEngine.Platforms
 			{
 				if (threadStaticConsoleCommands == null)
 					threadStaticConsoleCommands = new ThreadStatic<ConsoleCommands>();
-				if (threadStaticConsoleCommands.HasCurrent)
-					return threadStaticConsoleCommands.Current;
-				var console = new ConsoleCommands();
-				threadStaticConsoleCommands.Use(console);
-				return console;
+				if (!threadStaticConsoleCommands.HasCurrent)
+					threadStaticConsoleCommands.Use(new ConsoleCommands());
+				return threadStaticConsoleCommands.Current;
 			}	
 		}
 
@@ -78,8 +76,10 @@ namespace DeltaEngine.Platforms
 
 		private static Delegate CreateDelegate(MethodInfo method, object target)
 		{
-			Type delegateType = Expression.GetDelegateType(method.GetParameters().Select(
-				p => p.ParameterType).Concat(new[] { method.ReturnType }).ToArray());
+			var parameters = method.GetParameters();
+			var parameterTypes = parameters.Select(p => p.ParameterType).ToList();
+			parameterTypes.Add(method.ReturnType);
+			Type delegateType = Expression.GetDelegateType(parameterTypes.ToArray());
 			return Delegate.CreateDelegate(delegateType, target, method);
 		}
 
@@ -133,8 +133,7 @@ namespace DeltaEngine.Platforms
 			for (int i = 0; i < parameter.Length; i++)
 				try
 				{
-					paramList.Add(Convert.ChangeType(commandParameters[i], parameter[i].ParameterType,
-						CultureInfo.InvariantCulture));
+					paramList.Add(TryConvertParameter(commandParameters[i], parameter[i]));
 				}
 				catch (Exception ex)
 				{
@@ -143,15 +142,28 @@ namespace DeltaEngine.Platforms
 			return InvokeDelegate(method, paramList.ToArray());
 		}
 
+		private static object TryConvertParameter(string cmdParameter, ParameterInfo parameter)
+		{
+			return Convert.ChangeType(cmdParameter, parameter.ParameterType, CultureInfo.InvariantCulture);
+		}
+
 		public List<string> GetAutoCompletionList(string input)
 		{
-			return GetMatchingDelegates(input).Select(GetDescription).ToList().OrderBy(x => x).ToList();
+			var descriptionList = GetMatchingDelegates(input).Select(GetDescription);
+			var orderedList = descriptionList.OrderBy(x => x);
+			return orderedList.ToList();
 		}
 
 		private IEnumerable<MethodInfo> GetMatchingDelegates(string input)
 		{
-			return delegates.Select(x => x.Method).
-				Where(m => GetMethodName(m).StartsWith(input, true, null)).ToList();
+			var matchingDelegates = new List<MethodInfo>();
+			foreach (var currentDelegate in delegates)
+			{
+				MethodInfo method = currentDelegate.Method;
+				if (GetMethodName(method).StartsWith(input, true, null))
+					matchingDelegates.Add(method);
+			}
+			return matchingDelegates;
 		}
 
 		private static string GetDescription(MethodInfo info)
@@ -173,7 +185,9 @@ namespace DeltaEngine.Platforms
 
 		private static string GetShortestString(IEnumerable<string> names)
 		{
-			string shortestString = names.First(x => x.Length == names.Select(y => y.Length).Min());
+			var nameLengths = names.Select(n => n.Length);
+			int minLength = nameLengths.Min();
+			string shortestString = names.First(x => x.Length == minLength);
 			while (!names.All(s => s.StartsWith(shortestString)))
 				shortestString = shortestString.Substring(0, shortestString.Length - 1);
 			return shortestString;

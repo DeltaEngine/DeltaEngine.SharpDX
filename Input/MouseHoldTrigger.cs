@@ -10,7 +10,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Fires once when the mouse button is pressed and the mouse has not moved for some time.
 	/// </summary>
-	public class MouseHoldTrigger : PositionTrigger, MouseTrigger
+	public class MouseHoldTrigger : InputTrigger, PositionTrigger, MouseTrigger
 	{
 		public MouseHoldTrigger(Rectangle holdArea, float holdTime = DefaultHoldTime,
 			MouseButton button = MouseButton.Left)
@@ -24,6 +24,7 @@ namespace DeltaEngine.Input
 		public float HoldTime { get; private set; }
 		public MouseButton Button { get; private set; }
 		private const float DefaultHoldTime = 0.5f;
+		public Vector2D Position { get; set; }
 
 		public MouseHoldTrigger(string holdAreaAndHoldTimeAndButton)
 		{

@@ -8,7 +8,7 @@ namespace Blocks.Tests
 	/// </summary>
 	public class JewelBlocksContentTests : TestWithMocksOrVisually
 	{
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Constructor()
 		{
 			var content = new JewelBlocksContent();

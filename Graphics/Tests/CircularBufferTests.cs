@@ -13,11 +13,12 @@ namespace DeltaEngine.Graphics.Tests
 		public void CreateBuffer()
 		{
 			buffer2D = new MockCircularBuffer(Resolve<Device>(),
-				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUV), BlendMode.Normal,
+				ContentLoader.Create<ShaderWithFormat>(
+				new ShaderCreationData(ShaderFlags.Position2DTextured)), BlendMode.Normal,
 				VerticesMode.Triangles);
 			buffer3D = new MockCircularBuffer(Resolve<Device>(),
-				ContentLoader.Load<ShaderWithFormat>(Shader.Position3DUV), BlendMode.Normal,
-				VerticesMode.Triangles);
+				ContentLoader.Create<ShaderWithFormat>(
+				new ShaderCreationData(ShaderFlags.Textured)), BlendMode.Normal, VerticesMode.Triangles);
 			image = ContentLoader.Load<Image>("DeltaEngineLogo");
 			Assert.IsTrue(buffer2D.IsCreated);
 		}
@@ -28,28 +29,28 @@ namespace DeltaEngine.Graphics.Tests
 
 		private readonly int vertexSize = VertexPosition3DColor.SizeInBytes;
 
-		[Test]
+		[Test, CloseAfterFirstFrame, Timeout(5000)]
 		public void CreateAndDisposeBuffer()
 		{
 			buffer2D.Dispose();
 			Assert.IsFalse(buffer2D.IsCreated);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame, Timeout(5000)]
 		public void BufferCanBe2DOr3D()
 		{
 			Assert.IsFalse(buffer2D.Is3D);
 			Assert.IsTrue(buffer3D.Is3D);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void OffsetInitialization()
 		{
 			Assert.AreEqual(0, buffer2D.VertexOffset);
 			Assert.AreEqual(0, buffer2D.IndexOffset);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void OffsetIncrement()
 		{
 			const int VerticesCount = 32;
@@ -61,7 +62,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(IndicesCount * sizeof(short), buffer2D.IndexOffset);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void OffsetSeveralIncrements()
 		{
 			const int VerticesCount = 32;
@@ -78,7 +79,7 @@ namespace DeltaEngine.Graphics.Tests
 
 		private const int IncrementCount = 4;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ExpectExceptionIfTryingToAddTooManyVertices()
 		{
 			const int NumberOfTooMuchVertices = CircularBuffer.TotalMaximumVerticesLimit + 1;
@@ -94,7 +95,7 @@ namespace DeltaEngine.Graphics.Tests
 				CircularBuffer.TotalMaximumVerticesLimit);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DrawAndReset()
 		{
 			const int VerticesCount = 32;
@@ -109,7 +110,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(96, buffer2D.IndexOffset);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DataBiggerThanHalfOfTheBufferSize()
 		{
 			const int VerticesCount = 12288;
@@ -122,7 +123,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.IsFalse(buffer2D.HasDrawn);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void MakeBufferResize()
 		{
 			const int VerticesCount = 12288;
@@ -135,7 +136,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.IsTrue(buffer2D.HasDrawn);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Make3DBufferResize()
 		{
 			const int VerticesCount = 12288;
@@ -148,7 +149,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.IsTrue(buffer3D.HasDrawn);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void LoadDataWithDifferentSize()
 		{
 			const int Data1VerticesCount = 100;
@@ -167,7 +168,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual((Data1IndicesCount + Data2IndicesCount) * sizeof(short), buffer2D.IndexOffset);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DataBiggerThanBufferSize()
 		{
 			var verticesCount = buffer2D.MaxNumberOfVertices * 3;
@@ -179,22 +180,23 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(indicesCount * sizeof(short), buffer2D.IndexOffset);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void TrianglesBufferShouldUseIndexBuffer()
 		{
 			Assert.IsTrue(buffer2D.UsesIndexBuffer);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void LinesBufferShouldNotUseIndexBuffer()
 		{
 			var linesBuffer = new MockCircularBuffer(Resolve<Device>(),
-				ContentLoader.Load<ShaderWithFormat>(Shader.Position2DUV), BlendMode.Normal,
+				ContentLoader.Create<ShaderWithFormat>(
+				new ShaderCreationData(ShaderFlags.Position2DTextured)), BlendMode.Normal,
 				VerticesMode.Lines);
 			Assert.IsFalse(linesBuffer.UsesIndexBuffer);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UsingTexturing()
 		{
 			var vertices = new VertexPosition2DUV[4];
@@ -202,7 +204,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.IsTrue(buffer2D.UsesTexturing);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void VertexFormatShouldMatchCircularBufferShaderVertexFormat()
 		{
 			var vertices = new VertexPosition2DColorUV[4];
@@ -210,7 +212,7 @@ namespace DeltaEngine.Graphics.Tests
 				() => buffer2D.Add(image, vertices));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void IndicesAreNotChangedWhenPassedAsArgument()
 		{
 			var vertices = new VertexPosition2DUV[4];
@@ -220,7 +222,7 @@ namespace DeltaEngine.Graphics.Tests
 
 		private readonly short[] quadIndices = { 0, 1, 2, 0, 2, 3 };
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void IndicesAreComputedWhenNotPassedAsArgument()
 		{
 			var vertices = new VertexPosition2DUV[4];
@@ -228,7 +230,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(quadIndices, buffer2D.CachedIndices);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void IndicesAreRemappedWhenAddedVerticesAreNotAtTheBeginningOfTheBuffer()
 		{
 			var remappedIndices = new short[] { 4, 5, 6, 4, 6, 7 };

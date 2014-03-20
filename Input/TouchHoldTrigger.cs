@@ -9,7 +9,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Allows a touch hold to be detected.
 	/// </summary>
-	public class TouchHoldTrigger : PositionTrigger, TouchTrigger
+	public class TouchHoldTrigger : InputTrigger, PositionTrigger, TouchTrigger
 	{
 		public TouchHoldTrigger(Rectangle holdArea, float holdTime = DefaultHoldTime)
 		{
@@ -21,6 +21,7 @@ namespace DeltaEngine.Input
 		public float HoldTime { get; private set; }
 		private const float DefaultHoldTime = 1.0f;
 		public float Elapsed { get; set; }
+		public Vector2D Position { get; set; }
 
 		public TouchHoldTrigger(string holdAreaAndTime)
 		{
@@ -38,7 +39,7 @@ namespace DeltaEngine.Input
 		private static IList<T> GetWishedNumberOfElements<T>(IList<T> elements, int maxNumberOfElements)
 		{
 			if (elements.Count <= maxNumberOfElements)
-				return elements;
+				return elements; //ncrunch: no coverage
 			var newList = new List<T>();
 			foreach (T element in elements)
 				if (newList.Count < maxNumberOfElements)

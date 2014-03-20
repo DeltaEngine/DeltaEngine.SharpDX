@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using DeltaEngine.Core;
+using DeltaEngine.Entities;
 using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Core
@@ -68,6 +69,21 @@ namespace DeltaEngine.Tests.Core
 				logger.DoNotSkipMessagesIfTooManyAreWrittenEachSecond = true;
 				Logger.Info("La la la");
 				using (new ConsoleLogger()) { }
+			}
+		}
+
+		[Test]
+		public void WriteSkipMessages()
+		{
+			using (var logger = new ConsoleLogger())
+			{
+				Assert.AreEqual("", console.ToString());
+				logger.Write(Logger.MessageType.Info, "FirstMessage");
+				logger.DoNotSkipMessagesIfTooManyAreWrittenEachSecond = false;
+				Assert.IsFalse(logger.DoNotSkipMessagesIfTooManyAreWrittenEachSecond);
+				Time.Total = -1;
+				logger.Write(Logger.MessageType.Info, "Hello");
+				Assert.IsTrue(console.ToString().Contains("FirstMessage"), console.ToString());
 			}
 		}
 	}

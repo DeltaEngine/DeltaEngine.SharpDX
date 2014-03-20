@@ -53,14 +53,15 @@ namespace DeltaEngine.Platforms.Windows
 			cpuSpeed = (int)regKey.GetValue("~MHz");
 			cpuName = (string)regKey.GetValue("ProcessorNameString");
 			var display = new WindowsDisplayDevice();
+			display.cb = Marshal.SizeOf(display);
 			uint deviceNum = 0;
 			var gpuNames = new List<string>();
 			while (EnumDisplayDevices(null, deviceNum++, display, 0))
 				if (IsRelevantDevice(display, gpuNames))
 					gpuNames.Add(display.deviceString);
-			gpuName = string.Concat(",", gpuNames);
+			gpuName = string.Join(",", gpuNames);
 		}
-		
+
 		private float cpuSpeed;
 
 		private static bool IsRelevantDevice(WindowsDisplayDevice display, List<string> gpuNames)
@@ -224,23 +225,28 @@ namespace DeltaEngine.Platforms.Windows
 			get
 			{
 				if (usedRamCounter == null)
-					TryToGetUsedRamCounter();
+					GetUsedRamCounter();
 				return usedRamCounter == null ? 0.0f : usedRamCounter.NextValue() / (1024.0f * 1024.0f);
 			}
 		}
 
 		private PerformanceCounter usedRamCounter;
 
-		private void TryToGetUsedRamCounter()
+		private void GetUsedRamCounter()
 		{
 			try
 			{
-				usedRamCounter = new PerformanceCounter("Memory", "Committed Bytes");
+				TryGetUsedRamCounter();
 			}
 			catch (Exception ex)
 			{
 				Logger.Warning("Unable to get used ram: " + ex);
 			}
+		}
+
+		private void TryGetUsedRamCounter()
+		{
+			usedRamCounter = new PerformanceCounter("Memory", "Committed Bytes");
 		}
 
 		public override string Username

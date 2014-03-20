@@ -79,7 +79,7 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 			};
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void MultiLineTextTopLeftAligned()
 		{
 			new FontText(Font.Default, "Text\ntop\nleft\naligned", Center)
@@ -89,7 +89,7 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 			};
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void MultiLineTextBottomRightAligned()
 		{
 			new FontText(Font.Default, "Text\nbottom\nright\naligned", Center)

@@ -60,7 +60,8 @@ namespace DeltaEngine.Input.Tests
 			new Command(() => left.IsVisible = true).Add(new KeyTrigger(Key.CursorLeft, State.Pressed));
 			new Command(() => left.IsVisible = false).Add(new KeyTrigger(Key.CursorLeft, State.Released));
 			new Command(() => right.IsVisible = true).Add(new KeyTrigger(Key.CursorRight, State.Pressed));
-			new Command(() => right.IsVisible = false).Add(new KeyTrigger(Key.CursorRight, State.Released));
+			new Command(() => right.IsVisible = false).Add(new KeyTrigger(Key.CursorRight,
+				State.Released));
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -78,6 +79,22 @@ namespace DeltaEngine.Input.Tests
 			Assert.AreEqual(Key.Z, trigger.Key);
 			Assert.AreEqual(State.Pressed, trigger.State);
 			Assert.Throws<KeyTrigger.CannotCreateKeyTriggerWithoutKey>(() => new KeyTrigger(""));
+		}
+
+		[Test]
+		public void UseMoveDirectlyCommandToMoveCircleAround()
+		{
+			var circle = new Ellipse(Vector2D.Half, 0.25f, 0.25f, Color.Orange);
+			new Command(Command.MoveDirectly, position =>
+				circle.DrawArea = circle.DrawArea.Move(position / 24.0f)); //ncrunch: no coverage
+		}
+
+		[Test]
+		public void ZoomCircleWithPageUpPageDown()
+		{
+			var circle = new Ellipse(Vector2D.Half, 0.25f, 0.25f, Color.Orange);
+			new Command(Command.Zoom, zoom =>
+				circle.DrawArea = circle.DrawArea.Increase(new Size(zoom / 24.0f))); //ncrunch: no coverage
 		}
 	}
 }

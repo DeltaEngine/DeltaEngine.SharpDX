@@ -14,10 +14,11 @@ namespace DeltaEngine.Core
 		Engine,
 		Application,
 		Rendering,
+		Shader,
 		UI,
 		Physics,
 		AI,
 		Text,
-		AvailableRAM
+		AvailableRam
 	}
 }

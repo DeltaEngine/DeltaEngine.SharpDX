@@ -25,7 +25,7 @@ namespace DeltaEngine.Input.Tests
 			var mockMouse = Resolve<Mouse>() as MockMouse;
 			if (mockMouse == null)
 				return; //ncrunch: no coverage
-			mockMouse.SetPosition(new Vector2D(0.4f, 0.6f));
+			mockMouse.SetNativePosition(new Vector2D(0.4f, 0.6f));
 			AdvanceTimeAndUpdateEntities();
 			Assert.AreEqual(new Vector2D(0.4f, 0.6f), position);
 		}

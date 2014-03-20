@@ -13,17 +13,11 @@ namespace DeltaEngine.Mocks
 			: base(creationData) {}
 
 		protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) {}
-		protected override void LoadImage(Stream fileData) {} //ncrunch: no coverage
+		protected override void TryLoadImage(Stream fileData) {} //ncrunch: no coverage
 
-		public override void Fill(Color[] colors)
+		public override void FillRgbaData(byte[] rgbaColors)
 		{
-			if (PixelSize.Width * PixelSize.Height != colors.Length)
-				throw new InvalidNumberOfColors(PixelSize);
-		}
-
-		public override void Fill(byte[] colors)
-		{
-			if (PixelSize.Width * PixelSize.Height * 4 != colors.Length)
+			if (PixelSize.Width * PixelSize.Height * 4 != rgbaColors.Length)
 				throw new InvalidNumberOfBytes(PixelSize);
 		}
 

@@ -8,10 +8,17 @@ namespace DeltaEngine.Tests.ScreenSpaces
 {
 	public class PixelScreenSpaceTests
 	{
+		[SetUp]
+		public void CreateWindow()
+		{
+			window = new MockWindow { ViewportPixelSize = new Size(800, 600) };
+		}
+
+		private Window window;
+
 		[Test]
 		public void SquareWindowWithPixelSpace()
 		{
-			window.ViewportPixelSize = new Size(100, 100);
 			var screen = new PixelScreenSpace(window);
 			Assert.AreEqual(Vector2D.Zero, screen.TopLeft);
 			Assert.AreEqual(window.ViewportPixelSize, (Size)screen.BottomRight);
@@ -22,12 +29,9 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			window.CloseAfterFrame();
 		}
 
-		private readonly Window window = new MockWindow();
-
 		[Test]
 		public void GetInnerPoint()
 		{
-			window.ViewportPixelSize = new Size(800, 600);
 			ScreenSpace screen = new PixelScreenSpace(window);
 			Assert.AreEqual(screen.TopLeft, screen.GetInnerPosition(Vector2D.Zero));
 			Assert.AreEqual(screen.BottomRight, screen.GetInnerPosition(Vector2D.One));
@@ -37,7 +41,6 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		[Test]
 		public void ToPixelSpaceAndFromPixelSpace()
 		{
-			window.ViewportPixelSize = new Size(75, 100);
 			var pixelScreen = new PixelScreenSpace(window);
 			Assert.AreEqual(pixelScreen.TopLeft, pixelScreen.ToPixelSpace(pixelScreen.TopLeft));
 			Assert.AreEqual(pixelScreen.BottomRight, pixelScreen.ToPixelSpace(pixelScreen.BottomRight));
@@ -49,35 +52,22 @@ namespace DeltaEngine.Tests.ScreenSpaces
 		[Test]
 		public void NonSquareWindowWithPixelSpace()
 		{
-			window.ViewportPixelSize = new Size(100, 75);
 			var screen = new PixelScreenSpace(window);
 			Assert.AreEqual(0.0f, screen.Left);
 			Assert.AreEqual(0.0f, screen.Top);
-			Assert.AreEqual(100.0f, screen.Right);
-			Assert.AreEqual(75.0f, screen.Bottom);
-			Assert.AreEqual(75.0f, screen.Bottom);
+			Assert.AreEqual(800.0f, screen.Right);
+			Assert.AreEqual(600.0f, screen.Bottom);
 			window.CloseAfterFrame();
 		}
 
 		[Test]
-		public void ChangeWindowTotalPixelSize()
+		public void ChangingWindowViewportPixelSizeWillAlsoAffectTotalPixelSize()
 		{
 			Size border = window.TotalPixelSize - window.ViewportPixelSize;
-			window.ViewportPixelSize = PixelSize;
-			Assert.AreEqual(PixelSize, window.ViewportPixelSize);
-			Assert.AreEqual(PixelSize + border, window.TotalPixelSize);
-			window.CloseAfterFrame();
-		}
-
-		private static readonly Size PixelSize = new Size(800, 600);
-
-		[Test]
-		public void ChangeWindowViewportPixelSize()
-		{
-			Size border = window.TotalPixelSize - window.ViewportPixelSize;
-			window.ViewportPixelSize = PixelSize;
-			Assert.AreEqual(PixelSize + border, window.TotalPixelSize);
-			Assert.AreEqual(PixelSize, window.ViewportPixelSize);
+			Size newViewportSize = new Size(400, 300);
+			window.ViewportPixelSize = newViewportSize;
+			Assert.AreEqual(newViewportSize, window.ViewportPixelSize);
+			Assert.AreEqual(newViewportSize + border, window.TotalPixelSize);
 			window.CloseAfterFrame();
 		}
 
@@ -87,6 +77,18 @@ namespace DeltaEngine.Tests.ScreenSpaces
 			window.PixelPosition = new Vector2D(100, 200);
 			Assert.AreEqual(new Vector2D(100, 200), window.PixelPosition);
 			window.CloseAfterFrame();
+		}
+
+		[Test]
+		public void SquareWindow()
+		{
+			var pixelScreen = new PixelScreenSpace(window);
+			window.ViewportPixelSize = new Size(100, 100);
+			Assert.AreEqual(Vector2D.Zero, pixelScreen.TopLeft);
+			Assert.AreEqual(new Vector2D(100, 100), pixelScreen.BottomRight);
+			Assert.AreEqual(new Rectangle(0, 0, 100, 100), pixelScreen.Viewport);
+			Assert.AreEqual(new Vector2D(100, 100), pixelScreen.FromPixelSpace(new Vector2D(100, 100)));
+			Assert.AreEqual(new Vector2D(50, 50), pixelScreen.FromPixelSpace(new Vector2D(50, 50)));
 		}
 	}
 }

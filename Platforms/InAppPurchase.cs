@@ -15,14 +15,14 @@ namespace DeltaEngine.Platforms
 		public event ProductInformationDelegate OnReceivedProductInformation;
 		public delegate void ProductInformationDelegate(ProductData[] products);
 
-		public void InvokeOnTransactionFinished(string productId, bool wasSuccessfull)
+		public void InvokeOnTransactionFinished(ProductData productId, bool wasSuccessfull)
 		{
 			if (OnTransactionFinished != null)
 				OnTransactionFinished(productId, wasSuccessfull);
 		}
 
 		public event TransactionDelegate OnTransactionFinished;
-		public delegate void TransactionDelegate(string productId, bool wasSuccessful);
+		public delegate void TransactionDelegate(ProductData productId, bool wasSuccessful);
 
 		public void InvokeOnUserCanceled(string productId)
 		{
@@ -34,6 +34,6 @@ namespace DeltaEngine.Platforms
 		public delegate void UserCanceledDelegate(string productId);
 
 		public abstract bool RequestProductInformationAsync(int[] productIds);
-		public abstract bool PurchaseProductAsync(string productId);
+		public abstract bool PurchaseProductAsync(ProductData product);
 	}
 }

@@ -22,25 +22,23 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private TextBox topTextBox;
 		private TextBox bottomTextBox;
-		//ncrunch: no coverage start
 		private static readonly Rectangle Top = Rectangle.FromCenter(0.5f, 0.4f, 0.3f, 0.1f);
 		private static readonly Rectangle Bottom = Rectangle.FromCenter(0.5f, 0.6f, 0.3f, 0.1f);
-		//ncrunch: no coverage end
 
 		private void InitializeKeyboardAndMouse()
 		{
-			keyboard = Resolve<Keyboard>() as MockKeyboard;
+			keyboard = Resolve<Keyboard>();
 			lastKey = Key.None;
-			mouse = Resolve<Mouse>() as MockMouse;
-			if (mouse == null)
+			mouse = Resolve<Mouse>();
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(Vector2D.Zero);
+			mouse.SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
-		private MockKeyboard keyboard;
+		private Keyboard keyboard;
 		private Key lastKey;
-		private MockMouse mouse;
+		private Mouse mouse;
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void RenderTwoTextBoxes() {}
@@ -54,7 +52,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void ClickingTextBoxGivesItFocus()
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			Assert.IsFalse(topTextBox.State.HasFocus);
 			PressAndReleaseMouse(Vector2D.One);
@@ -72,17 +70,17 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private void SetMouseState(State state, Vector2D position)
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(position);
-			mouse.SetButtonState(MouseButton.Left, state);
+			mouse.SetNativePosition(position);
+			(mouse as MockMouse).SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ClickingOneTextBoxCausesOtherTextBoxToLoseFocus()
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			PressAndReleaseMouse(Top.Center);
 			Assert.IsTrue(topTextBox.State.HasFocus);
@@ -104,11 +102,12 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private void PressKey(Key key)
 		{
-			if (keyboard == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
+			var mockKeyboard = keyboard as MockKeyboard;
 			if (lastKey != Key.None)
-				keyboard.SetKeyboardState(lastKey, State.Pressed);
-			keyboard.SetKeyboardState(key, State.Pressing);
+				mockKeyboard.SetKeyboardState(lastKey, State.Pressed);
+			mockKeyboard.SetKeyboardState(key, State.Pressing);
 			AdvanceTimeAndUpdateEntities();
 			lastKey = key;
 		}
@@ -116,14 +115,14 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void TypingGoesIntoTheTextBoxWithFocus()
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			topTextBox.Text = "";
 			bottomTextBox.Text = "";
 			PressAndReleaseMouse(Bottom.Center);
 			PressKeys();
 			Assert.AreEqual("", topTextBox.Text);
-			Assert.AreEqual("A 2", bottomTextBox.Text);
+			Assert.AreEqual("a 2", bottomTextBox.Text);
 		}
 
 		private void PressKeys()

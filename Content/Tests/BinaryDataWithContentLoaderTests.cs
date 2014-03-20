@@ -45,7 +45,7 @@ namespace DeltaEngine.Content.Tests
 			var reader = new BinaryReader(stream);
 			var version = Assembly.GetExecutingAssembly().GetName().Version;
 			Assert.That(
-				() => BinaryDataLoader.TryCreateAndLoad(typeof(MockXmlContent), reader, version),
+				() => BinaryDataLoader.CreateAndLoad(typeof(MockXmlContent), reader, version),
 				Throws.Exception.With.InnerException.TypeOf
 					<BinaryDataLoader.UnableToLoadContentDataWithoutName>());
 			ContentLoader.DisposeIfInitialized();

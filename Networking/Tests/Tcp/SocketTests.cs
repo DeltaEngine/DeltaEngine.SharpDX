@@ -188,7 +188,7 @@ namespace DeltaEngine.Networking.Tests.Tcp
 				bool isTimedOut = false;
 				client.Connect(ServerAddress, 12345, () => isTimedOut = true);
 				Assert.IsFalse(isTimedOut);
-				Thread.Sleep(3500);
+				Thread.Sleep((int)((client.Timeout + 0.5f) * 1000));
 				Assert.IsTrue(isTimedOut);
 			}
 		}

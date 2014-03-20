@@ -13,7 +13,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Vector2D.Zero);
+				mouse.SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -42,6 +42,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragDropOutsideStartArea()
 		{
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			Vector2D startPoint = -Vector2D.One;
 			new Command(position => { startPoint = position; }).Add(
 				new MouseDragDropTrigger(Rectangle.HalfCentered, MouseButton.Left));
@@ -57,13 +59,15 @@ namespace DeltaEngine.Input.Tests
 			if (mouse == null)
 				return; //ncrunch: no coverage
 			mouse.SetButtonState(MouseButton.Left, state);
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			AdvanceTimeAndUpdateEntities();
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void DragDropInsideStartArea()
 		{
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			Vector2D startPoint = -Vector2D.One;
 			new Command(position => { startPoint = position; }).Add(
 				new MouseDragDropTrigger(Rectangle.HalfCentered, MouseButton.Left));
@@ -76,6 +80,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragDropCloseToStartPointWillDoNothing()
 		{
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			Vector2D startPoint = -Vector2D.One;
 			new Command(position => { startPoint = position; }).Add(
 				new MouseDragDropTrigger(Rectangle.HalfCentered, MouseButton.Left));

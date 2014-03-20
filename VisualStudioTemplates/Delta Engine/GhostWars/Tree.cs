@@ -11,10 +11,10 @@ namespace $safeprojectname$
 	public class Tree : Sprite, Updateable
 	{
 		public Tree(Vector2D position, Team team)
-			: base(new Material(Shader.Position2DColorUV, TreeImageName[0]), position)
+			: base(new Material(ShaderFlags.Position2DColoredTextured, TreeImageName[0]), position)
 		{
 			Level = 1;
-			Team = team;
+			CurrentTeam = team;
 			NumberText = new FontText(MainMenu.Font, "",
 				Rectangle.FromCenter(position + NumberTextPositionPerLevel[0], new Size(0.1f)))
 			{
@@ -25,9 +25,9 @@ namespace $safeprojectname$
 			UpdateImage();
 		}
 
-		private static readonly string[] TreeImageName = new[] { "Tree1", "Tree2", "Tree3" };
-		public int Level { get; private set; }
-		public Team Team { get; set; }
+		private static readonly string[] TreeImageName = { "Tree1", "Tree2", "Tree3" };
+		public int Level { get; set; }
+		public Team CurrentTeam { get; private set; }
 
 		public override bool IsActive
 		{
@@ -50,7 +50,7 @@ namespace $safeprojectname$
 				numberOfGhosts = value;
 				if (numberOfGhosts > Level * GameLogic.GhostsToUpgrade)
 					numberOfGhosts = Level * GameLogic.GhostsToUpgrade;
-				NumberText.Color = Team.ToColor();
+				NumberText.Color = CurrentTeam.ToColor();
 				NumberText.Text = numberOfGhosts + "";
 			}
 		}
@@ -59,28 +59,30 @@ namespace $safeprojectname$
 		public readonly FontText NumberText;
 		private static readonly Vector2D[] NumberTextPositionPerLevel =
 		{
-			new Vector2D(0.002f, -0.0495f), new Vector2D(0.002f, -0.0775f), new Vector2D(0.0015f, -0.0875f)
+			new Vector2D(0.002f, -0.0495f), new Vector2D(0.002f, -0.0775f),
+			new Vector2D(0.0015f, -0.0875f)
 		};
 
 		public bool IsAi
 		{
-			get { return Team == Team.ComputerPurple || Team == Team.ComputerTeal; }
+			get { return CurrentTeam == Team.ComputerPurple || CurrentTeam == Team.ComputerTeal; }
 		}
 
 		public void Update()
 		{
-			if (Team == Team.None || MainMenu.State != GameState.Game ||
+			if (CurrentTeam == Team.None || MainMenu.State != GameState.Game ||
 				!Time.CheckEvery(Level == 1 ? 1.5f : Level == 2 ? 1.0f : 0.75f))
 				return;
 			NumberOfGhosts++;
-			Effects.CreateSparkleEffect(Team, Center +
-				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 1);
+			Effects.CreateSparkleEffect(CurrentTeam, Center +
+				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)),
+				1);
 		}
 
 		private void UpdateImage()
 		{
-			Material = new Material(Shader.Position2DColorUV, TreeImageName[Level - 1]);
-			Color = Team.ToColor();
+			Material = new Material(ShaderFlags.Position2DColoredTextured, TreeImageName[Level - 1]);
+			Color = CurrentTeam.ToColor();
 			DrawArea =
 				Rectangle.FromCenter(Center, GameLogic.TreeSize * Material.DiffuseMap.PixelSize / 1920.0f);
 			NumberText.Center = Center + NumberTextPositionPerLevel[Level - 1];
@@ -88,9 +90,9 @@ namespace $safeprojectname$
 
 		public void Attack(Team attackerTeam, int numberOfAttackerGhosts)
 		{
-			if (Team == Team.None)
+			if (CurrentTeam == Team.None)
 				GrabEmptyTree(attackerTeam);
-			else if (Team == attackerTeam)
+			else if (CurrentTeam == attackerTeam)
 				MoveToOwnTree(numberOfAttackerGhosts);
 			else
 				AttackEnemyTree(attackerTeam, numberOfAttackerGhosts);
@@ -98,7 +100,7 @@ namespace $safeprojectname$
 
 		private void GrabEmptyTree(Team attackerTeam)
 		{
-			Team = attackerTeam;
+			CurrentTeam = attackerTeam;
 			if (attackerTeam == Team.HumanYellow)
 				ContentLoader.Load<Sound>("WinningTree").Play();
 			UpdateImage();
@@ -108,9 +110,9 @@ namespace $safeprojectname$
 		private void MoveToOwnTree(int numberOfAttackerGhosts)
 		{
 			NumberOfGhosts += numberOfAttackerGhosts;
-			if (Team == Team.HumanYellow)
+			if (CurrentTeam == Team.HumanYellow)
 				ContentLoader.Load<Sound>("GhostWaveStart").Play(0.7f);
-			Effects.CreateSparkleEffect(Team, Center +
+			Effects.CreateSparkleEffect(CurrentTeam, Center +
 				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)),
 				numberOfAttackerGhosts);
 		}
@@ -123,9 +125,9 @@ namespace $safeprojectname$
 			{
 				if (attackerTeam == Team.HumanYellow)
 					ContentLoader.Load<Sound>("WinningTree").Play();
-				else if (Team == Team.HumanYellow)
+				else if (CurrentTeam == Team.HumanYellow)
 					ContentLoader.Load<Sound>("LosingTree").Play();
-				Team = attackerTeam;
+				CurrentTeam = attackerTeam;
 				UpdateImage();
 				NumberOfGhosts = 0;
 			}
@@ -137,7 +139,8 @@ namespace $safeprojectname$
 		{
 			for (int num = 0; num < numberOfAttackerGhosts; num++)
 				Effects.CreateDeathEffect(Center +
-					new Vector2D(Randomizer.Current.Get(-0.03f, 0.03f), Randomizer.Current.Get(-0.03f, 0.03f)));
+					new Vector2D(Randomizer.Current.Get(-0.03f, 0.03f),
+						Randomizer.Current.Get(-0.03f, 0.03f)));
 			Effects.CreateHitEffect(Center);
 		}
 
@@ -148,7 +151,7 @@ namespace $safeprojectname$
 			lastAttackerTime = Time.Total;
 			if (NumberOfGhosts > 20)
 				numberOfAttackerGhosts--;
-			if (NumberOfGhosts > 60)
+			if (NumberOfGhosts >= 60)
 				numberOfAttackerGhosts--;
 			return numberOfAttackerGhosts;
 		}
@@ -157,16 +160,16 @@ namespace $safeprojectname$
 
 		public void TryToUpgrade()
 		{
-			if (Level > 2 || NumberOfGhosts < Level * GameLogic.GhostsToUpgrade || Team != Team.HumanYellow)
+			if (Level > 2 || NumberOfGhosts < Level * GameLogic.GhostsToUpgrade ||
+				CurrentTeam != Team.HumanYellow)
 				return;
 			NumberOfGhosts -= Level * GameLogic.GhostsToUpgrade;
 			Level++;
 			UpdateImage();
 			ContentLoader.Load<Sound>("Upgrading").Play();
-			Effects.CreateSparkleEffect(Team, Center +
-				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)), 8);
+			Effects.CreateSparkleEffect(CurrentTeam, Center +
+				new Vector2D(Randomizer.Current.Get(-0.04f, 0.04f), Randomizer.Current.Get(-0.04f, 0.04f)),
+				8);
 		}
-
-		public bool IsPauseable { get { return true; } }
 	}
 }

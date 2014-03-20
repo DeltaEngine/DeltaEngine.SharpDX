@@ -21,7 +21,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		public void RenderLineAndSprite()
 		{
 			new Line2D(Vector2D.Zero, Vector2D.One, Color.Red);
-			new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"),
+			new Sprite(new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo"),
 				Rectangle.FromCenter(Vector2D.Half, new Size(0.1f)));
 		}
 
@@ -341,6 +341,25 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			var line = new Line2D(Vector2D.Zero, Vector2D.One, Color.White);
 			line.Points = new List<Vector2D>();
 			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void ChangingDrawAreaChangesStartAndEndPoints()
+		{
+			var line = new Line2D(new Vector2D(1, 2), new Vector2D(3, 5), Color.White);
+			line.DrawArea = new Rectangle(11, 12, 5, 6);
+			Assert.AreEqual(new Vector2D(11, 12), line.StartPoint);
+			Assert.AreEqual(new Vector2D(16, 18), line.EndPoint);
+			Assert.AreEqual(new Rectangle(11, 12, 5, 6), line.DrawArea);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void ChangingStartAndEndPointsChangesDrawArea()
+		{
+			var line = new Line2D(new Vector2D(1, 2), new Vector2D(3, 5), Color.White);
+			line.StartPoint = new Vector2D(11, 12);
+			line.EndPoint = new Vector2D(16, 18);
+			Assert.AreEqual(new Rectangle(11, 12, 5, 6), line.DrawArea);
 		}
 	}
 }

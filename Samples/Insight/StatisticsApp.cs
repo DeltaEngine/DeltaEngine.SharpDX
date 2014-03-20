@@ -18,14 +18,14 @@ namespace Insight
 
 		public void CreateAppMenu()
 		{
-			mainBg = new Material(Shader.Position2DColorUV, "MainBg");
-			userStatsMaterial = new Material(Shader.Position2DColorUV, "ButtonUserStats");
-			topLocationMaterial = new Material(Shader.Position2DColorUV, "ButtonTopLocation");
-			topSegmentUserStatsMaterial = new Material(Shader.Position2DColorUV, "UserStatsBg");
-			userStatButtonPressedMaterial = new Material(Shader.Position2DColorUV,
+			mainBg = new Material(ShaderFlags.Position2DColoredTextured, "MainBg");
+			userStatsMaterial = new Material(ShaderFlags.Position2DColoredTextured, "ButtonUserStats");
+			topLocationMaterial = new Material(ShaderFlags.Position2DColoredTextured, "ButtonTopLocation");
+			topSegmentUserStatsMaterial = new Material(ShaderFlags.Position2DColoredTextured, "UserStatsBg");
+			userStatButtonPressedMaterial = new Material(ShaderFlags.Position2DColoredTextured,
 				"ButtonUserStatsPressed");
-			topSegmentTopLocationMaterial = new Material(Shader.Position2DColorUV, "TopLocationBg");
-			topLocationButtonPressedMaterial = new Material(Shader.Position2DColorUV,
+			topSegmentTopLocationMaterial = new Material(ShaderFlags.Position2DColoredTextured, "TopLocationBg");
+			topLocationButtonPressedMaterial = new Material(ShaderFlags.Position2DColoredTextured,
 				"ButtonTopLocationsPressed");
 			topSegment = new Sprite(mainBg, Rectangle.Zero);
 			userStats = new Sprite(userStatsMaterial, Rectangle.Zero);

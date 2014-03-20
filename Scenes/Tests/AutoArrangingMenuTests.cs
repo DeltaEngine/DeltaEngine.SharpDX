@@ -16,7 +16,7 @@ namespace DeltaEngine.Scenes.Tests
 		public void SetUp()
 		{
 			menu = new AutoArrangingMenu(ButtonSize, BaseRenderLayer);
-			menu.SetQuadraticBackground(new Material(Shader.Position2DColorUV, "SimpleSubMenuBackground"));
+			menu.SetQuadraticBackground(new Material(ShaderFlags.Position2DColoredTextured, "SimpleSubMenuBackground"));
 			text = new FontText(Font.Default, "Nothing pressed", new Rectangle(0.4f, 0.6f, 0.2f, 0.1f));
 		}
 
@@ -60,10 +60,10 @@ namespace DeltaEngine.Scenes.Tests
 		[Test]
 		public void ShowMenuWithThreeTextButtons()
 		{
-			menu.AddMenuOption(Theme.Default, () => { text.Text = "Clicked Top Button"; }, "Top Button");
-			menu.AddMenuOption(Theme.Default, () => { text.Text = "Clicked Middle Button"; },
+			menu.AddMenuOption(new Theme(), () => { text.Text = "Clicked Top Button"; }, "Top Button");
+			menu.AddMenuOption(new Theme(), () => { text.Text = "Clicked Middle Button"; },
 				"Middle Button");
-			menu.AddMenuOption(Theme.Default, () => { text.Text = "Clicked Bottom Button"; },
+			menu.AddMenuOption(new Theme(), () => { text.Text = "Clicked Bottom Button"; },
 				"Bottom Button");
 			menu.Show();
 		}
@@ -75,7 +75,7 @@ namespace DeltaEngine.Scenes.Tests
 			Assert.AreEqual(Vector2D.Half, menu.Center);
 		}
 
-		[Test, CloseAfterFirstFrame]
+		[Test, CloseAfterFirstFrame, Timeout(2000)]
 		public void ChangingButtonSize()
 		{
 			menu.ButtonSize = Size.Half;
@@ -96,7 +96,7 @@ namespace DeltaEngine.Scenes.Tests
 			menu.AddMenuOption(() => { });
 			Assert.AreEqual(2, menu.Controls.Count);
 			var button = (Button)menu.Controls[1];
-			Assert.AreEqual(Theme.Default.Button, button.Material);
+			Assert.AreEqual(new Theme().Button.ToString(), button.Material.ToString());
 			Assert.IsTrue(button.DrawArea.IsNearlyEqual(new Rectangle(0.45f, 0.55f, 0.3f, 0.1f)));
 		}
 
@@ -143,7 +143,7 @@ namespace DeltaEngine.Scenes.Tests
 		[Test, CloseAfterFirstFrame]
 		public void ClearMenuOptionsLeavesOtherControlsAlone()
 		{
-			var logo = new Material(Shader.Position2DUV, "DeltaEngineLogo");
+			var logo = new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo");
 			menu.Add(new Sprite(logo, Rectangle.One));
 			menu.AddMenuOption(() => { });
 			Assert.AreEqual(1, menu.Buttons.Count);

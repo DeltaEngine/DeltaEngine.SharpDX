@@ -10,8 +10,8 @@ namespace DeltaEngine.Datatypes
 	/// Ray struct, used to fire rays into a 3D scene to find out what we can
 	/// hit with that ray (for mouse picking and other simple collision stuff).
 	/// </summary>
-	[StructLayout(LayoutKind.Sequential)]
 	[DebuggerDisplay("Ray(Origin {Origin}, Direction {Direction})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Ray : IEquatable<Ray>
 	{
 		public Ray(Vector3D origin, Vector3D direction)

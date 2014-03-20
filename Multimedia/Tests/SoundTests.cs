@@ -8,9 +8,6 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Multimedia.Tests
 {
-	/// <summary>
-	/// Test sound playback.
-	/// </summary>
 	public class SoundTests : TestWithMocksOrVisually
 	{
 		[Test]

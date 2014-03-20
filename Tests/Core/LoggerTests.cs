@@ -20,7 +20,7 @@ namespace DeltaEngine.Tests.Core
 		{
 			using (var logger = new MockLogger())
 			{
-				Assert.IsNull(logger.LastMessage);
+				Assert.IsEmpty(logger.LastMessage);
 				Logger.Info("Hello");
 				Assert.AreEqual("Hello", logger.LastMessage);
 				Assert.AreEqual(0, logger.NumberOfRepeatedMessagesIgnored);

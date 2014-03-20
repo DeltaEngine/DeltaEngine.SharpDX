@@ -14,7 +14,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			: base(world, map)
 		{
 			var data = Get<Data>();
-			var logo = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			var logo = new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo");
 			CreateWorld(data, logo);
 			CreateMap(data, logo);
 		}
@@ -23,7 +23,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		{
 			for (int x = 0; x < data.WorldWidth; x++)
 				for (int y = 0; y < data.WorldHeight; y++)
-					data.World[x, y] = new RainbowTile(logo,
+					data.World[x + y * data.MapWidth] = new RainbowTile(logo,
 						new Color(Rainbow(x, data.WorldWidth), Rainbow(y, data.WorldHeight),
 							Rainbow(x + y, data.WorldWidth)));
 		}
@@ -37,7 +37,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		{
 			for (int x = 0; x < data.MapWidth; x++)
 				for (int y = 0; y < data.MapHeight; y++)
-					data.Map[x, y] = new Sprite(logo, Rectangle.Zero);
+					data.Map[x + y * data.MapWidth] = new Sprite(logo, Rectangle.Zero);
 		}
 
 		private class RainbowTile : Tile

@@ -170,7 +170,7 @@ namespace DeltaEngine.Commands
 				zoomAction(0);
 		}
 
-		public bool IsPauseable { get { return false; } }
+		public override bool IsPauseable { get { return false; } }
 
 		public List<Trigger> GetTriggers()
 		{

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Content
@@ -52,7 +53,7 @@ namespace DeltaEngine.Content
 			IsDisposed = true;
 		}
 
-		public bool IsDisposed { get; private set; }
+		public bool IsDisposed { get; protected set; }
 		protected abstract void DisposeData();
 
 		internal void InternalLoad(Func<ContentData, Stream> getContentDataStream)
@@ -62,8 +63,20 @@ namespace DeltaEngine.Content
 				!GetType().FullName.Contains(MetaData.Type.ToString()))
 				throw new DoesNotMatchMetaDataType(this);
 #endif
-			using (var stream = getContentDataStream(this))
-				LoadData(stream);
+			IsDisposed = false;
+			try
+			{
+				using (var stream = getContentDataStream(this))
+					LoadData(stream);
+			}
+			catch (Exception ex)
+			{
+				Logger.Error(ex);
+				if (AllowCreationIfContentNotFound)
+					CreateDefault();
+				else
+					throw;
+			}
 		}
 
 		public class DoesNotMatchMetaDataType : Exception
@@ -76,6 +89,7 @@ namespace DeltaEngine.Content
 
 		public void InternalCreateDefault()
 		{
+			IsDisposed = false;
 			CreateDefault();
 		}
 

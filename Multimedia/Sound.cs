@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
@@ -30,6 +31,11 @@ namespace DeltaEngine.Multimedia
 				return internalInstances.Count(instance => instance.IsPlaying) + 
 					externalInstances.Count(instance => instance.IsPlaying);
 			}
+		}
+
+		protected override bool AllowCreationIfContentNotFound
+		{
+			get { return !Debugger.IsAttached; }
 		}
 
 		protected override void DisposeData()

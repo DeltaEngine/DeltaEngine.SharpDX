@@ -4,7 +4,6 @@ using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
 using DeltaEngine.Scenes.Controls;
@@ -14,8 +13,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 {
 	public class TilemapTests : TestWithMocksOrVisually
 	{
-		//ncrunch: no coverage start
-		[Test, Category("Slow")]
+		[Test, Category("Slow")] //ncrunch: no coverage start
 		public void RenderColoredLogoTilemap()
 		{
 			CreateBorder();
@@ -65,7 +63,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 					tileMap.Get<FontText>().Text = "Delta: " + tileMap.State.DragDelta + "\nDragStart:" +
 						tileMap.State.DragStart + "\nDragEnd:" + tileMap.State.DragEnd;
 			}
-		}
+		} //ncrunch: no coverage end
 
 		[Test]
 		public void TestWithMouseDrag()
@@ -81,7 +79,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		public void TestWithMockKeyboard()
 		{
 			new ColoredLogoTilemap(World, Map);
-			if (resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.A, State.Pressed);
@@ -110,7 +108,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		public void MoveToLeft()
 		{
 			new ColoredLogoTilemap(World, Map);
-			if (resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return;
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.D, State.Pressed);
@@ -121,13 +119,13 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		public void TestBorderIntersection()
 		{
 			new ColoredLogoTilemap(new Size(1), new Size(1));
-			if (resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return;
 			var keyboard = Resolve<MockKeyboard>();
 			keyboard.SetKeyboardState(Key.D, State.Pressed);
 			AdvanceTimeAndUpdateEntities(1);
 			keyboard.SetKeyboardState(Key.S, State.Pressed);
 			AdvanceTimeAndUpdateEntities(1);
-		}
+		} // ncrunch: no coverage end
 	}
 }

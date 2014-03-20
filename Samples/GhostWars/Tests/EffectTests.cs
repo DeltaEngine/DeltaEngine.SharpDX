@@ -28,7 +28,21 @@ namespace GhostWars.Tests
 		[Test]
 		public void ShowSparkleEffect()
 		{
-			Effects.CreateSparkleEffect(Team.HumanYellow, Vector2D.Half, 20);
+			var effect = Effects.CreateSparkleEffect(Team.HumanYellow, Vector2D.Half, 20);
+		}
+
+		[Test]
+		public void CreateDeathEffect()
+		{
+			var effect = Effects.CreateDeathEffect(Vector2D.Half);
+			Assert.IsNotNull(effect);
+		}
+
+		[Test]
+		public void CreateHitEffect()
+		{
+			var effect = Effects.CreateHitEffect(Vector2D.Half);
+			Assert.IsNotNull(effect);
 		}
 	}
 }

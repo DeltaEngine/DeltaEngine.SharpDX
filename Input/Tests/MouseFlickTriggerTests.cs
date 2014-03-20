@@ -42,7 +42,7 @@ namespace DeltaEngine.Input.Tests
 		private void AdvanceMouseTick(MockMouse mouse, State state, Vector2D position)
 		{
 			mouse.SetButtonState(MouseButton.Left, state);
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			AdvanceTimeAndUpdateEntities();
 		}
 

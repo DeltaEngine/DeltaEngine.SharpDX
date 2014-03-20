@@ -1,5 +1,4 @@
 ﻿using DeltaEngine.Content;
-using DeltaEngine.Content.Mocks;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Mocks;
@@ -13,11 +12,13 @@ namespace DeltaEngine.Tests.Content
 		[SetUp]
 		public void CreateContentLoader()
 		{
-			ContentLoader.Use<MockContentLoader>();
+			ContentLoader.Use<FakeContentLoader>();
 			new MockSettings();
-			new QuadraticScreenSpace(new MockWindow());
-			var shader = ContentLoader.Load<FakeShader>(Shader.Position2DColor);
-			material = new Material(shader, null, new Size(100));
+			ScreenSpace.Current = new QuadraticScreenSpace(new MockWindow());
+			var shader =
+				ContentLoader.Create<FakeShader>(new ShaderCreationData(ShaderFlags.Position2DColored));
+			var image = ContentLoader.Create<FakeImage>(new ImageCreationData(new Size(100)));
+			material = new Material(shader, image);
 		}
 
 		private Material material;
@@ -32,8 +33,8 @@ namespace DeltaEngine.Tests.Content
 		public void TestPixelBasedRenderSize()
 		{
 			material.RenderSizeMode = RenderSizeMode.PixelBased;
-			Assert.AreEqual(0.15625f,material.MaterialRenderSize.Width);
-			Assert.AreEqual(0.15625f, material.MaterialRenderSize.Height);
+			Assert.AreEqual(0.3125f, material.MaterialRenderSize.Width);
+			Assert.AreEqual(0.3125f, material.MaterialRenderSize.Height);
 		}
 
 		[Test]
@@ -72,7 +73,9 @@ namespace DeltaEngine.Tests.Content
 		public void TestSettingsBasedRenderSize()
 		{
 			material.RenderSizeMode = RenderSizeMode.SizeForSettingsResolution;
-			AssertMaterialRenderSize(material, ExceptionExtensions.IsDebugMode ? 0.15625f : 0.078125f);
+			AssertMaterialRenderSize(material,
+				StackTraceExtensions.StartedFromNCrunchOrNunitConsole
+					? 0.3125f : ExceptionExtensions.IsDebugMode ? 0.15625f : 0.078125f);
 		}
 
 		private static void AssertMaterialRenderSize(Material material, float dimension)

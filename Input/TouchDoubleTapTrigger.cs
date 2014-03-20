@@ -15,7 +15,7 @@ namespace DeltaEngine.Input
 		{
 			if (!String.IsNullOrEmpty(empty))
 				throw new TouchDoubleTapTriggerHasNoParameters();
-		}
+		} 
 
 		public class TouchDoubleTapTriggerHasNoParameters : Exception {}
 

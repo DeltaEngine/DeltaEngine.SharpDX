@@ -1,4 +1,5 @@
 ﻿using System;
+using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Extensions
 {
@@ -51,6 +52,11 @@ namespace DeltaEngine.Extensions
 			return (float)Math.Asin(value) * 180 / Pi;
 		}
 
+		public static float Acos(float value)
+		{
+			return (float)Math.Acos(value) * 180 / Pi;
+		}
+
 		public static float Atan2(float y, float x)
 		{
 			return (float)Math.Atan2(y, x) * 180 / Pi;
@@ -101,7 +107,7 @@ namespace DeltaEngine.Extensions
 			return value1 < value2 ? value1 : value2;
 		}
 
-		public static float Min(int value1, int value2)
+		public static int Min(int value1, int value2)
 		{
 			return value1 < value2 ? value1 : value2;
 		}
@@ -123,6 +129,21 @@ namespace DeltaEngine.Extensions
 		{
 			degrees = (float)Math.IEEERemainder(degrees, 360);
 			return degrees <= -180 ? degrees + 360 : (degrees > 180 ? degrees - 360 : degrees);
+		}
+
+		/// <summary>
+		/// http://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+		/// </summary>
+		public static bool IsLineIntersectingWith(Vector2D line1Start, Vector2D line1End,
+			Vector2D line2Start, Vector2D line2End)
+		{
+			float denominator = (line2End.Y - line2Start.Y) * (line1End.X - line1Start.X) -
+													((line2End.X - line2Start.X) * (line1End.Y - line1Start.Y));
+			float ua = ((line2End.X - line2Start.X) * (line1Start.Y - line2Start.Y) -
+									(line2End.Y - line2Start.Y) * (line1Start.X - line2Start.X)) / denominator;
+			float ub = ((line1End.X - line1Start.X) * (line1Start.Y - line2Start.Y) -
+									(line1End.Y - line1Start.Y) * (line1Start.X - line2Start.X)) / denominator;
+			return ua >= 0f && ua <= 1f && ub >= 0f && ub <= 1f;
 		}
 	}
 }

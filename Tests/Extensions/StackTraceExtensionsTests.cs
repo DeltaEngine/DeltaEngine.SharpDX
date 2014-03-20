@@ -72,24 +72,29 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.IsTrue(StackTraceExtensions.IsUnitTest());
 		}
 
-		[Test]
+		[Test, Ignore]
 		public void FormatStackTraceIntoClickableMultilineText()
 		{
 			// This will output text into the NCrunch output window, which is needed to test this feature
 			Console.WriteLine(StackTraceExtensions.FormatStackTraceIntoClickableMultilineText());
 		}
 
-		[Test]
+		[Test, Ignore]
 		public void FormatExceptionIntoClickableMultilineText()
 		{
 			try
 			{
-				throw new Exception("test");
-			}
+				TryFormatExceptionIntoClickableMultilineText();
+			} // ncrunch: no coverage
 			catch (Exception ex)
 			{
 				Console.WriteLine(StackTraceExtensions.FormatExceptionIntoClickableMultilineText(ex));
 			}
+		}
+
+		private static void TryFormatExceptionIntoClickableMultilineText()
+		{
+			throw new Exception("test");
 		}
 		
 		[Test]

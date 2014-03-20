@@ -23,7 +23,7 @@ namespace DeltaEngine.Tests.Core
 		}
 
 		[Test]
-		public void GetTitle()
+		public void SetAndGetTitle()
 		{
 			window.Title = "TestTitle";
 			Assert.AreEqual("TestTitle", window.Title);
@@ -32,7 +32,7 @@ namespace DeltaEngine.Tests.Core
 		[Test]
 		public void ChangeTotalSize()
 		{
-			Assert.AreEqual(new Size(640, 360), window.ViewportPixelSize);
+			Assert.AreEqual(new Size(320, 180), window.ViewportPixelSize);
 			Size changedSize = window.TotalPixelSize;
 			window.ViewportSizeChanged += size => changedSize = size;
 			window.ViewportPixelSize = new Size(200, 200);

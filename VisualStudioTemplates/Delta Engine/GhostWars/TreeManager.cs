@@ -11,7 +11,6 @@ using DeltaEngine.Multimedia;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
-using DeltaEngine.Scenes;
 
 namespace $safeprojectname$
 {
@@ -19,7 +18,7 @@ namespace $safeprojectname$
 	{
 		public TreeManager(Team playerTeam)
 		{
-			gameScene = new Scene();
+			//gameScene = new Scene();
 			MainMenu.PlayerTeam = playerTeam;
 			if (MainMenu.State != GameState.CountDown)
 				MainMenu.State = GameState.Game;
@@ -27,18 +26,19 @@ namespace $safeprojectname$
 				Rectangle.FromCenter(new Vector2D(0.5f, 0.25f), new Size(0.2f)));
 			statusText.RenderLayer = 5;
 			statusText.Color = Team.HumanYellow.ToColor();
-			var logo = new Sprite(new Material(Shader.Position2DUV, "Logo"),
+			var logo = new Sprite(new Material(ShaderFlags.Position2DTextured, "Logo"),
 				new Rectangle(0.02f, 0.205f, 0.15f, 0.15f));
 			logo.RenderLayer = -15;
-			gameScene.Add(logo);
+			displayedEntities.Add(logo);
 			CreateArrowSelectionAndBars();
 			OnClickSelectTree();
 		}
 
-		private readonly Scene gameScene;
+		//private readonly Scene gameScene;
 
 		private readonly FontText statusText;
 
+		//ncrunch: no coverage start, highly interactive and slow to test
 		private void OnClickSelectTree()
 		{
 			new Command(Command.Click, position =>
@@ -61,7 +61,7 @@ namespace $safeprojectname$
 		private void CreateArrowSelectionAndBars()
 		{
 			arrow = Effects.CreateArrow(Vector2D.Unused, Vector2D.Unused);
-			selection = new Sprite(new Material(Shader.Position2DColorUV, "SelectionCircle"),
+			selection = new Sprite(new Material(ShaderFlags.Position2DColoredTextured, "SelectionCircle"),
 				Rectangle.Zero);
 			bars = new[]
 			{
@@ -84,8 +84,8 @@ namespace $safeprojectname$
 			for (int i = 0; i < 3; i++)
 				ghosts[i] = 0;
 			foreach (var tree in trees)
-				if (tree.Team != Team.None)
-					ghosts[(int)tree.Team - 1] += tree.NumberOfGhosts;
+				if (tree.CurrentTeam != Team.None)
+					ghosts[(int)tree.CurrentTeam - 1] += tree.NumberOfGhosts;
 			int totalGhosts = ghosts.Sum();
 			if (totalGhosts == 0 || MainMenu.State != GameState.Game)
 				return;
@@ -107,7 +107,7 @@ namespace $safeprojectname$
 		{
 			var newTree = new Tree(position, team);
 			trees.Add(newTree);
-			gameScene.Add(newTree);
+			displayedEntities.Add(newTree);
 			UpdateBars();
 			new Command(newTree.TryToUpgrade).Add(new MouseHoldTrigger(newTree.DrawArea)).Add(
 				new TouchHoldTrigger(newTree.DrawArea));
@@ -123,12 +123,12 @@ namespace $safeprojectname$
 				return;
 			var targetTree = FindNearestTree(startTree, end);
 			arrow.IsVisible = false;
-			if (startTree.Team != MainMenu.PlayerTeam || targetTree == startTree ||
+			if (startTree.CurrentTeam != MainMenu.PlayerTeam || targetTree == startTree ||
 				MainMenu.State != GameState.Game || startTree.Center.DistanceTo(end) < 0.05f)
 				return;
 			arrow.Dispose();
 			arrow = Effects.CreateArrow(startTree.Center, targetTree.Center);
-			arrow.Color = startTree.Team.ToColor();
+			arrow.Color = startTree.CurrentTeam.ToColor();
 			arrow.IsVisible = !dragDone;
 			if ((dragDone && Time.Total - lastWaveSend > TimeBetweenWaves ||
 				!dragDone && Time.CheckEvery(TimeBetweenWaves)) && startTree.NumberOfGhosts >= 1)
@@ -149,8 +149,8 @@ namespace $safeprojectname$
 			if (targetTree == null)
 				return;
 			var wave = new GhostWave(startTree.Center, targetTree.Center, ghostsToSend,
-				startTree.Team.ToColor());
-			wave.Attacker = startTree.Team;
+				startTree.CurrentTeam.ToColor());
+			wave.Attacker = startTree.CurrentTeam;
 			wave.TargetReached += (attacker, waveSize) =>
 			{
 				targetTree.Attack((Team)attacker, waveSize);
@@ -223,7 +223,7 @@ namespace $safeprojectname$
 		{
 			statusText.Text = "";
 			MainMenu.State = GameState.GameOver;
-			gameScene.Add(new Sprite(new Material(Shader.Position2DUV, "YouWin"), Vector2D.Half)
+			displayedEntities.Add(new Sprite(new Material(ShaderFlags.Position2DTextured, "YouWin"), Vector2D.Half)
 			{
 				RenderLayer = 4000
 			});
@@ -237,7 +237,7 @@ namespace $safeprojectname$
 		{
 			statusText.Text = "You Lost!";
 			MainMenu.State = GameState.GameOver;
-			gameScene.Add(new Sprite(new Material(Shader.Position2DUV, "GameOver"), Vector2D.Half)
+			displayedEntities.Add(new Sprite(new Material(ShaderFlags.Position2DTextured, "GameOver"), Vector2D.Half)
 			{
 				RenderLayer = 4000
 			});
@@ -264,7 +264,7 @@ namespace $safeprojectname$
 			float nearestDistance = float.MaxValue;
 			Tree nearestTree = null;
 			foreach (var tree in trees)
-				if (tree.Team == Team.None)
+				if (tree.CurrentTeam == Team.None)
 				{
 					float treeDistance = tree.Center.DistanceTo(sourceTree.Center);
 					if (treeDistance > nearestDistance)
@@ -280,7 +280,7 @@ namespace $safeprojectname$
 			float nearestDistance = float.MaxValue;
 			Tree nearestTree = null;
 			foreach (var tree in trees)
-				if (tree.Team != Team.None && tree.Team != sourceTree.Team &&
+				if (tree.CurrentTeam != Team.None && tree.CurrentTeam != sourceTree.CurrentTeam &&
 					tree.NumberOfGhosts < sourceTree.NumberOfGhosts)
 				{
 					float treeDistance = tree.Center.DistanceTo(sourceTree.Center);
@@ -294,28 +294,29 @@ namespace $safeprojectname$
 
 		private bool AllTreesBelongTo(Team team)
 		{
-			return trees.All(tree => tree.Team == team);
+			return trees.All(tree => tree.CurrentTeam == team);
 		}
 
 		private bool NoTreesBelongTo(Team team)
 		{
-			return trees.All(tree => tree.Team != team);
+			return trees.All(tree => tree.CurrentTeam != team);
 		}
 
 		public void RemoveTrees()
 		{
-			gameScene.Clear();
+			//gameScene.Clear();
+			foreach (var tree in trees)
+				tree.IsActive = false;
 			trees.Clear();
 			statusText.Text = "";
 			foreach (var bar in bars)
-			{
 				bar.IsVisible = false;
-			}
+			foreach (var entity2D in displayedEntities)
+				entity2D.IsActive = false;
+			displayedEntities.Clear();
+			selection.IsVisible = false;
 		}
 
-		public bool IsPauseable
-		{
-			get { return true; }
-		}
+		private List<Entity2D> displayedEntities = new List<Entity2D>();
 	}
 }

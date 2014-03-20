@@ -6,19 +6,22 @@ namespace DeltaEngine.Core
 {
 	/// <summary>
 	/// Starts a command line process with given argument and optional timeout. Supports events or
-	/// can be used synchronously with checking Error or Output afterwards. Exceptions are thrown when
-	/// things go bad (ExitCode not 0 or process times out).
+	/// can be used synchronously with checking Error or Output afterwards. Exceptions are thrown
+	/// when things go bad (ExitCode not 0 or process times out).
 	/// </summary>
 	public class ProcessRunner
 	{
+		//ncrunch: no coverage start
 		public ProcessRunner(string filePath, string argumentsLine = "", int timeoutInMs = NoTimeout)
 		{
 			FilePath = filePath;
 			ArgumentsLine = argumentsLine;
 			this.timeoutInMs = timeoutInMs;
+			WorkingDirectory = Environment.CurrentDirectory;
+			IsWaitingForExit = true;
+			IsExitCodeRelevant = true;
 			Output = "";
 			Errors = "";
-			WorkingDirectory = Environment.CurrentDirectory;
 		}
 
 		private const int NoTimeout = -1;
@@ -26,19 +29,21 @@ namespace DeltaEngine.Core
 		public string FilePath { get; protected set; }
 		public string ArgumentsLine { get; protected set; }
 		protected readonly int timeoutInMs;
-
 		public string WorkingDirectory { get; set; }
+		public bool IsWaitingForExit { get; set; }
+		public bool IsExitCodeRelevant { get; set; }
 		public string Output { get; private set; }
 		public string Errors { get; private set; }
 
 		public void Start()
 		{
-			using (nativeProcess = new Process())
-			{
-				SetupStartInfo();
-				SetupProcessAndRun();
-			}
-			nativeProcess = null;
+			nativeProcess = new Process();
+			SetupStartInfo();
+			InitializeProcessOutputStreams();
+			if (IsWaitingForExit)
+				StartNativeProcessAndWaitForExit();
+			else
+				StartNativeProcess();
 		}
 
 		private Process nativeProcess;
@@ -58,24 +63,16 @@ namespace DeltaEngine.Core
 		/// Helpful post how to avoid the possible deadlock of a process
 		/// http://stackoverflow.com/questions/139593/processstartinfo-hanging-on-waitforexit-why
 		/// </summary>
-		private void SetupProcessAndRun()
+		private void InitializeProcessOutputStreams()
 		{
-			using (outputWaitHandle = new AutoResetEvent(false))
-			using (errorWaitHandle = new AutoResetEvent(false))
-				AttachToOutputStreamAndRunNativeProcess();
-			errorWaitHandle = null;
-			outputWaitHandle = null;
+			outputWaitHandle = new AutoResetEvent(false);
+			errorWaitHandle = new AutoResetEvent(false);
+			nativeProcess.OutputDataReceived += OnStandardOutputDataReceived;
+			nativeProcess.ErrorDataReceived += OnErrorOutputDataReceived;
 		}
 
 		private AutoResetEvent outputWaitHandle;
 		private AutoResetEvent errorWaitHandle;
-
-		private void AttachToOutputStreamAndRunNativeProcess()
-		{
-			nativeProcess.OutputDataReceived += OnStandardOutputDataReceived;
-			nativeProcess.ErrorDataReceived += OnErrorOutputDataReceived;
-			StartNativeProcessAndWaitForExit();
-		}
 
 		private void OnStandardOutputDataReceived(object sender, DataReceivedEventArgs e)
 		{
@@ -86,7 +83,7 @@ namespace DeltaEngine.Core
 			}
 			if (StandardOutputEvent != null)
 				StandardOutputEvent(e.Data);
-			Output += e.Data + "\n";
+			Output += e.Data + Environment.NewLine;
 		}
 
 		public event Action<string> StandardOutputEvent;
@@ -98,26 +95,27 @@ namespace DeltaEngine.Core
 				errorWaitHandle.Set();
 				return;
 			}
-			//ncrunch: no coverage start
 			if (ErrorOutputEvent != null)
 				ErrorOutputEvent(e.Data);
-			Errors += e.Data + "\n";
-			//ncrunch: no coverage end
+			Errors += e.Data + Environment.NewLine;
 		}
 
 		public event Action<string> ErrorOutputEvent;
 
 		private void StartNativeProcessAndWaitForExit()
 		{
-			nativeProcess.Start();
-			nativeProcess.BeginOutputReadLine();
-			nativeProcess.BeginErrorReadLine();
+			StartNativeProcess();
 			WaitForExit();
-			if (!DontCheckExitCode)
+			if (IsExitCodeRelevant)
 				CheckExitCode();
 		}
 
-		public bool DontCheckExitCode { get; set; }
+		private void StartNativeProcess()
+		{
+			nativeProcess.Start();
+			nativeProcess.BeginOutputReadLine();
+			nativeProcess.BeginErrorReadLine();
+		}
 
 		private void WaitForExit()
 		{
@@ -136,9 +134,18 @@ namespace DeltaEngine.Core
 		private void CheckExitCode()
 		{
 			if (nativeProcess.ExitCode != 0)
-				throw new ProcessTerminatedWithError(); //ncrunch: no coverage
+				throw new ProcessTerminatedWithError(Errors + "\n" + Output); //ncrunch: no coverage
 		}
 
-		public class ProcessTerminatedWithError : Exception {}
+		public class ProcessTerminatedWithError : Exception
+		{
+			public ProcessTerminatedWithError(string errors)
+				: base(errors) {}
+		}
+
+		public void Close()
+		{
+			nativeProcess.Kill();
+		}
 	}
 }

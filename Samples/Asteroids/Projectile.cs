@@ -5,7 +5,7 @@ using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Particles;
+using DeltaEngine.Rendering3D.Particles;
 using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
@@ -21,36 +21,37 @@ namespace Asteroids
 		{
 			Rotation = angle;
 			RenderLayer = (int)AsteroidsRenderLayer.Rockets;
-			// ParticleSystemData can very well be loaded by a ContentLoader, unused for simplicity in M5
-			//missileAndTrails =
-			//	new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MissileEffect"));
-			missileAndTrails = new ParticleSystem();
-			var rocketData = new ParticleEmitterData
-			{
-				ParticleMaterial = ContentLoader.Load<Material>("Missile2D"),
-				Size = new RangeGraph<Size>(new Size(0.025f, 0.025f), new Size(0.025f, 0.025f)),
-				LifeTime = 0,
-				SpawnInterval = 0.001f,
-				MaximumNumberOfParticles = 1
-			};
-			var trailData = new ParticleEmitterData
-			{
-				ParticleMaterial = ContentLoader.Load<Material>("Projectile2D"),
-				Size = new RangeGraph<Size>(new Size(0.02f, 0.03f), new Size(0.02f, 0.04f)),
-				StartPosition =
-					new RangeGraph<Vector3D>(new Vector3D(0.0f, 0.02f, 0.0f), new Vector3D(0.0f, 0.02f, 0.0f)),
-				LifeTime = 2.2f,
-				SpawnInterval = 0.2f,
-				MaximumNumberOfParticles = 8
-			};
-			missileAndTrails.AttachEmitter(new ParticleEmitter(trailData, Vector3D.Zero));
-			missileAndTrails.AttachEmitter(new ParticleEmitter(rocketData, Vector3D.Zero));
-			missileAndTrails.AttachedEmitters[0].EmitterData.DoParticlesTrackEmitter = true;
-			missileAndTrails.AttachedEmitters[1].EmitterData.DoParticlesTrackEmitter = true;
-			foreach (var emitter in missileAndTrails.AttachedEmitters)
-				emitter.EmitterData.StartRotation =
-					new RangeGraph<ValueRange>(new ValueRange(Rotation, Rotation),
-						new ValueRange(Rotation, Rotation));
+			missileAndTrails =
+				new ParticleSystem(ContentLoader.Load<ParticleSystemData>("MissileEffect"));
+			//Replacing usage of the ContentLoader we could do the following to dynamically create data:
+			//missileAndTrails = new ParticleSystem();
+			//var rocketData = new ParticleEmitterData
+			//{
+			//	ParticleMaterial = ContentLoader.Load<Material>("Missile2D"),
+			//	Size = new RangeGraph<Size>(new Size(0.025f, 0.025f), new Size(0.025f, 0.025f)),
+			//	LifeTime = 0,
+			//	SpawnInterval = 0.001f,
+			//	MaximumNumberOfParticles = 1
+			//};
+			//var trailData = new ParticleEmitterData
+			//{
+			//	ParticleMaterial = ContentLoader.Load<Material>("Projectile2D"),
+			//	Size = new RangeGraph<Size>(new Size(0.02f, 0.03f), new Size(0.02f, 0.04f)),
+			//	StartPosition =
+			//		new RangeGraph<Vector3D>(new Vector3D(0.0f, 0.02f, 0.0f), new Vector3D(0.0f, 0.02f, 0.0f)),
+			//	LifeTime = 2.2f,
+			//	SpawnInterval = 0.2f,
+			//	MaximumNumberOfParticles = 8
+			//};
+			//missileAndTrails.AttachEmitter(new ParticleEmitter(trailData, Vector3D.Zero));
+			//missileAndTrails.AttachEmitter(new ParticleEmitter(rocketData, Vector3D.Zero));
+			//missileAndTrails.AttachedEmitters[0].EmitterData.DoParticlesTrackEmitter = true;
+			//missileAndTrails.AttachedEmitters[1].EmitterData.DoParticlesTrackEmitter = true;
+			//foreach (var emitter in missileAndTrails.AttachedEmitters)
+			//	emitter.EmitterData.StartRotation =
+			//		new RangeGraph<ValueRange>(new ValueRange(Rotation, Rotation),
+			//			new ValueRange(Rotation, Rotation));
+			missileAndTrails.Orientation = Quaternion.FromAxisAngle(Vector3D.UnitZ, Rotation);
 			var data = new SimplePhysics.Data
 			{
 				Gravity = Vector2D.Zero,
@@ -78,7 +79,7 @@ namespace Asteroids
 				foreach (Projectile projectile in entities.OfType<Projectile>())
 				{
 					projectile.missileAndTrails.Position = new Vector3D(projectile.Center);
-					projectile.missileAndTrails.Rotation = Quaternion.FromAxisAngle(Vector3D.UnitZ,
+					projectile.missileAndTrails.Orientation = Quaternion.FromAxisAngle(Vector3D.UnitZ,
 						projectile.Rotation);
 					projectile.DrawArea = CalculateFutureDrawArea(projectile, Time.Delta);
 					if (ObjectHasCrossedScreenBorder(projectile.DrawArea, ScreenSpace.Current.Viewport))

@@ -6,7 +6,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Allows a touch pinch to be detected.
 	/// </summary>
-	public class TouchPinchTrigger : InputTrigger, TouchTrigger
+	public class TouchPinchTrigger : InputTrigger, ZoomTrigger, TouchTrigger
 	{
 		public TouchPinchTrigger() {}
 
@@ -18,8 +18,7 @@ namespace DeltaEngine.Input
 
 		public class TouchPinchTriggerHasNoParameters : Exception {}
 
-		public float Distance { get; set; }
-
+		public float ZoomAmount { get; set; }
 		protected override void StartInputDevice()
 		{
 			Start<Touch>();
@@ -27,13 +26,17 @@ namespace DeltaEngine.Input
 
 		public void HandleWithTouch(Touch touch)
 		{
+			var direction = touch.GetPosition(0).DirectionTo(touch.GetPosition(1));
 			if (touch.GetState(0) >= State.Pressing && touch.GetState(1) >= State.Pressing)
 			{
-				Distance = Math.Abs((touch.GetPosition(1) - touch.GetPosition(0)).Length);
+				ZoomAmount = direction.Length - lastDistance;
 				Invoke();
 			}
 			else
-				Distance = 0f;
+				ZoomAmount = 0f;
+			lastDistance = direction.Length;
 		}
+
+		private float lastDistance;
 	}
 }

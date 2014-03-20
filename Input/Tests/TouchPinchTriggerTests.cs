@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
@@ -21,7 +22,7 @@ namespace DeltaEngine.Input.Tests
 			//ncrunch: no coverage start
 			{
 				ellipse.Center = touch.GetPosition(0);
-				ellipse.Size = new Size(trigger.Distance * 0.5f);
+				ellipse.Size = new Size(trigger.ZoomAmount * 0.5f);
 			}).Add(trigger);
 			//ncrunch: no coverage end
 		}
@@ -30,11 +31,15 @@ namespace DeltaEngine.Input.Tests
 		public void PinchDistance()
 		{
 			var trigger = new TouchPinchTrigger();
-			var touch = (MockTouch)Resolve<Touch>();
-			touch.SetTouchState(0, State.Pressing, new Vector2D(0.4f, 0.1f));
-			touch.SetTouchState(1, State.Pressed, new Vector2D(0.3f, 0.7f));
+			var touch = Resolve<Touch>() as MockTouch;
+			if (touch == null)
+				return; //ncrunch: no coverage
+			touch.SetTouchState(0, State.Pressing, new Vector2D(0.4f, 0.5f));
+			touch.SetTouchState(1, State.Pressed, new Vector2D(0.5f, 0.5f));
 			touch.Update(new[] { trigger });
-			Assert.AreEqual(0.608276188f, trigger.Distance);
+			touch.SetTouchState(1, State.Pressed, new Vector2D(0.6f, 0.5f));
+			touch.Update(new[] { trigger });
+			Assert.AreEqual(0.1f, trigger.ZoomAmount.Round(3));
 		}
 
 		[Test, CloseAfterFirstFrame]

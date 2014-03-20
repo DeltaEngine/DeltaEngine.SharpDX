@@ -17,9 +17,17 @@ namespace DeltaEngine.Platforms
 		//ncrunch: no coverage start
 		protected ApproveFirstFrameScreenshot()
 		{
-			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole &&
-				StackTraceExtensions.IsUnitTest())
+			if (!StackTraceExtensions.IsStartedFromNCrunch() && StackTraceExtensions.IsUnitTest() &&
+					ExcludeSharpDXAsScreenshotsCanOnlyBeMadeDelayed())
 				CheckApprovalImageAfterFirstFrame();
+		}
+
+		/// <summary>
+		/// For details see SharpDXScreenshotCapturer, all other frameworks work fine
+		/// </summary>
+		private bool ExcludeSharpDXAsScreenshotsCanOnlyBeMadeDelayed()
+		{
+			return !GetType().Name.Contains("SharpDX");
 		}
 
 		public override void Dispose()
@@ -88,11 +96,13 @@ namespace DeltaEngine.Platforms
 						compareBitmap.Width + "x" + compareBitmap.Height);
 				else
 					difference = CompareImageContent(approvedBitmap, compareBitmap);
-			if (difference < 0.06f)
+			if (difference < MaxAllowedImageDifference)
 				ApprovalTestSucceeded(difference);
 			else
 				ImagesAreDifferent("Difference " + difference.ToString("0.00") + "%");
 		}
+
+		private const float MaxAllowedImageDifference = 0.99f;
 
 		private void ImagesAreDifferent(string errorMessage)
 		{
@@ -105,6 +115,8 @@ namespace DeltaEngine.Platforms
 
 		private void LaunchTortoiseIDiffIfAvailable()
 		{
+			if (StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+				return;
 			if (File.Exists(TortoiseIDiffFilePath))
 				Process.Start(TortoiseIDiffFilePath,
 					"/left:\"" + approvedImageFileName + "\" /right:\"" + firstFrameApprovalImageFilename +
@@ -138,6 +150,14 @@ namespace DeltaEngine.Platforms
 
 		private void ApprovalTestSucceeded(float difference)
 		{
+			if (difference > MaxAllowedImageDifference / 9)
+			{
+				Console.WriteLine(
+					"Warning: Screenshot is almost equal to approval image, but not pixel perfect, check " +
+					"if the image is still okay.\nKeeping " + firstFrameApprovalImageFilename + " around " +
+					"for manual comparison.\nDifference to approved image: " + difference.ToString("0.00"));
+				return;
+			}
 			Console.WriteLine("Approval test succeeded, difference to approved image: " +
 				difference.ToString("0.00") + "%\nDeleting " +
 				Path.GetFileName(firstFrameApprovalImageFilename));
@@ -146,7 +166,7 @@ namespace DeltaEngine.Platforms
 
 		private static BitmapData GetBitmapData(Bitmap bitmap)
 		{
-			return bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+			return bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
 				ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
 		}
 
@@ -161,8 +181,11 @@ namespace DeltaEngine.Platforms
 					int blue = compareBytes[index] - approvedBytes[index];
 					int green = compareBytes[index + 1] - approvedBytes[index + 1];
 					int red = compareBytes[index + 2] - approvedBytes[index + 2];
-					int difference = Math.Abs(blue * 12 + green * 58 + red * 30);
-					totalDifference += difference / 255.0f;
+					int difference = blue * 12 + green * 58 + red * 30;
+					if (difference < 0)
+						totalDifference -= difference / 255.0f;
+					else
+						totalDifference += difference / 255.0f;
 				}
 			return totalDifference / (width * height);
 		}

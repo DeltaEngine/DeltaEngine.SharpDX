@@ -6,7 +6,7 @@
 	public class DeleteContent : ContentMessage
 	{
 		private DeleteContent() {}
-		
+
 		public DeleteContent(string contentName, bool deleteSubImages = false)
 		{
 			ContentName = contentName;

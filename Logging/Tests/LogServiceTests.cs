@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Logging.Tests
 {
-	[Category("Slow")]
+	[Ignore]
 	public class LogServiceTests
 	{
 		//ncrunch: no coverage start

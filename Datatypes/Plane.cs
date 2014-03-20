@@ -12,15 +12,17 @@ namespace DeltaEngine.Datatypes
 	public struct Plane : IEquatable<Plane>
 	{
 		public Plane(Vector3D normal, float distance)
+			: this()
 		{
 			Normal = Vector3D.Normalize(normal);
 			Distance = distance;
 		}
 
-		public Vector3D Normal;
-		public float Distance;
+		public Vector3D Normal { get; set; }
+		public float Distance { get; set; }
 
 		public Plane(Vector3D normal, Vector3D vectorOnPlane)
+			: this()
 		{
 			Normal = Vector3D.Normalize(normal);
 			Distance = -Vector3D.Dot(normal, vectorOnPlane);

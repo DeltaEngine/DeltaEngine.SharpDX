@@ -32,8 +32,8 @@ namespace DeltaEngine.Input
 		private void ProcessKeyTrigger(Entity entity)
 		{
 			var trigger = entity as KeyTrigger;
-			if (trigger != null && GetKeyState(trigger.Key) == trigger.State)
-				trigger.Invoke();
+			if (trigger != null)
+				trigger.HandleWithKeyboard(this);
 		}
 
 		private void ProcessInputHandling(Entity entity)
@@ -55,14 +55,17 @@ namespace DeltaEngine.Input
 
 		protected abstract void UpdateKeyStates();
 
-		private static string HandleInputForKey(string inputText, Key key)
+		private string HandleInputForKey(string inputText, Key key)
 		{
 			if (key >= Key.D0 && key <= Key.D9)
 				return inputText + key.ToString()[1].ToString(CultureInfo.InvariantCulture);
 			if (key >= Key.NumPad0 && key <= Key.NumPad9)
 				return inputText + key.ToString()[6].ToString(CultureInfo.InvariantCulture);
 			if (key >= Key.A && key <= Key.Z)
-				return inputText + key;
+				if (KeyNeedsToBeCapitalized())
+					return inputText + key;
+				else
+					return inputText + (char)((int)key + 32);
 			if (key == Key.Space)
 				return inputText + " ";
 			if (key == Key.Decimal || key == Key.Period)
@@ -73,6 +76,15 @@ namespace DeltaEngine.Input
 				return inputText.Substring(0, inputText.Length - 1);
 			return inputText;
 		}
+
+		private bool KeyNeedsToBeCapitalized()
+		{
+			bool isAnyShiftPressed = keyboardStates[(int)Key.LeftShift] >= State.Pressing ||
+				keyboardStates[(int)Key.RightShift] >= State.Pressing;
+			return IsCapsLocked ? !isAnyShiftPressed : isAnyShiftPressed;
+		}
+
+		protected abstract bool IsCapsLocked { get; }
 
 		public override bool IsAvailable { get; protected set; }
 	}

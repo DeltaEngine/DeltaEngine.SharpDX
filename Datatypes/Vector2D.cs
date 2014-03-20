@@ -10,6 +10,7 @@ namespace DeltaEngine.Datatypes
 	/// Represents a 2D vector, which is useful for screen positions (sprites, mouse, touch, etc.)
 	/// </summary>
 	[DebuggerDisplay("Vector2D({X}, {Y})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector2D : IEquatable<Vector2D>, Lerp<Vector2D>
 	{
 		public Vector2D(float x, float y)
@@ -34,7 +35,7 @@ namespace DeltaEngine.Datatypes
 
 		public class InvalidNumberOfComponents : Exception {}
 
-		public static readonly Vector2D Zero = new Vector2D();
+		public static readonly Vector2D Zero;
 		public static readonly Vector2D One = new Vector2D(1, 1);
 		public static readonly Vector2D Half = new Vector2D(0.5f, 0.5f);
 		public static readonly Vector2D UnitX = new Vector2D(1, 0);
@@ -95,7 +96,7 @@ namespace DeltaEngine.Datatypes
 		{
 			return vector1.X == vector2.X && vector1.Y == vector2.Y;
 		}
-		
+
 		[Pure]
 		public bool Equals(Vector2D other)
 		{
@@ -194,6 +195,12 @@ namespace DeltaEngine.Datatypes
 		}
 
 		[Pure]
+		public Vector2D Rotate(float angleInDegrees)
+		{
+			return RotateAround(Zero, angleInDegrees);
+		}
+
+		[Pure]
 		public Vector2D RotateAround(Vector2D center, float angleInDegrees)
 		{
 			return RotateAround(center, MathExtensions.Sin(angleInDegrees),
@@ -258,6 +265,19 @@ namespace DeltaEngine.Datatypes
 			return DistanceTo(projection);
 		}
 
+		[Pure]
+		public float DistanceToLineSquared(Vector2D lineStart, Vector2D lineEnd)
+		{
+			var lineDirection = lineEnd - lineStart;
+			var lineLengthSquared = lineDirection.LengthSquared;
+			if (lineLengthSquared == 0.0)
+				return DistanceToSquared(lineStart);
+			var startDirection = this - lineStart;
+			var linePosition = startDirection.DotProduct(lineDirection) / lineLengthSquared;
+			var projection = lineStart + linePosition * lineDirection;
+			return DistanceToSquared(projection);
+		}
+
 		/// <summary>
 		/// http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 		/// </summary>
@@ -286,6 +306,14 @@ namespace DeltaEngine.Datatypes
 		{
 			return ((lineEnd.X - lineStart.X) * (Y - lineStart.Y) -
 				(lineEnd.Y - lineStart.Y) * (X - lineStart.X)) >= 0;
+		}
+
+		[Pure]
+		public float AngleBetweenVector(Vector2D vector)
+		{
+			var dot = DotProduct(vector);
+			var test = dot / (Length * vector.Length);
+			return MathExtensions.Acos(test);
 		}
 	}
 }

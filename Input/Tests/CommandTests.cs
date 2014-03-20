@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using DeltaEngine.Commands;
+﻿using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;

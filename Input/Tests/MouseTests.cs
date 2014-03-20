@@ -1,7 +1,9 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
+using DeltaEngine.Rendering2D.Fonts;
 using NUnit.Framework;
 
 namespace DeltaEngine.Input.Tests
@@ -12,6 +14,8 @@ namespace DeltaEngine.Input.Tests
 		public void SetUp()
 		{
 			isClicked = false;
+			if (StackTraceExtensions.StartedFromNUnitConsoleButNotFromNCrunch)
+				Assert.Ignore(); //ncrunch: no coverage
 		}
 
 		private bool isClicked;
@@ -85,6 +89,15 @@ namespace DeltaEngine.Input.Tests
 			Assert.AreEqual(1, mockMouse.ScrollWheelValue);
 			mockMouse.ScrollDown();
 			Assert.AreEqual(0, mockMouse.ScrollWheelValue);
+		}
+
+		[Test]
+		public void ShowScrollWheelValue()
+		{
+			var mouse = Resolve<Mouse>();
+			var text = new FontText(Font.Default, "Scroll Mouse Wheel!", Rectangle.One);
+			new Command(() => text.Text = "Scroll Wheel Value: " + mouse.ScrollWheelValue).Add(
+				new MouseZoomTrigger());
 		}
 	}
 }

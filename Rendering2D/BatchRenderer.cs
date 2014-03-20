@@ -8,9 +8,9 @@ namespace DeltaEngine.Rendering2D
 	/// <summary>
 	/// Batches by Material and BlendMode for rendering
 	/// </summary>
-	public class BatchRenderer
+	public abstract class BatchRenderer
 	{
-		public BatchRenderer(Drawing drawing)
+		protected BatchRenderer(Drawing drawing)
 		{
 			this.drawing = drawing;
 		}
@@ -26,24 +26,27 @@ namespace DeltaEngine.Rendering2D
 			for (int index = 0; index < batches.Count; index++)
 			{
 				var batch = batches[index];
-				if (batch.material.Shader != material.Shader ||
-					batch.material.DiffuseMap != material.DiffuseMap || batch.blendMode != blendMode ||
+				if (batch.Material.Shader != material.Shader ||
+					batch.Material.DiffuseMap != material.DiffuseMap || batch.BlendMode != blendMode ||
 					batch.IsBufferFullAndResizeIfPossible(numberOfQuadsToAdd))
 					continue;
 				if (batchIndex <= index)
 					batchIndex = index + 1;
 				return batch;
 			}
-			var newBatch = new Batch(material, blendMode, numberOfQuadsToAdd);
+			Batch newBatch = GetNewInstanceOfBatch(material, blendMode, numberOfQuadsToAdd);
 			batches.Add(newBatch);
 			batchIndex = batches.Count;
 			return newBatch;
 		}
 
+		protected abstract Batch GetNewInstanceOfBatch(Material material, BlendMode blendMode,
+			int numberOfQuadsToAdd);
+
 		public void FlushDrawBuffer(Batch batch)
 		{
 			DrawAndResetBatch(batch);
-			drawing.FlushDrawBuffer(batch.material, batch.blendMode);
+			drawing.FlushDrawBuffer(batch.Material, batch.BlendMode);
 		}
 
 		private void DrawAndResetBatch(Batch batch)

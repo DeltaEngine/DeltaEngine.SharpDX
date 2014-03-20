@@ -8,7 +8,7 @@ namespace DeltaEngine.Logging.Tests
 	{
 		public LocalhostLogServer(Server server)
 		{
-			this.server = server;
+			Server = server;
 			server.ClientDataReceived += OnDataReceived;
 		}
 
@@ -21,20 +21,20 @@ namespace DeltaEngine.Logging.Tests
 				LastMessage = logInfo;
 		}
 
-		private readonly Server server;
+		public readonly Server Server;
 
 		public LogInfoMessage LastMessage { get; private set; }
 
 		public void Start()
 		{
-			server.Start(Port);
+			Server.Start(Port);
 		}
 
 		public const int Port = 800;
 
 		public void Dispose()
 		{
-			server.Dispose();
+			Server.Dispose();
 		}
 	}
 }

@@ -48,7 +48,7 @@
       <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
       <Name>DeltaEngine.Graphics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Rendering2D.csproj">
+    <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FontRenderer.cs" />
+    <Compile Include="FpsDisplay.cs" />
     <Compile Include="FontDescription.cs" />
     <Compile Include="FontText.cs" />
     <Compile Include="Font.cs" />
@@ -66,7 +67,6 @@
     <Compile Include="TextParser.cs" />
     <Compile Include="TextWrapper.cs" />
     <Compile Include="VectorCharacterLines.cs" />
-    <Compile Include="vectorCharacterLinesLetters.cs" />
     <Compile Include="VectorText.cs" />
     <Compile Include="VerticalAlignment.cs" />
   </ItemGroup>

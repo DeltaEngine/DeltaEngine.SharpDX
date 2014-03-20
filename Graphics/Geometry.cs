@@ -87,9 +87,67 @@ namespace DeltaEngine.Graphics
 				: base("actualIndices=" + actualIndices + ", expectedIndices=" + expectedIndices) { }
 		}
 
-		public Matrix[] JointTranforms { get; set; }
-		public bool HasAnimationData { get { return JointTranforms != null; } }
+		public Matrix[] TransformsOfBones { get; set; }
+		public bool HasAnimationData { get { return TransformsOfBones != null; } }
 
 		protected abstract void SetNativeData(byte[] vertexData, short[] indices);
+
+		//ncrunch: no coverage start
+		public void LoadFromFile(Stream fileData)
+		{
+			var reader = new BinaryReader(fileData);
+			string shortName = reader.ReadString();
+			var dataVersion = reader.ReadBytes(4);
+			var boolean = reader.ReadBoolean();
+			if (boolean)
+				reader.ReadString();
+			boolean = reader.ReadBoolean();
+			var type = reader.ReadString();
+			if (type == null)
+				throw new NullReferenceException();
+
+			boolean = reader.ReadBoolean();
+			var count = reader.ReadByte();
+			var typeOfByte = reader.ReadByte();
+			if (typeOfByte == 255)
+				throw new NullReferenceException();
+			type = reader.ReadString();
+			var list = new VertexElement[count];
+			for (int i = 0; i < count; i++)
+			{
+				var vertexElementType = reader.ReadInt32();
+				var size = reader.ReadInt32();
+				var vertexCount = reader.ReadInt32();
+				var vertexElementOffset = reader.ReadInt32();
+				list[i] = new VertexElement((VertexElementType)vertexElementType, size, vertexCount);
+			}
+			Format = new VertexFormat(list);
+			var formatStride = reader.ReadInt32();
+
+			int verticesLength = reader.ReadInt32(); //Int32 numberofvertices
+			boolean = reader.ReadBoolean();
+			if (boolean)
+			{
+				verticesLength = ReadNumberMostlyBelow255(reader);
+				vertices = reader.ReadBytes(verticesLength);
+			}
+
+			reader.ReadBoolean(); //Indices
+			var indicesLength = ReadNumberMostlyBelow255(reader);
+			typeOfByte = reader.ReadByte();
+			reader.ReadString();
+			indices = new short[indicesLength];
+			for (int i = 0; i < indicesLength; i++)
+				indices[i] = reader.ReadInt16();
+			SetNativeData(vertices, indices);
+		}
+
+		private static int ReadNumberMostlyBelow255(BinaryReader reader)
+		{
+			int number = reader.ReadByte();
+			if (number == 255)
+				number = reader.ReadInt32();
+			return number;
+		}
 	}
 }

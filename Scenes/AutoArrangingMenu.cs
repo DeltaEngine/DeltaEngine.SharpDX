@@ -86,7 +86,7 @@ namespace DeltaEngine.Scenes
 
 		public void AddMenuOption(Action clicked, string text = "")
 		{
-			AddMenuOption(Theme.Default, clicked, text);
+			AddMenuOption(new Theme(), clicked, text);
 		}
 
 		public void AddMenuOption(Theme theme, Action clicked, string text = "")

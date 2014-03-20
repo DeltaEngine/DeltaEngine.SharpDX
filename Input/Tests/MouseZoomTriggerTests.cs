@@ -9,27 +9,6 @@ namespace DeltaEngine.Input.Tests
 {
 	public class MouseZoomTriggerTests : TestWithMocksOrVisually
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			mouse = Resolve<Mouse>() as MockMouse;
-		}
-
-		private MockMouse mouse;
-
-		[Test]
-		public void EmptyCtorCallShouldDoNothing()
-		{
-			Assert.DoesNotThrow(() =>new MouseZoomTrigger(""));
-		}
-
-		[Test]
-		public void NonEmptyCtorCallShouldTrowException()
-		{
-			Assert.Throws<MouseZoomTrigger.MouseZoomTriggerHasNoParameters>(
-				() => new MouseZoomTrigger("DeltaEngine"));
-		}
-
 		[Test]
 		public void ResizeEllipseByZoomTrigger()
 		{
@@ -38,9 +17,25 @@ namespace DeltaEngine.Input.Tests
 				new MouseZoomTrigger());
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
+		public void EmptyMouseZoomTriggerShouldDoNothing()
+		{
+			Assert.DoesNotThrow(() =>new MouseZoomTrigger(""));
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void UsingParametersForMouseZoomTriggerShouldThrowException()
+		{
+			Assert.Throws<MouseZoomTrigger.MouseZoomTriggerHasNoParameters>(
+				() => new MouseZoomTrigger("DeltaEngine"));
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void MouseWheelZoomUp()
 		{
+			var mouse = Resolve<Mouse>() as MockMouse;
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			bool isZoomed = false;
 			new Command((float zoomAmount) => isZoomed = true).Add(new MouseZoomTrigger());
 			mouse.ScrollUp();
@@ -48,9 +43,12 @@ namespace DeltaEngine.Input.Tests
 			Assert.IsTrue(isZoomed);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void MouseWheelZoomDown()
 		{
+			var mouse = Resolve<Mouse>() as MockMouse;
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			bool isZoomed = false;
 			new Command((float zoomAmount) => isZoomed = true).Add(new MouseZoomTrigger());
 			mouse.ScrollDown();
@@ -58,9 +56,12 @@ namespace DeltaEngine.Input.Tests
 			Assert.IsTrue(isZoomed);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void MouseWheelZoomUsingCommandName()
 		{
+			var mouse = Resolve<Mouse>() as MockMouse;
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			bool isZoomed = false;
 			new Command(Command.Zoom, (float zoomAmount) => isZoomed = true);
 			mouse.ScrollUp();

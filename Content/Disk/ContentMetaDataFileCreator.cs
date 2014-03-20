@@ -17,6 +17,7 @@ namespace DeltaEngine.Content.Disk
 	/// </summary>
 	public class ContentMetaDataFileCreator
 	{
+		//ncrunch: no coverage start
 		public ContentMetaDataFileCreator(XDocument lastXml)
 		{
 			this.lastXml = lastXml;
@@ -105,7 +106,7 @@ namespace DeltaEngine.Content.Disk
 			if (lastXml != null &&
 				CanWriteImageDataFromLastXml(writer, lastXml.Root, Path.GetFileName(imageFilePath)))
 				return;
-			TryWriteImageDataFromBitmap(writer, imageFilePath);
+			WriteImageDataFromBitmap(writer, imageFilePath);
 		}
 
 		private static bool CanWriteImageDataFromLastXml(XmlWriter writer, XElement element,
@@ -128,18 +129,25 @@ namespace DeltaEngine.Content.Disk
 			return false;
 		}
 
-		private static void TryWriteImageDataFromBitmap(XmlWriter writer, string filePath)
+		private static void WriteImageDataFromBitmap(XmlWriter writer, string filePath)
 		{
 			try
 			{
-				var bitmap = new Bitmap(filePath);
-				WriteAttribute(writer, "PixelSize", bitmap.Width + ", " + bitmap.Height);
-				if (GetBlendMode(bitmap, filePath).ToString() != "Normal")
-					WriteAttribute(writer, "BlendMode", GetBlendMode(bitmap, filePath).ToString());
+				TryWriteImageDataFromBitmap(writer, filePath);
 			}
 			catch (Exception)
 			{
 				throw new UnknownImageFormatUnableToAquirePixelSize(filePath);
+			}
+		}
+
+		private static void TryWriteImageDataFromBitmap(XmlWriter writer, string filePath)
+		{
+			using (var bitmap = new Bitmap(filePath))
+			{
+				WriteAttribute(writer, "PixelSize", bitmap.Width + ", " + bitmap.Height);
+				if (GetBlendMode(bitmap, filePath).ToString() != "Normal")
+					WriteAttribute(writer, "BlendMode", GetBlendMode(bitmap, filePath).ToString());
 			}
 		}
 

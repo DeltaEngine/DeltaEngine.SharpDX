@@ -106,7 +106,7 @@ namespace DeltaEngine.Graphics.Tests
 			{
 				this.drawing = drawing;
 				this.window = window;
-				logo = new Material(Shader.Position2DColorUV, "DeltaEngineLogoOpaque");
+				logo = new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogoOpaque");
 			}
 
 			private readonly Drawing drawing;

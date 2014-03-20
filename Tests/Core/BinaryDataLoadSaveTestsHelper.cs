@@ -87,6 +87,7 @@ namespace DeltaEngine.Tests.Core
 			public int unionValue;
 		}
 
+		[SaveSafely]
 		private class ClassWithAnotherClassInside
 		{
 			internal class InnerClass

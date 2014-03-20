@@ -20,7 +20,7 @@ namespace DeltaEngine.Entities
 			Current = this;
 			this.behaviorResolver = behaviorResolver;
 			Time.Delta = UpdateTimeStep = Time.SpeedFactor / settings.UpdatesPerSecond;
-			RapidUpdateTimeStep = 1.0f / settings.RapidUpdatesPerSecond;
+			Time.RapidUpdateDelta = RapidUpdateTimeStep = 1.0f / settings.RapidUpdatesPerSecond;
 			for (int priority = 0; priority < prioritizedEntities.Length; priority++)
 				prioritizedEntities[priority] = new PrioritizedEntities();
 		}
@@ -219,7 +219,7 @@ namespace DeltaEngine.Entities
 				foreach (var entity in priority.entities)
 				{
 					var rapidEntity = entity as RapidUpdateable;
-					if (rapidEntity != null && (!isPaused || !rapidEntity.IsPauseable))
+					if (rapidEntity != null && (!isPaused || !entity.IsPauseable))
 						rapidEntity.RapidUpdate();
 				}
 		}
@@ -242,8 +242,8 @@ namespace DeltaEngine.Entities
 				foreach (Entity entity in priority.entities)
 				{
 					var updateableEntity = entity as Updateable;
-					if (updateableEntity != null)
-						RunEntityUpdateIfNotPaused(updateableEntity);
+					if (updateableEntity != null && (!isPaused || !entity.IsPauseable))
+						updateableEntity.Update();
 				}
 				priority.ReduceBehaviorsEnumerationCount();
 			}
@@ -256,12 +256,6 @@ namespace DeltaEngine.Entities
 				return;
 			var filtered = updateBehavior as Filtered;
 			updateBehavior.Update(filtered != null ? entities.Where(filtered.Filter).ToList() : entities);
-		}
-
-		private void RunEntityUpdateIfNotPaused(Updateable entity)
-		{
-			if (!isPaused || !entity.IsPauseable)
-				entity.Update();
 		}
 
 		private void RunDrawTick(Action drawEverythingInCurrentLayer)

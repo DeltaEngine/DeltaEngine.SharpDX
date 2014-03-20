@@ -39,7 +39,6 @@
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DeltaEngine.csproj">
@@ -62,7 +61,7 @@
       <Project>{1797C45C-F96B-4F95-BAAC-400910CAB473}</Project>
       <Name>DeltaEngine.Networking.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Logging.csproj">
+    <ProjectReference Include="..\..\Logging\DeltaEngine.Logging.csproj">
       <Project>{E4440567-3D5D-4670-AB49-8163B18E302E}</Project>
       <Name>DeltaEngine.Logging</Name>
     </ProjectReference>
@@ -87,7 +86,9 @@
     <Compile Include="NetworkLoggerTests.cs" />
     <Compile Include="NetworkLoggerWithLogServiceTests.cs" />
     <Compile Include="PlatformsLoggingTests.cs" />
-    <Compile Include="Service References\LogService\Reference.cs" />
+    <Compile Include="Service References\LogService\Reference.cs">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="TextFileLoggerTests.cs" />
     <Compile Include="TextLoggerTests.cs" />
   </ItemGroup>

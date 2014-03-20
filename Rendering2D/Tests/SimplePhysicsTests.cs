@@ -16,7 +16,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			Resolve<Window>();
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void FallingEffectIsRemovedAfterOneSecond()
 		{
 			var sprite = CreateFallingSpriteWhichExpires();
@@ -25,7 +25,8 @@ namespace DeltaEngine.Rendering2D.Tests
 
 		private static Sprite CreateFallingSpriteWhichExpires()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), Rectangle.One);
+			var sprite = new Sprite(new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo"),
+				Rectangle.One);
 			sprite.Add(new SimplePhysics.Data
 			{
 				Velocity = Vector2D.Half,
@@ -33,7 +34,6 @@ namespace DeltaEngine.Rendering2D.Tests
 				Duration = 1.0f
 			});
 			sprite.Start<SimplePhysics.Move>();
-			sprite.Start<SimplePhysics.KillAfterDurationReached>();
 			sprite.Color = Color.Red;
 			return sprite;
 		}
@@ -48,7 +48,8 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void RenderSlowlyFallingLogo()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), screenCenter);
+			var sprite = new Sprite(new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo"),
+				screenCenter);
 			sprite.Add(new SimplePhysics.Data
 			{
 				Velocity = new Vector2D(0.0f, -0.3f),
@@ -140,19 +141,33 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void RenderMovingUVSprite()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"),
-				Rectangle.HalfCentered);
-			sprite.LastUV = sprite.UV = new Rectangle(0, 0, 0.2f, 0.2f);
+			var sprite = new Sprite(new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo"),
+				Rectangle.One);
+			sprite.SetWithoutInterpolation(new Rectangle(0, 0, 0.1f, 0.1f));
 			sprite.FlipMode = FlipMode.Vertical;
-			sprite.StartMovingUV(Vector2D.One / 10);
+			sprite.StartMovingUV(Vector2D.One/10);
 		}
 
 		[Test]
 		public void RenderBouncingOffScreenEdgesSprite()
 		{
-			var sprite = new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), 
+			var sprite = new Sprite(new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo"), 
 				new Rectangle(Vector2D.Zero, new Size(0.1f)));
 			sprite.StartBouncingOffScreenEdges(Vector2D.Half, () => { });
+		}
+
+		[Test]
+		public void KillSpriteAfterTimeout()
+		{
+			var enemyMovingOutOfScreen =
+				new Sprite(new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo"),
+					new Rectangle(Vector2D.Half, new Size(0.1f)));
+			var data = new SimplePhysics.Data { Velocity = new Vector2D(0.5f, 0), Duration = 1 };
+			enemyMovingOutOfScreen.Add(data);
+			enemyMovingOutOfScreen.Start<SimplePhysics.Move>();
+			enemyMovingOutOfScreen.Start<SimplePhysics.KillAfterDurationReached>();
+			if (IsMockResolver)
+				AdvanceTimeAndUpdateEntities(1.1f);
 		}
 	}
 }

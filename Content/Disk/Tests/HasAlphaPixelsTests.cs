@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace DeltaEngine.Content.Disk.Tests
 {
 	[Ignore]
-	internal class HasAlphaPixelsTests
+	public class HasAlphaPixelsTests
 	{
 		//ncrunch: no coverage start
 		[Test]

@@ -36,14 +36,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DeltaEngine.csproj">
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Platforms.csproj">
+    <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
       <Name>DeltaEngine.Platforms</Name>
     </ProjectReference>

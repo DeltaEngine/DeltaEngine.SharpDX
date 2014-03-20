@@ -20,6 +20,7 @@ namespace DeltaEngine.Graphics
 			window.ViewportSizeChanged += SetViewport;
 			window.FullscreenChanged += OnFullscreenChanged;
 			ModelViewProjectionMatrix = Matrix.CreateOrthoProjection(window.ViewportPixelSize);
+			CullingMode = Culling.Enabled;
 		}
 
 		protected readonly Window window;
@@ -47,22 +48,32 @@ namespace DeltaEngine.Graphics
 			SetViewport(displaySize);
 		}
 
+		public Matrix ModelViewProjectionMatrix { get; private set; }
+
+		public Culling CullingMode { get; set; }
+
 		public virtual void SetModelViewProjectionMatrixFor2D()
 		{
 			ModelViewProjectionMatrix = Matrix.CreateOrthoProjection(window.ViewportPixelSize);
-			SetProjectionMatrix(ModelViewProjectionMatrix);
-			SetModelViewMatrix(Matrix.Identity);
 		}
 
 		public void Set2DMode()
 		{
 			SetModelViewProjectionMatrixFor2D();
+			ApplyCulling();
 			DisableDepthTest();
 		}
 
-		public Matrix ModelViewProjectionMatrix { get; private set; }
-		public virtual void SetProjectionMatrix(Matrix matrix) {}
-		public virtual void SetModelViewMatrix(Matrix matrix) {}
+		private void ApplyCulling()
+		{
+			if (CullingMode == Culling.Enabled)
+				EnableClockwiseBackfaceCulling();
+			else if (CullingMode == Culling.Disabled)
+				DisableCulling();
+		}
+
+		protected abstract void EnableClockwiseBackfaceCulling();
+		protected abstract void DisableCulling();
 		public abstract void DisableDepthTest();
 
 		public void Set3DMode()
@@ -70,15 +81,11 @@ namespace DeltaEngine.Graphics
 			if (OnSet3DMode != null)
 				OnSet3DMode();
 			ModelViewProjectionMatrix = CameraViewMatrix * CameraProjectionMatrix;
-			SetProjectionMatrix(CameraProjectionMatrix);
-			SetModelViewMatrix(CameraViewMatrix);
+			ApplyCulling();
 			EnableDepthTest();
 		}
 
-		public class Set3DModeHasNoDelegatesRegistered : Exception {}
-
 		public event Action OnSet3DMode;
-		public abstract bool CullBackFaces { get; set; }
 
 		public abstract void EnableDepthTest();
 		public abstract void Dispose();

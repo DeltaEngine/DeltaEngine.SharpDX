@@ -15,6 +15,6 @@
 		}
 
 		public string UserName { get; private set; }
-		public string AccountImagePath { get; set; }
+		public string AccountImagePath { get; private set; }
 	}
 }

@@ -7,6 +7,7 @@ namespace DeltaEngine.Content.Disk
 {
 	internal class CompoundContentCreator
 	{
+		//ncrunch: no coverage start
 		public CompoundContentCreator()
 		{
 			TryCreatingAnimations = true;
@@ -24,7 +25,8 @@ namespace DeltaEngine.Content.Disk
 		private XDocument AddSequenceAnimations(XDocument metaData)
 		{
 			foreach (var contentElement in metaData.Root.Elements())
-				if (NameFitsSequenceElement(contentElement.Attribute("Name").Value, 1) && contentElement.Attribute("Type").Value == "Image")
+				if (NameFitsFirstSequenceElement(contentElement.Attribute("Name").Value) &&
+						contentElement.Attribute("Type").Value == "Image")
 				{
 					var animation = BuildAnimationFromInitialName(contentElement.Attribute("Name").Value,
 						metaData);
@@ -33,11 +35,9 @@ namespace DeltaEngine.Content.Disk
 			return metaData;
 		}
 
-		private static bool NameFitsSequenceElement(string contentName, int sequenceNumber)
+		private static bool NameFitsFirstSequenceElement(string contentName)
 		{
-			var numberString = sequenceNumber.ToString(CultureInfo.InvariantCulture);
-			var match = Regex.IsMatch(contentName, ".*0*" + numberString + @"\z");
-			return match;
+			return Regex.IsMatch(contentName, @"\w.*0*" + "1" + @"\z");
 		}
 
 		private XElement BuildAnimationFromInitialName(string firstContentName, XDocument metaData)
@@ -88,7 +88,6 @@ namespace DeltaEngine.Content.Disk
 			return "";
 		}
 
-		private readonly char[] trimNumbers = new[]
-		{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+		private readonly char[] trimNumbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 	}
 }

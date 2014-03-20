@@ -94,8 +94,6 @@
 		F12,
 		NumLock = 144,
 		Scroll,
-		Shift = 157,
-		Control,
 		Alt,
 		LeftShift,
 		RightShift,

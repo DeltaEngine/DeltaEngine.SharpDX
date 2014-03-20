@@ -1,5 +1,4 @@
-﻿using DeltaEngine.Content;
-using DeltaEngine.Core;
+﻿using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Platforms;
@@ -14,6 +13,7 @@ namespace Asteroids.Tests
 		{
 			Resolve<Window>();
 			interactionLogic = new InteractionLogic();
+			interactionLogic.BeginGame();
 		}
 
 		private InteractionLogic interactionLogic;
@@ -26,17 +26,14 @@ namespace Asteroids.Tests
 			Assert.GreaterOrEqual(EntitiesRunner.Current.GetEntitiesOfType<Asteroid>().Count, 1);
 		}
 
-		//ncrunch: no coverage start
-		[Test, CloseAfterFirstFrame, Ignore]
+		[Test, CloseAfterFirstFrame]
 		public void ProjectileAndAsteroidDisposedOnCollision()
 		{
-			var projectile = new Projectile(Vector2D.Half, 0);
-			EntitiesRunner.Current.GetEntitiesOfType<Projectile>().Add(projectile);
+			var projectile = new Projectile(new Vector2D(0.5f, 0.55f), 0);
 			interactionLogic.CreateAsteroidsAtPosition(Vector2D.Half, 1, 1);
-			AdvanceTimeAndUpdateEntities(1.0f);
+			AdvanceTimeAndUpdateEntities();
 			Assert.IsFalse(projectile.IsActive);
 		}
-		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void PlayerShipAndAsteroidCollidingResultsInGameOver()

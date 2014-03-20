@@ -16,7 +16,7 @@ namespace DeltaEngine.Scenes.Controls
 		}
 
 		public DropdownList(Rectangle drawArea, List<object> values)
-			: this(Theme.Default, drawArea, values) {}
+			: this(new Theme(),  drawArea, values) {}
 
 		public DropdownList(Theme theme, Rectangle drawArea, List<object> values)
 			: base(theme, theme.DropdownListBox, drawArea)

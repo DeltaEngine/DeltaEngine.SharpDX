@@ -18,13 +18,14 @@ namespace DeltaEngine.Tests.Core
 		public void CheckDefaultSettings()
 		{
 			Settings settings = Settings.Current;
+			settings.LoadDefaultSettings();
 			Assert.AreEqual(Settings.DefaultResolution, settings.Resolution);
 			Assert.AreEqual(false, settings.StartInFullscreen);
 			Assert.AreEqual(1.0f, settings.SoundVolume);
 			Assert.AreEqual(0.75f, settings.MusicVolume);
 			Assert.AreEqual(24, settings.DepthBufferBits);
 			Assert.AreEqual(32, settings.ColorBufferBits);
-			Assert.AreEqual(4, settings.AntiAliasingSamples);
+			Assert.AreEqual(0, settings.AntiAliasingSamples);
 			Assert.AreEqual(0, settings.LimitFramerate);
 			Assert.AreEqual(false, settings.UseVSync);
 			Assert.AreEqual(20, settings.UpdatesPerSecond);
@@ -61,7 +62,7 @@ namespace DeltaEngine.Tests.Core
 		{
 			Settings settings = Settings.Current;
 			EditSettings(settings);
-			Assert.IsTrue((settings as  MockSettings).AreChanged);
+			Assert.IsTrue((settings as MockSettings).AreChanged);
 			CheckSettings(settings);
 		}
 
@@ -87,6 +88,7 @@ namespace DeltaEngine.Tests.Core
 			settings.ProfilingModes = ProfilingMode.Rendering;
 			settings.OnlineServiceIp = "content.server.ip";
 			settings.OnlineServicePort = 13;
+			settings.UseOnlineLogging = false;
 		}
 
 		private static void CheckSettings(Settings settings)
@@ -103,6 +105,7 @@ namespace DeltaEngine.Tests.Core
 			Assert.AreEqual(ProfilingMode.Rendering, settings.ProfilingModes);
 			Assert.AreEqual("content.server.ip", settings.OnlineServiceIp);
 			Assert.AreEqual(13, settings.OnlineServicePort);
+			Assert.AreEqual(false, settings.UseOnlineLogging);
 		}
 
 		[Test]
@@ -110,7 +113,7 @@ namespace DeltaEngine.Tests.Core
 		{
 			string deltaEngineDocumentsFolder = Settings.GetMyDocumentsAppFolder();
 			Assert.That(deltaEngineDocumentsFolder,
-				Is.StringEnding(@"\Documents\DeltaEngine\DeltaEngine.Tests"));
+				Is.StringEnding(@"DeltaEngine\DeltaEngine.Tests"));
 		}
 	}
 }

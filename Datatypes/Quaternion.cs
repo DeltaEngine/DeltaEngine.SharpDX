@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using DeltaEngine.Content;
+using System.Runtime.InteropServices;
 using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
@@ -12,6 +12,7 @@ namespace DeltaEngine.Datatypes
 	/// http://www.riemers.net/eng/Tutorials/XNA/Csharp/Series2/Flight_kinematics.php
 	/// </summary>
 	[DebuggerDisplay("Quaternion(X={X}, Y={Y}, Z={Z}, W={W})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Quaternion : IEquatable<Quaternion>, Lerp<Quaternion>
 	{
 		public Quaternion(float x, float y, float z, float w)
@@ -26,7 +27,7 @@ namespace DeltaEngine.Datatypes
 		public Quaternion(string quaternionAsString)
 			: this()
 		{
-			var partitions = quaternionAsString.SplitAndTrim(new []{',', ' '});
+			var partitions = quaternionAsString.SplitAndTrim(new[] { ',', ' ' });
 			if (partitions.Length != 4)
 				throw new InvalidNumberOfComponents();
 			try
@@ -42,9 +43,9 @@ namespace DeltaEngine.Datatypes
 			}
 		}
 
-		public class InvalidNumberOfComponents:Exception{}
+		public class InvalidNumberOfComponents : Exception {}
 
-		public class InvalidStringFormat:Exception{}
+		public class InvalidStringFormat : Exception {}
 
 		public float X { get; set; }
 		public float Y { get; set; }
@@ -204,5 +205,17 @@ namespace DeltaEngine.Datatypes
 		}
 
 		private const float Singularity = 0.499f;
+
+		public float CalculateAxisAngle()
+		{
+			var angle = (2.0f * (float)Math.Acos(W.Clamp(-1.0f, 1.0f))).RadiansToDegrees();
+			return angle % 360;
+		}
+
+		public Vector3D CalculateRotationAxis()
+		{
+			return new Vector3D(X / (float)Math.Sqrt(1 - W * W), Y / (float)Math.Sqrt(1 - W * W),
+				Z / (float)Math.Sqrt(1 - W * W));
+		}
 	}
 }

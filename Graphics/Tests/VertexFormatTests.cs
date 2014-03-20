@@ -162,6 +162,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(Vector3D.UnitX, vertex.Position);
 			Assert.AreEqual(Color.White, vertex.Color);
 			Assert.AreEqual(skinning, vertex.Skinning);
+			Assert.AreEqual(32, VertexPosition3DColorSkinned.SizeInBytes);
 		}
 
 		[Test]
@@ -263,6 +264,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.IsTrue(format.Is3D);
 			Assert.IsFalse(format.HasColor);
 			Assert.IsFalse(format.HasNormal);
+			Assert.IsFalse(format.HasLightmap);
 		}
 
 		[Test]
@@ -290,9 +292,9 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
-		public void CheckPosition3DNormalUVLightmapFormat()
+		public void CheckPosition3DUVLightmapFormat()
 		{
-			Assert.AreEqual(VertexFormat.Position3DNormalUVLightmap.Stride, 40);
+			Assert.AreEqual(VertexFormat.Position3DUVLightMap.Stride, 28);
 		}
 
 		[Test]

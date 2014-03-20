@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using DeltaEngine.Extensions;
@@ -6,8 +7,9 @@ using DeltaEngine.Extensions;
 namespace DeltaEngine.Datatypes
 {
 	/// <summary>
-	/// Specifies a position in 3D space
+	/// Specifies a position in 3D space, used for 3D geometry, cameras and 3D physics.
 	/// </summary>
+	[DebuggerDisplay("Vector3D({X}, {Y}, {Z})")]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector3D : IEquatable<Vector3D>, Lerp<Vector3D>
 	{

@@ -41,8 +41,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse == null)
 				return; //ncrunch: no coverage
-
-			mouse.SetPosition(Vector2D.Zero);
+			mouse.SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -54,14 +53,14 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			scrollbar.ValueWidth = 20;
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
-		public void RenderScrollbarWithValueWidthEquallingValues()
+		[Test]
+		public void RenderScrollbarWithValueWidthEqualingValues()
 		{
 			scrollbar.MaxValue = 2;
 			scrollbar.ValueWidth = 3;
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void RenderScrollbarWithOneMoreValueThanValueWidth()
 		{
 			scrollbar.MaxValue = 3;
@@ -84,7 +83,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			Assert.IsFalse(scrollbar.Pointer.IsEnabled);
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void RenderDisabledScrollbar()
 		{
 			scrollbar.IsEnabled = false;
@@ -93,32 +92,18 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			Assert.AreEqual(Color.Gray, scrollbar.Pointer.Color);
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void RenderScrollbarZeroToOneThousandWithPointerWidthFiveHundred()
 		{
 			scrollbar.MaxValue = 1000;
 			scrollbar.ValueWidth = 500;
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void RenderGrowingScrollbar()
 		{
 			scrollbar.Start<Grow>();
 		}
-
-		//ncrunch: no coverage start
-		private class Grow : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (Scrollbar scrollbar in entities)
-				{
-					var center = scrollbar.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
-					var size = scrollbar.DrawArea.Size * (1.0f + Time.Delta / 10);
-					scrollbar.DrawArea = Rectangle.FromCenter(center, size);
-				}
-			}
-		} //ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void DefaultValues()
@@ -172,7 +157,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
@@ -196,18 +181,6 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		{
 			scrollbar.Start<Spin>();
 		}
-
-		//ncrunch: no coverage start
-		private class Spin : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (Scrollbar scrollbar in entities)
-					scrollbar.Rotation += 20 * Time.Delta;
-			}
-		}
-
-		//ncrunch: no coverage end
 
 		[Test]
 		public void RenderSpinningScrollbarAttachedToMouse()
@@ -242,7 +215,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test]
 		public void ChangingPointerChangesChild()
 		{
-			var pointer = new Picture(Theme.Default, Theme.Default.ScrollbarPointer, Rectangle.Unused);
+			var pointer = new Picture(new Theme(), new Theme().ScrollbarPointer, Rectangle.Unused);
 			scrollbar.Set(pointer);
 			Assert.AreEqual(pointer, scrollbar.children[0].Entity2D);
 		}

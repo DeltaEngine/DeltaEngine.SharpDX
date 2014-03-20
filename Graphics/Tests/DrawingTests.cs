@@ -37,7 +37,7 @@ namespace DeltaEngine.Graphics.Tests
 					this.drawing = drawing;
 					this.window = window;
 					testName = AssemblyExtensions.GetTestNameOrProjectName();
-					material = new Material(Shader.Position2DColor, "");
+					material = new Material(ShaderFlags.Position2DColored, "");
 				}
 
 				private readonly Drawing drawing;
@@ -92,10 +92,7 @@ namespace DeltaEngine.Graphics.Tests
 					vertices[i * 2 + 1] = new VertexPosition2DColor(endPoint, Color.GetRandomColor());
 				}
 				Set(vertices);
-			}
-
-			public bool IsPauseable { get { return true; } }
-			//ncrunch: no coverage end
+			} //ncrunch: no coverage end
 		}
 
 		/// <summary>
@@ -143,8 +140,6 @@ namespace DeltaEngine.Graphics.Tests
 							Color.GetRandomColor());
 			}
 
-			public bool IsPauseable { get { return true; } } //ncrunch: no coverage
-
 			public class DrawLine : DrawBehavior
 			{
 				public DrawLine(Drawing draw, Window window)
@@ -152,7 +147,7 @@ namespace DeltaEngine.Graphics.Tests
 					this.draw = draw;
 					this.window = window;
 					testName = AssemblyExtensions.GetTestNameOrProjectName();
-					material = new Material(Shader.Position2DColor, "");
+					material = new Material(ShaderFlags.Position2DColored, "");
 				}
 
 				private readonly Drawing draw;
@@ -177,24 +172,22 @@ namespace DeltaEngine.Graphics.Tests
 			settings.Resolution = new Size(1920, 1080);
 			new Line(Vector2D.Zero, settings.Resolution, Color.Yellow);
 			settings.StartInFullscreen = false;
-			settings.Resolution = new Size(640, 360);
+			settings.Resolution = Settings.DefaultResolution;
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void LineMaterialShouldNotUseDiffuseMap()
 		{
 			var drawing = Resolve<Drawing>();
 			var shader = ContentLoader.Create<Shader>(
-				new ShaderCreationData(ShaderCodeOpenGL.PositionUVOpenGLVertexCode,
-					ShaderCodeOpenGL.PositionUVOpenGLFragmentCode, ShaderCodeDX11.PositionUVDX11,
-					ShaderCodeDX11.PositionUVDX11, VertexFormat.Position2DUV));
+				new ShaderCreationData(ShaderFlags.Position2DTextured));
 			var image = ContentLoader.Create<Image>(new ImageCreationData(Size.One));
-			var generatedMaterial = new Material(shader, image, image.PixelSize);
+			var generatedMaterial = new Material(shader, image);
 			Assert.Throws<Drawing.LineMaterialShouldNotUseDiffuseMap>(
 				() => drawing.AddLines(generatedMaterial, new VertexPosition2DColor[4]));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void TestViewportPixelSize()
 		{
 			var drawing = Resolve<Drawing>();

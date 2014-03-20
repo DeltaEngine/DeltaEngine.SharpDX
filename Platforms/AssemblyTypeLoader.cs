@@ -19,18 +19,18 @@ namespace DeltaEngine.Platforms
 
 		public void RegisterAllTypesFromAllAssemblies<ContentDataType, UpdateType, DrawType>()
 		{
-			var assemblies = TryLoadAllUnloadedAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+			var assemblies = LoadAllUnloadedAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 			foreach (Assembly assembly in assemblies)
 			{
 				var name = assembly.GetName().Name;
 				if (AssemblyExtensions.IsPlatformAssembly(name) || !assembly.IsAllowed() ||
 					name == "DeltaEngine.Graphics" || name == "DeltaEngine.Input" ||
-					name == "DeltaEngine.Physics2D" || name == "DeltaEngine.Physics3D" ||
+					//name == "DeltaEngine.Physics2D" || name == "DeltaEngine.Physics3D" ||
 					name == "DeltaEngine.Logging" || name == "DeltaEngine.Networking" ||
 					name.StartsWith("DeltaEngine.Content") && !name.EndsWith(".Tests") ||
 					name.EndsWith(".Mocks"))
 					continue;
-				Type[] assemblyTypes = TryToGetAssemblyTypes(assembly);
+				Type[] assemblyTypes = GetAssemblyTypes(assembly);
 				if (assemblyTypes == null)
 					continue; //ncrunch: no coverage
 				RegisterAllTypesInAssembly<ContentDataType>(assemblyTypes, false);
@@ -40,7 +40,7 @@ namespace DeltaEngine.Platforms
 			}
 		}
 
-		private static IEnumerable<Assembly> TryLoadAllUnloadedAssemblies(Assembly[] loadedAssemblies)
+		private static IEnumerable<Assembly> LoadAllUnloadedAssemblies(Assembly[] loadedAssemblies)
 		{
 			if (StackTraceExtensions.ForceUseOfMockResolver())
 				return loadedAssemblies;
@@ -50,11 +50,7 @@ namespace DeltaEngine.Platforms
 			foreach (var filePath in dllFiles)
 				try
 				{
-					string name = Path.GetFileNameWithoutExtension(filePath);
-					if (AssemblyExtensions.IsManagedAssembly(filePath) && new AssemblyName(name).IsAllowed() &&
-						!AssemblyExtensions.IsPlatformAssembly(name) && !name.EndsWith(".Mocks") &&
-						!name.EndsWith(".Tests") && assemblies.All(a => a.GetName().Name != name))
-						assemblies.Add(Assembly.LoadFrom(filePath));
+					assemblies = TryLoadAllUnloadedAssemblies(assemblies, filePath);
 				}
 				catch (Exception ex)
 				{
@@ -63,6 +59,17 @@ namespace DeltaEngine.Platforms
 			foreach (var assembly in loadedAssemblies)
 				if (assembly.IsAllowed() && !AssemblyExtensions.IsPlatformAssembly(assembly.GetName().Name))
 					LoadDependentAssemblies(assembly, assemblies);
+			return assemblies;
+		}
+
+		private static List<Assembly> TryLoadAllUnloadedAssemblies(List<Assembly> assemblies,
+			string filePath)
+		{
+			string name = Path.GetFileNameWithoutExtension(filePath);
+			if (AssemblyExtensions.IsManagedAssembly(filePath) && new AssemblyName(name).IsAllowed() &&
+				!AssemblyExtensions.IsPlatformAssembly(name) && !name.EndsWith(".Mocks") &&
+				!name.EndsWith(".Tests") && assemblies.All(a => a.GetName().Name != name))
+				assemblies.Add(Assembly.LoadFrom(filePath));
 			return assemblies;
 		}
 
@@ -83,11 +90,11 @@ namespace DeltaEngine.Platforms
 			return dependency.Name == "Windows.Storage";
 		} //ncrunch: no coverage end
 
-		private static Type[] TryToGetAssemblyTypes(Assembly assembly)
+		private static Type[] GetAssemblyTypes(Assembly assembly)
 		{
 			try
 			{
-				return assembly.GetTypes();
+				return TryGetAssemblyTypes(assembly);
 			}
 			//ncrunch: no coverage start
 			catch (Exception ex)
@@ -97,9 +104,15 @@ namespace DeltaEngine.Platforms
 				if (loaderError != null)
 					foreach (var error in loaderError.LoaderExceptions)
 						errorText += "\n\n" + error;
-				Logger.Warning("Failed to load types from " + assembly.GetName().Name + ": " + errorText);
+				Logger.Warning("Failed to load types from " + assembly.GetName().Name +
+					" (maybe outdated?): " + errorText);
 				return null;
 			} //ncrunch: no coverage end
+		}
+
+		private static Type[] TryGetAssemblyTypes(Assembly assembly)
+		{
+			return assembly.GetTypes();
 		}
 
 		private void RegisterAllTypesInAssembly<T>(Type[] assemblyTypes, bool registerAsSingleton)

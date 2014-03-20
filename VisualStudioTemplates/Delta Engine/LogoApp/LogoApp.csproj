@@ -38,17 +38,6 @@
     <ApplicationIcon>LogoApp.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DeltaEngine">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.Rendering2D">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.Rendering2D.dll</HintPath>
-    </Reference>
-    <Reference Include="DeltaEngine.WindowsSharpDX">
-	  <HintPath>$(DeltaEnginePath)\SharpDX\DeltaEngine.WindowsSharpDX.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="LogoApp.ico" />
     <Content Include="LogoAppIcon72x72.png" />
   </ItemGroup>

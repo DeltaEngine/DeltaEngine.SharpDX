@@ -10,10 +10,14 @@ namespace DeltaEngine.Input
 	/// </summary>
 	public class MouseFlickTrigger : InputTrigger, MouseTrigger
 	{
-		public MouseFlickTrigger() {}
+		public MouseFlickTrigger()
+		{
+			StartPosition = new Vector2D();
+		}
 
 		public MouseFlickTrigger(string empty)
 		{
+			StartPosition = new Vector2D();
 			if (!String.IsNullOrEmpty(empty))
 				throw new MouseFlickTriggerHasNoParameters();
 		}

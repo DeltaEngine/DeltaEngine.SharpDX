@@ -15,7 +15,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse != null)
-				mouse.SetPosition(Vector2D.Zero);
+				mouse.SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -55,6 +55,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void HoldMouseOutsideHoldArea()
 		{
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			Vector2D mousePosition = -Vector2D.One;
 			new Command(position => { mousePosition = position; }).Add(
 				new MouseHoldTrigger(Rectangle.HalfCentered));
@@ -68,12 +70,12 @@ namespace DeltaEngine.Input.Tests
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void HoldMouseHovering()
 		{
 			var drawArea = new Rectangle(0.25f, 0.25f, 0.5f, 0.25f);
@@ -89,6 +91,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void MoveMouseInsideHoldArea()
 		{
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			Vector2D mousePosition = -Vector2D.One;
 			new Command(position => { mousePosition = position; }).Add(
 				new MouseHoldTrigger(Rectangle.HalfCentered));
@@ -104,6 +108,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame, Category("Slow")]
 		public void HoldMouseInsideHoldArea()
 		{
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			Vector2D mousePosition = -Vector2D.One;
 			new Command(position => { mousePosition = position; }).Add(
 				new MouseHoldTrigger(Rectangle.HalfCentered));

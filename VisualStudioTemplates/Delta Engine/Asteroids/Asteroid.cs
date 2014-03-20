@@ -23,7 +23,7 @@ namespace $safeprojectname$
 				sizeModifier) {}
 
 		private Asteroid(Rectangle drawArea, InteractionLogic interactionLogic, int sizeModifier)
-			: base(new Material(Shader.Position2DColorUV, "Asteroid"), drawArea)
+			: base(new Material(ShaderFlags.Position2DColoredTextured, "Asteroid"), drawArea)
 		{
 			var randomizer = Randomizer.Current;
 			this.interactionLogic = interactionLogic;

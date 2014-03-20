@@ -39,7 +39,7 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Graphics.csproj">
+    <ProjectReference Include="..\..\Graphics\DeltaEngine.Graphics.csproj">
       <Project>{8F701B0D-48B6-45CF-85E0-286BD53328BA}</Project>
       <Name>DeltaEngine.Graphics</Name>
     </ProjectReference>

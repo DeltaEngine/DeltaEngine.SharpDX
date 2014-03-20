@@ -12,20 +12,13 @@ namespace DeltaEngine.Scenes.Controls
 	/// </summary>
 	public class Theme : ContentData
 	{
-		public static Theme Default
-		{
-			get { return defaultTheme ?? (defaultTheme = new Theme()); }
-		}
-
-		private static Theme defaultTheme;
-
 		public Theme()
 			: base("<GeneratedDefaultTheme>")
 		{
 			DefaultButtonAppearance();
 			DefaultDropdownListAppearance();
 			Font = Font.Default;
-			Label = new Material(new Size(4, 1), Color.TransparentWhite);
+			Label = new Material(Color.TransparentWhite);
 			DefaultRadioButtonAppearance();
 			DefaultScrollbarAppearance();
 			DefaultSelectBoxAppearance();
@@ -46,10 +39,10 @@ namespace DeltaEngine.Scenes.Controls
 
 		private void DefaultButtonAppearance()
 		{
-			Button = new Material(new Size(4, 1), Color.Gray);
-			ButtonDisabled = new Material(new Size(4, 1), Color.DarkGray);
-			ButtonMouseover = new Material(new Size(4, 1), Color.LightGray);
-			ButtonPressed = new Material(new Size(4, 1), Color.LightBlue);
+			Button = new Material(Color.Gray);
+			ButtonDisabled = new Material(Color.DarkGray);
+			ButtonMouseover = new Material(Color.LightGray);
+			ButtonPressed = new Material(Color.LightBlue);
 		}
 
 		public Material Button { get; set; }
@@ -59,8 +52,8 @@ namespace DeltaEngine.Scenes.Controls
 
 		private void DefaultDropdownListAppearance()
 		{
-			DropdownListBox = new Material(new Size(4, 1), Color.Gray);
-			DropdownListBoxDisabled = new Material(new Size(4, 1), Color.DarkGray);
+			DropdownListBox = new Material(Color.Gray);
+			DropdownListBoxDisabled = new Material(Color.DarkGray);
 		}
 
 		public Material DropdownListBox { get; set; }
@@ -68,13 +61,13 @@ namespace DeltaEngine.Scenes.Controls
 
 		private void DefaultRadioButtonAppearance()
 		{
-			RadioButtonBackground = new Material(new Size(4, 1), Color.Gray);
-			RadioButtonBackgroundDisabled = new Material(new Size(4, 1), Color.DarkGray);
-			RadioButtonDisabled = new Material(new Size(1, 1), Color.Gray);
-			RadioButtonNotSelected = new Material(new Size(1, 1), Color.LightGray);
-			RadioButtonNotSelectedMouseover = new Material(new Size(1, 1), Color.VeryLightGray);
-			RadioButtonSelected = new Material(new Size(1, 1), Color.White);
-			RadioButtonSelectedMouseover = new Material(new Size(1, 1), Color.LightBlue);
+			RadioButtonBackground = new Material(Color.Gray);
+			RadioButtonBackgroundDisabled = new Material(Color.DarkGray);
+			RadioButtonDisabled = new Material(Color.Gray);
+			RadioButtonNotSelected = new Material(Color.LightGray);
+			RadioButtonNotSelectedMouseover = new Material(Color.VeryLightGray);
+			RadioButtonSelected = new Material(Color.White);
+			RadioButtonSelectedMouseover = new Material(Color.LightBlue);
 		}
 
 		public Material RadioButtonBackground { get; set; }
@@ -87,11 +80,11 @@ namespace DeltaEngine.Scenes.Controls
 
 		private void DefaultScrollbarAppearance()
 		{
-			Scrollbar = new Material(new Size(4, 1), Color.Gray);
-			ScrollbarDisabled = new Material(new Size(4, 1), Color.DarkGray);
-			ScrollbarPointerMouseover = new Material(new Size(1, 1), Color.LightBlue);
-			ScrollbarPointerDisabled = new Material(new Size(1, 1), Color.Gray);
-			ScrollbarPointer = new Material(new Size(1, 1), Color.LightGray);
+			Scrollbar = new Material(Color.Gray);
+			ScrollbarDisabled = new Material(Color.DarkGray);
+			ScrollbarPointerMouseover = new Material(Color.LightBlue);
+			ScrollbarPointerDisabled = new Material(Color.Gray);
+			ScrollbarPointer = new Material(Color.LightGray);
 		}
 
 		public Material Scrollbar { get; set; }
@@ -102,8 +95,8 @@ namespace DeltaEngine.Scenes.Controls
 
 		private void DefaultSelectBoxAppearance()
 		{
-			SelectBox = new Material(new Size(4, 1), Color.Gray);
-			SelectBoxDisabled = new Material(new Size(4, 1), Color.DarkGray);
+			SelectBox = new Material(Color.Gray);
+			SelectBoxDisabled = new Material(Color.DarkGray);
 		}
 
 		public Material SelectBox { get; set; }
@@ -111,11 +104,11 @@ namespace DeltaEngine.Scenes.Controls
 
 		private void DefaultSliderAppearance()
 		{
-			Slider = new Material(new Size(4, 1), Color.Gray);
-			SliderDisabled = new Material(new Size(4, 1), Color.DarkGray);
-			SliderPointer = new Material(new Size(1, 2), Color.LightGray);
-			SliderPointerDisabled = new Material(new Size(1, 2), Color.Gray);
-			SliderPointerMouseover = new Material(new Size(1, 2), Color.LightBlue);
+			Slider = new Material(Color.Gray);
+			SliderDisabled = new Material(Color.DarkGray);
+			SliderPointer = new Material(Color.LightGray);
+			SliderPointerDisabled = new Material(Color.Gray);
+			SliderPointerMouseover = new Material(Color.LightBlue);
 		}
 
 		public Material Slider { get; set; }
@@ -126,9 +119,9 @@ namespace DeltaEngine.Scenes.Controls
 
 		private void DefaultTextBoxAppearance()
 		{
-			TextBox = new Material(new Size(4, 1), Color.Gray);
-			TextBoxFocused = new Material(new Size(4, 1), Color.LightGray);
-			TextBoxDisabled = new Material(new Size(4, 1), Color.DarkGray);
+			TextBox = new Material(Color.Gray);
+			TextBoxFocused = new Material(Color.LightGray);
+			TextBoxDisabled = new Material(Color.DarkGray);
 		}
 
 		public Material TextBox { get; set; }
@@ -137,6 +130,7 @@ namespace DeltaEngine.Scenes.Controls
 
 		protected override void DisposeData() {}
 
+		//ncrunch: no coverage start
 		protected override void LoadData(Stream fileData)
 		{
 			var theme = (Theme)new BinaryReader(fileData).Create();
@@ -167,8 +161,85 @@ namespace DeltaEngine.Scenes.Controls
 			SliderPointerDisabled = theme.SliderPointerDisabled;
 			SliderPointerMouseover = theme.SliderPointerMouseover;
 			TextBox = theme.TextBox;
-			TextBoxFocused = theme.TextBoxFocused;
 			TextBoxDisabled = theme.TextBoxDisabled;
+			TextBoxFocused = theme.TextBoxFocused;
 		}
+
+		public void LoadFromFile(Stream fileData)
+		{
+			if (fileData.Length == 0)
+				throw new EmptyThemeFileGiven();
+			var reader = new BinaryReader(fileData);
+			reader.BaseStream.Position = 0;
+			string shortName = reader.ReadString();
+			var dataVersion = reader.ReadBytes(4);
+			bool justSaveName = reader.ReadBoolean();
+			bool noFieldData = reader.ReadBoolean();
+			string name = reader.ReadString();
+			reader.BaseStream.Position++;
+
+			Label = ReadMaterialInfoFromStream(reader);
+			Button = ReadMaterialInfoFromStream(reader);
+			ButtonDisabled = ReadMaterialInfoFromStream(reader);
+			ButtonMouseover = ReadMaterialInfoFromStream(reader);
+			ButtonPressed = ReadMaterialInfoFromStream(reader);
+			DropdownListBox = ReadMaterialInfoFromStream(reader);
+			DropdownListBoxDisabled = ReadMaterialInfoFromStream(reader);
+			RadioButtonBackground = ReadMaterialInfoFromStream(reader);
+			RadioButtonBackgroundDisabled = ReadMaterialInfoFromStream(reader);
+			RadioButtonDisabled = ReadMaterialInfoFromStream(reader);
+			RadioButtonNotSelected = ReadMaterialInfoFromStream(reader);
+			RadioButtonNotSelectedMouseover = ReadMaterialInfoFromStream(reader);
+			RadioButtonSelected = ReadMaterialInfoFromStream(reader);
+			RadioButtonSelectedMouseover = ReadMaterialInfoFromStream(reader);
+			Scrollbar = ReadMaterialInfoFromStream(reader);
+			ScrollbarDisabled = ReadMaterialInfoFromStream(reader);
+			ScrollbarPointerMouseover = ReadMaterialInfoFromStream(reader);
+			ScrollbarPointerDisabled = ReadMaterialInfoFromStream(reader);
+			ScrollbarPointer = ReadMaterialInfoFromStream(reader);
+			SelectBox = ReadMaterialInfoFromStream(reader);
+			SelectBoxDisabled = ReadMaterialInfoFromStream(reader);
+			Slider = ReadMaterialInfoFromStream(reader);
+			SliderDisabled = ReadMaterialInfoFromStream(reader);
+			SliderPointer = ReadMaterialInfoFromStream(reader);
+			SliderPointerDisabled = ReadMaterialInfoFromStream(reader);
+			SliderPointerMouseover = ReadMaterialInfoFromStream(reader);
+			TextBox = ReadMaterialInfoFromStream(reader);
+			TextBoxDisabled = ReadMaterialInfoFromStream(reader);
+			TextBoxFocused = ReadMaterialInfoFromStream(reader);
+		}
+
+		private static Material ReadMaterialInfoFromStream(BinaryReader reader)
+		{
+			reader.ReadBoolean();
+			reader.ReadString();
+			var justMaterialName = reader.ReadBoolean();
+			if (!justMaterialName)
+				return LoadCustomMaterial(reader);
+			var materialName = reader.ReadString();
+			return ContentLoader.Load<Material>(materialName);
+		}
+
+		private static Material LoadCustomMaterial(BinaryReader reader)
+		{
+			var shaderFlags = (ShaderFlags)reader.ReadInt32();
+			var customImageType = reader.ReadByte();
+			var pixelSize = customImageType > 0
+				? new Size(reader.ReadSingle(), reader.ReadSingle()) : Size.Zero;
+			var imageOrAnimationName = customImageType > 0 ? "" : reader.ReadString();
+			var customImage = customImageType == 1
+				? ContentLoader.Create<Image>(new ImageCreationData(pixelSize)) : null;
+			var color = new Color(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(),
+				reader.ReadByte());
+			var duration = reader.ReadSingle();
+			var material = customImageType > 0
+				? new Material(ContentLoader.Create<Shader>(new ShaderCreationData(shaderFlags)),
+					customImage) : new Material(shaderFlags, imageOrAnimationName);
+			material.DefaultColor = color;
+			material.Duration = duration;
+			return material;
+		}
+
+		public class EmptyThemeFileGiven : Exception {}
 	}
 }

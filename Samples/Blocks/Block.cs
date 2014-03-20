@@ -27,9 +27,8 @@ namespace Blocks
 		{
 			int numberOfBricks = content.AreFiveBrickBlocksAllowed
 				? GetNumberOfBricks() : NormalNumberOfBricks;
-			var image = content.Load<Image>("Block" + Randomizer.Current.Get(1, 8));
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image, image.PixelSize);
+			var material = new Material(ShaderFlags.Position2DColoredTextured,
+				content.Prefix + "Block" + Randomizer.Current.Get(1, 8));
 			var newBrick = new Brick(material, Vector2D.Zero, displayMode);
 			Bricks = new List<Brick> { newBrick };
 			for (int i = 1; i < numberOfBricks; i++)
@@ -190,6 +189,25 @@ namespace Blocks
 				line += any ? "O" : ".";
 			}
 			return line;
+		}
+
+		public override bool IsActive
+		{
+			get
+			{
+				return base.IsActive;
+			}
+			set
+			{
+				if (!value && IsActive)
+				{
+					foreach (var brick in Bricks)
+					{
+						brick.Dispose();
+					}
+				}
+				base.IsActive = value;
+			}
 		}
 	}
 }

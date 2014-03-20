@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Logging.Tests
 {
+	[Category("Slow")]
 	class LocalhostLogServerTests
 	{
 		[SetUp]

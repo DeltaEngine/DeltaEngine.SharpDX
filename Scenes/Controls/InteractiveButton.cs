@@ -8,36 +8,49 @@ namespace DeltaEngine.Scenes.Controls
 	/// </summary>
 	public class InteractiveButton : Button
 	{
-		protected InteractiveButton() {}
+		protected internal InteractiveButton() { }
 
 		public InteractiveButton(Rectangle drawArea, string text = "")
-			: this(Theme.Default, drawArea, text) {}
+			: base(new Theme(), drawArea, text) { }
 
 		public InteractiveButton(Theme theme, Rectangle drawArea, string text = "")
-			: base(theme, drawArea, text)
-		{
-			Add(drawArea.Size);
-		}
+			: base(theme, drawArea, text) { }
 
 		public override void Update()
 		{
 			base.Update();
 			if (!IsEnabled)
-				DrawArea = Rectangle.FromCenter(DrawArea.Center, BaseSize);
+				Normalize();
 			else if (State.IsInside && !State.IsPressed)
-				DrawArea = Rectangle.FromCenter(DrawArea.Center, BaseSize * Growth);
+				Grow();
 			else if (State.IsPressed)
-				DrawArea = Rectangle.FromCenter(DrawArea.Center, BaseSize / Growth);
+				Shrink();
 			else
-				DrawArea = Rectangle.FromCenter(DrawArea.Center, BaseSize);
+				Normalize();
+		}
+
+		private void Normalize()
+		{
+			if (AnchoringSize == Size.Unused)
+				return;
+			DrawArea = Rectangle.FromCenter(DrawArea.Center, AnchoringSize);
+			AnchoringSize = Size.Unused;
+		}
+
+		private void Grow()
+		{
+			if (AnchoringSize == Size.Unused)
+				AnchoringSize = DrawArea.Size;
+			DrawArea = Rectangle.FromCenter(DrawArea.Center, AnchoringSize * Growth);
 		}
 
 		private const float Growth = 1.05f;
 
-		public Size BaseSize
+		private void Shrink()
 		{
-			get { return Get<Size>(); }
-			set { Set(value); }
+			if (AnchoringSize == Size.Unused)
+				AnchoringSize = DrawArea.Size;
+			DrawArea = Rectangle.FromCenter(DrawArea.Center, AnchoringSize / Growth);
 		}
 	}
 }

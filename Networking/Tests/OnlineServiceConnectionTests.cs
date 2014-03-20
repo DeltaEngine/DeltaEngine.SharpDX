@@ -14,7 +14,7 @@ namespace DeltaEngine.Networking.Tests
 		{
 			string errorReceived = "";
 			bool readyReceived = false;
-			var connection = new OnlineServiceConnection(new MockSettings(), () => {});
+			var connection = new OnlineServiceConnection(new MockSettings(), () => { });
 			connection.ServerErrorHappened += text => errorReceived = text;
 			connection.ContentReady += () => readyReceived = true;
 			connection.ConnectToService();
@@ -30,7 +30,7 @@ namespace DeltaEngine.Networking.Tests
 			bool timedOut = false;
 			var connection = new OnlineServiceConnection();
 			connection.Connect("localhost", 12345, () => timedOut = true);
-			Thread.Sleep((int)((connection.Timeout + 0.5f)*1000));
+			Thread.Sleep((int)((connection.Timeout + 0.5f) * 1000));
 			Assert.IsTrue(timedOut);
 			Assert.IsFalse(connection.IsLoggedIn);
 		}
@@ -38,7 +38,7 @@ namespace DeltaEngine.Networking.Tests
 		[Test]
 		public void ReceiveResultFromServer()
 		{
-			var connection = new OnlineServiceConnection(new MockSettings(), () => {});
+			var connection = new OnlineServiceConnection(new MockSettings(), () => { });
 			object lastMessageReceived = null;
 			string errorReceived = "";
 			connection.ServerErrorHappened += text => errorReceived = text;

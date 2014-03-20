@@ -12,6 +12,7 @@ namespace DeltaEngine.Datatypes
 	/// Color with a byte per component (red, green, blue, alpha), also provides float properties.
 	/// </summary>
 	[DebuggerDisplay("Color(R={R}, G={G}, B={B}, A={A})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Color : IEquatable<Color>, Lerp<Color>
 	{
 		public Color(byte r, byte g, byte b, byte a = 255)
@@ -237,7 +238,7 @@ namespace DeltaEngine.Datatypes
 				c1.BlueValue * c2.BlueValue, c1.AlphaValue * c2.AlphaValue);
 		}
 
-		public static byte[] GetBytesFromArray(Color[] colors)
+		public static byte[] GetRgbaBytesFromArray(Color[] colors)
 		{
 			var bytes = new byte[colors.Length * 4];
 			for (int num = 0; num < colors.Length; num++)

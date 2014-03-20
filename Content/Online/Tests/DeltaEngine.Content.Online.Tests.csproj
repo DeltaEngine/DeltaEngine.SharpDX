@@ -51,13 +51,9 @@
       <Project>{5231706E-2955-43BF-9C06-291E12AF5C5C}</Project>
       <Name>DeltaEngine.Networking</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Content.Online.csproj">
+    <ProjectReference Include="..\..\..\Content\Online\DeltaEngine.Content.Online.csproj">
       <Project>{68AA6280-09EF-4325-B5F8-B8A967004144}</Project>
       <Name>DeltaEngine.Content.Online</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

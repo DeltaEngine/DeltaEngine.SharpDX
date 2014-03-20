@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using DeltaEngine.Content;
+using DeltaEngine.Content.Xml;
 using NUnit.Framework;
 
 namespace DeltaEngine.Tests.Content
@@ -28,7 +30,7 @@ namespace DeltaEngine.Tests.Content
 		public void ContentLoadWithWrongFilePath()
 		{
 			Assert.Throws<ContentLoader.ContentFileDoesNotExist>(
-				() => ContentLoader.Load<DynamicXmlMockContent>("ContentWithWrongPath"));
+				() => ContentLoader.Load<XmlContent>("ContentWithWrongPath"));
 		}
 
 		[Test]

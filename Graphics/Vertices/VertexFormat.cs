@@ -44,6 +44,10 @@ namespace DeltaEngine.Graphics.Vertices
 		{
 			get { return Elements.Any(t => t.ElementType == VertexElementType.Normal); }
 		}
+		public bool HasLightmap
+		{
+			get { return Elements.Any(t => t.ElementType == VertexElementType.LightMapUV); }
+		}
 
 		public VertexElement GetElementFromType(VertexElementType type)
 		{
@@ -52,7 +56,7 @@ namespace DeltaEngine.Graphics.Vertices
 
 		public static bool operator ==(VertexFormat f1, VertexFormat f2)
 		{
-			return object.ReferenceEquals(f1, f2) || (object)f1 != null && f1.Equals(f2);
+			return ReferenceEquals(f1, f2) || (object)f1 != null && f1.Equals(f2);
 		}
 
 		public bool Equals(VertexFormat other)
@@ -79,8 +83,7 @@ namespace DeltaEngine.Graphics.Vertices
 		public override int GetHashCode()
 		{
 			return Elements.GetHashCode() ^ Stride.GetHashCode();
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		public override string ToString()
 		{
@@ -131,21 +134,20 @@ namespace DeltaEngine.Graphics.Vertices
 				new VertexElement(VertexElementType.TextureUV)
 			});
 
-		public static readonly VertexFormat Position3DNormalUVLightmap =
-			new VertexFormat(new[]
-			{
-				new VertexElement(VertexElementType.Position3D),
-				new VertexElement(VertexElementType.Normal),
-				new VertexElement(VertexElementType.TextureUV),
-				new VertexElement(VertexElementType.LightMapUV)
-			});
-		
 		public static readonly VertexFormat Position3DNormalUV =
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position3D),
 				new VertexElement(VertexElementType.Normal),
 				new VertexElement(VertexElementType.TextureUV)
+			});
+
+		public static readonly VertexFormat Position3DUVLightMap =
+			new VertexFormat(new[]
+			{
+				new VertexElement(VertexElementType.Position3D),
+				new VertexElement(VertexElementType.TextureUV),
+				new VertexElement(VertexElementType.LightMapUV)
 			});
 
 		public static readonly VertexFormat Position3DSkinned =
@@ -169,6 +171,16 @@ namespace DeltaEngine.Graphics.Vertices
 			new VertexFormat(new[]
 			{
 				new VertexElement(VertexElementType.Position3D),
+				new VertexElement(VertexElementType.TextureUV),
+				new VertexElement(VertexElementType.SkinIndices),
+				new VertexElement(VertexElementType.SkinWeights)
+			});
+
+		public static readonly VertexFormat Position3DNormalUVSkinned =
+			new VertexFormat(new[]
+			{
+				new VertexElement(VertexElementType.Position3D),
+				new VertexElement(VertexElementType.Normal),
 				new VertexElement(VertexElementType.TextureUV),
 				new VertexElement(VertexElementType.SkinIndices),
 				new VertexElement(VertexElementType.SkinWeights)

@@ -10,7 +10,7 @@ namespace $safeprojectname$
 		public Soundbank(BlocksContent content)
 		{
 			BlockAffixed = content.Load<Sound>("BlockAffixed");
-			BlockCouldntMove = content.Load<Sound>("BlockCantMove");
+			BlockCouldNotMove = content.Load<Sound>("BlockCantMove");
 			BlockMoved = content.Load<Sound>("BlockMoved");
 			GameLost = content.Load<Sound>("GameLost");
 			RowRemoved = content.Load<Sound>("RowRemoved");
@@ -18,7 +18,7 @@ namespace $safeprojectname$
 		}
 
 		public Sound BlockAffixed { get; private set; }
-		public Sound BlockCouldntMove { get; private set; }
+		public Sound BlockCouldNotMove { get; private set; }
 		public Sound BlockMoved { get; private set; }
 		public Sound GameLost { get; private set; }
 		public Sound RowRemoved { get; private set; }

@@ -38,7 +38,7 @@ namespace DeltaEngine.Platforms.Tests
 			Assert.AreEqual(0.75f, fileSettings.MusicVolume);
 			Assert.AreEqual(24, fileSettings.DepthBufferBits);
 			Assert.AreEqual(32, fileSettings.ColorBufferBits);
-			Assert.AreEqual(4, fileSettings.AntiAliasingSamples);
+			Assert.AreEqual(0, fileSettings.AntiAliasingSamples);
 			Assert.AreEqual(0, fileSettings.LimitFramerate);
 			Assert.AreEqual(20, fileSettings.UpdatesPerSecond);
 		}

@@ -17,7 +17,7 @@ namespace DeltaEngine.Input.Windows
 		{
 			messageAction = HandleTouchMessage;
 			nativeTouches = new List<NativeTouchInput>();
-			windowHandle = (IntPtr)window.Handle;
+			windowHandle = window.Handle;
 			NativeMethods.RegisterTouchWindow(windowHandle, 0);
 			RegisterNativeTouchEvent(window);
 		}
@@ -27,32 +27,30 @@ namespace DeltaEngine.Input.Windows
 
 		private void RegisterNativeTouchEvent(Window window)
 		{
-			if(!(window is FormsWindow))
+			if (!(window is FormsWindow))
 				return;
 			//ncrunch: no coverage start. We couldn't test that with MockWindows
 			var formsWindow = window as FormsWindow;
-			formsWindow.NativeEvent += delegate(ref Message message)
-			{
-				messageAction(message.WParam, message.LParam, message.Msg);
-			};
+			formsWindow.NativeEvent +=
+				(ref Message message) => messageAction(message.WParam, message.LParam, message.Msg);
 		}
 
 		private void HandleTouchMessage(IntPtr wParam, IntPtr lParam, int msg)
 		{
-			if(msg != WMTouch)
+			if (msg != WMTouch)
 				return;
 			int inputCount = wParam.ToInt32();
-			NativeTouchInput[] newTouches = GetTouchDataFromHandle(inputCount, lParam);
+			IEnumerable<NativeTouchInput> newTouches = GetTouchDataFromHandle(inputCount, lParam);
 			NativeMethods.CloseTouchInputHandle(lParam);
 			if (newTouches != null)
 				nativeTouches.AddRange(newTouches);
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
-		internal static NativeTouchInput[] GetTouchDataFromHandle(int inputCount, IntPtr handle)
+		internal static IEnumerable<NativeTouchInput> GetTouchDataFromHandle(int inputCount,
+			IntPtr handle)
 		{
 			var inputs = new NativeTouchInput[inputCount];
-			bool isTouchProcessed = NativeMethods.GetTouchInputInfo(handle, inputCount, inputs, 
+			bool isTouchProcessed = NativeMethods.GetTouchInputInfo(handle, inputCount, inputs,
 				NativeTouchByteSize);
 			return isTouchProcessed == false ? null : inputs;
 		}

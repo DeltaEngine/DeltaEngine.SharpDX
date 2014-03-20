@@ -23,5 +23,10 @@
 		}
 
 		protected override void UpdateKeyStates() {} //ncrunch: no coverage
+
+		protected override bool IsCapsLocked
+		{
+			get { return false; }
+		}
 	}
 }

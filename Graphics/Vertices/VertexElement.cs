@@ -5,7 +5,7 @@ using DeltaEngine.Datatypes;
 namespace DeltaEngine.Graphics.Vertices
 {
 	/// <summary>
-	/// An element of a rendering vertex.
+	/// An element of a rendering vertex (like the position, the color, the normal, the uv, etc.)
 	/// </summary>
 	public class VertexElement : IEquatable<VertexElement>
 	{
@@ -16,6 +16,14 @@ namespace DeltaEngine.Graphics.Vertices
 			ElementType = elementType;
 			InitializeDataFromType();
 		}
+
+		//ncrunch: no coverage start
+		public VertexElement(VertexElementType elementType, int size, int count)
+		{
+			ElementType = elementType;
+			Size = size;
+			ComponentCount = count;
+		} //ncrunch: no coverage end
 
 		public VertexElementType ElementType { get; private set; }
 

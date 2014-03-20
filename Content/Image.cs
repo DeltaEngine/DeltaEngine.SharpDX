@@ -34,7 +34,10 @@ namespace DeltaEngine.Content
 		public bool DisableLinearFiltering { get; private set; }
 		public RenderingCalculator RenderingCalculator { get; private set; }
 
-		protected override bool AllowCreationIfContentNotFound { get { return !Debugger.IsAttached; } }
+		protected override bool AllowCreationIfContentNotFound
+		{
+			get { return !Debugger.IsAttached; }
+		}
 
 		protected override void LoadData(Stream fileData)
 		{
@@ -55,8 +58,6 @@ namespace DeltaEngine.Content
 		private void ExtractMetaData()
 		{
 			PixelSize = MetaData.Get("PixelSize", DefaultTextureSize);
-			if (PixelSize.Width == 0)
-				PixelSize = new Size(128, 128);
 			BlendMode = MetaData.Get("BlendMode", BlendMode.Normal);
 			UseMipmaps = MetaData.Get("UseMipmaps", false);
 			AllowTiling = MetaData.Get("AllowTiling", false);
@@ -65,11 +66,11 @@ namespace DeltaEngine.Content
 
 		protected abstract void SetSamplerStateAndTryToLoadImage(Stream fileData);
 
-		protected void TryLoadImage(Stream fileData)
+		protected void LoadImage(Stream fileData)
 		{
 			try
 			{
-				LoadImage(fileData);
+				TryLoadImage(fileData);
 			} //ncrunch: no coverage
 			catch (Exception ex)
 			{
@@ -81,7 +82,7 @@ namespace DeltaEngine.Content
 			}
 		}
 
-		protected abstract void LoadImage(Stream fileData);
+		protected abstract void TryLoadImage(Stream fileData);
 
 		// An Image object from an atlas has no texture of its own and only PixelSize for inferred 
 		// metadata; Classes like Material wishing to use this Image object should extract the data 
@@ -89,7 +90,7 @@ namespace DeltaEngine.Content
 		private void ProcessAtlas(string atlasImageName)
 		{
 			DisposeData();
-			AtlasImage = ContentLoader.Load<Image>(atlasImageName);			
+			AtlasImage = ContentLoader.Load<Image>(atlasImageName);
 			var uv = new Rectangle(MetaData.Get("UV", ""));
 			PixelSize = new Size(AtlasImage.PixelSize.Width * uv.Width,
 				AtlasImage.PixelSize.Height * uv.Height);
@@ -120,18 +121,17 @@ namespace DeltaEngine.Content
 
 		protected void WarnAboutWrongAlphaFormat(bool imageHasAlphaFormat)
 		{
-			//Disabled for M5 release due image server conversion not being enabled right now
-			//if (HasAlpha && !imageHasAlphaFormat)
-			//	Logger.Warning("Image '" + Name +
-			//		"' is supposed to have alpha pixels, but the image pixel format is not using alpha.");
-			//else if (!HasAlpha && imageHasAlphaFormat)
-			//	Logger.Warning("Image '" + Name +
-			//		"' is supposed to have no alpha pixels, but the image pixel format is using alpha.");
+			if (HasAlpha && !imageHasAlphaFormat)
+				Logger.Warning("Image '" + Name +
+					"' is supposed to have alpha pixels, but the image pixel format is not using alpha.");
+			else if (!HasAlpha && imageHasAlphaFormat)
+				Logger.Warning("Image '" + Name +
+					"' is supposed to have no alpha pixels, but the image pixel format is using alpha.");
 		}
 
 		protected bool HasAlpha
 		{
-			get { return BlendMode == BlendMode.Normal || BlendMode == BlendMode.AlphaTest; } //ncrunch: no coverage
+			get { return BlendMode == BlendMode.Normal || BlendMode == BlendMode.AlphaTest; }
 		}
 
 		protected override void CreateDefault()
@@ -141,6 +141,7 @@ namespace DeltaEngine.Content
 			BlendMode = BlendMode.Opaque;
 			Fill(CheckerMapColors);
 			SetSamplerState();
+			RenderingCalculator = new RenderingCalculator();
 		}
 
 		public void Fill(Color color)
@@ -151,8 +152,12 @@ namespace DeltaEngine.Content
 			Fill(colors);
 		}
 
-		public abstract void Fill(Color[] colors);
-		public abstract void Fill(byte[] rgbaColors);
+		public void Fill(Color[] colors)
+		{
+			if (PixelSize.Width * PixelSize.Height != colors.Length)
+				throw new InvalidNumberOfColors(PixelSize);
+			FillRgbaData(Color.GetRgbaBytesFromArray(colors));
+		}
 
 		public class InvalidNumberOfColors : Exception
 		{
@@ -160,16 +165,23 @@ namespace DeltaEngine.Content
 				: base(pixelSize.Width + "*" + pixelSize.Height) {}
 		}
 
+		/// <summary>
+		/// Fill opaque or alpha images with 4 bytes per pixel (rgba). Using 3 bytes (24bit) is
+		/// inefficient and would only work on some platforms that allow it. Use 16 or 8 bit if you want
+		/// performance and use compressed textures as well. For small images this works fine.
+		/// </summary>
+		public abstract void FillRgbaData(byte[] rgbaColors);
+
 		public class InvalidNumberOfBytes : Exception
 		{
 			public InvalidNumberOfBytes(Size pixelSize)
-				: base(pixelSize.Width + "*" + pixelSize.Height + "*4") {}
+				: base(pixelSize.Width + "*" + pixelSize.Height + "*" + 4) {}
 		}
 
 		private static readonly Color[] CheckerMapColors =
 		{
-			Color.LightGray, Color.DarkGray, Color.LightGray, Color.DarkGray, 
-			Color.DarkGray, Color.LightGray, Color.DarkGray, Color.LightGray, 
+			Color.LightGray, Color.DarkGray, Color.LightGray, Color.DarkGray,
+			Color.DarkGray, Color.LightGray, Color.DarkGray, Color.LightGray,
 			Color.LightGray, Color.DarkGray, Color.LightGray, Color.DarkGray,
 			Color.DarkGray, Color.LightGray, Color.DarkGray, Color.LightGray
 		};

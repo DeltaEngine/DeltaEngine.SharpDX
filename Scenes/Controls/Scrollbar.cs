@@ -11,7 +11,7 @@ namespace DeltaEngine.Scenes.Controls
 		protected Scrollbar() {}
 
 		public Scrollbar(Rectangle drawArea)
-			: this(Theme.Default, drawArea) {}
+			: this(new Theme(), drawArea) { }
 
 		public Scrollbar(Theme theme, Rectangle drawArea)
 			: base(theme, theme.Scrollbar, drawArea)

@@ -203,7 +203,8 @@ namespace DeltaEngine.Extensions
 				x => name.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		public static string SplitWords(this string stringToSplit, bool convertFirstLetterToLowerCase)
+		public static string SplitWords(this string stringToSplit,
+			bool convertFirstLetterOfEachWordAfterFirstWordToLowerCase = false)
 		{
 			string words = "";
 			if (string.IsNullOrEmpty(stringToSplit))
@@ -213,12 +214,29 @@ namespace DeltaEngine.Extensions
 				char letter = stringToSplit[i];
 				if (letter == char.ToUpper(letter) && i != 0 && letter >= 'A')
 					words += " " +
-						(convertFirstLetterToLowerCase
+						(convertFirstLetterOfEachWordAfterFirstWordToLowerCase
 							? letter.ToString(CultureInfo.InvariantCulture).ToLower() : letter + "");
 				else
 					words += letter;
 			}
 			return words;
+		}
+
+		public static string GetFilenameWithoutForbiddenCharactersOrSpaces(string filename)
+		{
+			if (String.IsNullOrWhiteSpace(filename))
+				return "";
+			string cleanFileName = "";
+			foreach (char character in filename)
+				if (character > ' ' && IsAllowedFilenameCharacter(character))
+					cleanFileName += character;
+			return cleanFileName;
+		}
+
+		private static bool IsAllowedFilenameCharacter(char character)
+		{
+			return character >= 'A' && character <= 'Z' || character >= 'a' && character <= 'z' ||
+				character >= '0' && character <= '9' || character == '.';
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using DeltaEngine.Commands;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
 using DeltaEngine.ScreenSpaces;
@@ -9,7 +10,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Allows mouse double clicks to be tracked.
 	/// </summary>
-	public class MouseDoubleClickTrigger : PositionTrigger, MouseTrigger
+	public class MouseDoubleClickTrigger : InputTrigger, PositionTrigger, MouseTrigger
 	{
 		public MouseDoubleClickTrigger(MouseButton button = MouseButton.Left)
 		{
@@ -17,6 +18,7 @@ namespace DeltaEngine.Input
 		}
 
 		public MouseButton Button { get; private set; }
+		public Vector2D Position { get; set; }
 
 		public MouseDoubleClickTrigger(string button)
 		{

@@ -9,10 +9,10 @@ namespace DeltaEngine.Scenes.Controls
 	/// </summary>
 	public class Label : Picture
 	{
-		protected Label() {}
+		internal protected Label() {}
 
 		public Label(Rectangle drawArea, string text = "")
-			: this(Theme.Default, drawArea, text) {}
+			: this(new Theme(), drawArea, text) {}
 
 		public Label(Theme theme, Rectangle drawArea, string text = "")
 			: this(theme, theme.Label, drawArea)
@@ -64,6 +64,8 @@ namespace DeltaEngine.Scenes.Controls
 
 		public override void Set(object component)
 		{
+			if (component == null)
+				return;
 			if (component is FontText)
 				ReplaceChild((FontText)component);
 			base.Set(component);

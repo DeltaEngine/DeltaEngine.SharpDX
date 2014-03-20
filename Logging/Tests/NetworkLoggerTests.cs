@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using DeltaEngine.Core;
+using DeltaEngine.Mocks;
 using DeltaEngine.Networking.Messages;
 using DeltaEngine.Networking.Tcp;
 using NUnit.Framework;
@@ -16,6 +17,7 @@ namespace DeltaEngine.Logging.Tests
 		{
 			server = new LocalhostLogServer(new TcpServer());
 			server.Start();
+			new MockSettings();
 			var ready = false;
 			var connection = new OnlineServiceConnection();
 			connection.DataReceived += o => ready = true;
@@ -70,6 +72,17 @@ namespace DeltaEngine.Logging.Tests
 			logger.Write(Logger.MessageType.Error, new ArgumentException().ToString());
 			Thread.Sleep(100);
 			ExpectThatServerLastMessageContains("ArgumentException");
+		}
+
+		[Test]
+		public void NotLoggingIfSettingFalse()
+		{
+			var logRecieved = false;
+			Settings.Current.UseOnlineLogging = false;
+			server.Server.ClientDataReceived += (client, o) => logRecieved = true;
+			logger.Write(Logger.MessageType.Error, new ArgumentException().ToString());
+			Assert.IsFalse(logRecieved);
+			Settings.Current.UseOnlineLogging = true;
 		}
 	}
 }

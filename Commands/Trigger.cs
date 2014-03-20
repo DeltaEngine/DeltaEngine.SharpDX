@@ -32,7 +32,7 @@ namespace DeltaEngine.Commands
 			WasInvokedThisTick = false;
 		}
 
-		public bool IsPauseable { get { return false; } }
+		public override bool IsPauseable { get { return false; } }
 
 		public static object GenerateTriggerFromType(Type triggerType, string triggerName,
 			string triggerValue)
@@ -40,14 +40,19 @@ namespace DeltaEngine.Commands
 			object triggerGenerated = null;
 			try
 			{
-				triggerGenerated = Activator.CreateInstance(triggerType, triggerValue);
-			}
+				triggerGenerated = TryGenerateTriggerFromType(triggerType, triggerValue);
+			} //ncrunch: no coverage
 			catch (Exception e)
 			{
 				Logger.Error(e);
 			}
 			return triggerGenerated;
 		}
+
+		private static object TryGenerateTriggerFromType(Type triggerType, string triggerValue)
+		{
+			return Activator.CreateInstance(triggerType, triggerValue);
+		} //ncrunch: no coverage
 
 		public class UnableToCreateTriggerTypeIsUnknown : Exception
 		{ //ncrunch: no coverage start

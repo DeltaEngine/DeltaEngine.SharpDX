@@ -67,7 +67,7 @@ namespace DeltaEngine.Platforms.Mocks
 		}
 		public override Version PlatformVersion
 		{
-			get { return new Version(8, 1); }
+			get { return new Version(6, 2); }
 		}
 		public override bool SoundCardAvailable
 		{

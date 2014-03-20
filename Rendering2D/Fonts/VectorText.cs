@@ -91,7 +91,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 			public Render(Drawing drawing)
 			{
 				this.drawing = drawing;
-				material = new Material(Shader.Position2DColor, "");
+				material = new Material(ShaderFlags.Position2DColored, "");
 			}
 
 			private readonly Drawing drawing;

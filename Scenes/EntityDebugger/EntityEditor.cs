@@ -160,10 +160,7 @@ namespace DeltaEngine.Scenes.EntityDebugger
 
 		public abstract void Update();
 
-		public bool IsPauseable
-		{
-			get { return false; }
-		}
+		public override bool IsPauseable { get { return false; } }
 
 		public override void Dispose()
 		{

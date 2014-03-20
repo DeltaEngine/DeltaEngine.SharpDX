@@ -15,14 +15,6 @@ namespace DeltaEngine.Tests.Extensions
 		private Dictionary<string, object> dictionary;
 
 		[Test]
-		public void Contains()
-		{
-			var numbers = new[] { 1, 2, 5 };
-			Assert.IsTrue(numbers.Contains(1));
-			Assert.IsFalse(numbers.Contains(3));
-		}
-
-		[Test]
 		public void Compare()
 		{
 			var numbers1 = new[] { 1, 2, 5 };
@@ -62,6 +54,18 @@ namespace DeltaEngine.Tests.Extensions
 		{
 			int result = ArrayExtensions.GetWithDefault<string, int>(dictionary, "string");
 			Assert.AreEqual(0, result);
+		}
+
+		[Test]
+		public void Insert()
+		{
+			int[] source = { 1, 2, 4, 5, 6 };
+			source = source.Insert(3, 2);
+			Assert.True(source.Compare(new[] { 1, 2, 3, 4, 5, 6 }));
+			source = source.Insert(0, 0);
+			Assert.True(source.Compare(new[] { 0, 1, 2, 3, 4, 5, 6 }));
+			source = source.Insert(7, source.Length);
+			Assert.True(source.Compare(new[] { 0, 1, 2, 3, 4, 5, 6, 7 }));
 		}
 	}
 }

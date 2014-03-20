@@ -4,7 +4,7 @@ using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Input
 {
-	public class MouseZoomTrigger : ZoomTrigger, MouseTrigger
+	public class MouseZoomTrigger : InputTrigger, ZoomTrigger, MouseTrigger
 	{
 		public MouseZoomTrigger() { }
 
@@ -29,14 +29,11 @@ namespace DeltaEngine.Input
 			LastScrollWheelValue = mouse.ScrollWheelValue;
 			if(!ScreenSpace.Current.Viewport.Contains(mouse.Position))
 				return;
-			if (currentScrollValueDifference > 0)
-				ZoomAmount = 1;
-			else if (currentScrollValueDifference < 0)
-				ZoomAmount = -1;
-			else
-				ZoomAmount = 0;
+			ZoomAmount = currentScrollValueDifference * 0.1f;
 			if (ZoomAmount != 0)
 				Invoke();
 		}
+
+		public float ZoomAmount { get; set; }
 	}
 }

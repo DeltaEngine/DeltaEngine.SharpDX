@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using DeltaEngine.Content.Mocks;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Mocks;
 using NUnit.Framework;
-using Size = DeltaEngine.Datatypes.Size;
 
 namespace DeltaEngine.Content.Disk.Tests
 {
 	/// <summary>
-	/// ContentMetaData.xml does not exist on purpose, it should be created automatically!
+	/// ContentMetaData.xml does not exist on purpose here, it is created automatically.
 	/// </summary>
-	internal class DiskContentLoaderTests
+	[Category("Slow")]
+	public class DiskContentLoaderTests
 	{
+		//ncrunch: no coverage start
 		[TestFixtureSetUp]
 		public void Setup()
 		{
@@ -27,19 +27,23 @@ namespace DeltaEngine.Content.Disk.Tests
 			image = ContentLoader.Load<MockImage>("DeltaEngineLogo");
 		}
 
+		private Image image;
+
 		private static void CreateContentMetaDataAndRealFiles()
 		{
-			Directory.CreateDirectory("Content");
+			Directory.CreateDirectory(ContentProjectDirectoryName);
 			var root = new XmlData("ContentMetaData");
-			root.AddAttribute("Name", "DeltaEngine.Content.Tests");
+			root.AddAttribute("Name", "DeltaEngine.Content.Disk.Tests");
 			root.AddAttribute("Type", "Scene");
 			root.AddChild(CreateImageEntryAndFile("DeltaEngineLogo", new Size(128, 128)));
 			root.AddChild(CreateImageEntryAndFile("SmallImage", new Size(32, 32)));
 			root.AddChild(CreateAnimationNode());
 			root.AddChild(CreateXmlEntryAndFile());
 			var contentMetaData = new XmlFile(root);
-			contentMetaData.Save(Path.Combine("Content", "ContentMetaData.xml"));
+			contentMetaData.Save(Path.Combine(ContentProjectDirectoryName, "ContentMetaData.xml"));
 		}
+
+		private const string ContentProjectDirectoryName = @"Content\DeltaEngine.Content.Disk.Tests";
 
 		private static XmlData CreateImageEntryAndFile(string name, Size pixelSize)
 		{
@@ -47,7 +51,8 @@ namespace DeltaEngine.Content.Disk.Tests
 			image.AddAttribute("Name", name);
 			image.AddAttribute("Type", "Image");
 			string filename = name + ".png";
-			CreateImageFile(image, filename, pixelSize);
+			string filePath = Path.Combine(ContentProjectDirectoryName, filename);
+			ContentDiskTestsExtensions.CreateImageAndContentMetaData(filePath, pixelSize, image);
 			image.AddAttribute("LocalFilePath", filename);
 			image.AddAttribute("LastTimeUpdated", DateTime.Now);
 			image.AddAttribute("PlatformFileId", --platformFileId);
@@ -55,21 +60,6 @@ namespace DeltaEngine.Content.Disk.Tests
 		}
 
 		private static int platformFileId;
-
-		private static void CreateImageFile(XmlData image, string filename, Size pixelSize)
-		{
-			var newBitmap = new Bitmap((int)pixelSize.Width, (int)pixelSize.Height,
-				PixelFormat.Format32bppArgb);
-			for (int y = 0; y < newBitmap.Height; y++)
-				for (int x = 0; x < newBitmap.Width; x++)
-					newBitmap.SetPixel(x, y, Color.White);
-			if (filename == "DeltaEngineLogo.png")
-				newBitmap.SetPixel(50, 70, Color.FromArgb(0, 0, 0, 0));
-			string filePath = Path.Combine("Content", filename);
-			newBitmap.Save(filePath);
-			image.AddAttribute("FileSize", new FileInfo(filePath).Length);
-			image.AddAttribute("PixelSize", pixelSize.ToString());
-		}
 
 		private static XmlData CreateAnimationNode()
 		{
@@ -81,20 +71,42 @@ namespace DeltaEngine.Content.Disk.Tests
 			return animation.AddChild(frame1).AddChild(frame2);
 		}
 
-		private Image image;
-
 		private static XmlData CreateXmlEntryAndFile()
 		{
 			var xml = new XmlData("ContentMetaData");
 			xml.AddAttribute("Name", "Test").AddAttribute("Type", "Xml");
 			const string Filename = "Test.xml";
-			using (var textWriter = File.CreateText(Path.Combine("Content", Filename)))
+			using (var textWriter = File.CreateText(Path.Combine(ContentProjectDirectoryName, Filename)))
 				textWriter.WriteLine("<Test></Test>");
 			xml.AddAttribute("LocalFilePath", Filename);
 			xml.AddAttribute("LastTimeUpdated", DateTime.Now);
 			xml.AddAttribute("PlatformFileId", --platformFileId);
 			return xml;
 		}
+
+		[TestFixtureTearDown]
+		public void DisposeContentLoaderAndDeleteContentDirectory()
+		{
+			ContentLoader.DisposeIfInitialized();
+			DeleteDirectoryAndAllIncludingFiles(ContentProjectDirectoryName);
+		}
+
+		private static void DeleteDirectoryAndAllIncludingFiles(string contentDirectoryName)
+		{
+			if (!Directory.Exists(contentDirectoryName))
+				return;
+			foreach (var file in Directory.GetFiles(contentDirectoryName))
+				File.Delete(file);
+			Directory.Delete(contentDirectoryName);
+		}
+
+		[TearDown]
+		public void DeleteExtraContentDirectory()
+		{
+			DeleteDirectoryAndAllIncludingFiles(ExtraContentDirectoryName);
+		}
+
+		private const string ExtraContentDirectoryName = "ContentDirectory";
 
 		[Test]
 		public void LoadImageContent()
@@ -106,14 +118,13 @@ namespace DeltaEngine.Content.Disk.Tests
 			Assert.AreEqual(new Size(32, 32), smallImage.PixelSize);
 		}
 
-		//ncrunch: no coverage start
 		[Test]
 		public void LoadNonExistingImageFails()
 		{
 			if (Debugger.IsAttached)
 				Assert.Throws<ContentLoader.ContentNotFound>(
 					() => ContentLoader.Load<MockImage>("FailImage"));
-		} //ncrunch: no coverage end
+		}
 
 		[Test]
 		public void LoadingCachedContentOfTheWrongTypeThrowsException()
@@ -144,11 +155,10 @@ namespace DeltaEngine.Content.Disk.Tests
 		[Test]
 		public void ShouldCreateMetaDataFileIfNoneExists()
 		{
-			string randomContentDir = "Content" + DateTime.Now.Ticks * 2;
-			Directory.CreateDirectory(randomContentDir);
-			var files = Directory.GetFiles("Content", "*.png");
-			File.Copy(files[0], Path.Combine(randomContentDir, Path.GetFileName(files[0])));
-			string metaDataFilePath = Path.Combine(randomContentDir, "ContentMetaData.xml");
+			Directory.CreateDirectory(ExtraContentDirectoryName);
+			var files = Directory.GetFiles(ContentProjectDirectoryName, "*.png");
+			File.Copy(files[0], Path.Combine(ExtraContentDirectoryName, Path.GetFileName(files[0])));
+			string metaDataFilePath = Path.Combine(ExtraContentDirectoryName, "ContentMetaData.xml");
 			var contentLoader = (DiskContentLoader)ContentLoader.current;
 			contentLoader.LoadMetaData(metaDataFilePath);
 			Assert.IsTrue(File.Exists(metaDataFilePath));
@@ -167,15 +177,13 @@ namespace DeltaEngine.Content.Disk.Tests
 			Assert.AreEqual(content.Frames[0], loadedContent.Frames[0]);
 		}
 
-		//ncrunch: no coverage start
-		[Test, Category("Slow"), Ignore]
+		[Test]
 		public void CreateMetaDataViaFileCreator()
 		{
-			string randomContentDir = "Content" + DateTime.Now.Ticks;
-			Directory.CreateDirectory(randomContentDir);
-			foreach (var filePath in Directory.GetFiles("Content", "*.png"))
-				File.Copy(filePath, Path.Combine(randomContentDir, Path.GetFileName(filePath)));
-			string metaDataFilePath = Path.Combine(randomContentDir, "ContentMetaData.xml");
+			Directory.CreateDirectory(ExtraContentDirectoryName);
+			foreach (var filePath in Directory.GetFiles(ContentProjectDirectoryName, "*.png"))
+				File.Copy(filePath, Path.Combine(ExtraContentDirectoryName, Path.GetFileName(filePath)));
+			string metaDataFilePath = Path.Combine(ExtraContentDirectoryName, "ContentMetaData.xml");
 			var xml = CreateMetaDataXmlFileAndCheckPixelSizes(null, metaDataFilePath);
 			CreateMetaDataXmlFileAndCheckPixelSizes(xml, metaDataFilePath);
 		}
@@ -192,23 +200,25 @@ namespace DeltaEngine.Content.Disk.Tests
 
 		private static void CheckElementPixelSize(XElement element)
 		{
-			var expectedPixelSize = "64, 64";
+			var expectedPixelSize = "1, 1";
 			if (element.Attribute("Name").Value == "DeltaEngineLogo")
-				expectedPixelSize = SetElementTo128Pixels(element);
+				expectedPixelSize = CheckBlendModeAndGetPixelSizeForDeltaEngineLogo(element);
 			else if (element.Attribute("Name").Value == "SmallImage")
-				expectedPixelSize = SetElementTo32Pixels(element);
+				expectedPixelSize = CheckBlendModeAndGetPixelSizeForSmallImage(element);
+			else if (element.Attribute("Name").Value.Contains("ImageAnimation"))
+				expectedPixelSize = "64, 64";
 			if (element.Attribute("Type").Value == "Image")
 				Assert.AreEqual(expectedPixelSize, element.Attribute("PixelSize").Value);
 		}
 
-		// ReSharper disable UnusedParameter.Local once
-		private static string SetElementTo128Pixels(XElement element)
+		// ReSharper disable once UnusedParameter.Local
+		private static string CheckBlendModeAndGetPixelSizeForDeltaEngineLogo(XElement element)
 		{
 			Assert.IsNull(element.Attribute("BlendMode"));
 			return "128, 128";
 		}
 
-		private static string SetElementTo32Pixels(XElement element)
+		private static string CheckBlendModeAndGetPixelSizeForSmallImage(XElement element)
 		{
 			Assert.AreEqual("Opaque", element.Attribute("BlendMode").Value);
 			return "32, 32";

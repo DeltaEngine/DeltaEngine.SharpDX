@@ -41,9 +41,8 @@ namespace DeltaEngine.Tests.Content
 			protected override void SetSamplerStateAndTryToLoadImage(Stream fileData) {}
 
 			//ncrunch: no coverage start
-			protected override void LoadImage(Stream fileData) {}
-			public override void Fill(Color[] colors) {}
-			public override void Fill(byte[] colors) {}
+			protected override void TryLoadImage(Stream fileData) {}
+			public override void FillRgbaData(byte[] rgbaColors) {}
 			protected override void SetSamplerState() {}
 			//ncrunch: no coverage end
 

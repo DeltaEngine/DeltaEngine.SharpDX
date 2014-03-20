@@ -47,12 +47,17 @@ namespace DeltaEngine.Scenes.EntityDebugger
 		{
 			try
 			{
-				return Activator.CreateInstance(componentType, new object[] { text });
+				return TryGetComponentFromString(componentType, text);
 			}
 			catch (Exception)
 			{
 				return Activator.CreateInstance(componentType);
 			}
+		}
+
+		private static object TryGetComponentFromString(Type componentType, string text)
+		{
+			return Activator.CreateInstance(componentType, new object[] { text });
 		}
 
 		private void UpdateComponentFromControls(Type componentType, List<Control> controls)
@@ -78,16 +83,16 @@ namespace DeltaEngine.Scenes.EntityDebugger
 		{
 			if (textbox.Text != textbox.PreviousText)
 				if (componentType == typeof(float))
-					TryUpdateFloatIfValueHasChanged(textbox.Text);
+					UpdateFloatIfValueHasChanged(textbox.Text);
 				else
 					UpdateComponentIfValueHasChanged(componentType, textbox);
 		}
 
-		private void TryUpdateFloatIfValueHasChanged(string text)
+		private void UpdateFloatIfValueHasChanged(string text)
 		{
 			try
 			{
-				UpdateFloatIfValueHasChanged(text);
+				TryUpdateFloatIfValueHasChanged(text);
 			}
 			catch (Exception)
 			{
@@ -95,7 +100,7 @@ namespace DeltaEngine.Scenes.EntityDebugger
 			}
 		}
 
-		private void UpdateFloatIfValueHasChanged(string text)
+		private void TryUpdateFloatIfValueHasChanged(string text)
 		{
 			var value = text.Convert<float>();
 			if (Entity.Get<float>() != value)

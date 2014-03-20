@@ -2,21 +2,12 @@
 using DeltaEngine.Datatypes;
 using DeltaEngine.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.ScreenSpaces;
 using NUnit.Framework;
 
 namespace Asteroids.Tests
 {
 	internal class GameTests : TestWithMocksOrVisually
 	{
-		private void CreateAndStartGame()
-		{
-			game = new Game(Resolve<Window>());
-			game.StartGame();
-		}
-
-		private Game game;
-
 		[Test, CloseAfterFirstFrame]
 		public void GameOverResultsInSameStateEvenMultipleCalls()
 		{
@@ -26,6 +17,14 @@ namespace Asteroids.Tests
 			Assert.AreEqual(GameState.GameOver, game.GameState);
 			Assert.IsFalse(game.InteractionLogic.Player.IsActive);
 		}
+
+		private void CreateAndStartGame()
+		{
+			game = new Game(Resolve<Window>());
+			game.StartGame();
+		}
+
+		private Game game;
 
 		[Test, CloseAfterFirstFrame]
 		public void RestartGameGivesRunningGameAgain()
@@ -45,20 +44,6 @@ namespace Asteroids.Tests
 			game.StartGame();
 			window.ViewportPixelSize = new Size(800,600);
 		}
-
-		//ncrunch: no coverage start
-		[Test, CloseAfterFirstFrame, Ignore]
-		public void ChangeViewPortSizeMenu()
-		{
-			var window = Resolve<Window>();
-			if (window.GetType() != typeof(MockWindow))
-				return; 
-			game = new Game(window);
-			window.ViewportPixelSize = new Size(800, 600);
-			AdvanceTimeAndUpdateEntities();
-			Assert.AreEqual(6.0f/8.0f, (ScreenSpace.Current as Camera2DScreenSpace).Zoom);
-		}
-		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void IncreaseScoreToScoreBoard()

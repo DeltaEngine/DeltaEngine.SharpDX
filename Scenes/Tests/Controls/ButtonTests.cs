@@ -30,8 +30,8 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		private void InitializeMouse()
 		{
 			mouse = Resolve<Mouse>() as MockMouse;
-			if (mouse != null)
-				mouse.SetPosition(Vector2D.Zero);
+			if (IsMockResolver)
+				mouse.SetNativePosition(Vector2D.Zero);
 		}
 
 		private MockMouse mouse;
@@ -39,7 +39,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		private void InitializeTouch()
 		{
 			var touch = Resolve<Touch>() as MockTouch;
-			if (touch != null)
+			if (IsMockResolver)
 				touch.SetTouchState(0, State.Released, Vector2D.Zero);
 		}
 
@@ -79,7 +79,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void BeginClickInside()
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			SetMouseState(State.Pressing, Vector2D.Half);
 			Assert.IsTrue(button.State.IsPressed);
@@ -87,9 +87,9 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private void SetMouseState(State state, Vector2D position)
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
@@ -104,7 +104,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void BeginAndEndClickInside()
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
@@ -123,6 +123,8 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void BeginClickInsideAndEndOutside()
 		{
+			if (!IsMockResolver)
+				return; //ncrunch: no coverage
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
 			PressAndReleaseMouse(Vector2D.Half, Vector2D.Zero);
@@ -133,6 +135,8 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void BeginClickOutsideAndEndInside()
 		{
+			if (!IsMockResolver)
+				return; //ncrunch: no coverage
 			bool clicked = false;
 			button.Clicked += () => clicked = true;
 			PressAndReleaseMouse(Vector2D.Zero, Vector2D.Half);
@@ -143,7 +147,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void DisabledControlDoesNotRespondToClick()
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			button.IsEnabled = false;
 			bool clicked = false;
@@ -157,7 +161,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void HiddenControlDoesNotRespondToClick()
 		{
-			if (mouse == null)
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			button.IsVisible = false;
 			bool clicked = false;
@@ -191,12 +195,22 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		}
 
 		[Test, CloseAfterFirstFrame]
+		public void DefaultNames()
+		{
+			var button2 = new Button(Center, "Click Me");
+			Assert.AreEqual("Button1", button.Name);
+			Assert.AreEqual("Button2", button2.Name);
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void SaveAndLoad()
 		{
+			button.Name = "New Name";
 			var stream = BinaryDataExtensions.SaveToMemoryStream(button);
 			var loadedButton = (Button)stream.CreateFromMemoryStream();
 			Assert.AreEqual(Center, loadedButton.DrawArea);
 			Assert.AreEqual("Click Me", loadedButton.Text);
+			Assert.AreEqual("New Name", loadedButton.Name);
 		}
 
 		[Test]
@@ -207,6 +221,18 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			var loadedButton = (Button)stream.CreateFromMemoryStream();
 			loadedButton.Text = "Loaded";
 			loadedButton.DrawArea = loadedButton.DrawArea.Move(0.0f, 0.15f);
+		}
+
+		[Test, Ignore] //ncrunch: no coverage start
+		public void LoadWithoutBinaryDataExtensions()
+		{
+			var stream = BinaryDataExtensions.SaveToMemoryStream(button);
+			button.Text = "Original";
+			var loadedButton = new Button();
+			loadedButton.LoadFromStream(stream);
+			Assert.AreEqual(Center, loadedButton.DrawArea);
+			Assert.AreEqual("Click Me", loadedButton.Text);
+			loadedButton.DrawArea = loadedButton.DrawArea.Move(new Vector2D(0.0f, 0.2f));
 		}
 	}
 }

@@ -46,12 +46,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Batch.cs" />
     <Compile Include="BatchRenderer.cs" />
+    <Compile Include="BatchRenderer2D.cs" />
     <Compile Include="Entity2D.cs" />
     <Compile Include="Entity2DExtensions.cs" />
+    <Compile Include="FadeEffect.cs" />
+    <Compile Include="HierarchyEntity2D.cs" />
     <Compile Include="SimplePhysics.cs" />
     <Compile Include="Sprite.cs" />
-    <Compile Include="Batch.cs" />
+    <Compile Include="Batch2D.cs" />
     <Compile Include="SpriteRenderer.cs" />
     <Compile Include="UpdateImageAnimation.cs" />
     <Compile Include="UpdateSpriteSheetAnimation.cs" />

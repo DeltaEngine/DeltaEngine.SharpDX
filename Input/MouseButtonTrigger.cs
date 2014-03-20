@@ -1,5 +1,6 @@
 ﻿using System;
 using DeltaEngine.Commands;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.ScreenSpaces;
 
@@ -8,7 +9,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Allows mouse button presses to be tracked.
 	/// </summary>
-	public class MouseButtonTrigger : PositionTrigger, MouseTrigger
+	public class MouseButtonTrigger : InputTrigger, PositionTrigger, MouseTrigger
 	{
 		public MouseButtonTrigger(State state)
 			: this(MouseButton.Left, state) {}
@@ -21,6 +22,7 @@ namespace DeltaEngine.Input
 
 		public MouseButton Button { get; private set; }
 		public State State { get; private set; }
+		public Vector2D Position { get; set; }
 
 		public MouseButtonTrigger(string buttonAndState)
 		{

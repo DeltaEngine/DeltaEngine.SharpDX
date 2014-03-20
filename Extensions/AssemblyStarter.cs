@@ -45,21 +45,26 @@ namespace DeltaEngine.Extensions
 				var targetFilePath = Path.Combine(rememberedDirectory, filename);
 				if (!File.Exists(targetFilePath) ||
 					File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFilePath))
-					TryToCopyDependencyFile(file, targetFilePath);
+					CopyDependencyFile(file, targetFilePath);
 			}
 		}
 
-		private static void TryToCopyDependencyFile(string file, string targetFilePath)
+		private static void CopyDependencyFile(string file, string targetFilePath)
 		{
 			try
 			{
-				File.Copy(file, targetFilePath, true);
+				TryCopyDependencyFile(file, targetFilePath, true);
 			}
 			catch (Exception ex)
 			{
 				Logger.Warning("Unable to copy newer dependency file (" + file + "), " +
 					"file seems to be locked: " + ex);
 			}
+		}
+
+		private static void TryCopyDependencyFile(string file, string targetFilePath, bool overwrite)
+		{
+			File.Copy(file, targetFilePath, overwrite);
 		}
 
 		[NonSerialized]
@@ -84,12 +89,17 @@ namespace DeltaEngine.Extensions
 			domain.SetData("Parameters", parameters);
 			try
 			{
-				domain.DoCallBack(StartEntryPoint);
+				TryDoCallBack();
 			}
 			catch (TargetInvocationException ex)
 			{
 				throw ex.InnerException;
 			}
+		}
+
+		private void TryDoCallBack()
+		{
+			domain.DoCallBack(StartEntryPoint);
 		}
 
 		private static void StartEntryPoint()

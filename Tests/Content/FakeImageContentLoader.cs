@@ -8,11 +8,10 @@ namespace DeltaEngine.Tests.Content
 	{
 		private FakeImageContentLoader()
 		{
-			contentPath = "NoPath";
+			ContentProjectPath = "NoPath";
 		}
 
-		public override ContentMetaData GetMetaData(string contentName,
-			Type contentClassType = null)
+		public override ContentMetaData GetMetaData(string contentName, Type contentClassType = null)
 		{
 			if (metaData != null)
 				return metaData;
@@ -33,6 +32,11 @@ namespace DeltaEngine.Tests.Content
 		protected override bool HasValidContentAndMakeSureItIsLoaded()
 		{
 			return true;
+		}
+
+		public override DateTime LastTimeUpdated
+		{
+			get { return DateTime.Now; }
 		}
 	}
 }

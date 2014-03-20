@@ -36,10 +36,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.3.1.1\lib\net40\Autofac.dll</HintPath>
+      <HintPath>..\packages\Autofac.3.1.5\lib\net40\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Content\Online\DeltaEngine.Content.Online.csproj">
@@ -70,12 +72,20 @@
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rendering3D\DeltaEngine.Rendering3D.csproj">
+      <Project>{3266F559-74EE-4A1C-B37B-2C591F73611B}</Project>
+      <Name>DeltaEngine.Rendering3D</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AutofacCameraResolver.cs" />
+    <Compile Include="DownloadContentTooltip.cs" />
     <Compile Include="ApproveFirstFrameScreenshot.cs" />
     <Compile Include="ApproveFirstFrameScreenshotAttribute.cs" />
     <Compile Include="AppRunner.cs" />

@@ -1,5 +1,6 @@
 ﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
 
@@ -10,13 +11,15 @@ namespace DeltaEngine.Input.Windows.Tests
 		[SetUp]
 		public void CreateWindowsGamepad()
 		{
+			if (StackTraceExtensions.StartedFromNUnitConsoleButNotFromNCrunch)
+				Assert.Ignore(); //ncrunch: no coverage
 			Resolve<GamePad>().Dispose();
 			gamePad = new WindowsGamePad();
 		}
 
 		private WindowsGamePad gamePad;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateGamePad()
 		{
 			var buttonTrigger = new GamePadButtonTrigger(GamePadButton.A);
@@ -24,7 +27,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			gamePad.Update(new Trigger[]{buttonTrigger, joyStickTrigger});
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void GetIdleStates()
 		{
 			Assert.AreEqual(State.Released, gamePad.GetButtonState(GamePadButton.A));
@@ -34,7 +37,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(0.0f, gamePad.GetRightTrigger());
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void TestUpdateGamePad()
 		{
 			gamePad = new MockWindowsGamePad(GamePadNumber.Two);
@@ -46,7 +49,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			gamePad.Dispose();
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void CheckGamePadNumber()
 		{
 			var mockGamePad = new MockWindowsGamePad(GamePadNumber.Three);

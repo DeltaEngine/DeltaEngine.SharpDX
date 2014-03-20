@@ -16,7 +16,6 @@ namespace DeltaEngine.Graphics
 		{
 			this.device = device;
 			this.window = window;
-			device.CullBackFaces = true;
 		}
 
 		private readonly Device device;
@@ -106,11 +105,15 @@ namespace DeltaEngine.Graphics
 					{
 						var material = geometryTask.Material;
 						if (material.LightMap != null)
-							material.Shader.SetLightmapTexture(material.LightMap); 
-						material.Shader.SetModelViewProjectionMatrix(
-							geometryTask.Transform * device.ModelViewProjectionMatrix);
+							material.Shader.SetLightmapTexture(material.LightMap);
+						material.Shader.SetModelViewProjection(geometryTask.Transform, device.CameraViewMatrix,
+							device.CameraProjectionMatrix);
 						if (geometryTask.Geometry.HasAnimationData)
-							material.Shader.SetJointMatrices(geometryTask.Geometry.JointTranforms);
+							material.Shader.SetJointMatrices(geometryTask.Geometry.TransformsOfBones);
+						if (material.Shader.Flags.HasFlag(ShaderFlags.Lit))
+							material.Shader.SetSunLight(SunLight.Current);
+						if (material.Shader.Flags.HasFlag(ShaderFlags.Fog))
+							material.Shader.ApplyFogSettings(FogSettings.Current);
 						geometryTask.Geometry.Draw();
 					} //ncrunch: no coverage end
 				}
@@ -180,6 +183,8 @@ namespace DeltaEngine.Graphics
 		{
 			if (material.DiffuseMap != null)
 				throw new LineMaterialShouldNotUseDiffuseMap(material);
+			if (vertices.Length == 0)
+				return;
 			GetDrawBufferForLines(material.Shader).Add(null, vertices);
 		}
 
@@ -236,7 +241,6 @@ namespace DeltaEngine.Graphics
 				foreach (var buffer in pair.Value)
 					if (buffer.Is3D && buffer.NumberOfActiveVertices > 0)
 						DrawBufferAndIncreaseStatisticsNumbers(buffer);
-			device.Set2DMode();
 		}
 
 		private void DrawBufferAndIncreaseStatisticsNumbers(CircularBuffer buffer)
@@ -249,6 +253,7 @@ namespace DeltaEngine.Graphics
 
 		private void Draw2DData()
 		{
+			device.Set2DMode();
 			foreach (var buffer in lineBuffers)
 				if (!buffer.Is3D && buffer.NumberOfActiveVertices > 0)
 					DrawBufferAndIncreaseStatisticsNumbers(buffer);

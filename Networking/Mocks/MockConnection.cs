@@ -9,7 +9,6 @@
 			: base(null)
 		{
 			Client = client;
-			//client.DataSent += message => Receive(message);
 			DataSent += message => client.Receive(message);
 		}
 

@@ -16,7 +16,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 		public DrawPolygon2DOutlines(Drawing draw)
 		{
 			this.draw = draw;
-			material = new Material(Shader.Position2DColor, "");
+			material = new Material(ShaderFlags.Position2DColored, "");
 		}
 
 		private readonly Drawing draw;
@@ -27,7 +27,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 			foreach (Entity2D entity in visibleEntities)
 				AddToBatch(entity);
 			if (vertices.Count == 0)
-				return;
+				return; //ncrunch: no coverage
 			draw.AddLines(material, vertices.ToArray());
 			vertices.Clear();
 		}
@@ -42,9 +42,9 @@ namespace DeltaEngine.Rendering2D.Shapes
 			{
 				points = new List<Vector2D>();
 				points.Add(entity.DrawArea.TopLeft);
-				points.Add(entity.DrawArea.TopRight);
-				points.Add(entity.DrawArea.BottomRight);
 				points.Add(entity.DrawArea.BottomLeft);
+				points.Add(entity.DrawArea.BottomRight);
+				points.Add(entity.DrawArea.TopRight);
 			}
 			lastPoint = points[points.Count - 1];
 			foreach (Vector2D point in points)

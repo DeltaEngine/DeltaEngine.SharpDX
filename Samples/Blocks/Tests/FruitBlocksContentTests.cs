@@ -8,7 +8,7 @@ namespace Blocks.Tests
 	/// </summary>
 	public class FruitBlocksContentTests : TestWithMocksOrVisually
 	{
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void Constructor()
 		{
 			var content = new FruitBlocksContent();

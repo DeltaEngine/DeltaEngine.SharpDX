@@ -10,7 +10,7 @@ namespace $safeprojectname$
 	/// <summary>
 	/// Allows to send small groups of ghosts (1-5) from start to target in waves.
 	/// </summary>
-	public class GhostWave : Entity, Updateable, IDisposable
+	public class GhostWave : Entity, Updateable
 	{
 		public GhostWave(Vector2D start, Vector2D target, int waveSize, Color color)
 		{
@@ -108,7 +108,5 @@ namespace $safeprojectname$
 		}
 
 		public Action<object, int> TargetReached;
-
-		public bool IsPauseable { get { return true; } }
 	}
 }

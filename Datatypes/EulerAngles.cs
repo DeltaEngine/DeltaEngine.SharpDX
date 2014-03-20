@@ -1,11 +1,12 @@
-﻿using DeltaEngine.Extensions;
+﻿using System.Runtime.InteropServices;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
 {
 	/// <summary>
-	/// Yaw, Pitch and Roll used for 3D rotations.
-	/// For more details see: http://en.wikipedia.org/wiki/Euler_angles
+	/// Yaw, Pitch and Roll used for 3D rotations. See: http://en.wikipedia.org/wiki/Euler_angles
 	/// </summary>
+	[StructLayout(LayoutKind.Sequential)]
 	public struct EulerAngles
 	{
 		public EulerAngles(float pitch, float yaw, float roll)

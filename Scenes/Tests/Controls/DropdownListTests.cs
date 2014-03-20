@@ -36,7 +36,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(Vector2D.Zero);
+			mouse.SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -139,10 +139,10 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private void Click(Vector2D position)
 		{
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Left, State.Pressing);
 			AdvanceTimeAndUpdateEntities();
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Left, State.Releasing);
 			AdvanceTimeAndUpdateEntities();
 		}
@@ -191,7 +191,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private void MoveMouse(Vector2D position)
 		{
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			AdvanceTimeAndUpdateEntities();
 		}
 

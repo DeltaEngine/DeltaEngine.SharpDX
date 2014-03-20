@@ -18,6 +18,7 @@ namespace DeltaEngine.ScreenSpaces
 					return current;
 				return current = resolver.ResolveScreenSpace<QuadraticScreenSpace>();
 			}
+			set { current = value; }
 		}
 
 		private static ScreenSpace current;
@@ -28,13 +29,20 @@ namespace DeltaEngine.ScreenSpaces
 			get { return current != null; }
 		}
 
+		public static ScreenSpace Scene
+		{
+			get { return scene ?? Current; }
+			set { scene = value; } //ncrunch: no coverage
+		}
+
+		private static ScreenSpace scene;
+
 		protected ScreenSpace(Window window)
 		{
 			this.window = window;
 			viewportPixelSize = window.ViewportPixelSize;
 			window.ViewportSizeChanged += Update;
 			window.OrientationChanged += UpdateOrientationChanged;
-			current = this;
 		}
 
 		private readonly Window window;

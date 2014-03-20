@@ -15,6 +15,7 @@ namespace DeltaEngine.Core
 
 		protected Logger(bool registerToAllThreads = false)
 		{
+			LastMessage = "";
 			if (registerToAllThreads)
 				RegisterToAllThreads();
 			else

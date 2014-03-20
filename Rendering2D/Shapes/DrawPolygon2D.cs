@@ -17,7 +17,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 		public DrawPolygon2D(Drawing draw)
 		{
 			this.draw = draw;
-			material = new Material(Shader.Position2DColor, "");
+			material = new Material(ShaderFlags.Position2DColored, "");
 		}
 
 		private readonly Drawing draw;
@@ -32,7 +32,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 
 		private void AddToBatch(Entity2D entity)
 		{
-			var points = entity.Get<List<Vector2D>>();
+			var points = entity.GetInterpolatedList<Vector2D>();
 			if (points.Count < 3)
 				return;
 			if (points.Count > CircularBuffer.TotalMaximumVerticesLimit)

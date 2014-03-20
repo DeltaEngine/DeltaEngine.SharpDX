@@ -10,6 +10,7 @@ namespace DeltaEngine.Datatypes
 	/// 4x4 Matrix from 16 floats, access happens via indexer, optimizations done in BuildService.
 	/// </summary>
 	[DebuggerDisplay("Matrix(Right={Right},\nUp={Up},\nForward={Forward},\nTranslation={Translation})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Matrix : IEquatable<Matrix>
 	{
 		public Matrix(params float[] values)
@@ -256,7 +257,6 @@ namespace DeltaEngine.Datatypes
 			float height = top - bottom;
 			float depth = far - near;
 			float n = near * 2;
-
 			return new Matrix(			 
 				n / width, 0, (right + left) / width, 0,
 				0, n / height, (top + bottom) / height, 0,

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using NUnit.Framework;
 
@@ -9,64 +10,80 @@ namespace DeltaEngine.Content.Xml.Tests
 	{
 		[TestCase("Image.png", ContentType.Image)]
 		[TestCase("Sound.wav", ContentType.Sound)]
-		[TestCase("Animation.gif", ContentType.JustStore)]
 		[TestCase("Music.wma", ContentType.Music)]
 		[TestCase("Video.mp4", ContentType.Video)]
 		[TestCase("Json.json", ContentType.Json)]
-		[TestCase("Mesh.deltamesh", ContentType.Mesh)]
 		[TestCase("Particle.deltaparticle", ContentType.ParticleEmitter)]
 		[TestCase("Shader.deltashader", ContentType.Shader)]
 		[TestCase("Material.deltamaterial", ContentType.Material)]
 		[TestCase("Geometry.deltageometry", ContentType.Geometry)]
-		public void CheckPngFileIsOfImageType(string fileName, ContentType contentType)
+		[TestCase("Mesh.deltamesh", ContentType.Mesh)]
+		[TestCase("Model.fbx", ContentType.Model)]
+		[TestCase("Scene.deltascene", ContentType.Scene)]
+		[TestCase("Animation.gif", ContentType.JustStore)]
+		public void UniqueFileExtensionShouldHaveRespectiveContentTypeAssociated(string filename,
+			ContentType expectedContentType)
 		{
-			var type = ContentTypeIdentifier.ExtensionToType(fileName);
-			Assert.AreEqual(contentType, type);
+			ContentType contentTypeFromFileExtension = ContentTypeIdentifier.ExtensionToType(filename);
+			Assert.AreEqual(expectedContentType, contentTypeFromFileExtension);
 		}
 
-		[Test]
-		public void CheckTypeForFontFile()
+		[TestCase("Font", ContentType.Font)]
+		[TestCase("InputCommands", ContentType.InputCommand)]
+		[TestCase("Level", ContentType.Level)]
+		public void ContentTypeOfXmlFileDependsOnRootElement(string tag,
+			ContentType expectedContentType)
 		{
-			var type = CheckTypeForFile("<Font></Font>");
-			Assert.AreEqual(ContentType.Font, type);
+			string xmlData = CreateXmlDataFromTag(tag);
+			ContentType contentTypeFromXmlRoot = GetContentTypeOfXmlData(xmlData);
+			Assert.AreEqual(expectedContentType, contentTypeFromXmlRoot);
 		}
 
-		public ContentType CheckTypeForFile(string xmlFile)
+		private static string CreateXmlDataFromTag(string tag)
 		{
-			using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlFile)))
+			return "<" + tag + "></" + tag + ">";
+		}
+
+		private static ContentType GetContentTypeOfXmlData(string xmlData)
+		{
+			using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlData)))
 			{
-				var file = XDocument.Load(stream);
+				XDocument file = XDocument.Load(stream);
 				return ContentTypeIdentifier.DetermineTypeForXmlFile(file);
 			}
 		}
 
 		[Test]
-		public void CheckTypeForInputCommandsFile()
+		public void ContentTypeOfUndefinedRootElementsIsXml()
 		{
-			var type = CheckTypeForFile("<InputCommand></InputCommand>");
-			Assert.AreEqual(ContentType.InputCommand, type);
-		}
-
-		[Test]
-		public void CheckTypeForLevelFile()
-		{
-			var type = CheckTypeForFile("<Level></Level>");
-			Assert.AreEqual(ContentType.Level, type);
-		}
-
-		[Test]
-		public void CheckTypeForOtherXmlFiles()
-		{
-			var type = CheckTypeForFile("<Test></Test>");
+			string xmlData = CreateXmlDataFromTag("Test");
+			ContentType type = GetContentTypeOfXmlData(xmlData);
 			Assert.AreEqual(ContentType.Xml, type);
 		}
 
 		[Test]
-		public void CheckUnsupportedTypeThrowsException()
+		public void ThrowExceptionIfInvalidXmlData()
 		{
-			const string FileName = "unsupported";
-			Assert.Throws<ContentTypeIdentifier.UnsupportedContentFileFoundCannotParseType>(
-				() => ContentTypeIdentifier.ExtensionToType(FileName));
+			const string InvalidXmlData = "<Opening></Closing>";
+			Assert.Throws<XmlException>(() => GetContentTypeOfXmlData(InvalidXmlData));
 		}
+
+#if DEBUG
+		[Test]
+		public void UnsupportedTypeLogsAndThrowsExceptionInDebug()
+		{
+			Assert.Throws<ContentTypeIdentifier.UnsupportedContentFileFoundCannotParseType>(
+				() => ContentTypeIdentifier.ExtensionToType(UnsupportedFileName));
+		}
+#else
+		[Test]
+		public void UnsupportedTypeReturnsJustStoreInRelease()
+		{
+			Assert.AreEqual(ContentType.JustStore,
+				ContentTypeIdentifier.ExtensionToType(UnsupportedFileName));
+		}
+#endif
+
+		private const string UnsupportedFileName = "unsupported";
 	}
 }

@@ -25,9 +25,11 @@ namespace DeltaEngine.Platforms
 		protected Resolver()
 		{
 			assemblyLoader = new AssemblyTypeLoader(this);
+			manuallyCreatedDisposableObjects = new List<IDisposable>();
 		}
 
 		private readonly AssemblyTypeLoader assemblyLoader;
+		private readonly List<IDisposable> manuallyCreatedDisposableObjects;
 
 		internal IEnumerable<Type> RegisteredTypes
 		{
@@ -225,21 +227,18 @@ namespace DeltaEngine.Platforms
 			}
 			catch (Exception ex)
 			{
+				Exception innerException = ex.InnerException ?? ex;
+				if (innerException.GetType().FullName.Contains("Shader"))
+					throw innerException;
 				Logger.Error(ex);
 				if (Debugger.IsAttached || baseType == typeof(Window) ||
 					StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
-					throw new ResolvingFailed(ex.InnerException ?? ex);
+					throw;
 				//ncrunch: no coverage start
-				ShowInitializationErrorBox(baseType, ex.InnerException ?? ex);
+				ShowInitializationErrorBox(baseType, innerException);
 				return null;
 				//ncrunch: no coverage end
 			}
-		}
-
-		public class ResolvingFailed : Exception
-		{
-			public ResolvingFailed(Exception reason)
-				: base(reason.ToString()) {}
 		}
 
 		private object TryResolve(Type baseType, object parameter)
@@ -249,6 +248,8 @@ namespace DeltaEngine.Platforms
 			if (parameter is ContentCreationData)
 			{
 				var resolvedInstance = CreateTypeManually(FindConcreteType(baseType), parameter);
+				if (resolvedInstance is IDisposable)
+					manuallyCreatedDisposableObjects.Add((IDisposable)resolvedInstance);
 				if (resolvedInstance != null)
 					return resolvedInstance; //ncrunch: no coverage
 			}
@@ -288,7 +289,7 @@ namespace DeltaEngine.Platforms
 		/// </summary>
 		internal abstract void MakeSureContentManagerIsReady();
 
-		// ncrunch: no coverage start
+		//ncrunch: no coverage start
 		private void ShowInitializationErrorBox(Type baseType, Exception ex)
 		{
 			var exceptionText = StackTraceExtensions.FormatExceptionIntoClickableMultilineText(ex);
@@ -311,14 +312,13 @@ namespace DeltaEngine.Platforms
 
 		private static string GetHintTextForKnownIssues(Exception ex)
 		{
-			if (ex.GetShortNameOrFullNameIfNotFound().Contains("OpenGLVersionDoesNotSupportShaders"))
+			if (ex.ToString().Contains("OpenGLVersionDoesNotSupportShaders"))
 			{
 				string hintText = "Please verify that your video card supports OpenGL 3.0 or higher and" +
 					" your driver is up to date.\n\n";
 				hintText += "Exception details:\n";
 				return hintText;
 			}
-
 			const string DirectX9NotSupportedFromSlimDX = "D3DERR_INVALIDCALL: Invalid call";
 			if (ex.ToString().Contains(DirectX9NotSupportedFromSlimDX))
 			{
@@ -327,7 +327,6 @@ namespace DeltaEngine.Platforms
 				hintText += "Exception details:\n";
 				return hintText;
 			}
-
 			const string DirectX11NotSupportedFromSharpDX = "DXGI_ERROR_UNSUPPORTED/Unsupported";
 			if (ex.ToString().Contains(DirectX11NotSupportedFromSharpDX))
 			{
@@ -337,7 +336,7 @@ namespace DeltaEngine.Platforms
 				return hintText;
 			}
 			return "";
-		}		// ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		public const string ErrorWasCopiedToClipboardMessage =
 			"\n\nMessage was logged and copied to the clipboard.";
@@ -345,8 +344,12 @@ namespace DeltaEngine.Platforms
 
 		public virtual void Dispose()
 		{
-			if (IsAlreadyInitialized)
-				DisposeContainerOnlyOnce();
+			if (!IsAlreadyInitialized)
+				return;
+			DisposeContainerOnlyOnce();
+			foreach (IDisposable disposableObject in manuallyCreatedDisposableObjects)
+				disposableObject.Dispose();
+			manuallyCreatedDisposableObjects.Clear();
 		}
 
 		private void DisposeContainerOnlyOnce()

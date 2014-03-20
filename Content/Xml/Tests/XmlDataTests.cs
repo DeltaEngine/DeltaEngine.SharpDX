@@ -81,6 +81,16 @@ namespace DeltaEngine.Content.Xml.Tests
 		}
 
 		[Test]
+		public void AddChildViaNameAndValueWillOnlyAddTheValueIfNotNull()
+		{
+			var node = new XmlData("Root");
+			Assert.IsNull(node.AddChild("Child").Value);
+			Assert.IsNull(node.AddChild("Child", null).Value);
+			Assert.IsEmpty(node.AddChild("Child", "").Value);
+			Assert.AreEqual(4.ToString(), node.AddChild("Child", 4).Value);
+		}
+
+		[Test]
 		public void GetDescendantWithAttribute()
 		{
 			XmlData root = CreateDeepTestXmlData();

@@ -21,7 +21,6 @@ namespace DeltaEngine.Tests.Extensions
 			var assembliesAllowed = new List<string>();
 			foreach (Assembly assembly in assemblies.Where(assembly => assembly.IsAllowed()))
 				assembliesAllowed.Add(assembly.GetName().Name);
-
 			// At this point only DeltaEngine.Tests, DeltaEngine, DeltaEngine.Mocks should be loaded
 			Assert.AreEqual(3, assembliesAllowed.Count, "Assemblies: " + assembliesAllowed.ToText());
 		} 

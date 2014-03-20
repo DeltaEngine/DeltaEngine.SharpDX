@@ -9,7 +9,7 @@ namespace Blocks
 	/// <summary>
 	/// Handles the falling and upcoming blocks.
 	/// </summary>
-	public class Controller : Entity
+	public class Controller : Entity, Updateable
 	{
 		public Controller(Orientation displayMode, BlocksContent content)
 		{
@@ -17,8 +17,10 @@ namespace Blocks
 			this.displayMode = displayMode;
 			Add(new Grid(content));
 			Add(new Soundbank(content));
-			Start<InteractionHandler>();
+			GameRunning = true;
 		}
+
+		public bool GameRunning { get; set; }
 
 		public readonly BlocksContent content;
 		public readonly Orientation displayMode;
@@ -66,7 +68,7 @@ namespace Blocks
 
 		private void GameLost()
 		{
-			Stop<InteractionHandler>();
+			GameRunning = false;
 			Get<Soundbank>().GameLost.Play();
 			if (Lose != null)
 				Lose();
@@ -78,17 +80,19 @@ namespace Blocks
 		{
 			Get<Grid>().Clear();
 			totalRowsRemoved = 0;
+			UpcomingBlock.IsActive = false;
 			UpcomingBlock = null;
+			FallingBlock.IsActive = false;
 			FallingBlock = null;
 		}
 
 		private void ReinitializeGame()
 		{
 			GetNewFallingBlock();
-			Start<InteractionHandler>();
+			GameRunning = true;
 		}
 
-		private void MoveFallingBlock()
+		private void MoveFallingBlockDownwards()
 		{
 			float top = FallingBlock.Top;
 			FallingBlock.UpdateBrickDrawAreas(FallSpeed);
@@ -153,6 +157,7 @@ namespace Blocks
 		private const int RowRemovedBonus = 10;
 		private const int BlockPlacedBonus = 1;
 
+		//ncrunch: no coverage start, tests being ignored for automated testing
 		public void MoveBlockLeftIfPossible()
 		{
 			if(FallingBlock == null)
@@ -163,7 +168,7 @@ namespace Blocks
 			else
 			{
 				FallingBlock.Left++;
-				Get<Soundbank>().BlockCouldntMove.Play();
+				Get<Soundbank>().BlockCouldNotMove.Play();
 			}
 		}
 
@@ -177,7 +182,7 @@ namespace Blocks
 			else
 			{
 				FallingBlock.Left--;
-				Get<Soundbank>().BlockCouldntMove.Play();
+				Get<Soundbank>().BlockCouldNotMove.Play();
 			}
 		}
 
@@ -191,40 +196,22 @@ namespace Blocks
 			else
 			{
 				FallingBlock.RotateClockwise();
-				Get<Soundbank>().BlockCouldntMove.Play();
+				Get<Soundbank>().BlockCouldNotMove.Play();
 			}
 		}
 
-		internal class InteractionHandler : UpdateBehavior
+		public void Update()
 		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (var entity in entities)
-				{
-					var controller = entity as Controller;
-					if (controller.FallingBlock == null)
-						controller.GetNewFallingBlock();
-					controller.MoveFallingBlock();
-					controller.UpdateElapsed();
-					if (controller.elapsed >= BlockMoveInterval)
-						controller.MoveBlock(); //ncrunch: no coverage
-				}
-			}
-		}
-
-		//ncrunch: no coverage start
-		internal void MoveBlock()
-		{
-			elapsed -= BlockMoveInterval;
-			if (isBlockMovingLeft)
-				MoveBlockLeftIfPossible();
-
-			if (isBlockMovingRight)
-				MoveBlockRightIfPossible();
+			if(!GameRunning)
+				return;
+			if (FallingBlock == null)
+				GetNewFallingBlock();
+			MoveFallingBlockDownwards();
+			UpdateElapsed();
+			if (elapsed >= BlockMoveInterval)
+				MoveBlockLeftOrRightIfRequired();
 		}
 		//ncrunch: no coverage end
-
-		private const float BlockMoveInterval = 0.166f;
 
 		internal void UpdateElapsed()
 		{
@@ -237,5 +224,19 @@ namespace Blocks
 		internal bool isBlockMovingLeft;
 		internal bool isBlockMovingRight;
 		internal float elapsed;
+
+		//ncrunch: no coverage start
+		internal void MoveBlockLeftOrRightIfRequired()
+		{
+			elapsed -= BlockMoveInterval;
+			if (isBlockMovingLeft)
+				MoveBlockLeftIfPossible();
+
+			if (isBlockMovingRight)
+				MoveBlockRightIfPossible();
+		}
+		//ncrunch: no coverage end
+
+		private const float BlockMoveInterval = 0.166f;
 	}
 }

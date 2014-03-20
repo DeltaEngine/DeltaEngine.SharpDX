@@ -14,10 +14,23 @@ namespace DeltaEngine.Rendering2D
 
 		public Entity2D(Rectangle drawArea)
 		{
+			// ReSharper disable once DoNotCallOverridableMethodsInConstructor
 			LastDrawArea = DrawArea = drawArea;
 		}
 
-		public Rectangle DrawArea { get; set; }
+		public virtual Rectangle DrawArea
+		{
+			get { return drawArea; }
+			set
+			{
+				drawArea = value;
+				OnPositionChanged();
+			}
+		}
+
+		private Rectangle drawArea;
+		protected virtual void OnPositionChanged() {}
+
 		public Rectangle LastDrawArea { get; set; }
 
 		public Vector2D TopLeft
@@ -44,7 +57,7 @@ namespace DeltaEngine.Rendering2D
 			set { base.Set(value); }
 		}
 
-		public Color DefaultColor = Color.White;
+		public static readonly Color DefaultColor = Color.White;
 
 		public float Alpha
 		{
@@ -55,8 +68,14 @@ namespace DeltaEngine.Rendering2D
 		public float Rotation
 		{
 			get { return base.Contains<float>() ? base.Get<float>() : DefaultRotation; }
-			set { base.Set(value); }
+			set
+			{
+				base.Set(value);
+				OnRotationChanged();
+			}
 		}
+
+		protected virtual void OnRotationChanged() {}
 
 		private const float DefaultRotation = 0.0f;
 

@@ -30,23 +30,28 @@ namespace DeltaEngine.Datatypes
 		{
 			var partitions = timeRangeString.SplitAndTrim(new[] {'{', '}'});
 			if (partitions.Length < 5 || (partitions.Length - 1) % 2 != 0)
-				throw new Range<T>.InvalidStringFormat();
+				throw new InvalidStringFormat();
 			Percentages = new float[partitions.Length /2];
 			Values = new T[partitions.Length / 2];
 			try
 			{
-				for (int i = 1; i < partitions.Length; i += 2)
-				{
-					Values[i / 2] = (T)Activator.CreateInstance(typeof(T), partitions[i]);
-					Percentages[i / 2] = float.Parse(partitions[i - 1].Trim(new[] { ':', '(', ')', ',' }),
-						CultureInfo.InvariantCulture);
-				}
+				TryCreateInstanceAndParseFloat(partitions);
 			}
 			catch (Exception)
 			{
 				throw new TypeInStringNotEqualToInitializedType();
 			}
-		} 
+		}
+
+		private void TryCreateInstanceAndParseFloat(string[] partitions)
+		{
+			for (int i = 1; i < partitions.Length; i += 2)
+			{
+				Values[i / 2] = (T)Activator.CreateInstance(typeof(T), partitions[i]);
+				Percentages[i / 2] = float.Parse(partitions[i - 1].Trim(new[] { ':', '(', ')', ',' }),
+					CultureInfo.InvariantCulture);
+			}
+		}
 
 		private void SetDefaultInterpolations(int number)
 		{
@@ -84,7 +89,6 @@ namespace DeltaEngine.Datatypes
 				return Values[Values.Length - 1];
 			if (interpolation <= 0.0f)
 				return Values[0];
-
 			var intervalLeft = GetIntervalLeftForInterpolation(interpolation);
 			var localInterpolation = GetInterpolationInInterval(intervalLeft, interpolation);
 			return Values[intervalLeft].Lerp(Values[intervalLeft + 1], localInterpolation);
@@ -133,7 +137,7 @@ namespace DeltaEngine.Datatypes
 			if (insertIndex == -1)
 				throw new PercentageOutsideScope();
 			ExpandAndAddValue(insertIndex, value);
-			ExpandAndAddPercentage(insertIndex, totalPercentage);
+			Percentages = Percentages.Insert(totalPercentage, insertIndex);
 		}
 
 		private int FindInsertIndex(float insertPercentage)
@@ -142,20 +146,6 @@ namespace DeltaEngine.Datatypes
 				if (Percentages[left] <= insertPercentage && insertPercentage <= Percentages[left + 1])
 					return left + 1;
 			return -1;
-		}
-
-		private void ExpandAndAddPercentage(int insertIndex, float value)
-		{
-			var percentageBuffer = Percentages;
-			var newLength = Percentages.Length + 1;
-			Percentages = new float[newLength];
-			for (int i = 0; i < newLength; i++)
-				if (i == insertIndex)
-					Percentages[i] = value;
-				else if (i > insertIndex)
-					Percentages[i] = percentageBuffer[i - 1];
-				else
-					Percentages[i] = percentageBuffer[i];
 		}
 		
 		[Pure]

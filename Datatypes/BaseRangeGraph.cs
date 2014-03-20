@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Datatypes
 {
@@ -45,16 +46,7 @@ namespace DeltaEngine.Datatypes
 
 		protected void ExpandAndAddValue(int insertIndex, T value)
 		{
-			var valueBuffer = Values;
-			var newLength = Values.Length + 1;
-			Values = new T[newLength];
-			for (int i = 0; i < newLength; i++)
-				if (i == insertIndex)
-					Values[i] = value;
-				else if (i > insertIndex)
-					Values[i] = valueBuffer[i - 1];
-				else
-					Values[i] = valueBuffer[i];
+			Values = Values.Insert(value, insertIndex);
 		}
 
 		public abstract T GetInterpolatedValue(float interpolation);

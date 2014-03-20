@@ -40,6 +40,14 @@ namespace DeltaEngine.Input.Tests
 			Assert.AreEqual(0.5f, trigger.HoldTime);
 		}
 
+		[Test]
+		public void CreateWithParameters()
+		{
+			var trigger = new TouchHoldTrigger("2 2 1 1 2");
+			Assert.AreEqual(new Rectangle(2.0f, 2.0f, 1.0f, 1.0f), trigger.HoldArea);
+			Assert.AreEqual(2.0f, trigger.HoldTime);
+		}
+
 		[Test, CloseAfterFirstFrame]
 		public void CreateFromString()
 		{

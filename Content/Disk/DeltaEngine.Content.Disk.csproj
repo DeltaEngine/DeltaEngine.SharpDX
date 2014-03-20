@@ -44,7 +44,7 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xml\DeltaEngine.Content.Xml.csproj">
+    <ProjectReference Include="..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
       <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
       <Name>DeltaEngine.Content.Xml</Name>
     </ProjectReference>

@@ -12,7 +12,7 @@ namespace DeltaEngine.Rendering2D.Tests
 		[SetUp]
 		public void CreateMaterial()
 		{
-			material = new Material(Shader.Position2DUV, "ImageAnimation");
+			material = new Material(ShaderFlags.Position2DTextured, "ImageAnimation");
 		}
 
 		private Material material;
@@ -26,14 +26,14 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void RenderEarthSpriteSheet()
 		{
-			new Sprite(new Material(Shader.Position2DUV, "EarthSpriteSheet"), Vector2D.Half);
+			new Sprite(new Material(ShaderFlags.Position2DTextured, "EarthSpriteSheet"), Vector2D.Half);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void Render2AnimatedSpritesWithDifferentDuration()
 		{
 			new Sprite(material, new Rectangle(0.3f, 0.4f, 0.2f, 0.2f));
-			var material2 = new Material(Shader.Position2DUV, "ImageAnimation") { Duration = 1 };
+			var material2 = new Material(ShaderFlags.Position2DTextured, "ImageAnimation") { Duration = 1 };
 			new Sprite(material2, new Rectangle(0.55f, 0.4f, 0.2f, 0.2f));
 		}
 
@@ -107,11 +107,11 @@ namespace DeltaEngine.Rendering2D.Tests
 				CreateImageWithColor(Color.Purple)
 			};
 			var newMaterial = new ImageAnimation(imageList, 3).CreateMaterial(
-				ContentLoader.Load<Shader>(Shader.Position2DUV));
+				ContentLoader.Create<Shader>(new ShaderCreationData(ShaderFlags.Position2DTextured)));
 			new Sprite(newMaterial, new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test, CloseAfterFirstFrame]
 		public void CreateAnimationWithEmptyTextures()
 		{
 			var emptyImageList = new Image[0];
@@ -137,7 +137,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void AdvancingTillLastFrameGivesEvent()
 		{
 			var animation = new Sprite(material, Vector2D.Half);
@@ -147,7 +147,7 @@ namespace DeltaEngine.Rendering2D.Tests
 			Assert.IsTrue(endReached, animation.ToString());
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test, CloseAfterFirstFrame]
 		public void FramesWillNotAdvanceIfIsPlayingFalse()
 		{
 			var animation = new Sprite(material, Vector2D.Half);

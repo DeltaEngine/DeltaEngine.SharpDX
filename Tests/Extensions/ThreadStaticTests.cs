@@ -32,17 +32,15 @@ namespace DeltaEngine.Tests.Extensions
 			var threadStatic = new ThreadStatic<string>();
 			using (threadStatic.Use("abc"))
 				Assert.AreEqual("abc", threadStatic.Current);
-
 			Assert.IsFalse(threadStatic.HasCurrent);
 		}
 
 		[Test]
-		public void CurrentIsAvailableOusideScopeIfFallbackSet()
+		public void CurrentIsAvailableOutsideScopeIfFallbackSet()
 		{
 			var threadStatic = new ThreadStatic<Randomizer>(new PseudoRandom());
 			using (threadStatic.Use(new FixedRandom()))
 				Assert.IsTrue(threadStatic.Current is FixedRandom);
-
 			Assert.IsTrue(threadStatic.Current is PseudoRandom);
 		}
 

@@ -93,28 +93,31 @@ namespace DeltaEngine.Scenes.Tests.EntityDebugger
 		[Test, CloseAfterFirstFrame]
 		public void InitialLabelAndControlPosition()
 		{
-			Assert.AreEqual(
-				new Rectangle(EntityEditor.SceneLeftEdge, EntityEditor.SceneTopEdge + 0.21875f,
-					EntityEditor.LabelWidth, EntityEditor.ControlHeight), writer.scene.Controls[0].DrawArea);
-			Assert.AreEqual(
-				new Rectangle(
+			var expectedNextLabelDrawArea = new Rectangle(EntityEditor.SceneLeftEdge,
+				EntityEditor.SceneTopEdge + 0.21875f, EntityEditor.LabelWidth, EntityEditor.ControlHeight);
+			Assert.IsTrue(writer.scene.Controls[0].DrawArea.IsNearlyEqual(expectedNextLabelDrawArea),
+				writer.scene.Controls[0].DrawArea.ToString());
+			var expectedNextControlDrawArea = new Rectangle(
 					EntityEditor.SceneLeftEdge + EntityEditor.LabelWidth + EntityEditor.LabelToControlGap,
 					EntityEditor.SceneTopEdge + 0.21875f, EntityEditor.ControlWidth,
-					EntityEditor.ControlHeight), writer.scene.Controls[1].DrawArea);
+					EntityEditor.ControlHeight);
+			Assert.IsTrue(writer.scene.Controls[1].DrawArea.IsNearlyEqual(expectedNextControlDrawArea),
+				writer.scene.Controls[1].DrawArea.ToString());
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ResizingViewportRepositionsControls()
 		{
-			Resolve<Window>().ViewportPixelSize = new Size(100, 100);
-			Assert.AreEqual(
-				new Rectangle(EntityEditor.SceneLeftEdge, EntityEditor.SceneTopEdge,
-					EntityEditor.LabelWidth, EntityEditor.ControlHeight), writer.scene.Controls[0].DrawArea);
-			Assert.AreEqual(
-				new Rectangle(
+			Resolve<Window>().ViewportPixelSize = new Size(200, 200);
+			var expectedNextLabelDrawArea = new Rectangle(EntityEditor.SceneLeftEdge,
+				EntityEditor.SceneTopEdge, EntityEditor.LabelWidth, EntityEditor.ControlHeight);
+			Assert.IsTrue(writer.scene.Controls[0].DrawArea.IsNearlyEqual(expectedNextLabelDrawArea),
+				writer.scene.Controls[0].DrawArea.ToString());
+			var expectedNextControlDrawArea = new Rectangle(
 					EntityEditor.SceneLeftEdge + EntityEditor.LabelWidth + EntityEditor.LabelToControlGap,
-					EntityEditor.SceneTopEdge, EntityEditor.ControlWidth, EntityEditor.ControlHeight),
-				writer.scene.Controls[1].DrawArea);
+					EntityEditor.SceneTopEdge, EntityEditor.ControlWidth, EntityEditor.ControlHeight);
+			Assert.IsTrue(writer.scene.Controls[1].DrawArea.IsNearlyEqual(expectedNextControlDrawArea),
+				writer.scene.Controls[1].DrawArea.ToString());
 		}
 
 		[Test, CloseAfterFirstFrame]

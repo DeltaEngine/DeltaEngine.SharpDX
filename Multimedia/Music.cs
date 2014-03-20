@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 
@@ -49,6 +50,11 @@ namespace DeltaEngine.Multimedia
 		public abstract float DurationInSeconds { get; }
 		public abstract float PositionInSeconds { get; }
 		protected const int NumberOfBuffers = 2;
+
+		protected override bool AllowCreationIfContentNotFound
+		{
+			get { return !Debugger.IsAttached; }
+		}
 
 		protected override void DisposeData()
 		{

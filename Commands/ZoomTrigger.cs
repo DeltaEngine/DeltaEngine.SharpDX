@@ -1,10 +1,10 @@
 ﻿namespace DeltaEngine.Commands
 {
 	/// <summary>
-	/// Allows the application to get informed if any input device triggers any zoom geasture.
+	/// Allows the application to get informed if any input device triggers any zoom gesture.
 	/// </summary>
-	public abstract class ZoomTrigger : InputTrigger
+	public interface ZoomTrigger
 	{
-		public int ZoomAmount { get; set; }
+		float ZoomAmount { get; set; }
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using DeltaEngine.Commands;
+using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.ScreenSpaces;
 
@@ -8,7 +9,7 @@ namespace DeltaEngine.Input
 	/// <summary>
 	/// Tracks touch movement with a mouse button in a prescribed state.
 	/// </summary>
-	public class TouchPositionTrigger : PositionTrigger, TouchTrigger
+	public class TouchPositionTrigger : InputTrigger, PositionTrigger, TouchTrigger
 	{
 		public TouchPositionTrigger(State state = State.Pressing)
 		{
@@ -16,6 +17,7 @@ namespace DeltaEngine.Input
 		}
 
 		public State State { get; private set; }
+		public Vector2D Position { get; set; }
 
 		public TouchPositionTrigger(string state)
 		{

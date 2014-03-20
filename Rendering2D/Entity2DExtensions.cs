@@ -8,7 +8,6 @@ namespace DeltaEngine.Rendering2D
 	/// </summary>
 	public static class Entity2DExtensions
 	{
-		//ncrunch: no coverage start
 		public static void StartRotating(this Entity2D entity, float rotationSpeed)
 		{
 			AddSimplePhysicsDataIfNeeded(entity);
@@ -37,6 +36,13 @@ namespace DeltaEngine.Rendering2D
 			entity.Start<SimplePhysics.Move>();
 		}
 
+		public static void StartMovingUV(this Sprite sprite, Vector2D velocity)
+		{
+			AddSimplePhysicsDataIfNeeded(sprite);
+			sprite.Get<SimplePhysics.Data>().UVVelocity = velocity;
+			sprite.Start<SimplePhysics.MoveUV>();
+		}
+
 		public static void StartBouncingOffScreenEdges(this Entity2D entity, Vector2D velocity,
 			Action bounced)
 		{
@@ -45,13 +51,6 @@ namespace DeltaEngine.Rendering2D
 			entity.Get<SimplePhysics.Data>().Bounced = bounced;
 			entity.Start<SimplePhysics.Move>();
 			entity.Start<SimplePhysics.BounceIfAtScreenEdge>();
-		}
-
-		public static void StartMovingUV(this Sprite sprite, Vector2D velocity)
-		{
-			AddSimplePhysicsDataIfNeeded(sprite);
-			sprite.Get<SimplePhysics.Data>().UVVelocity = velocity;
-			sprite.Start<SimplePhysics.MoveUV>();
 		}
 	}
 }

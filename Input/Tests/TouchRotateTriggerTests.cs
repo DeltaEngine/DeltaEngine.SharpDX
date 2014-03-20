@@ -30,8 +30,10 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void Angle()
 		{
+			var touch = Resolve<Touch>() as MockTouch;
+			if (touch == null)
+				return; //ncrunch: no coverage
 			var trigger = new TouchRotateTrigger();
-			var touch = (MockTouch)Resolve<Touch>();
 				touch.SetTouchState(0, State.Pressing, new Vector2D(0.5f, 0.1f));
 			touch.SetTouchState(1, State.Pressed, new Vector2D(0.5f, 0.7f));
 			touch.Update(new[] { trigger });

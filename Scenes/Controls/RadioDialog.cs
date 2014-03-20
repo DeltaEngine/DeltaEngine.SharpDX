@@ -12,7 +12,7 @@ namespace DeltaEngine.Scenes.Controls
 		protected RadioDialog() {}
 
 		public RadioDialog(Rectangle drawArea)
-			: this(Theme.Default, drawArea) {}
+			: this(new Theme(), drawArea) { }
 
 		public RadioDialog(Theme theme, Rectangle drawArea)
 			: base(drawArea)

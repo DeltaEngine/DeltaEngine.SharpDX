@@ -1,6 +1,4 @@
-﻿using System;
-using DeltaEngine.Commands;
-using DeltaEngine.Core;
+﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
@@ -14,7 +12,6 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void MovingSticksTranslatesCircle()
 		{
-			Logger.Info("MovingSticksTranslatesCircle");
 			var ellipseLeft = new Ellipse(new Rectangle(0.4f, 0.5f, 0.1f, 0.1f), Color.Green);
 			var ellipseRight = new Ellipse(new Rectangle(0.6f, 0.5f, 0.1f, 0.1f), Color.Blue);
 			new Command(pos => ellipseLeft.Center = pos * 0.2f + Vector2D.Half).Add(
@@ -26,11 +23,6 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void PressingTriggersUpdatesValues()
 		{
-			Console.WriteLine("dsfgsdf");
-
-
-
-			Logger.Info("PressingTriggersUpdatesValues");
 			var font = Font.Default;
 			var leftTrigger = new FontText(font, "left", new Rectangle(0.2f, 0.5f, 0.2f, 0.2f));
 			var rightTrigger = new FontText(font, "right", new Rectangle(0.7f, 0.5f, 0.2f, 0.2f));

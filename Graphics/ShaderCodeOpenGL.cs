@@ -2,6 +2,8 @@
 {
 	/// <summary>
 	/// Default source code for the OpenGL shaders
+	/// Note: When the next ShaderFlag feature will be added the shader code needs to be generated on
+	/// the Server.
 	/// </summary>
 	public static class ShaderCodeOpenGL
 	{
@@ -93,32 +95,9 @@ void main()
 	gl_FragColor = texture2D(Texture, vDiffuseTexCoord) * texture2D(Lightmap, vLightMapTexCoord);
 }";
 
-		public const string ColorSkinnedVertexCode = @"
+		public const string PositionUVSkinnedOpenGLVertexCode = @"
 uniform mat4 ModelViewProjection;
-uniform mat4 JointTransforms[20]; 
-attribute vec4 aPosition;
-attribute vec4 aColor;
-attribute vec2 aSkinIndices;
-attribute vec2 aSkinWeights;
-varying vec4 diffuseColor;
-void main()
-{
-	vec4 skinnedPosition = vec4(0.0, 0.0, 0.0, 0.0);
-	for (int jointIndex = 0; jointIndex < 2; ++jointIndex)
-	{
-		int index = int(aSkinIndices[jointIndex]);
-		float weight = aSkinWeights[jointIndex];
-		skinnedPosition += (JointTransforms[index] * aPosition) * weight;
-	} 
-	gl_Position = ModelViewProjection * skinnedPosition;
-	diffuseColor = aColor;
-}";
-
-		public const string ColorSkinnedFragmentCode = PositionColorOpenGLFragmentCode;
-
-		public const string UVSkinnedVertexCode = @"
-uniform mat4 ModelViewProjection;
-uniform mat4 JointTransforms[20];
+uniform mat4 JointTransforms[32];
 attribute vec4 aPosition;
 attribute vec2 aTextureUV;
 attribute vec2 aSkinIndices;
@@ -137,48 +116,208 @@ void main()
 	vTexcoord = aTextureUV;
 }";
 
-		public const string UVSkinnedFragmentCode = PositionUVOpenGLFragmentCode;
+		public const string PositionUVSkinnedOpenGLFragmentCode = PositionUVOpenGLFragmentCode;
 
-		public const string PositionUVNormalOpenGLVertexCode = @"
+		public const string PositionColorFogOpenGLVertexCode = @"
 uniform mat4 ModelViewProjection;
-uniform vec4 viewPosition;
-uniform vec4 lightPosition;
+uniform mat4 ModelView;
+uniform vec3 fogColor;
+uniform float fogStart;
+uniform float fogEnd;
+attribute vec4 aPosition;
+attribute vec4 aColor;
+varying vec4 diffuseColor;
+varying vec4 fogMixColor;
+void main()
+{
+	gl_Position = ModelViewProjection * aPosition;
+	diffuseColor = aColor;
+
+	vec4 vertexPositionInView = ModelView * aPosition;
+	float distanceToCamera = length(vertexPositionInView);
+	float fogFactor = clamp((distanceToCamera - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
+	fogMixColor = vec4(fogColor.rgb, fogFactor);
+}";
+
+		public const string PositionColorFogOpenGLFragmentCode = @"
+precision mediump float;
+varying vec4 diffuseColor;
+varying vec4 fogMixColor;
+void main()
+{
+	gl_FragColor = mix(diffuseColor, vec4(fogMixColor.rgb, 1.0), fogMixColor.a);
+}";
+
+		public const string PositionUVFogOpenGLVertexCode = @"
+uniform mat4 ModelViewProjection;
+uniform mat4 ModelView;
+uniform vec3 fogColor;
+uniform float fogStart;
+uniform float fogEnd;
+attribute vec4 aPosition;
+attribute vec2 aTextureUV;
+varying vec2 vTexcoord;
+varying vec4 fogMixColor;
+void main()
+{
+	gl_Position = ModelViewProjection * aPosition;
+	vTexcoord = aTextureUV;
+	vec4 vertexPositionInView = ModelView * aPosition;
+	float distanceToCamera = length(vertexPositionInView);
+	float fogFactor = clamp((distanceToCamera - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
+	fogMixColor = vec4(fogColor.rgb, fogFactor);
+}";
+
+		public const string PositionUVFogOpenGLFragmentCode = @"
+precision mediump float;
+uniform sampler2D Texture;
+varying vec2 vTexcoord;
+varying vec4 fogMixColor;
+void main()
+{
+	vec4 diffuseColor = texture2D(Texture, vTexcoord);
+	gl_FragColor = mix(diffuseColor, vec4(fogMixColor.rgb, diffuseColor.a), fogMixColor.a);
+}";
+
+		public const string PositionColorUVFogOpenGLVertexCode = @"
+uniform mat4 ModelViewProjection;
+uniform mat4 ModelView;
+uniform vec3 fogColor;
+uniform float fogStart;
+uniform float fogEnd;
+attribute vec4 aPosition;
+attribute vec4 aColor;
+attribute vec2 aTextureUV;
+varying vec4 vertexColor;
+varying vec2 vTexcoord;
+varying vec4 fogMixColor;
+void main()
+{
+	gl_Position = ModelViewProjection * aPosition;
+	vertexColor = aColor;
+	vTexcoord = aTextureUV;
+
+	vec4 vertexPositionInView = ModelView * aPosition;
+	float distanceToCamera = length(vertexPositionInView);
+	float fogFactor = clamp((distanceToCamera - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
+	fogMixColor = vec4(fogColor.rgb, fogFactor);
+}";
+
+		public const string PositionColorUVFogOpenGLFragmentCode = @"
+precision mediump float;
+uniform sampler2D Texture;
+varying vec2 vTexcoord;
+varying vec4 vertexColor;
+varying vec4 fogMixColor;
+void main()
+{
+	vec4 diffuseColor = texture2D(Texture, vTexcoord) * vertexColor;
+	gl_FragColor = mix(diffuseColor, vec4(fogMixColor.rgb, diffuseColor.a), fogMixColor.a);
+}";
+
+		public const string PositionUVLightmapFogVertexCode = @"
+uniform mat4 ModelViewProjection;
+uniform mat4 ModelView;
+uniform vec3 fogColor;
+uniform float fogStart;
+uniform float fogEnd;
+attribute vec4 aPosition;
+attribute vec2 aTextureUV;
+attribute vec2 aLightMapUV;
+varying vec2 vDiffuseTexCoord;
+varying vec2 vLightMapTexCoord;
+varying vec4 fogMixColor;
+void main()
+{
+	gl_Position = ModelViewProjection * aPosition;
+	vDiffuseTexCoord = aTextureUV;
+	vLightMapTexCoord = aLightMapUV;
+
+	vec4 vertexPositionInView = ModelView * aPosition;
+	float distanceToCamera = length(vertexPositionInView);
+	float fogFactor = clamp((distanceToCamera - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
+	fogMixColor = vec4(fogColor.rgb, fogFactor);
+}";
+
+		public const string PositionUVLightmapFogFragmentCode = @"
+precision mediump float;
+uniform sampler2D Texture;
+uniform sampler2D Lightmap;
+varying vec2 vDiffuseTexCoord;
+varying vec2 vLightMapTexCoord;
+varying vec4 fogMixColor;
+void main()
+{
+	vec4 diffuseColor = texture2D(Texture, vDiffuseTexCoord) * texture2D(Lightmap, vLightMapTexCoord);
+	gl_FragColor = mix(diffuseColor, vec4(fogMixColor.rgb, diffuseColor.a), fogMixColor.a);
+}";
+
+		public const string PositionUVSkinnedFogOpenGLVertexCode = @"
+uniform mat4 ModelViewProjection;
+uniform mat4 JointTransforms[32];
+uniform mat4 ModelView;
+uniform vec3 fogColor;
+uniform float fogStart;
+uniform float fogEnd;
+attribute vec4 aPosition;
+attribute vec2 aTextureUV;
+attribute vec2 aSkinIndices;
+attribute vec2 aSkinWeights;
+varying vec2 vTexcoord;
+varying vec4 fogMixColor;
+void main()
+{
+	vec4 skinnedPosition = vec4(0.0, 0.0, 0.0, 0.0);
+	for (int jointIndex = 0; jointIndex < 2; ++jointIndex)
+	{
+		int index = int(aSkinIndices[jointIndex]);
+		float weight = aSkinWeights[jointIndex];
+		skinnedPosition += (JointTransforms[index] * aPosition) * weight;
+	}
+	gl_Position = ModelViewProjection * skinnedPosition;
+	vTexcoord = aTextureUV;
+
+	vec4 vertexPositionInView = ModelView * skinnedPosition;
+	float distanceToCamera = length(vertexPositionInView);
+	float fogFactor = clamp((distanceToCamera - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
+	fogMixColor = vec4(fogColor.rgb, fogFactor);
+}";
+
+		public const string PositionUVSkinnedFogOpenGLFragmentCode = PositionUVFogOpenGLFragmentCode;
+		
+		public const string PositionUVNormalOpenGLVertexCode = @"
 attribute vec4 aPosition;
 attribute vec4 aNormal;
 attribute vec2 aTextureUV;
+uniform mat4 ModelViewProjection;
+uniform mat4 View;
+uniform mat4 Normal;
+uniform vec3 lightDir;
+uniform vec4 lightColor;
 varying vec2 vTexCoord;
-varying vec3 vNormal;
-varying vec3 vLightVec;
-varying vec3 vCameraVec;
+varying	vec3 vEyeSpaceVertexNormal;
+varying	vec4 vLightingColor;
+
 void main()
 {
-	vNormal = aNormal;
-	vCameraVec = normalize(viewPosition.xyz - aPosition.xyz);
-	vLightVec = lightPosition.xyz - aPosition.xyz;	
+	vTexCoord = aTextureUV;
+	vec3 eyeSpaceVertexNormal = (Normal * aNormal).xyz;
+	vec3 lightDirection = (View * vec4(lightDir, 0.0)).xyz;
+	float lightingFactor = max(0.0, dot(eyeSpaceVertexNormal, lightDirection));
+  vLightingColor = vec4(0.2, 0.2, 0.2, 1.0) + lightingFactor * lightColor;
 	gl_Position = ModelViewProjection * aPosition;
-	vTexCoord = aTextureUV;	
 }";
 
 		public const string PositionUVNormalOpenGLFragmentCode = @"
 precision mediump float;
 uniform sampler2D Texture;
 varying vec2 vTexCoord;
-varying vec3 vNormal;
-varying vec3 vLightVec;
-varying vec3 vCameraVec;
-const float MAX_DIST = 2.5;
-const float MAX_DIST_SQUARED = MAX_DIST * MAX_DIST;
+varying	vec4 vLightingColor;
+
 void main()
 {
-	vec3 normal = normalize(vNormal);
-	vec3 cameraDir = normalize(vCameraVec);   
-	float dist = min(dot(vLightVec, vLightVec), MAX_DIST_SQUARED) / MAX_DIST_SQUARED;  
-	vec3 lightDir = normalize(vLightVec);
-	vec4 diffuse = (max(0.0, dot(normal, lightDir)) * dist) * vec4(1.0f, 1.0f, 1.0f, 1.0f); 
-	vec3 halfAngle = normalize(cameraDir + lightDir);
-	float specularDot = dot(normal, halfAngle);
-	vec4 specular = (pow(clamp(specularDot, 0.0, 1.0), 2.0) * dist) * vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	gl_FragColor = texture2D(Texture, vTexCoord);// * diffuse + specular;
+	vec4 diffuseColor = texture2D(Texture, vTexCoord);
+	gl_FragColor = diffuseColor * vLightingColor;
 }";
 	}
 }

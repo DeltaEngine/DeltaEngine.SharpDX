@@ -217,6 +217,14 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void Rotate()
+		{
+			Assert.IsTrue(Vector2D.UnitX.Rotate(90.0f).IsNearlyEqual(Vector2D.UnitY));
+			Assert.IsTrue(Vector2D.UnitX.Rotate(-90.0f).IsNearlyEqual(-Vector2D.UnitY));
+			Assert.IsTrue(Vector2D.UnitY.Rotate(-90.0f).IsNearlyEqual(Vector2D.UnitX));
+		}
+
+		[Test]
 		public void RotateAround()
 		{
 			Assert.IsTrue(Vector2D.UnitX.RotateAround(Vector2D.Zero, 90.0f).IsNearlyEqual(Vector2D.UnitY));
@@ -263,6 +271,17 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
+		public void DistanceToLineSquared()
+		{
+			Assert.AreEqual(1, Vector2D.UnitX.DistanceToLineSquared(Vector2D.Zero, Vector2D.Zero));
+			Assert.AreEqual(0, Vector2D.Zero.DistanceToLineSquared(Vector2D.Zero, Vector2D.UnitX));
+			Assert.AreEqual(0, Vector2D.UnitX.DistanceToLineSquared(Vector2D.Zero, Vector2D.UnitX));
+			Assert.AreEqual(0, (-Vector2D.UnitX).DistanceToLineSquared(Vector2D.Zero, Vector2D.UnitX));
+			Assert.AreEqual(1, Vector2D.UnitY.DistanceToLineSquared(Vector2D.Zero, Vector2D.UnitX));
+			Assert.AreEqual(25, (Vector2D.One * 5).DistanceToLineSquared(Vector2D.Zero, Vector2D.UnitX));
+		}
+
+		[Test]
 		public void DistanceToLineSegment()
 		{
 			Assert.AreEqual(1, Vector2D.UnitX.DistanceToLineSegment(Vector2D.Zero, Vector2D.Zero));
@@ -281,6 +300,12 @@ namespace DeltaEngine.Tests.Datatypes
 			Assert.IsFalse((-Vector2D.UnitY).IsLeftOfLineOrOnIt(Vector2D.Zero, Vector2D.UnitX));
 			Assert.IsTrue(Vector2D.UnitY.IsLeftOfLineOrOnIt(Vector2D.Zero, Vector2D.One));
 			Assert.IsFalse(Vector2D.UnitX.IsLeftOfLineOrOnIt(Vector2D.Zero, Vector2D.One));
+		}
+
+		[Test]
+		public void AngleBetweenVector()
+		{
+			Assert.AreEqual(90, Vector2D.UnitY.AngleBetweenVector(Vector2D.UnitX));
 		}
 	}
 }

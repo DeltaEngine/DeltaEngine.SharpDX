@@ -12,7 +12,7 @@ namespace DeltaEngine.Scenes.Controls
 		protected TextBox() {}
 
 		public TextBox(Rectangle drawArea, string text = "")
-			: this(Theme.Default, drawArea, text) {}
+			: this(new Theme(), drawArea, text) { }
 
 		public TextBox(Theme theme, Rectangle drawArea, string text = "")
 			: base(theme, theme.TextBox, drawArea)

@@ -10,6 +10,7 @@ namespace DeltaEngine.Datatypes
 	/// Holds the width and height of an object (e.g. a rectangle).
 	/// </summary>
 	[DebuggerDisplay("Size({Width}, {Height})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Size : IEquatable<Size>, Lerp<Size>
 	{
 		public Size(float widthAndHeight)
@@ -37,7 +38,7 @@ namespace DeltaEngine.Datatypes
 
 		public class InvalidNumberOfComponents : Exception {}
 
-		public static readonly Size Zero = new Size();
+		public static readonly Size Zero;
 		public static readonly Size One = new Size(1, 1);
 		public static readonly Size Half = new Size(0.5f, 0.5f);
 		public static readonly Size Unused = new Size(-1, -1);

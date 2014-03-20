@@ -51,21 +51,13 @@
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Input\MOcks\DeltaEngine.Input.Mocks.csproj">
+    <ProjectReference Include="..\..\Input\Mocks\DeltaEngine.Input.Mocks.csproj">
       <Project>{4E4D006D-9C6E-47DB-908D-674E0C8D98AA}</Project>
       <Name>DeltaEngine.Input.Mocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
       <Name>DeltaEngine.Platforms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\Mocks\DeltaEngine.Platforms.Mocks.csproj">
-      <Project>{BF968F20-246B-4F86-BB7B-377FD4B47A9F}</Project>
-      <Name>DeltaEngine.Platforms.Mocks</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\Tests\DeltaEngine.Platforms.Tests.csproj">
-      <Project>{D0AAD622-ED82-40E5-88A9-980EAFC12C16}</Project>
-      <Name>DeltaEngine.Platforms.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
@@ -79,27 +71,30 @@
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Scenes.csproj">
+    <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
       <Name>DeltaEngine.Scenes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
+    <ProjectReference Include="..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
+      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
+      <Name>DeltaEngine.TestWithSlimDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controls\AnchoringTests.cs" />
+    <Compile Include="Controls\ControlTests.cs" />
+    <Compile Include="Controls\Grow.cs" />
+    <Compile Include="Controls\PanelDemo1.cs" />
+    <Compile Include="Controls\PanelDemo2.cs" />
     <Compile Include="AutoArrangingMenuTests.cs" />
     <Compile Include="Controls\PictureTests.cs" />
     <Compile Include="Controls\ThemeTests.cs" />
     <Compile Include="EntityDebugger\BouncingLogo.cs" />
+    <Compile Include="Controls\Spin.cs" />
     <Compile Include="EntityDebugger\EntityReaderTests.cs" />
     <Compile Include="EntityDebugger\EntitySelectorTests.cs" />
     <Compile Include="EntityDebugger\EntityWriterTests.cs" />
@@ -111,7 +106,6 @@
     <Compile Include="Controls\ButtonTests.cs" />
     <Compile Include="Controls\PercentageBarTests.cs" />
     <Compile Include="Controls\SelectBoxTests.cs" />
-    <Compile Include="Terminal\ConsoleTests.cs" />
     <Compile Include="Controls\LabelTests.cs" />
     <Compile Include="Controls\RadioButtonTests.cs" />
     <Compile Include="Controls\RadioDialogTests.cs" />

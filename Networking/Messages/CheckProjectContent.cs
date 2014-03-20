@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DeltaEngine.Networking.Messages
+﻿namespace DeltaEngine.Networking.Messages
 {
 	/// <summary>
 	/// Check client content by sending the ContentMetaData.xml to the server. It is used for grabbing
@@ -8,7 +6,7 @@ namespace DeltaEngine.Networking.Messages
 	/// </summary>
 	public class CheckProjectContent : ContentMessage
 	{
-		private CheckProjectContent() { }
+		private CheckProjectContent() {}
 
 		public CheckProjectContent(string contentMetaDataFile)
 		{

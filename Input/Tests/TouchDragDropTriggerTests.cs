@@ -22,6 +22,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragDropTouchOutsideStartArea()
 		{
+			if (touch == null)
+				return; //ncrunch: no coverage
 			Vector2D startPoint = -Vector2D.One;
 			new Command(position => { startPoint = position; }).Add(
 				new TouchDragDropTrigger(Rectangle.HalfCentered));
@@ -43,6 +45,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragDropTouchInsideStartArea()
 		{
+			if (touch == null)
+				return; //ncrunch: no coverage
 			Vector2D startPoint = -Vector2D.One;
 			new Command(position => { startPoint = position; }).Add(
 				new TouchDragDropTrigger(Rectangle.HalfCentered));
@@ -71,6 +75,8 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragDropCloseToStartPointWillDoNothing()
 		{
+			if (touch == null)
+				return; //ncrunch: no coverage
 			Vector2D startPoint = -Vector2D.One;
 			new Command(position => //ncrunch: no coverage start
 			{ startPoint = position; }).Add(new TouchDragDropTrigger(Rectangle.HalfCentered));
@@ -79,6 +85,14 @@ namespace DeltaEngine.Input.Tests
 			SetTouchState(State.Pressed, Vector2D.Half);
 			SetTouchState(State.Releasing, Vector2D.Half);
 			Assert.AreEqual(-Vector2D.One, startPoint);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CreateTouchDragDropTriggerFromString()
+		{
+			var startArea = Rectangle.One;
+			var trigger = new TouchDragDropTrigger(startArea.ToString());
+			Assert.AreEqual(startArea, trigger.StartArea);
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 			var fontData = new FontDescription(ContentLoader.Load<Font>("Verdana12").Data);
 			var textConverter = new TextConverter(fontData.GlyphDictionary, fontData.PixelLineHeight);
 			var glyphs = textConverter.GetRenderableGlyphs("A a a aaa", HorizontalAlignment.Right);
-			Assert.AreEqual(8, glyphs.Length);
+			Assert.AreEqual(9, glyphs.Length);
 		}
 	}
 }

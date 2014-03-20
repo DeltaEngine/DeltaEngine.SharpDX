@@ -9,10 +9,10 @@ namespace DeltaEngine.Scenes.Controls
 	/// </summary>
 	public class Slider : BaseSlider
 	{
-		protected Slider() {}
+		internal protected Slider() {}
 
 		public Slider(Rectangle drawArea)
-			: this(Theme.Default, drawArea) {}
+			: this(new Theme(), drawArea) { }
 
 		public Slider(Theme theme, Rectangle drawArea)
 			: base(theme, theme.Slider, drawArea)
@@ -23,7 +23,7 @@ namespace DeltaEngine.Scenes.Controls
 			AddChild(Pointer);
 		}
 
-		private class Data
+		internal class Data
 		{
 			public int MinValue { get; set; }
 			public int Value { get; set; }

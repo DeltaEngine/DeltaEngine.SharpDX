@@ -9,7 +9,7 @@ namespace DeltaEngine.Platforms.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			resolver.Resolve(typeof(TestCommand));
+			Resolve<TestCommand>();
 			consoleCommands = ConsoleCommands.Current;
 		}
 
@@ -47,11 +47,11 @@ namespace DeltaEngine.Platforms.Tests
 		public void ExecuteCommandWithAnInvalidParameter()
 		{
 			string result = consoleCommands.ExecuteCommand("AddFloats 1 a");
-			const string expectedEnglish =
+			const string ExpectedEnglish =
 				"Error: Can't process parameter no. 2: 'Input string was not in a correct format.'";
-			const string expectedGerman =
+			const string ExpectedGerman =
 				"Error: Can't process parameter no. 2: 'Die Eingabezeichenfolge hat das falsche Format.'";
-			Assert.IsTrue(expectedEnglish.Equals(result) || expectedGerman.Equals(result));
+			Assert.IsTrue(ExpectedEnglish.Equals(result) || ExpectedGerman.Equals(result));
 		}
 
 		[Test]
@@ -75,6 +75,8 @@ namespace DeltaEngine.Platforms.Tests
 		[Test]
 		public void GetAutoCompletionListFromGlobalTimeMethod()
 		{
+			if (!IsMockResolver)
+				return; //ncrunch: no coverage
 			List<string> autoCompletions =
 				consoleCommands.GetAutoCompletionList("GetSecondsSinceStart");
 			Assert.AreEqual(1, autoCompletions.Count);

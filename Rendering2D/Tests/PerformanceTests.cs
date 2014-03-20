@@ -18,24 +18,11 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void Draw10000SpritesPerFrame()
 		{
-			var material = new Material(Shader.Position2DUV, "DeltaEngineLogo");
+			var material = new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo");
 			for (int y = 0; y < 100; y++)
 				for (int x = 0; x < 100; x++)
 					new Sprite(material, new Rectangle(x / 100.0f, y / 100.0f, 0.01f, 0.01f));
 			new FpsDisplay();
-		}
-
-		public class FpsDisplay : FontText, Updateable
-		{
-			public FpsDisplay()
-				: base(Font.Default, "", Rectangle.FromCenter(0.5f, 0.25f, 0.2f, 0.2f)) {}
-
-			public void Update()
-			{
-				Text = "Fps = " + GlobalTime.Current.Fps;
-			}
-
-			public bool IsPauseable { get { return true; } }
 		}
 	}
 }

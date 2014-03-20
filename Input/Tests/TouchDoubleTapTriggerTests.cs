@@ -36,7 +36,9 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void InvokeDoubleTap()
 		{
-			var touch = Resolve<MockTouch>();
+			var touch = Resolve<Touch>() as MockTouch;
+			if (touch == null)
+				return; //ncrunch: no coverage
 			var trigger = new TouchDoubleTapTrigger();
 			bool wasInvoked = false;
 			new Command(() => wasInvoked = true).Add(trigger);
@@ -49,6 +51,14 @@ namespace DeltaEngine.Input.Tests
 			touch.SetTouchState(0, State.Releasing, Vector2D.Half);
 			AdvanceTimeAndUpdateEntities();
 			Assert.IsTrue(wasInvoked);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void CreateWithStringParameter()
+		{
+			Assert.DoesNotThrow(() => new TouchDoubleTapTrigger(""));
+			Assert.Throws<TouchDoubleTapTrigger.TouchDoubleTapTriggerHasNoParameters>(
+				() => new TouchDoubleTapTrigger("NonEmptyString"));
 		}
 	}
 }

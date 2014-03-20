@@ -19,7 +19,7 @@ namespace DeltaEngine.Input.Mocks
 
 		public override void Dispose() {}
 
-		public override void SetPosition(Vector2D position)
+		public override void SetNativePosition(Vector2D position)
 		{
 			nextPosition = position;
 			Position = position;

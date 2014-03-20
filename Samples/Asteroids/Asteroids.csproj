@@ -60,17 +60,21 @@
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering2D\Particles\DeltaEngine.Rendering2D.Particles.csproj">
+    <ProjectReference Include="..\..\Rendering3D\DeltaEngine.Rendering3D.csproj">
+      <Project>{3266F559-74EE-4A1C-B37B-2C591F73611B}</Project>
+      <Name>DeltaEngine.Rendering3D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rendering3D\Particles\DeltaEngine.Rendering3D.Particles.csproj">
       <Project>{BECE691C-BAC6-434B-B1F9-4D8653922585}</Project>
-      <Name>DeltaEngine.Rendering2D.Particles</Name>
+      <Name>DeltaEngine.Rendering3D.Particles</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
       <Name>DeltaEngine.Scenes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
-      <Project>{05569371-855C-4667-8228-20491337C431}</Project>
-      <Name>DeltaEngine.WindowsSharpDX</Name>
+    <ProjectReference Include="..\..\Platforms\WindowsSlimDX\DeltaEngine.WindowsSlimDX.csproj">
+      <Project>{C12EBE75-67B5-4257-8A6E-C844601746E8}</Project>
+      <Name>DeltaEngine.WindowsSlimDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -247,11 +247,11 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 		
 		[Test]
-		public void GetBytesFromColorArray()
+		public void GetBgraBytesFromColorArrayWithAlpha()
 		{
-			var colors = new[] { Color.Black, Color.White, Color.Red };
-			Assert.AreEqual(new byte[] { 0, 0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 255 },
-				Color.GetBytesFromArray(colors));
+			var colors = new[] { Color.Black, Color.White, new Color(255, 0, 0, 128) };
+			Assert.AreEqual(new byte[] { 0, 0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 128 },
+				Color.GetRgbaBytesFromArray(colors));
 		}
 
 		[Test]

@@ -27,15 +27,9 @@ namespace DeltaEngine.Input.Windows.Tests
 		[Test]
 		public void GetTouchDataFromHandleWithInvalidHandle()
 		{
+			Assert.IsEmpty(hook.nativeTouches);
 			var nativeTouches = TouchHook.GetTouchDataFromHandle(1, IntPtr.Zero);
 			Assert.Null(nativeTouches);
-		}
-
-		[Test]
-		public void HandleProcMessage()
-		{
-			//hook.HandleProcMessage((IntPtr)4, IntPtr.Zero, 0);
-			Assert.IsEmpty(hook.nativeTouches);
 		}
 	}
 }

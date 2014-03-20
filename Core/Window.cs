@@ -10,8 +10,9 @@ namespace DeltaEngine.Core
 	{
 		string Title { get; set; }
 		bool IsVisible { get; }
-		object Handle { get; }
+		IntPtr Handle { get; }
 		Size ViewportPixelSize { get; set; }
+		Vector2D ViewportPixelPosition { get; }
 		Orientation Orientation { get; }
 		event Action<Size> ViewportSizeChanged;
 		event Action<Orientation> OrientationChanged;
@@ -26,6 +27,8 @@ namespace DeltaEngine.Core
 		void Present();
 		bool IsClosing { get; }
 		bool ShowCursor { get; set; }
+		bool IsWindowsFormAndNotJustAPanel { get; }
+		void SetCursorIcon(string iconFilePath = null);
 		string ShowMessageBox(string title, string message, string[] buttons);
 		void CopyTextToClipboard(string text);
 	}

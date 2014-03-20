@@ -10,18 +10,18 @@ namespace DeltaEngine.Graphics.Tests
 {
 	internal class ScreenshotCapturerTests : TestWithMocksOrVisually
 	{
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void MakeScreenshotOfYellowBackground()
 		{
 			Resolve<Window>().BackgroundColor = Color.Yellow;
+			new DrawingTests.Line(Vector2D.Zero, new Vector2D(1280, 720), Color.Red);
 			RunAfterFirstFrame(() =>
 			{
-				Resolve<Device>().Present();
 				var capturer = Resolve<ScreenshotCapturer>();
 				capturer.MakeScreenshot(ScreenshotFileName);
 				if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 					Process.Start(ScreenshotFileName); //ncrunch: no coverage
-				else
+				else if (capturer is MockScreenshotCapturer)
 					Assert.AreEqual(ScreenshotFileName, (capturer as MockScreenshotCapturer).LastFilename);
 			});
 		}

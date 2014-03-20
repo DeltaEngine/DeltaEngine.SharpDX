@@ -83,7 +83,7 @@ namespace DeltaEngine.Graphics
 			if (numberOfIndicesUsed == 0)
 				numberOfIndices = indices != null ? indices.Length : 0;
 			if (drawMode == VerticesMode.Triangles && numberOfIndices == 0)
-				numberOfIndices = numberOfVertices * 6 / 4;
+				numberOfIndices = numberOfVertices == 3 ? 3 : numberOfVertices * 6 / 4;
 			CheckTotalDataSize(numberOfVertices, numberOfIndices);
 			var chunk = GetOrCreateLastTextureChunk(texture);
 			if (chunk.NumberOfVertices == 0 && vertices.Length > 0 && shader.Format != vertices[0].Format)
@@ -237,6 +237,8 @@ namespace DeltaEngine.Graphics
 				cachedQuadIndices[5] = (short)(vertexOffset + 3);
 				return cachedQuadIndices;
 			}
+			if (numberOfVertices == 3)
+				return new[] { (short)vertexOffset, (short)(vertexOffset + 1), (short)(vertexOffset + 2) };
 			var newIndices = new short[(numberOfVertices / 4) * 6];
 			for (int i = 0; i < numberOfVertices / 4; i++)
 			{
@@ -250,7 +252,7 @@ namespace DeltaEngine.Graphics
 			return newIndices;
 		}
 
-		protected readonly short[] cachedQuadIndices = new short[] { 0, 1, 2, 0, 2, 3 };
+		protected readonly short[] cachedQuadIndices = { 0, 1, 2, 0, 2, 3 };
 
 		protected short[] RemapIndices(short[] indices, int numberOfIndices)
 		{
@@ -275,7 +277,7 @@ namespace DeltaEngine.Graphics
 		private void BindShader()
 		{
 			shader.Bind();
-			shader.SetModelViewProjectionMatrix(device.ModelViewProjectionMatrix);
+			shader.SetModelViewProjection(device.ModelViewProjectionMatrix);
 		}
 
 		protected abstract void DrawChunk(Chunk chunk);

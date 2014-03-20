@@ -5,7 +5,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Particles;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace Blocks
 {
@@ -101,27 +101,23 @@ namespace Blocks
 		}
 
 		//ncrunch: no coverage start
-		private void AddPairOfFallingBricks(Brick brick)
+		private static void AddPairOfFallingBricks(Brick brick)
 		{
 			AddTopFallingBrick(brick);
 			AddBottomFallingBrick(brick);
 		}
 		
-		private void AddTopFallingBrick(Sprite brick)
+		private static void AddTopFallingBrick(Sprite brick)
 		{
-			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
-			var image = content.Load<Image>(filename + "_Top");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image, image.PixelSize);
+			var material = new Material(ShaderFlags.Position2DColoredTextured,
+				brick.Material.DiffuseMap.Name + "_Top");
 			AddFallingBrick(brick, material);
 		}
 
-		private void AddBottomFallingBrick(Sprite brick)
+		private static void AddBottomFallingBrick(Sprite brick)
 		{
-			var filename = content.GetFilenameWithoutPrefix(brick.Material.DiffuseMap.Name);
-			var image = content.Load<Image>(filename + "_Bottom");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image, image.PixelSize);
+			var material = new Material(ShaderFlags.Position2DColoredTextured,
+				brick.Material.DiffuseMap.Name + "_Bottom");
 			AddFallingBrick(brick, material);
 		} //ncrunch: no coverage end
 

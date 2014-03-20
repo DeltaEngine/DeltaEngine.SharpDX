@@ -5,12 +5,12 @@ namespace DeltaEngine.Rendering2D
 {
 	public class SpriteRenderer : DrawBehavior
 	{
-		public SpriteRenderer(BatchRenderer renderer)
+		public SpriteRenderer(BatchRenderer2D renderer)
 		{
 			this.renderer = renderer;
 		}
 
-		private readonly BatchRenderer renderer;
+		private readonly BatchRenderer2D renderer;
 
 		public void Draw(List<DrawableEntity> visibleEntities)
 		{
@@ -21,7 +21,7 @@ namespace DeltaEngine.Rendering2D
 		private void AddVerticesToBatch(Sprite sprite)
 		{
 			var batch = renderer.FindOrCreateBatch(sprite.Material, sprite.BlendMode);
-			batch.AddIndicesAndVertices(sprite);
+			((Batch2D)batch).AddIndicesAndVertices(sprite);
 		}
 	}
 }

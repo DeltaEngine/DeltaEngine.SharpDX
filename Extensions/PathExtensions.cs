@@ -32,15 +32,33 @@ namespace DeltaEngine.Extensions
 
 		public static string GetFallbackEngineSourceCodeDirectory()
 		{
+			if (Directory.Exists(GetDeltaEngineSourceDirectoryVariable()))
+				return GetDeltaEngineSourceDirectoryVariable();
 			if (Directory.Exists(DefaultCodePath))
 				return DefaultCodePath;
-			const string DefaultDevelopmentPath = @"C:\Development\DeltaEngine";
-			if (Directory.Exists(DefaultDevelopmentPath))
-				return DefaultDevelopmentPath;
-			throw new NoDeltaEngineFoundInFallbackPaths();
+			return GetEnginePathUnderDevelopmentDirectory();
+		}
+		
+		public const string DefaultCodePath = @"C:\Code\DeltaEngine";
+
+		private static string GetDeltaEngineSourceDirectoryVariable()
+		{
+			return Environment.GetEnvironmentVariable(EngineSourceDirectoryEnvironmentVariableName);
 		}
 
-		public const string DefaultCodePath = @"C:\Code\DeltaEngine";
+		private const string EngineSourceDirectoryEnvironmentVariableName = "DeltaEngineSourcePath";
+
+		private static string GetEnginePathUnderDevelopmentDirectory()
+		{
+			var possibleDriveLetters = new[] { "C", "D", "E" };
+			foreach (string driveLetter in possibleDriveLetters)
+			{
+				string possibleDirectory = driveLetter + @":\Development\DeltaEngine";
+				if (Directory.Exists(possibleDirectory))
+					return possibleDirectory;
+			}
+			throw new NoDeltaEngineFoundInFallbackPaths();
+		}
 
 		public class NoDeltaEngineFoundInFallbackPaths : Exception {}
 

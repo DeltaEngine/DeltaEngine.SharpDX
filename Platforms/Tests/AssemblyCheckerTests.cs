@@ -31,15 +31,5 @@ namespace DeltaEngine.Platforms.Tests
 				assemblies.Where(assembly => assembly.IsAllowed()).Select(a => a.GetName().Name).ToList();
 			Assert.Greater(assembliesAllowed.Count, 0, "Assemblies: " + assembliesAllowed.ToText());
 		}
-
-		[Test]
-		public void CheckLoadAssembly()
-		{
-			File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "test.dll"), "");
-			var logger = new MockLogger();
-			resolver.Resolve<GlobalTime>();
-			Assert.IsTrue(logger.LastMessage.Contains("Failed to load assembly " +
-				Directory.GetCurrentDirectory() + "\\test.dll"));
-		}
 	}
 }

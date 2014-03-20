@@ -37,20 +37,19 @@
       <HintPath>..\..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DeltaEngine.csproj">
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EmptyApp.csproj">
+    <ProjectReference Include="..\..\..\Samples\EmptyApp\EmptyApp.csproj">
       <Project>{61A2515E-AC1B-413A-8798-7ABCE6DD8D93}</Project>
       <Name>EmptyApp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
+    <ProjectReference Include="..\..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
+      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
+      <Name>DeltaEngine.TestWithSlimDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

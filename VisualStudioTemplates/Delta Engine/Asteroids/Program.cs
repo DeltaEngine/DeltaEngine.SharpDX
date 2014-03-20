@@ -3,6 +3,7 @@ using DeltaEngine.Platforms;
 
 namespace $safeprojectname$
 {
+	//ncrunch: no coverage start, this is equal to the default DE app initialization
 	internal class Program : App
 	{
 		public Program()
@@ -15,4 +16,5 @@ namespace $safeprojectname$
 			new Program().Run();
 		}
 	}
+	//ncrunch: no coverage end
 }

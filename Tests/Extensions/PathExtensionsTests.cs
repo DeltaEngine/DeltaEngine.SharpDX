@@ -40,7 +40,7 @@ namespace DeltaEngine.Tests.Extensions
 				SetEnvironmentVariable("");
 		}
 
-		[Test]
+		[Test, Ignore]
 		public void DeltaEnginePathEnvironmentVariableMustBeAnExistingDirectory()
 		{
 			MakeSureEnvironmentVariableIsSet();

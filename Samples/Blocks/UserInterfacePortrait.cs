@@ -25,24 +25,15 @@ namespace Blocks
 
 		private void AddBackground()
 		{
-			var image = content.Load<Image>("Background");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image, image.PixelSize);
-			SetViewportBackground(material);
+			SetViewportBackground(new Material(ShaderFlags.Position2DColoredTextured, content.Prefix + "Background"));
 		}
 
 		private const int Background = (int)BlocksRenderLayer.Background;
 
 		private void AddGrid()
 		{
-			var image = content.Load<Image>("Grid");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image, image.PixelSize);
-			grid = new Sprite(material, GetGridDrawArea()) { RenderLayer = Background };
-			Add(grid);
+			Add(new Sprite(content.Prefix + "Grid", GetGridDrawArea()) { RenderLayer = Background });
 		}
-
-		private Sprite grid;
 
 		private static Rectangle GetGridDrawArea()
 		{
@@ -60,9 +51,7 @@ namespace Blocks
 
 		private void AddScoreWindow()
 		{
-			var image = content.Load<Image>("ScoreWindow");
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DColorUV);
-			var material = new Material(shader, image, image.PixelSize);
+			var material = new Material(ShaderFlags.Position2DColoredTextured, content.Prefix + "ScoreWindow");
 			scoreWindow = new Sprite(material, GetScoreWindowDrawArea(material.DiffuseMap.PixelSize));
 			scoreWindow.RenderLayer = Background;
 			Add(scoreWindow);

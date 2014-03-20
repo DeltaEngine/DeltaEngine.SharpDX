@@ -49,7 +49,7 @@ namespace DeltaEngine.Platforms.Tests
 		[Test]
 		public void CheckPlatformVersionMatchesEnvironment()
 		{
-			Assert.GreaterOrEqual(info.PlatformVersion, new Version(7, 0));
+			Assert.GreaterOrEqual(info.PlatformVersion, new Version(6, 0));
 		}
 
 		[Test]

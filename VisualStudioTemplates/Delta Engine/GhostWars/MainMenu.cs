@@ -9,7 +9,6 @@ using DeltaEngine.Input;
 using DeltaEngine.Multimedia;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
-using DeltaEngine.Scenes;
 using DeltaEngine.ScreenSpaces;
 
 namespace $safeprojectname$
@@ -18,19 +17,23 @@ namespace $safeprojectname$
 	{
 		public MainMenu(Window window)
 		{
-			menuScene = new Scene();
+			//menuScene = new Scene();
 			CreateMainMenu();
 			new Command(Command.Exit, window.CloseAfterFrame);
 		}
 
-		private readonly Scene menuScene;
+		//private readonly Scene menuScene;
 
+		//ncrunch: no coverage start, user interface
 		private void CreateMainMenu()
 		{
 			Clear();
 			State = GameState.Menu;
 			if (trees != null)
+			{
 				trees.RemoveTrees();
+				trees.Dispose();
+			}
 			AddMenuBackground();
 			AddMenuOption(OnHowToPlay, "HowToPlay", new Vector2D(0.5f, 0.50f));
 			AddMenuOption(OnSingleplayer, "Singleplayer", new Vector2D(0.5f, 0.57f));
@@ -44,7 +47,9 @@ namespace $safeprojectname$
 			foreach (var entity in entities)
 				entity.Dispose();
 			entities.Clear();
-			menuScene.Clear();
+			if (background != null)
+				background.IsActive = false;
+			//menuScene.Clear();
 		}
 
 		private readonly List<Entity> entities = new List<Entity>();
@@ -56,7 +61,12 @@ namespace $safeprojectname$
 
 		private void AddMenuBackground()
 		{
-			menuScene.SetViewportBackground("MenuBackground");
+			background =
+				new Sprite(new Material(ShaderFlags.Position2DColoredTextured, "MenuBackground"),
+					ScreenSpace.Scene.Viewport) { RenderLayer = int.MinValue };
+			ScreenSpace.Scene.ViewportSizeChanged +=
+				() => background.SetWithoutInterpolation(ScreenSpace.Scene.Viewport);
+			//menuScene.SetViewportBackground("MenuBackground");
 		}
 
 		private void AddEntity(Entity entity)
@@ -67,7 +77,8 @@ namespace $safeprojectname$
 		private void AddMenuOption(Action clickAction, string buttonName, Vector2D position)
 		{
 			var buttonImage = ContentLoader.Load<Image>(buttonName + "Default");
-			var buttonRect = Rectangle.FromCenter(position, new Size(0.05f * buttonImage.PixelSize.AspectRatio, 0.05f));
+			var buttonRect = Rectangle.FromCenter(position,
+				new Size(0.05f * buttonImage.PixelSize.AspectRatio, 0.05f));
 			var button = new Sprite(buttonName + "Default", buttonRect);
 			button.RenderLayer = 10;
 			AddEntity(button);
@@ -94,17 +105,16 @@ namespace $safeprojectname$
 					CreateMainMenu();
 			}));
 			AddEntity(
-				new Command(pos => UpdateSpriteImage(button, "Back", pos)).Add(
-					new MouseMovementTrigger()));
+				new Command(pos => UpdateSpriteImage(button, "Back", pos)).Add(new MouseMovementTrigger()));
 		}
 
 		private void UpdateSpriteImage(Sprite button, string name, Vector2D position)
 		{
 			if (button.DrawArea.Contains(position) && button.Material.DiffuseMap.Name != name + "Hover")
-				button.Material = new Material(Shader.Position2DColorUV, name + "Hover");
+				button.Material = new Material(ShaderFlags.Position2DColoredTextured, name + "Hover");
 			else if (!button.DrawArea.Contains(position) &&
 				button.Material.DiffuseMap.Name != name + "Default")
-				button.Material = new Material(Shader.Position2DColorUV, name + "Default");
+				button.Material = new Material(ShaderFlags.Position2DColoredTextured, name + "Default");
 			else
 				return;
 			if (Time.Total - lastSwingSound < MinimumDelayBetweenMenuSwingSounds)
@@ -153,18 +163,19 @@ namespace $safeprojectname$
 		private void SinglePlayerMenuClick(Vector2D position, Rectangle[] clickAreas)
 		{
 			for (int i = 0; i < clickAreas.Length; i++)
-			{
 				if (clickAreas[i].Contains(position))
 					StartGame(i + 1);
-
-			}
 		}
 
 		private void StartGame(int level)
 		{
 			Clear();
 			State = GameState.CountDown;
-			menuScene.SetViewportBackground("Background");
+			background = new Sprite(new Material(ShaderFlags.Position2DColoredTextured, "Background"),
+				ScreenSpace.Scene.Viewport) { RenderLayer = int.MinValue };
+			ScreenSpace.Scene.ViewportSizeChanged +=
+				() => background.SetWithoutInterpolation(ScreenSpace.Scene.Viewport);
+			//menuScene.SetViewportBackground("Background");
 			trees = new TreeManager(Team.HumanYellow);
 			if (level == 1)
 				SetupLevel1Trees();
@@ -178,6 +189,8 @@ namespace $safeprojectname$
 
 		private TreeManager trees;
 		public int CurrentLevel { get; set; }
+
+		private Sprite background;
 
 		private void SetupLevel1Trees()
 		{
@@ -236,8 +249,7 @@ namespace $safeprojectname$
 
 		public void SetGameOverState()
 		{
-			//AddMenuOption(RestartGame, "Exit", new Vector2D(0.5f, 0.4f));
-			//AddMenuOption(CreateMainMenu, "Exit", new Vector2D(0.5f, 0.6f));
+			AddMenuOption(CreateMainMenu, "Back", new Vector2D(0.5f, 0.6f));
 		}
 
 		public void RestartGame()

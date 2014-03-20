@@ -10,6 +10,11 @@ namespace DeltaEngine.Input
 	public abstract class Mouse : InputDevice
 	{
 		public Vector2D Position { get; protected set; }
+		/// <summary>
+		/// Total accumulated mouse scroll wheel value. Compare with last frame to see the change (see
+		/// MouseZoomTrigger). Will not use multipliers like 120 to report one mouse wheel up change.
+		/// One mouse wheel up change results in a value change of +1, down is -1.
+		/// </summary>
 		public int ScrollWheelValue { get; protected set; }
 		public State LeftButton { get; protected set; }
 		public State MiddleButton { get; protected set; }
@@ -28,7 +33,7 @@ namespace DeltaEngine.Input
 			return button == MouseButton.X2 ? X2Button : LeftButton;
 		}
 
-		public abstract void SetPosition(Vector2D position);
+		public abstract void SetNativePosition(Vector2D position);
 
 		public override void Update(IEnumerable<Entity> entities)
 		{

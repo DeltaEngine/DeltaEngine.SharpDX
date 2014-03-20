@@ -18,9 +18,9 @@ namespace DeltaEngine.Content.Xml
 		}
 
 		/// <summary>
-		/// Creates a simple DefaultCommands.xml file in memory and passes it to Command.Register. Trigger
-		/// types cannot be created directly here because we have no dependency to DeltaEngine.Input here.
-		/// For better performance with MockResolver the same code is duplicated there, just much faster.
+		/// Creates a simple DefaultCommands.xml file in memory and passes it to Command.Register.
+		/// Trigger types cannot be created directly here because we have no dependency to Input here.
+		/// For better performance with MockResolver the same code is duplicated there, just faster.
 		/// </summary>
 		protected override void CreateDefault()
 		{
@@ -99,11 +99,11 @@ namespace DeltaEngine.Content.Xml
 			for (int index = 0; index < command.Children.Count; index++)
 			{
 				var trigger = command.Children[index];
-				var triggerType = trigger.Name.GetTypeFromShortNameOrFullNameIfNotFound();
-				if (triggerType == null)
+				var type = BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(trigger.Name);
+				if (type == null)
 					throw new Trigger.UnableToCreateTriggerTypeIsUnknown(trigger.Name); //ncrunch: no coverage
-				triggers[index] = 
-					Trigger.GenerateTriggerFromType(triggerType, trigger.Name, trigger.Value) as Trigger;
+				triggers[index] =
+					Trigger.GenerateTriggerFromType(type, trigger.Name, trigger.Value) as Trigger;
 			}
 			return triggers;
 		}

@@ -72,8 +72,18 @@ namespace DeltaEngine.Entities
 							if (genericListTypes.Length > 0)
 							{
 								var elementType = genericListTypes[0];
-								lastTickLerpComponents[index] =
-									Activator.CreateInstance((typeof(List<>).MakeGenericType(elementType)), current);
+								var currentList = current as IList;
+								var lastList = lastTickLerpComponents[index] as IList;
+								if (lastList == null || Equals(lastList, currentList) ||
+									lastList.Count != currentList.Count)
+									lastTickLerpComponents[index] =
+										Activator.CreateInstance((typeof(List<>).MakeGenericType(elementType)), current);
+								else
+								{
+									lastList.Clear();
+									foreach (var item in currentList)
+										lastList.Add(item);
+								}
 							}
 							else if (current is Array)
 							{
@@ -115,22 +125,19 @@ namespace DeltaEngine.Entities
 			EntitiesRunner.Current.CheckIfInDrawState();
 			foreach (var previous in lastTickLerpComponents)
 			{
-				var previousList = previous as IEnumerable<T>;
+				var previousList = previous as IList<T>;
 				if (previousList != null && previousList.GetType().IsGenericType &&
 					previousList.GetType().GetGenericArguments()[0] == typeof(T))
 					foreach (var component in components)
 					{
-						var currentList = component as IEnumerable<T>;
+						var currentList = component as IList<T>;
 						if (currentList == null)
 							continue;
+						var length = Math.Min(previousList.Count, currentList.Count);
 						var returnValue = new List<T>(previousList);
-						int index = 0;
-						foreach (var currentItem in currentList)
-						{
-							returnValue[index] = ((Lerp<T>)returnValue[index]).Lerp(currentItem,
+						for (int index = 0; index < length; index++)
+							returnValue[index] = ((Lerp<T>)returnValue[index]).Lerp(currentList[index],
 								EntitiesRunner.CurrentDrawInterpolation);
-							index++;
-						}
 						return returnValue;
 					}
 			}
@@ -154,7 +161,7 @@ namespace DeltaEngine.Entities
 					{
 						var currentArray = component as T[];
 						if (currentArray == null)
-							continue;
+							continue; //ncrunch: no coverage
 						var length = Math.Min(previousArray.Length, currentArray.Length);
 						if (arrayCopyLimit > 0 && length > arrayCopyLimit)
 							length = arrayCopyLimit;

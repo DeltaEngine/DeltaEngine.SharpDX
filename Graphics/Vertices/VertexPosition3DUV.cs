@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Graphics.Vertices
@@ -6,6 +7,7 @@ namespace DeltaEngine.Graphics.Vertices
 	/// <summary>
 	/// Vertex struct that describes 3D position and texture coordinate.
 	/// </summary>
+	[DebuggerDisplay("VertexPosition3DUV({Position}, {UV})")]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexPosition3DUV : Lerp<VertexPosition3DUV>, Vertex
 	{

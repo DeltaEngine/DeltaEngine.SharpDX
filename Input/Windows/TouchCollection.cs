@@ -7,22 +7,13 @@ namespace DeltaEngine.Input.Windows
 	/// <summary>
 	/// Helper class to keep track of all touches according to their id's.
 	/// </summary>
-	public class TouchCollection
+	public class TouchCollection : TouchBase
 	{
 		public TouchCollection(CursorPositionTranslater positionTranslater)
 		{
 			this.positionTranslater = positionTranslater;
-			states = new State[MaxNumberOfTouches];
-			locations = new Vector2D[MaxNumberOfTouches];
-			ids = new int[MaxNumberOfTouches];
-			for (int index = 0; index < MaxNumberOfTouches; index++)
-				ids[index] = -1;
 		}
 
-		internal readonly State[] states;
-		internal readonly Vector2D[] locations;
-		internal readonly int[] ids;
-		private const int MaxNumberOfTouches = 10;
 		private readonly CursorPositionTranslater positionTranslater;
 
 		internal void UpdateAllTouches(List<NativeTouchInput> newTouches)
@@ -63,7 +54,6 @@ namespace DeltaEngine.Input.Windows
 			{
 				if (newTouches[newTouchIndex].Id != ids[index])
 					continue;
-
 				NativeTouchInput newTouch = newTouches[newTouchIndex];
 				newTouches.RemoveAt(newTouchIndex);
 				UpdateTouchState(index, newTouch.Flags);
@@ -91,19 +81,6 @@ namespace DeltaEngine.Input.Windows
 		}
 
 		private const float Precision = 100;
-
-		internal int FindIndexByIdOrGetFreeIndex(int id)
-		{
-			for (int index = 0; index < MaxNumberOfTouches; index++)
-				if (ids[index] == id)
-					return index;
-
-			for (int index = 0; index < MaxNumberOfTouches; index++)
-				if (ids[index] == -1)
-					return index;
-
-			return -1;
-		}
 
 		internal static bool IsTouchDown(int flag)
 		{

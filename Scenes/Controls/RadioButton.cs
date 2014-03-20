@@ -10,7 +10,7 @@ namespace DeltaEngine.Scenes.Controls
 		protected RadioButton() {}
 
 		public RadioButton(Rectangle drawArea, string text = "")
-			: this(Theme.Default, drawArea, text) {}
+			: this(new Theme(), drawArea, text) { }
 
 		public RadioButton(Theme theme, Rectangle drawArea, string text = "")
 			: base(theme, theme.RadioButtonBackground, drawArea)

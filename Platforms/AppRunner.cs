@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows.Forms;
 using DeltaEngine.Content;
 using DeltaEngine.Content.Online;
 using DeltaEngine.Content.Xml;
@@ -13,6 +14,8 @@ using DeltaEngine.Logging;
 using DeltaEngine.Networking;
 using DeltaEngine.Networking.Tcp;
 using DeltaEngine.Rendering2D;
+using DeltaEngine.Rendering3D;
+using DeltaEngine.Rendering3D.Cameras;
 using DeltaEngine.ScreenSpaces;
 
 namespace DeltaEngine.Platforms
@@ -30,9 +33,11 @@ namespace DeltaEngine.Platforms
 			CreateOnlineService();
 			CreateDefaultLoggers();
 			CreateConsoleCommandResolver();
+			CreateCameraResolver();
 			CreateContentLoader();
 			CreateEntitySystem();
 			RegisterMediaTypes();
+			RegisterPhysics();
 			CreateNetworking();
 			CreateScreenSpacesAndCameraResolvers();
 		}
@@ -41,12 +46,14 @@ namespace DeltaEngine.Platforms
 		{
 			instancesToDispose.Add(settings = new FileSettings());
 			RegisterInstance(settings);
+			if (!settings.CustomSettingsExists)
+				ContentIsReady += settings.LoadDefaultSettings;
 			ContentIsReady += () => ContentLoader.Load<InputCommands>("DefaultCommands");
 			ContentIsReady += () => Window.ViewportPixelSize = settings.Resolution;
 		}
 
 		protected Settings settings;
-		protected internal static event Action ContentIsReady;
+		protected internal event Action ContentIsReady;
 
 		private void CreateOnlineService()
 		{
@@ -62,7 +69,8 @@ namespace DeltaEngine.Platforms
 		private void CreateDefaultLoggers()
 		{
 			instancesToDispose.Add(new TextFileLogger());
-			instancesToDispose.Add(new NetworkLogger(onlineService));
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+				instancesToDispose.Add(new NetworkLogger(onlineService));
 			if (ExceptionExtensions.IsDebugMode)
 				instancesToDispose.Add(new ConsoleLogger());
 		}
@@ -75,6 +83,11 @@ namespace DeltaEngine.Platforms
 		private void CreateConsoleCommandResolver()
 		{
 			ConsoleCommands.resolver = new ConsoleCommandResolver(this);
+		}
+
+		private void CreateCameraResolver()
+		{
+			Camera.resolver = new AutofacCameraResolver(this);
 		}
 
 		private void CreateContentLoader()
@@ -143,13 +156,15 @@ namespace DeltaEngine.Platforms
 			Register<SpriteSheetAnimation>();
 		}
 
+		protected abstract void RegisterPhysics();
+
 		internal override void MakeSureContentManagerIsReady()
 		{
 			if (alreadyCheckedContentManagerReady)
 				return;
 			alreadyCheckedContentManagerReady = true;
 			if (ContentLoader.Type == typeof(DeveloperOnlineContentLoader) && !IsEditorContentLoader())
-				WaitUntilContentFromOnlineServiceIsReady();
+				CheckIfContentFromOnlineServiceIsReady();
 			if (!ContentLoader.HasValidContentForStartup())
 			{
 				if (StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
@@ -169,23 +184,63 @@ namespace DeltaEngine.Platforms
 			return ContentLoader.Type.FullName == "DeltaEngine.Editor.EditorContentLoader";
 		}
 
-		private void WaitUntilContentFromOnlineServiceIsReady()
+		private void CheckIfContentFromOnlineServiceIsReady()
 		{
-			if (!ContentLoader.HasValidContentForStartup())
-				Logger.Info("No content available. Waiting until OnlineService sends it to us ...");
+			if (ContentLoader.HasValidContentForStartup())
+			{
+				if (IsContentMetaDataYoungerThanOneMinute())
+					return;
+			}
+			else
+				noValidContentForStartup = true;
+			WaitUntilContentReadyReceivedOrServerErrorHappened();
+		}
+
+		private static bool IsContentMetaDataYoungerThanOneMinute()
+		{
+			return (DateTime.Now - ContentLoader.current.LastTimeUpdated).TotalMinutes < 1;
+		}
+
+		private bool noValidContentForStartup;
+
+		private void WaitUntilContentReadyReceivedOrServerErrorHappened()
+		{
 			timeout = InitialTimeoutMs;
-			while (String.IsNullOrEmpty(connectionError) && !onlineServiceReadyReceived &&
+			while (!onlineServiceReadyReceived && String.IsNullOrEmpty(connectionError) &&
 				ContentLoader.Type == typeof(DeveloperOnlineContentLoader) && timeout > 0)
 			{
+				HandleDownloadContentTooltip();
 				Thread.Sleep(10);
 				timeout -= 10;
 			}
+			CloseDownloadContentTooltip();
 			if (timeout <= 0)
 				Logger.Warning(
 					"Content download timeout reached, continuing app (content might be incomplete)");
 		}
 
-		private const int InitialTimeoutMs = 5000;
+		private const int InitialTimeoutMs = 10000;
+		private DownloadContentTooltip downloadContentTooltip;
+
+		private void HandleDownloadContentTooltip()
+		{
+			if (noValidContentForStartup && downloadContentTooltip == null &&
+				timeout < InitialTimeoutMs * 0.9f)
+			{
+				downloadContentTooltip = new DownloadContentTooltip();
+				downloadContentTooltip.Closed += (sender, eventArguments) => timeout = 0;
+				downloadContentTooltip.Show();
+				downloadContentTooltip.Refresh();
+			}
+			if (downloadContentTooltip != null)
+				Application.DoEvents();
+		}
+
+		private void CloseDownloadContentTooltip()
+		{
+			if (downloadContentTooltip != null)
+				downloadContentTooltip.Close();
+		}
 
 		private void CreateNetworking()
 		{
@@ -201,6 +256,7 @@ namespace DeltaEngine.Platforms
 			Register<PixelScreenSpace>();
 			Register<Camera2DScreenSpace>();
 			ScreenSpace.resolver = new AutofacScreenSpaceResolver(this);
+			Camera.resolver = new AutofacCameraResolver(this);
 		}
 
 		public virtual void Run()
@@ -264,20 +320,27 @@ namespace DeltaEngine.Platforms
 			if (Debugger.IsAttached || StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
 				entities.UpdateAndDrawAllEntities(DrawEverythingInCurrentLayer);
 			else
-				TryUpdateAndDrawAllEntities();
+				UpdateAndDrawEntities();
 		}
 
 		private void DrawEverythingInCurrentLayer()
 		{
-			BatchRenderer.DrawAndResetBatches();
+			BatchRenderer2D.DrawAndResetBatches();
+			BatchRenderer3D.DrawAndResetBatches();
 			Drawing.DrawEverythingInCurrentLayer();
 		}
 
-		private BatchRenderer BatchRenderer
+		private BatchRenderer2D BatchRenderer2D
 		{
-			get { return cachedBatchRenderer ?? (cachedBatchRenderer = Resolve<BatchRenderer>()); }
+			get { return cachedBatchRenderer2D ?? (cachedBatchRenderer2D = Resolve<BatchRenderer2D>()); }
 		}
-		private BatchRenderer cachedBatchRenderer;
+		private BatchRenderer2D cachedBatchRenderer2D;
+
+		private BatchRenderer3D BatchRenderer3D
+		{
+			get { return cachedBatchRenderer3D ?? (cachedBatchRenderer3D = Resolve<BatchRenderer3D>()); }
+		}
+		private BatchRenderer3D cachedBatchRenderer3D;
 
 		private Drawing Drawing
 		{
@@ -285,11 +348,11 @@ namespace DeltaEngine.Platforms
 		}
 		private Drawing cachedDrawing;
 
-		private void TryUpdateAndDrawAllEntities()
+		private void UpdateAndDrawEntities()
 		{
 			try
 			{
-				entities.UpdateAndDrawAllEntities(DrawEverythingInCurrentLayer);
+				TryUpdateAndDrawEntities();
 			}
 			catch (Exception exception)
 			{
@@ -300,6 +363,11 @@ namespace DeltaEngine.Platforms
 					throw;
 				DisplayMessageBoxAndCloseApp("Fatal Runtime Error", exception);
 			}
+		}
+
+		private void TryUpdateAndDrawEntities()
+		{
+			entities.UpdateAndDrawAllEntities(DrawEverythingInCurrentLayer);
 		}
 
 		internal void DisplayMessageBoxAndCloseApp(string title, Exception exception)
@@ -321,6 +389,9 @@ namespace DeltaEngine.Platforms
 
 		public override void Dispose()
 		{
+			if (!onlineServiceReadyReceived && ContentLoader.current != null &&
+				ContentLoader.current.StartedToRequestOnlineContent)
+				WaitUntilContentReadyReceivedOrServerErrorHappened();
 			base.Dispose();
 			foreach (var instance in instancesToDispose)
 				instance.Dispose();

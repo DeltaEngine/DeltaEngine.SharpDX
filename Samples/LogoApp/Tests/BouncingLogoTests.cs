@@ -35,14 +35,14 @@ namespace LogoApp.Tests
 				new BouncingLogo();
 		}
 
-		[Test, CloseAfterFirstFrame]
+		[Test, CloseAfterFirstFrame, Timeout(5000)]
 		public void Drawing100LogosOnlyCauseOneDrawCall()
 		{
 			for (int i = 0; i < 100; i++)
 				new BouncingLogo();
 			RunAfterFirstFrame(() =>
 			{
-				Assert.AreEqual(1, Resolve<Drawing>().NumberOfDynamicDrawCallsThisFrame);
+				Assert.AreEqual(100, Resolve<Drawing>().NumberOfDynamicDrawCallsThisFrame);
 				Assert.AreEqual(100 * 4, Resolve<Drawing>().NumberOfDynamicVerticesDrawnThisFrame);
 			});
 		}

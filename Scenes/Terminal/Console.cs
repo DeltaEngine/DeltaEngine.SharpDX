@@ -16,13 +16,12 @@ namespace DeltaEngine.Scenes.Terminal
 	/// Displays a console consisting of a command line, a number of history lines above it, and
 	/// autocompletion information below it.
 	/// </summary>
-	public class Console : FilledRect, KeyboardControllable
+	public sealed class Console : FilledRect, KeyboardControllable
 	{
 		public Console()
 			: base(Rectangle.Zero, Color.Black)
 		{
-			screen = ScreenSpace.Current;
-			screen.ViewportSizeChanged += UpdateDrawArea;
+			ScreenSpace.Scene.ViewportSizeChanged += UpdateDrawArea;
 			CreateText();
 			UpdateDrawArea();
 			Add(new InteractiveState { WantsFocus = true });
@@ -31,8 +30,6 @@ namespace DeltaEngine.Scenes.Terminal
 			AddKeyboardCommands();
 			IsEnabled = true;
 		}
-
-		private readonly ScreenSpace screen;
 
 		private void CreateText()
 		{
@@ -61,7 +58,7 @@ namespace DeltaEngine.Scenes.Terminal
 
 		private void UpdateDrawArea()
 		{
-			fontHeight = screen.FromPixelSpace(new Size(FontPixelSize)).Height;
+			fontHeight = ScreenSpace.Scene.FromPixelSpace(new Size(FontPixelSize)).Height;
 			DrawArea = GetDrawArea();
 			history.DrawArea = new Rectangle(DrawArea.Left, DrawArea.Top, DrawArea.Width,
 				MaxHistoryLines * fontHeight);
@@ -78,11 +75,12 @@ namespace DeltaEngine.Scenes.Terminal
 
 		private Rectangle GetDrawArea()
 		{
+			var screen1 = ScreenSpace.Scene;
 			return new Rectangle
 			{
-				Left = screen.Viewport.Left + LeftMargin,
-				Top = screen.Viewport.Top + TopMargin,
-				Width = screen.Viewport.Width - (LeftMargin + RightMargin),
+				Left = screen1.Viewport.Left + LeftMargin,
+				Top = screen1.Viewport.Top + TopMargin,
+				Width = screen1.Viewport.Width - (LeftMargin + RightMargin),
 				Height = (MaxHistoryLines + 1 + autoCompletionCount) * fontHeight
 			};
 		}

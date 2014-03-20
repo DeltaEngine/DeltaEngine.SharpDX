@@ -36,23 +36,23 @@ namespace DeltaEngine.Scenes.Controls
 			{
 				WorldWidth = (int)world.Width;
 				WorldHeight = (int)world.Height;
-				World = new Tile[WorldWidth,WorldHeight];
+				World = new Tile[WorldWidth * WorldHeight];
 			}
 
 			public int WorldWidth { get; private set; }
 			public int WorldHeight { get; private set; }
-			public Tile[,] World { get; private set; }
+			public Tile[] World { get; private set; }
 
 			private void CreateMap(Size map)
 			{
 				MapWidth = (int)map.Width;
 				MapHeight = (int)map.Height;
-				Map = new Sprite[MapWidth,MapHeight];
+				Map = new Sprite[MapWidth * MapHeight];
 			}
 
 			public int MapWidth { get; private set; }
 			public int MapHeight { get; private set; }
-			public Sprite[,] Map { get; private set; }
+			public Sprite[] Map { get; private set; }
 			public Vector2D RenderingTopLeft = new Vector2D(0.0001f, 0.0001f);
 			public Vector2D TargetTopLeft = Vector2D.Zero;
 		}
@@ -124,13 +124,14 @@ namespace DeltaEngine.Scenes.Controls
 		{
 			var worldX = (int)data.RenderingTopLeft.X + tileX;
 			var worldY = (int)data.RenderingTopLeft.Y + tileY;
-			data.Map[tileX, tileY].Material = data.World[worldX, worldY].Material;
-			data.Map[tileX, tileY].Color = data.World[worldX, worldY].Color;
-			data.Map[tileX, tileY].DrawArea =
+			var width = data.MapWidth;
+			data.Map[tileX + tileY * width].Material = data.World[worldX + worldY * width].Material;
+			data.Map[tileX + tileY * width].Color = data.World[worldX + worldY * data.MapWidth].Color;
+			data.Map[tileX + tileY * width].DrawArea =
 				new Rectangle(DrawArea.Left + (tileX - offset.X) * TileWidth,
 					DrawArea.Top + (tileY - offset.Y) * TileHeight, TileWidth, TileHeight);
 			if (lastRenderingTopLeft != GetIntPoint(data.RenderingTopLeft))
-				AdjustLastFrameComponents(data.Map[tileX, tileY]);
+				AdjustLastFrameComponents(data.Map[tileX + tileY * width]);
 		}
 
 		private void AdjustLastFrameComponents(Entity2D tile)

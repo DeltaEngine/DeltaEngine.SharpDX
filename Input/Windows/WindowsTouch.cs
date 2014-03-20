@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Input.Windows
 {
@@ -13,14 +14,16 @@ namespace DeltaEngine.Input.Windows
 	{
 		public WindowsTouch(Window window)
 		{
-			var positionTranslator = new CursorPositionTranslater(window);
-			touches = new TouchCollection(positionTranslator);
+			touches = new TouchCollection(new CursorPositionTranslater(window));
+			if (StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+				return;
+			//ncrunch: no coverage start
 			IsAvailable = CheckIfWindows7OrHigher();
 			if (IsAvailable)
 				hook = new TouchHook(window);
-			else //ncrunch: no coverage start (can only be reached from Windows Vista or earlier)
+			else
 				Logger.Warning("Touch is not supported by the OS. Touch triggers won't work!"); 
-		}//ncrunch: no coverage end
+		} 
 
 		private readonly TouchHook hook;
 		private readonly TouchCollection touches;

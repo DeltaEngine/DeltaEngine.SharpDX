@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using DeltaEngine.Commands;
+﻿using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;

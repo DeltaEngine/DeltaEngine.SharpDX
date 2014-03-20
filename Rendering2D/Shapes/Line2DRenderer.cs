@@ -16,7 +16,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 		public Line2DRenderer(Drawing draw)
 		{
 			this.draw = draw;
-			material = new Material(Shader.Position2DColor, "");
+			material = new Material(ShaderFlags.Position2DColored, "");
 		}
 
 		private readonly Drawing draw;

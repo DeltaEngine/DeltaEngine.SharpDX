@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace DeltaEngine.Datatypes
 {
@@ -6,6 +7,7 @@ namespace DeltaEngine.Datatypes
 	/// Contains the center position in 3D and radius. Allows quick collision and intersection tests.
 	/// </summary>
 	[DebuggerDisplay("BoundingSphere(Center={Center}, Radius={Radius})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct BoundingSphere
 	{
 		public BoundingSphere(Vector3D center, float radius)

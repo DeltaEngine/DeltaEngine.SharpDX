@@ -61,10 +61,5 @@ namespace DeltaEngine.Scenes.EntityDebugger
 		{
 			entities.Add(entity);
 		}
-
-		public bool IsPauseable
-		{
-			get { return false; }
-		}
 	}
 }

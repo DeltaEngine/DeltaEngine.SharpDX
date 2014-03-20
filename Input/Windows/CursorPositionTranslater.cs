@@ -16,9 +16,9 @@ namespace DeltaEngine.Input.Windows
 			this.window = window;
 		}
 
-		private readonly Window window;
+		internal readonly Window window;
 
-		// ncrunch: no coverage start
+		//ncrunch: no coverage start
 		public void SetCursorPosition(Vector2D position)
 		{
 			var newScreenPosition = ToSysPoint(ToScreenPositionFromScreenSpace(position));
@@ -29,10 +29,9 @@ namespace DeltaEngine.Input.Windows
 		{
 			var newPosition = new SysPoint();
 			NativeMethods.GetCursorPos(ref newPosition);
-			var screenspace = FromScreenPositionToScreenSpace(FromSysPoint(newPosition));
-			return new Vector2D((float)Math.Round(screenspace.X, 3), (float)Math.Round(screenspace.Y, 3));
-		}
-		// ncrunch: no coverage end
+			var screenSpace = FromScreenPositionToScreenSpace(FromSysPoint(newPosition));
+			return new Vector2D((float)Math.Round(screenSpace.X, 3), (float)Math.Round(screenSpace.Y, 3));
+		} //ncrunch: no coverage end
 
 		private static SysPoint ToSysPoint(Vector2D position)
 		{
@@ -44,15 +43,13 @@ namespace DeltaEngine.Input.Windows
 			position = ScreenSpace.Current.ToPixelSpace(position);
 			var newScreenPosition = ToSysPoint(position);
 			if (WindowHandleIsValidIntPtr())
-				//ncrunch: no coverage start
-				NativeMethods.ClientToScreen((IntPtr)window.Handle, ref newScreenPosition);
-				//ncrunch: no coverage end
+				NativeMethods.ClientToScreen(window.Handle, ref newScreenPosition); //ncrunch: no coverage
 			return FromSysPoint(newScreenPosition);
 		}
 
 		private bool WindowHandleIsValidIntPtr()
 		{
-			return window.Handle is IntPtr && (IntPtr)window.Handle != IntPtr.Zero;
+			return window.Handle != IntPtr.Zero;
 		}
 
 		private static Vector2D FromSysPoint(SysPoint position)
@@ -64,9 +61,7 @@ namespace DeltaEngine.Input.Windows
 		{
 			var screenPoint = ToSysPoint(position);
 			if (WindowHandleIsValidIntPtr())
-				//ncrunch: no coverage start
-				NativeMethods.ScreenToClient((IntPtr)window.Handle, ref screenPoint);
-					//ncrunch: no coverage end
+				NativeMethods.ScreenToClient(window.Handle, ref screenPoint); //ncrunch: no coverage
 			return ScreenSpace.Current.FromPixelSpace(FromSysPoint(screenPoint));
 		}
 	}

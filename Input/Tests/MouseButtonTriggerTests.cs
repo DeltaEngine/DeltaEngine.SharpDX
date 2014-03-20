@@ -3,7 +3,6 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
-using DeltaEngine.Platforms.Mocks;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
@@ -51,7 +50,7 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void IsTriggered()
 		{
-			if (resolver.GetType() != typeof(MockResolver))
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
 			var trigger = new MouseButtonTrigger(MouseButton.Right, State.Pressed);
 			bool invoked = false;

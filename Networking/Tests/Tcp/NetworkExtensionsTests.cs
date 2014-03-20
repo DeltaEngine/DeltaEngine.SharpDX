@@ -12,7 +12,12 @@ namespace DeltaEngine.Networking.Tests.Tcp
 			const string DeltaEngineExternalIp = "217.91.31.182";
 			IPEndPoint endpointFromDomain = NetworkExtensions.ToEndPoint("deltaengine.net", ServicesPort);
 			IPEndPoint endpointFromIp = NetworkExtensions.ToEndPoint(DeltaEngineExternalIp, ServicesPort);
+#if DEBUG			
 			const string DeltaEngineInternalIp = "192.168.0.5";
+#else
+			const string DeltaEngineInternalIp = "127.0.0.1";
+#endif
+
 			var validEndpoints = new[]
 			{ DeltaEngineExternalIp + ":" + ServicesPort, DeltaEngineInternalIp + ":" + ServicesPort };
 			Assert.Contains(endpointFromDomain.ToString(), validEndpoints);

@@ -38,10 +38,12 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void CheckMouseAndTriggerPosition()
 		{
-			var mouse = Resolve<MockMouse>();
+			var mouse = Resolve<Mouse>() as MockMouse;
+			if (mouse == null)
+				return; //ncrunch: no coverage
 			var trigger = new MousePositionTrigger(MouseButton.Right, State.Pressed);
 			trigger.Position = Vector2D.Zero;
-			mouse.SetPosition(trigger.Position);
+			mouse.SetNativePosition(trigger.Position);
 			Assert.AreEqual(mouse.Position, trigger.Position);
 		}
 	}

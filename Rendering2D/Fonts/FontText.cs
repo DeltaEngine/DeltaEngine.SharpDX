@@ -9,14 +9,12 @@ namespace DeltaEngine.Rendering2D.Fonts
 	/// </summary>
 	public class FontText : Entity2D
 	{
-		protected FontText() {}
-
-		public FontText(Font font, string text, Vector2D centerPosition)
-			: this(font, text, Rectangle.FromCenter(centerPosition, new Size(0.3f, 0.1f))) {}
+		internal protected FontText() {}
 
 		public FontText(Font font, string text, Rectangle drawArea)
 			: base(drawArea)
 		{
+			RenderLayer = DefaultFontRenderLayer;
 			// ReSharper disable DoNotCallOverridableMethodsInConstructor once
 			Add(text);
 			if (font.WasLoadedOk)
@@ -26,14 +24,16 @@ namespace DeltaEngine.Rendering2D.Fonts
 			Add(new FontName(font.Name));
 		}
 
-		private class FontName
+		public const int DefaultFontRenderLayer = 100;
+
+		internal class FontName
 		{
 			protected FontName() {}
 
 			public FontName(string name)
 			{
 				if (name.StartsWith("<GeneratedMockFont:"))
-					name = name.Substring(20, name.Length - 21);
+					name = name.Substring(19, name.Length - 20);
 				Name = name;
 			}
 

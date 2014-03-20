@@ -13,29 +13,26 @@ namespace Blocks
 	{
 		public Game(Window window)
 		{
-			content = new FruitBlocksContent();
-			menu = new MainMenu(content);
+			menu = new MainMenu();
+			//ncrunch: no coverage start
 			menu.InitGame += () =>
 			{
-				//ncrunch: no coverage start
 				menu.Hide();
 				StartGame();
 			}; //ncrunch: no coverage end
 			menu.QuitGame += window.CloseAfterFrame;
-			window.Title = "Fruit Blocks";
-			menu.SwitchContent += SwitchContent;
+			window.Title = "Blocks";
 		}
 
 		private MainMenu menu;
 		public UserInterface UserInterface { get; private set; }
 		public Controller Controller { get; private set; }
 		public bool IsInGame { get; set; }
-		private BlocksContent content;
 
 		public void StartGame()
 		{
-			UserInterface = new UserInterface(content);
-			Controller = new Controller(DisplayMode, content);
+			UserInterface = new UserInterface(menu.BlocksContent);
+			Controller = new Controller(DisplayMode, menu.BlocksContent);
 			IsInGame = true;
 			Initialize();
 		}
@@ -131,11 +128,6 @@ namespace Blocks
 		{
 			commands[7].Add(new TouchPositionTrigger());
 			commands[8].Add(new TouchPositionTrigger(State.Releasing));
-		}
-
-		public void SwitchContent(bool switched)
-		{
-			content = switched ? new JewelBlocksContent() : (BlocksContent)new FruitBlocksContent();
 		}
 	}
 }

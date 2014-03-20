@@ -43,7 +43,7 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
+    <ProjectReference Include="..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
       <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
       <Name>DeltaEngine.Rendering2D.Fonts</Name>
     </ProjectReference>

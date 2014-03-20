@@ -1,4 +1,5 @@
 ﻿using DeltaEngine.Commands;
+using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
@@ -47,6 +48,17 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			new Command(
 				point => centerButton.DrawArea = Rectangle.FromCenter(point, centerButton.DrawArea.Size)).
 				Add(new MouseMovementTrigger());
+		}
+
+		[Test]
+		public void SaveAndLoad()
+		{
+			centerButton.Text = "Original";
+			var stream = BinaryDataExtensions.SaveToMemoryStream(centerButton);
+			var loadedButton = (RadioButton)stream.CreateFromMemoryStream();
+			loadedButton.Text = "Loaded";
+			Assert.AreEqual(Center, loadedButton.DrawArea);
+			loadedButton.DrawArea = loadedButton.DrawArea.Move(new Vector2D(0.0f, 0.1f));
 		}
 	}
 }

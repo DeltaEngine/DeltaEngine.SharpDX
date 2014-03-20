@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
-using SystemSize = System.Drawing.Size;
-using SystemPoint = System.Drawing.Point;
 using Color = DeltaEngine.Datatypes.Color;
 using Orientation = DeltaEngine.Core.Orientation;
 using Size = DeltaEngine.Datatypes.Size;
+using SystemSize = System.Drawing.Size;
+using SystemPoint = System.Drawing.Point;
 
 namespace DeltaEngine.Platforms.Windows
 {
@@ -29,7 +30,7 @@ namespace DeltaEngine.Platforms.Windows
 				form.FormBorderStyle = FormBorderStyle.None;
 				form.TopMost = true;
 				form.StartPosition = FormStartPosition.Manual;
-				form.DesktopLocation = new Point(0, 0);
+				form.DesktopLocation = new SystemPoint(0, 0);
 			}
 			else
 			{
@@ -62,7 +63,6 @@ namespace DeltaEngine.Platforms.Windows
 			{
 				if (NativeEvent != null)
 					NativeEvent(ref m);
-
 				base.WndProc(ref m);
 			}
 
@@ -112,7 +112,7 @@ namespace DeltaEngine.Platforms.Windows
 			get { return panel.Visible; }
 		}
 
-		public object Handle
+		public IntPtr Handle
 		{
 			get { return panel.IsDisposed ? IntPtr.Zero : panel.Handle; }
 		}
@@ -128,11 +128,20 @@ namespace DeltaEngine.Platforms.Windows
 			}
 		}
 
+		public Vector2D ViewportPixelPosition
+		{
+			get
+			{
+				var screenPoint = panel.PointToScreen(new Point(0, 0));
+				return new Vector2D(screenPoint.X, screenPoint.Y);
+			}
+		}
+
 		public Size TotalPixelSize
 		{
 			get { return new Size(panel.Width, panel.Height); }
 		}
-		
+
 		public Vector2D PixelPosition
 		{
 			get { return new Vector2D(panel.Location.X, panel.Location.Y); }
@@ -173,12 +182,12 @@ namespace DeltaEngine.Platforms.Windows
 
 		private static void SetFullscreenNative(IntPtr hwnd, Size size)
 		{
-			 SetWindowPos(hwnd, IntPtr.Zero, 0, 0, (int)size.Width, (int)size.Height, 64);
+			SetWindowPos(hwnd, IntPtr.Zero, 0, 0, (int)size.Width, (int)size.Height, 64);
 		}
 
 		[DllImport("user32.dll")]
-		private static extern void SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int left, int top,
-			int width, int height, uint flags);
+		private static extern void SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int left,
+			int top, int width, int height, uint flags);
 
 		protected virtual void SetResolution(Size displaySize)
 		{
@@ -229,10 +238,22 @@ namespace DeltaEngine.Platforms.Windows
 					Cursor.Hide();
 				else
 					Cursor.Show();
+				currentCursor = null;
 			}
 		}
 
 		private bool remDisabledShowCursor;
+		private Cursor currentCursor;
+
+		public bool IsWindowsFormAndNotJustAPanel { get { return panel is Form; } }
+
+		public void SetCursorIcon(string iconFilePath)
+		{
+			ShowCursor = true;
+			currentCursor = string.IsNullOrEmpty(iconFilePath)
+				? Cursors.Default : new Cursor(iconFilePath);
+			Cursor.Current = currentCursor;
+		}
 
 		public virtual string ShowMessageBox(string caption, string message, string[] buttons)
 		{
@@ -253,16 +274,16 @@ namespace DeltaEngine.Platforms.Windows
 		/// </summary>
 		public void CopyTextToClipboard(string text)
 		{
-			var staThread = new Thread(() => TrySetClipboardText(text));
+			var staThread = new Thread(() => SetClipboardText(text));
 			staThread.SetApartmentState(ApartmentState.STA);
 			staThread.Start();
 		}
 
-		private static void TrySetClipboardText(string text)
+		private static void SetClipboardText(string text)
 		{
 			try
 			{
-				Clipboard.SetText(text, TextDataFormat.Text);
+				TrySetClipboardText(text);
 			}
 			catch (Exception)
 			{
@@ -270,9 +291,16 @@ namespace DeltaEngine.Platforms.Windows
 			}
 		}
 
+		private static void TrySetClipboardText(string text)
+		{
+			Clipboard.SetText(text, TextDataFormat.Text);
+		}
+
 		public virtual void Present()
 		{
 			Application.DoEvents();
+			if (currentCursor != null)
+				Cursor.Current = currentCursor;
 		}
 
 		public void CloseAfterFrame()

@@ -18,6 +18,16 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		}
 
 		[Test, CloseAfterFirstFrame]
+		public void ChangePolygonAfterFirstFrame()
+		{
+			var polygon = new Polygon2D(Rectangle.One, Color.White);
+			polygon.Points.AddRange(new[] { Vector2D.Zero, Vector2D.One, Vector2D.UnitY });
+			AdvanceTimeAndUpdateEntities();
+			polygon.Points.Add(Vector2D.Zero);
+			AdvanceTimeAndUpdateEntities();
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void ChangeOutlineColor()
 		{
 			var polygon = new Polygon2D(Rectangle.One, Color.Red);
@@ -39,7 +49,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			var ellipse = new Ellipse(Vector2D.Half, 0.4f, 0.2f, Color.Blue);
 			var points = ellipse.Get<List<Vector2D>>();
 			points.Clear();
-			ellipse.Remove<Ellipse.UpdatePoints>();
+			ellipse.Remove<Ellipse.UpdatePointsIfRadiusChanges>();
 			ellipse.Add(new OutlineColor(Color.Red));
 			ellipse.OnDraw<DrawPolygon2DOutlines>();
 		}
@@ -86,7 +96,5 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 					CreatePolygon(new Vector2D(0.025f, 0.025f) + new Vector2D(x / 20.0f, y / 20.0f), 0.025f,
 						Color.GetRandomColor());
 		}
-
-
 	}
 }

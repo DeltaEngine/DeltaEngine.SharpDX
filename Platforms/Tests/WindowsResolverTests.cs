@@ -1,4 +1,5 @@
 ﻿using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 using DeltaEngine.Graphics.Mocks;
 using DeltaEngine.Mocks;
@@ -33,6 +34,7 @@ namespace DeltaEngine.Platforms.Tests
 			}
 
 			protected override void RegisterMediaTypes() {}
+			protected override void RegisterPhysics() {}
 		}
 
 		[Test, Category("Slow")]
@@ -45,6 +47,8 @@ namespace DeltaEngine.Platforms.Tests
 		[Test, Category("Slow")]
 		public void RegisterRenderableObject()
 		{
+			if (!StackTraceExtensions.IsStartedFromNCrunch())
+				return;
 			using (var device = new MockDevice(new MockWindow()))
 			{
 				device.Clear();

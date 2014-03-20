@@ -25,6 +25,32 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 					Color.GetRandomColor());
 		}
 
+		[Test, ApproveFirstFrameScreenshot]
+		public void CheckCollisionOnAllSidesWithRotatedRectangles()
+		{
+			var rect = new FilledRect(new Rectangle(0.4f, 0.4f, 0.2f, 0.2f), Color.White);
+			var top = new FilledRect(new Rectangle(0.4f, 0.2f, 0.2f, 0.2f), Color.Yellow)
+			{
+				Rotation = 45
+			};
+			var left = new FilledRect(new Rectangle(0.2f, 0.4f, 0.2f, 0.2f), Color.Blue)
+			{
+				Rotation = 135
+			};
+			var bottom = new FilledRect(new Rectangle(0.4f, 0.6f, 0.2f, 0.2f), Color.Green)
+			{
+				Rotation = 225
+			};
+			var right = new FilledRect(new Rectangle(0.6f, 0.4f, 0.2f, 0.2f), Color.Red)
+			{
+				Rotation = 315
+			};
+			Assert.IsTrue(rect.DrawArea.IsColliding(0, top.DrawArea, top.Rotation));
+			Assert.IsTrue(rect.DrawArea.IsColliding(0, left.DrawArea, left.Rotation));
+			Assert.IsTrue(rect.DrawArea.IsColliding(0, bottom.DrawArea, bottom.Rotation));
+			Assert.IsTrue(rect.DrawArea.IsColliding(0, right.DrawArea, right.Rotation));
+		}
+
 		[Test]
 		public void ControlRectanglesWithMouseAndWhenTheyCollideTheyChangeColor()
 		{
@@ -47,6 +73,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			public override void Update(IEnumerable<Entity> entities)
 			{
 				var copyOfEntities = new List<Entity>(entities);
+				// ReSharper disable PossibleInvalidCastExceptionInForeachLoop
 				foreach (Entity2D entity1 in entities)
 					foreach (Entity2D entity2 in copyOfEntities)
 						if (entity1 != entity2)
@@ -75,9 +102,9 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			var corners = new List<Vector2D>
 			{
 				Vector2D.Zero,
-				Vector2D.UnitX,
+				Vector2D.UnitY,
 				Vector2D.One,
-				Vector2D.UnitY
+				Vector2D.UnitX
 			};
 			AdvanceTimeAndUpdateEntities();
 			Assert.AreEqual(corners, rect.Points);
@@ -139,7 +166,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			public override void Update(IEnumerable<Entity> entities)
 			{
 				foreach (FilledRect rect in entities)
-					rect.Rotation += 5 * Time.Delta;
+					rect.Rotation += 20 * Time.Delta;
 			}
 		} //ncrunch: no coverage end
 
@@ -148,6 +175,25 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 		{
 			new FilledRect(Rectangle.One, Color.Red) { IsVisible = false };
 			Assert.DoesNotThrow(() => AdvanceTimeAndUpdateEntities());
+		}
+
+		[Test]
+		public void RenderRectAndLine()
+		{
+			var drawArea = new Rectangle(0.3f, 0.3f, 0.4f, 0.4f);
+			var rect = new FilledRect(drawArea, Color.Red);
+			var line = new Line2D(drawArea, Color.Yellow) { RenderLayer = 1 };
+			new Command(Command.Drag, position => rect.Center = line.Center = position);
+		}
+
+		[Test, CloseAfterFirstFrame]
+		public void PointsShouldBeAddedCounterClockWise()
+		{
+			var filledRect = new FilledRect(new Rectangle(0.3f, 0.3f, 0.4f, 0.4f), Color.Blue);
+			Assert.IsTrue(filledRect.Points[0].X < filledRect.Points[3].X);
+			Assert.IsTrue(filledRect.Points[1].Y > filledRect.Points[0].Y);
+			Assert.IsTrue(filledRect.Points[2].X > filledRect.Points[1].X);
+			Assert.IsTrue(filledRect.Points[3].Y < filledRect.Points[2].Y);
 		}
 	}
 }

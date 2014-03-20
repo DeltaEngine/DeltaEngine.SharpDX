@@ -24,27 +24,21 @@ namespace DeltaEngine.Content
 		/// As opposed to loading a material from content it can also be created with this constructor.
 		/// If imageOrAnimationName is used you need to provide either a DiffuseMap or an Animation.
 		/// </summary>
-		public Material(string shaderName, string imageOrAnimationName)
-			: base("<GeneratedMaterial:" + shaderName + ":" + imageOrAnimationName + ">")
+		public Material(ShaderFlags shaderFlags, string imageOrAnimationName)
+			: base("<GeneratedMaterial:" + shaderFlags + ":" + imageOrAnimationName + ">")
 		{
-			Initialize(shaderName, imageOrAnimationName, Color.White);
+			Initialize(shaderFlags, imageOrAnimationName, Color.White);
 			if (MetaData == null)
 				MetaData = new ContentMetaData();
 		}
 
-		private void Initialize(string shaderName, string imageOrAnimationName, Color defaultColor)
+		private void Initialize(ShaderFlags flags, string imageOrAnimationName, Color defaultColor)
 		{
-			if (string.IsNullOrEmpty(shaderName))
-				throw new UnableToCreateMaterialWithoutValidShaderName();
-			Shader = ContentLoader.Load<Shader>(shaderName);
+			Shader = ContentLoader.Create<Shader>(new ShaderCreationData(flags));
 			DefaultColor = defaultColor;
 			RenderingCalculator = new RenderingCalculator();
 			if (!String.IsNullOrEmpty(imageOrAnimationName))
-				try
-				{
-					DetermineUseCaseData(imageOrAnimationName);
-				}
-				catch (Exception) { }//ncrunch: no coverage
+				DetermineUseCaseData(imageOrAnimationName);
 		}
 
 		private void DetermineUseCaseData(string imageOrAnimationName)
@@ -84,8 +78,6 @@ namespace DeltaEngine.Content
 
 		private SpriteSheetAnimation spriteSheet;
 
-		public class UnableToCreateMaterialWithoutValidShaderName : Exception {}
-
 		public Shader Shader { get; private set; }
 		public Color DefaultColor { get; set; }
 		public RenderingCalculator RenderingCalculator { get; set; }
@@ -115,40 +107,62 @@ namespace DeltaEngine.Content
 		/// <summary>
 		/// Special constructor for creating custom shaders and images or reusing existing instances.
 		/// </summary>
-		public Material(Shader customShader, Image customDiffuseMap, Size customPixelSize)
+		public Material(Shader customShader, Image customDiffuseMap)
 			: base("<GeneratedCustomMaterial:" + customShader + ":" + customDiffuseMap + ">")
 		{
 			Shader = customShader;
 			DiffuseMap = customDiffuseMap;
-			pixelSize = customPixelSize;
 			DefaultColor = Color.White;
 			MetaData = new ContentMetaData();
 			RenderingCalculator = new RenderingCalculator();
 		}
 
-		public Material(Size customPixelSize, Color nonUVShaderColor)
-			: base("<GeneratedCustomMaterial:" + customPixelSize + ":" + nonUVShaderColor + ">")
+		/// <summary>
+		/// Creates an 1x1 image with a colored shader material for simple solid flat surfaces.
+		/// </summary>
+		public Material(Color nonUVShaderColor)
+			: base("<GeneratedCustomMaterial:" + nonUVShaderColor + ">")
 		{
-			Shader = ContentLoader.Load<Shader>(Shader.Position2DColor);
-			DiffuseMap = ContentLoader.Create<Image>(new ImageCreationData(customPixelSize));
+			Shader = ContentLoader.Create<Shader>(new ShaderCreationData(ShaderFlags.Position2DColored));
+			DiffuseMap = ContentLoader.Create<Image>(new ImageCreationData(Size.One));
 			DiffuseMap.Fill(Color.White);
-			pixelSize = customPixelSize;
+			pixelSize = Size.One;
 			DefaultColor = nonUVShaderColor;
 			MetaData = new ContentMetaData();
 			RenderingCalculator = new RenderingCalculator();
 		}
 
 		/// <summary>
-		/// When using the Sprite(Material, Point) constructor this size is used for the draw area.
+		/// Creates a new image with the specified size to be filled dynamically (via .DiffuseMap.Fill).
+		/// </summary>
+		public Material(Size customPixelSize, ShaderFlags shaderFlags = ShaderFlags.Position2DTextured)
+			: base("<GeneratedCustomMaterial:" + shaderFlags + ":" + customPixelSize + ">")
+		{
+			Shader = ContentLoader.Create<Shader>(new ShaderCreationData(shaderFlags));
+			DiffuseMap = ContentLoader.Create<Image>(new ImageCreationData(customPixelSize));
+			pixelSize = customPixelSize;
+			DefaultColor = Color.White;
+			MetaData = new ContentMetaData();
+			RenderingCalculator = new RenderingCalculator();
+		}
+
+		/// <summary>
+		/// When using the Sprite(Material, Vector2D) constructor this size is used for the draw area.
 		/// It is calculated from the DiffuseMap.PixelSize and the default content resolution, i.e.
 		/// a 100x200 pixel image will be displayed aspect ratio correct relative to the window size.
 		/// </summary>
 		public Size MaterialRenderSize
 		{
-			get
-			{
-				return GetRenderSize(spriteSheet != null ? spriteSheet.SubImageSize : pixelSize);
-			}
+			get { return GetRenderSize(spriteSheet != null ? spriteSheet.SubImageSize : pixelSize); }
+		}
+
+		public Material(Color nonUvColor, ShaderFlags nonUvShaderFlags)
+			: base("<GeneratedCustomMaterial:" + nonUvColor + ":" + nonUvShaderFlags + ">")
+		{
+			Shader = ContentLoader.Create<Shader>(new ShaderCreationData(nonUvShaderFlags));
+			DefaultColor = nonUvColor;
+			MetaData = new ContentMetaData();
+			RenderingCalculator = new RenderingCalculator();
 		}
 
 		private Size GetRenderSize(Size imagePixelSize)
@@ -179,10 +193,8 @@ namespace DeltaEngine.Content
 
 		protected override void LoadData(Stream fileData)
 		{
-			var shaderName = MetaData.Get("ShaderName", "");
-			if (string.IsNullOrEmpty(shaderName))
-				throw new UnableToCreateMaterialWithoutValidShaderName();
-			Shader = ContentLoader.Load<Shader>(shaderName);
+			var shaderFlags = MetaData.Get("ShaderFlags", ShaderFlags.Position2DTextured);
+			Shader = ContentLoader.Create<Shader>(new ShaderCreationData(shaderFlags));
 			DefaultColor = MetaData.Get("Color", Color.White);
 			RenderSizeMode = MetaData.Get("RenderSizeMode", RenderSizeMode.PixelBased);
 			LoadImageData();
@@ -195,15 +207,13 @@ namespace DeltaEngine.Content
 				return; // ncrunch: no coverage
 			DetermineUseCaseData(imageOrAnimationName);
 			if (DiffuseMap != null)
-				try
-				{
-					DiffuseMap.BlendMode = MetaData.Get("BlendMode", "Normal").TryParse(BlendMode.Normal);
-				}
-				catch (Exception)
-				{
-					DiffuseMap.BlendMode = BlendMode.Normal;
-				}
+				DiffuseMap.BlendMode = TryLoadBlendMode();
 			LoadLightMap();
+		}
+
+		private BlendMode TryLoadBlendMode()
+		{
+			return MetaData.Get("BlendMode", "Normal").TryParse(BlendMode.Normal);
 		}
 
 		private void LoadLightMap()
@@ -215,26 +225,11 @@ namespace DeltaEngine.Content
 
 		public Image LightMap { get; set; }
 
-		public static Material EmptyTransparentMaterial
-		{
-			get
-			{
-				if (transparentMaterial != null)
-					return transparentMaterial;
-				transparentMaterial = new Material(ContentLoader.Load<Shader>(Shader.Position2DColor), null,
-					Size.One);
-				transparentMaterial.DefaultColor = Color.TransparentBlack;
-				return transparentMaterial;
-			}
-		}
-
-		private static Material transparentMaterial;
-
 		protected override void DisposeData() {}
 
 		public bool Equals(Material other)
 		{
-			return diffuseMap == other.diffuseMap && Shader == other.Shader &&
+			return diffuseMap == other.diffuseMap && Shader.Equals(other.Shader) &&
 				RenderSizeMode == other.RenderSizeMode && DefaultColor == other.DefaultColor &&
 				animation == other.animation && Duration == other.Duration &&
 				spriteSheet == other.spriteSheet && RenderingCalculator.Equals(other.RenderingCalculator);

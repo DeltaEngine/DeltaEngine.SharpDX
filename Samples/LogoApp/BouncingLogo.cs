@@ -13,7 +13,7 @@ namespace LogoApp
 	public class BouncingLogo : Sprite
 	{
 		public BouncingLogo()
-			: base(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"), Vector2D.Half)
+			: base(new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo"), Vector2D.Half)
 		{
 			Color = Color.GetRandomColor();
 			var data = new SimplePhysics.Data

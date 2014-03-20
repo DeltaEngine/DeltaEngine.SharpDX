@@ -14,13 +14,56 @@ namespace DeltaEngine.Scenes.Controls
 	/// </summary>
 	public class Control : Sprite, Updateable
 	{
-		protected Control() {}
+		protected Control()
+		{
+			AnchoringSize = Size.Unused;
+			SceneDrawArea = Rectangle.Unused;
+		}
+
+		internal Size AnchoringSize { get; set; }
+		internal Rectangle SceneDrawArea { get; set; }
 
 		protected Control(Rectangle drawArea)
-			: base(Material.EmptyTransparentMaterial, drawArea)
+			: base(CreateEmptyTransparentMaterial(), drawArea)
 		{
 			Add(new InteractiveState());
+			Add(new AnchoringState());
 			Start<ControlUpdater>();
+			AssignName();
+			AnchoringSize = Size.Unused;
+			SceneDrawArea = Rectangle.Unused;
+		}
+
+		private static Material CreateEmptyTransparentMaterial()
+		{
+			var ui2DShaderData = new ShaderCreationData(ShaderFlags.Position2DColored);
+			return new Material(ContentLoader.Create<Shader>(ui2DShaderData), null)
+			{
+				DefaultColor = Color.TransparentBlack
+			};
+		}
+
+		private void AssignName()
+		{
+			var controls = EntitiesRunner.Current.GetEntitiesOfType<Control>();
+			int id = 0;
+			string name;
+			do
+			{
+				name = GetTypeName() + ++id;
+			} while (controls.Any(control => control != this && control.Name == name));
+			Name = name;
+		}
+
+		private string GetTypeName()
+		{
+			return GetType().ToString().Split('.')[GetType().ToString().Split('.').Count() - 1];
+		}
+
+		public string Name
+		{		
+			get { return Contains<string>() ? Get<string>() : "";  }
+			set { Set(value); }
 		}
 
 		protected void AddChild(Entity2D entity)
@@ -33,7 +76,7 @@ namespace DeltaEngine.Scenes.Controls
 
 		internal readonly List<Child> children = new List<Child>();
 
-		internal protected class Child
+		protected internal class Child
 		{
 			protected Child() {} //ncrunch: no coverage
 
@@ -151,13 +194,11 @@ namespace DeltaEngine.Scenes.Controls
 				children[i].Entity2D.RenderLayer = RenderLayer + i + 1;
 		}
 
-		public bool IsPauseable { get { return false; } }
-
 		public InteractiveState State
 		{
 			get
 			{
-				if(Contains<InteractiveState>())
+				if (Contains<InteractiveState>())
 					return Get<InteractiveState>();
 				var state = new InteractiveState(); //ncrunch: no coverage start
 				Add(state);
@@ -172,5 +213,53 @@ namespace DeltaEngine.Scenes.Controls
 		}
 
 		public Action Clicked;
+
+		public override bool IsPauseable
+		{
+			get { return false; }
+		}
+
+		public Margin LeftMargin
+		{
+			get { return AnchoringState.LeftMargin; }
+			set { AnchoringState.LeftMargin = value; }
+		}
+
+		private AnchoringState AnchoringState
+		{
+			get { return Get<AnchoringState>(); }
+		}
+
+		public Margin RightMargin
+		{
+			get { return AnchoringState.RightMargin; }
+			set { AnchoringState.RightMargin = value; }
+		}
+
+		public Margin TopMargin
+		{
+			get { return AnchoringState.TopMargin; }
+			set { AnchoringState.TopMargin = value; }
+		}
+
+		public Margin BottomMargin
+		{
+			get { return AnchoringState.BottomMargin; }
+			set { AnchoringState.BottomMargin = value; }
+		}
+
+		public int GetLevel()
+		{
+			var leftLevel = LeftMargin.Other == null ? 0 : LeftMargin.Other.GetLevel() + 1;
+			var rightLevel = RightMargin.Other == null ? 0 : RightMargin.Other.GetLevel() + 1;
+			var topLevel = TopMargin.Other == null ? 0 : TopMargin.Other.GetLevel() + 1;
+			var bottomLevel = BottomMargin.Other == null ? 0 : BottomMargin.Other.GetLevel() + 1;
+			return Math.Max(Math.Max(Math.Max(leftLevel, rightLevel), topLevel), bottomLevel);
+		}
+
+		internal void RefreshDrawAreaIfAnchored()
+		{
+			DrawArea = AnchoringState.CalculateDrawArea(this);
+		}
 	}
 }

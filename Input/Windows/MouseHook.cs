@@ -24,7 +24,6 @@ namespace DeltaEngine.Input.Windows
 			if (previousState == State.Released && currentlyPressed[(int)button] == false &&
 				wasReleasedThisFrame[(int)button])
 				return State.Pressing; //ncrunch: no coverage
-
 			wasReleasedThisFrame[(int)button] = false;
 			return previousState.UpdateOnNativePressing(currentlyPressed[(int)button]);
 		}
@@ -32,8 +31,7 @@ namespace DeltaEngine.Input.Windows
 		private readonly bool[] currentlyPressed = new bool[MouseButton.Left.GetCount()];
 		private readonly bool[] wasReleasedThisFrame = new bool[MouseButton.Left.GetCount()];
 
-		//ncrunch: no coverage start
-		private void HandleMouseMessage(IntPtr wParam, IntPtr lParam, int msg)
+		private void HandleMouseMessage(IntPtr wParam, IntPtr lParam, int msg) //ncrunch: no coverage start
 		{
 			var data = new int[6];
 			Marshal.Copy(lParam, data, 0, 6);
@@ -42,13 +40,18 @@ namespace DeltaEngine.Input.Windows
 
 		private void UpdateMouseButtonsAndWheel(int intParam, int mouseData)
 		{
-			if (intParam == WMMousewheel)
-				ScrollWheelValue += mouseData;
+			if (intParam == WMMouseWheel)
+				ScrollWheelValue += mouseData / MouseWheelDivider;
 			else
 				UpdateMouseButton(intParam, mouseData);
 		}
 
-		internal const int WMMousewheel = 0x020A;
+		internal const int WMMouseWheel = 0x020A;
+		/// <summary>
+		/// Values are multiples of 120 and only the high order word is used (shift one word = 16 bit).
+		/// http://msdn.microsoft.com/en-us/library/windows/desktop/ms645617(v=vs.85).aspx
+		/// </summary>
+		private const int MouseWheelDivider = 120 << 16;
 
 		private void UpdateMouseButton(int intParam, int mouseData)
 		{
@@ -57,8 +60,7 @@ namespace DeltaEngine.Input.Windows
 			currentlyPressed[(int)button] = isPressed;
 			if (isPressed == false)
 				wasReleasedThisFrame[(int)button] = true;
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		internal static bool IsPressed(int wParam)
 		{
@@ -104,15 +106,13 @@ namespace DeltaEngine.Input.Windows
 
 		private static readonly int[] DownButtonIds =
 		{
-			0x0201, 0x0203, 0x0204, 0x0206, 0x0207, 0x0209, 
-			0x020B, 0x00A1, 0x00A3, 0x00A4, 0x00A6, 0x00A7, 
-			0x00A9, 0x00AB
+			0x0201, 0x0203, 0x0204, 0x0206, 0x0207, 0x0209, 0x020B, 0x00A1, 0x00A3, 0x00A4, 0x00A6,
+			0x00A7, 0x00A9, 0x00AB
 		};
 
 		private static readonly int[] UpButtonIds =
 		{
-			0x0202, 0x00A2, 0x0205, 0x00A5, 0x0208, 0x00A8, 
-			0x020C, 0x00AC
+			0x0202, 0x00A2, 0x0205, 0x00A5, 0x0208, 0x00A8, 0x020C, 0x00AC
 		};
 	}
 }

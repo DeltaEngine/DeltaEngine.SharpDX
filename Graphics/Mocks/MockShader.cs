@@ -5,13 +5,8 @@ namespace DeltaEngine.Graphics.Mocks
 {
 	public class MockShader : ShaderWithFormat
 	{
-		public MockShader(string contentName, Device device)
-			: base(contentName)
-		{
-			this.device = device;
-		}
-
-		private readonly Device device;
+		public MockShader(ShaderWithFormatCreationData creationData, Device device)
+			: this((ShaderCreationData)creationData, device) {}
 
 		public MockShader(ShaderCreationData customShader, Device device)
 			: base(customShader)
@@ -20,25 +15,51 @@ namespace DeltaEngine.Graphics.Mocks
 			CallPublicImplementationMethodsToFixCoverage();
 		}
 
+		private readonly Device device;
+
+		protected override void FillShaderCode()
+		{
+			base.FillShaderCode();
+			TryCreateShader();
+		}
+
+		protected override void CreateShader()
+		{
+			const string BadKeyword = "Bad";
+			if (OpenGLVertexCode.Contains(BadKeyword))
+				ThrowShaderCreationException("OpenGLVertexCode");
+			if (OpenGLFragmentCode.Contains(BadKeyword))
+				ThrowShaderCreationException("OpenGLFragmentCode");
+			if (DX11Code.Contains(BadKeyword))
+				ThrowShaderCreationException("DX11Code");
+			if (DX9Code.Contains(BadKeyword))
+				ThrowShaderCreationException("DX9Code");
+		}
+
+		private static void ThrowShaderCreationException(string shaderCodeType)
+		{
+			throw new ShaderCreationHasFailed(shaderCodeType + " is no valid shader code");
+		}
+
 		private void CallPublicImplementationMethodsToFixCoverage()
 		{
-			SetModelViewProjectionMatrix(Matrix.Identity);
+			SetModelViewProjection(Matrix.Identity);
 			SetJointMatrices(new Matrix[0]);
 			SetDiffuseTexture(null);
 			SetLightmapTexture(null);
-			SetLightPosition(Vector3D.Zero);
-			SetViewPosition(Vector3D.Zero);
 			Bind();
 			BindVertexDeclaration();
+			ApplyFogSettings(null);
 		}
 
 		protected override void DisposeData() {}
-		public override void SetModelViewProjectionMatrix(Matrix matrix) {}
+
+		public override void SetModelViewProjection(Matrix model, Matrix view, Matrix projection) {}
+		public override void SetModelViewProjection(Matrix matrix) {}
 		public override void SetJointMatrices(Matrix[] jointMatrices) {}
 		public override void SetDiffuseTexture(Image texture) {}
 		public override void SetLightmapTexture(Image texture) {}
-		public override void SetLightPosition(Vector3D vector) {}
-		public override void SetViewPosition(Vector3D vector) {}
+		public override void SetSunLight(SunLight light) {}
 
 		public override void Bind()
 		{
@@ -46,6 +67,6 @@ namespace DeltaEngine.Graphics.Mocks
 		}
 
 		public override void BindVertexDeclaration() {}
-		protected override void Create() {}
+		public override void ApplyFogSettings(FogSettings fogSettings) {}
 	}
 }

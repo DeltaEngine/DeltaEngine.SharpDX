@@ -20,26 +20,26 @@ namespace DeltaEngine.Input.Windows.Tests
 		private TouchCollection emptyTouchCollection;
 		private TouchCollection touchCollection;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void FindIndexByIdOrGetFreeIndex()
 		{
-			Assert.AreEqual(0, emptyTouchCollection.FindIndexByIdOrGetFreeIndex(478));
+			Assert.AreEqual(0, touchCollection.FindIndexByIdOrGetFreeIndex(478));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void FindIndexByIdWithExistingId()
 		{
 			emptyTouchCollection.ids[5] = 5893;
 			Assert.AreEqual(5, emptyTouchCollection.FindIndexByIdOrGetFreeIndex(5893));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void FindFreeIndex()
 		{
-			Assert.AreEqual(0, emptyTouchCollection.FindIndexByIdOrGetFreeIndex(456));
+			Assert.AreEqual(0, touchCollection.FindIndexByIdOrGetFreeIndex(456));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void FindFreeIndexWithoutAnyFreeIndices()
 		{
 			for (int index = 0; index < emptyTouchCollection.ids.Length; index++)
@@ -47,7 +47,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(-1, emptyTouchCollection.FindIndexByIdOrGetFreeIndex(546));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void IsTouchDown()
 		{
 			Assert.True(TouchCollection.IsTouchDown(NativeTouchInput.FlagTouchDown));
@@ -56,7 +56,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.False(TouchCollection.IsTouchDown(0x0008));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateTouchState()
 		{
 			touchCollection.UpdateTouchState(0, NativeTouchInput.FlagTouchDown);
@@ -65,14 +65,24 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(State.Releasing, touchCollection.states[0]);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void CalculateQuadraticPosition()
 		{
-			Vector2D quadPosition = touchCollection.CalculateQuadraticPosition(400 * 100, 300 * 100);
+			var testData = GetTestTouchInput();
+			Vector2D quadPosition = touchCollection.CalculateQuadraticPosition(testData.X, testData.Y);
 			Assert.AreEqual(ScreenSpace.Current.FromPixelSpace(new Vector2D(400, 300)), quadPosition);
 		}
 
-		[Test]
+		private NativeTouchInput GetTestTouchInput()
+		{
+			var positionTranslater = new CursorPositionTranslater(Resolve<Window>());
+			var screenSpacePosition = ScreenSpace.Current.FromPixelSpace(new Vector2D(400, 300));
+			var screenPos = positionTranslater.ToScreenPositionFromScreenSpace(screenSpacePosition);
+			return new NativeTouchInput(NativeTouchInput.FlagTouchDown, 15, (int)screenPos.X * 100,
+				(int)screenPos.Y * 100);
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void ProcessNewTouches()
 		{
 			var newTouches = new List<NativeTouchInput> { GetTestTouchInput() };
@@ -83,12 +93,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(State.Pressing, touchCollection.states[0]);
 		}
 
-		private static NativeTouchInput GetTestTouchInput()
-		{
-			return new NativeTouchInput(NativeTouchInput.FlagTouchDown, 15, 40000, 30000);
-		}
-
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateTouchStateWithoutNewData()
 		{
 			touchCollection.ids[0] = 15;
@@ -102,7 +107,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(-1, touchCollection.ids[0]);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateAllTouches()
 		{
 			var newTouches = new List<NativeTouchInput> { GetTestTouchInput() };
@@ -116,7 +121,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(State.Pressed, touchCollection.states[0]);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateTouchWithUpdatedActiveTouch()
 		{
 			var newTouches = new List<NativeTouchInput> { GetTestTouchInput() };
@@ -130,7 +135,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(State.Pressed, touchCollection.states[0]);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateTouchWithoutAnyActiveTouch()
 		{
 			var newTouches = new List<NativeTouchInput>();
@@ -144,7 +149,7 @@ namespace DeltaEngine.Input.Windows.Tests
 			Assert.AreEqual(State.Released, touchCollection.states[0]);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UpdateTouchIfPreviouslyPresentWithMultipleNewTouches()
 		{
 			var newTouches = new List<NativeTouchInput>

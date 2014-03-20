@@ -15,16 +15,13 @@ namespace DeltaEngine.Rendering2D.Shapes
 
 		private void UpdateCorners()
 		{
-			var existingPoints = Points;
-			existingPoints.Clear();
-			existingPoints.AddRange(DrawArea.GetRotatedRectangleCorners(RotationCenter, Rotation));
+			Points.AddRange(DrawArea.GetRotatedRectangleCorners(RotationCenter, Rotation));
 		}
 
-		protected override void NextUpdateStarted()
+		protected override void OnRotationChanged()
 		{
-			base.NextUpdateStarted();
-			if (DidFootprintChange)
-				UpdateCorners();
+			Points.Clear();
+			UpdateCorners();
 		}
 	}
 }

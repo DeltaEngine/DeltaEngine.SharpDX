@@ -50,7 +50,7 @@ namespace DeltaEngine.Input.Tests
 		{
 			bool isTriggered = false;
 			new Command(() => isTriggered = true).Add(new MouseHoverTrigger());
-			Resolve<Mouse>().SetPosition(Vector2D.Zero);
+			Resolve<Mouse>().SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(1.0f);
 			Assert.IsFalse(isTriggered);
 			AdvanceTimeAndUpdateEntities(1.0f);
@@ -62,9 +62,9 @@ namespace DeltaEngine.Input.Tests
 		{
 			bool isTriggered = false;
 			new Command(() => isTriggered = true).Add(new MouseHoverTrigger());
-			Resolve<Mouse>().SetPosition(Vector2D.Zero);
+			Resolve<Mouse>().SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities(0.5f);
-			Resolve<Mouse>().SetPosition(Vector2D.One);
+			Resolve<Mouse>().SetNativePosition(Vector2D.One);
 			AdvanceTimeAndUpdateEntities(0.5f);
 			Assert.IsFalse(isTriggered);
 		}

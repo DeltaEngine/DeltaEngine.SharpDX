@@ -17,7 +17,7 @@ namespace DeltaEngine.Scenes.Controls
 		}
 
 		public SelectBox(Rectangle firstLineDrawArea, List<object> values)
-			: this(Theme.Default, firstLineDrawArea, values) {}
+			: this(new Theme(), firstLineDrawArea, values) { }
 
 		public SelectBox(Theme theme, Rectangle firstLineDrawArea, List<object> values)
 			: base(theme, theme.SelectBox, firstLineDrawArea)

@@ -7,7 +7,8 @@ namespace DeltaEngine.Platforms.Tests
 {
 	public class AppRunnerTests
 	{
-		private void CreateResolver()
+		[SetUp]
+		public void CreateResolver()
 		{
 			resolver = new SimpleResolver();
 		}
@@ -33,14 +34,17 @@ namespace DeltaEngine.Platforms.Tests
 			{
 				RegisterCommonEngineSingletons();
 			}
+
+			protected override void RegisterPhysics() {}
 		}
 
 		[Test]
-		public void CheckExplicitelySetContentLoader()
+		public void CheckExplicitlySetContentLoader()
 		{
 			ContentLoader.Use<DiskContentLoader>();
 			CreateResolver();
 			Assert.AreEqual(typeof(DiskContentLoader), ContentLoader.Type);
+			ContentLoader.DisposeIfInitialized();
 		}
 	}
 }

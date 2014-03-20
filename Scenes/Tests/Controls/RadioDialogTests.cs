@@ -44,7 +44,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			mouse = Resolve<Mouse>() as MockMouse;
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(Vector2D.Zero);
+			mouse.SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -60,26 +60,21 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			Assert.AreEqual(Color.DarkGray, buttons[1].Color);
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void RenderGrowingRadioDialog()
 		{
 			dialog.Start<Grow>();
+			dialog.Start<SetText>();
 		}
 
-		//ncrunch: no coverage start
-		private class Grow : UpdateBehavior
+		private class SetText : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
 			{
 				foreach (RadioDialog dialog in entities)
-				{
-					var center = dialog.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
-					var size = dialog.DrawArea.Size * (1.0f + Time.Delta / 10);
-					dialog.DrawArea = Rectangle.FromCenter(center, size);
 					dialog.Get<FontText>().Text = "Button '" + dialog.SelectedButton.Text + "'";
-				}
 			}
-		} //ncrunch: no coverage end
+		}
 
 		[Test, CloseAfterFirstFrame]
 		public void ClickingRadioButtonSelectsIt()
@@ -104,7 +99,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		{
 			if (mouse == null)
 				return; //ncrunch: no coverage
-			mouse.SetPosition(position);
+			mouse.SetNativePosition(position);
 			mouse.SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}

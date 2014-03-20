@@ -11,9 +11,6 @@ using NUnit.Framework;
 
 namespace DeltaEngine.Multimedia.Tests
 {
-	/// <summary>
-	/// Test music playback. Xna music loading won't work from ReSharper, use Program.cs instead.
-	/// </summary>
 	public class MusicTests : TestWithMocksOrVisually
 	{
 		[Test]
@@ -36,14 +33,15 @@ namespace DeltaEngine.Multimedia.Tests
 			music.Play();
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void TestIfPlayingMusic()
 		{
 			var music = ContentLoader.Load<Music>("DefaultMusic");
 			music.Play();
 			Assert.IsTrue(music.IsPlaying());
 			AssertBetween(4.10f, 4.15f, music.DurationInSeconds);
-			AssertBetween(0.9f, 1.0f, music.PositionInSeconds);
+			AdvanceTimeAndUpdateEntities(0.5f);
+			AssertBetween(0.25f, 5.0f, music.PositionInSeconds);
 		}
 
 		private static void AssertBetween(float min, float max, float value)
@@ -108,8 +106,6 @@ namespace DeltaEngine.Multimedia.Tests
 			{
 				Thread.Sleep(timeout);
 			}
-
-			public bool IsPauseable { get { return true; } }
 		}
 
 		[Test, Ignore]
@@ -140,7 +136,7 @@ namespace DeltaEngine.Multimedia.Tests
 				Assert.Less(0.99f, music.PositionInSeconds);
 			}
 
-			public bool IsPauseable { get { return true; } }
+			public override bool IsPauseable { get { return true; } }
 		}
 
 		[Test, Ignore]

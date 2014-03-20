@@ -10,14 +10,6 @@
 		/// </summary>
 		Scene = 0,
 		/// <summary>
-		/// .DeltaUIScreen contains all the UI controls positions and values. Scenes have screens.
-		/// </summary>
-		UIScreen = 1,
-		/// <summary>
-		/// .DeltaTheme is always used for scenes and controls to set a style for all buttons, etc.
-		/// </summary>
-		Theme = 2,
-		/// <summary>
 		/// .DeltaLevel is a collection of used meshes their world matrix and maybe some other content
 		/// like camera paths, animations, etc. (different level settings for each game).
 		/// </summary>
@@ -84,12 +76,6 @@
 		/// </summary>
 		Video = 18,
 		/// <summary>
-		/// Helper content type for .DeltaCollision file types. Can be used for both 3D collision meshes
-		/// and for 2D collision meshes in Physics. 3D Collision meshes are usually imported from a low
-		/// polygon variation of a model. 2D Collisions are imported from images (detecting outlines).
-		/// </summary>
-		PhysicsCollision = 19,
-		/// <summary>
 		/// Xml files for game specific content or whatever else you need.
 		/// </summary>
 		Xml = 20,
@@ -97,14 +83,6 @@
 		/// Json files for game specific content, if you are a JavaScript freak.
 		/// </summary>
 		Json = 21,
-		/// <summary>
-		/// You can store trigger data here directly and use it with Actors in Levels.
-		/// </summary>
-		Trigger = 22,
-		/// <summary>
-		/// You can store all actor properties dynamically here and reconstruct them when loading!
-		/// </summary>
-		Actor = 23,
 		/// <summary>
 		/// Input commands for a game or whatever else you need
 		/// </summary>

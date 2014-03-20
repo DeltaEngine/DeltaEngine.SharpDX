@@ -20,6 +20,7 @@ namespace DeltaEngine.Tests.Extensions
 		{
 			Assert.AreEqual(2, TestEnum.SomeValue.GetCount());
 			Assert.AreEqual(2, TestEnum.AnotherValue.GetCount());
+			Assert.AreEqual(2, EnumExtensions.GetCount<TestEnum>());
 		}
 
 		private enum TestEnum

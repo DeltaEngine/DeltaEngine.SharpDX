@@ -1,7 +1,6 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Extensions;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Shapes;
 using NUnit.Framework;
@@ -23,14 +22,14 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		[Test, ApproveFirstFrameScreenshot]
 		public void DrawSmallFont()
 		{
-			var text = new FontText(verdana, "Hi there", Rectangle.One);
+			new FontText(verdana, "Hi there", Rectangle.One);
 		}
 
 		[Test, CloseAfterFirstFrame]
 		public void FontTextHas5Components()
 		{
 			var text = new FontText(verdana, "Hi there", Rectangle.One);
-			Assert.AreEqual(5, text.NumberOfComponents);
+			Assert.AreEqual(6, text.NumberOfComponents);
 		}
 
 		/// <summary>
@@ -55,14 +54,15 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		[Test]
 		public void CreateFontText()
 		{
-			var fontText = new FontText(verdana, "Verdana12", new Vector2D(0.3f, 0.1f));
+			var fontText = new FontText(verdana, "Verdana12",
+				Rectangle.FromCenter(Vector2D.Half, new Size(0.3f, 0.1f)));
 			Assert.AreEqual("Verdana12", fontText.Text);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void DrawBigFont()
 		{
-			new FontText(tahoma, "Big Fonts rule!", Rectangle.One);
+			new FontText(tahoma, "Big Font!", Rectangle.One);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -86,7 +86,7 @@ namespace DeltaEngine.Rendering2D.Fonts.Tests
 		[Test, ApproveFirstFrameScreenshot]
 		public void DrawFontOverSprite()
 		{
-			new Sprite(new Material(Shader.Position2DUV, "DeltaEngineLogo"), Rectangle.HalfCentered)
+			new Sprite(new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogo"), Rectangle.HalfCentered)
 			{
 				Color = Color.PaleGreen,
 				RenderLayer = -1

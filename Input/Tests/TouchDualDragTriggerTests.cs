@@ -8,17 +8,6 @@ namespace DeltaEngine.Input.Tests
 {
 	public class TouchDualDragTriggerTests : TestWithMocksOrVisually
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			touch = Resolve<Touch>() as MockTouch;
-			if (touch != null)
-				touch.SetTouchState(0, State.Released, Vector2D.Zero);
-			AdvanceTimeAndUpdateEntities();
-		}
-
-		private MockTouch touch;
-
 		[Test]
 		public void DragTouchToCreateRectangles()
 		{
@@ -28,22 +17,21 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void DragTouch()
 		{
+			var touch = Resolve<Touch>() as MockTouch;
+			if (touch == null)
+				return; //ncrunch: no coverage
 			bool isFinished = false;
 			new Command((start, end, done) => isFinished = done).Add(new TouchDualDragTrigger());
-			SetTouchState(0, State.Pressing, Vector2D.Zero);
-			SetTouchState(1, State.Pressing, Vector2D.Zero);
-			SetTouchState(0, State.Pressed, Vector2D.One);
-			SetTouchState(1, State.Pressed, Vector2D.One);
-			SetTouchState(0, State.Releasing, Vector2D.One);
-			SetTouchState(1, State.Releasing, Vector2D.One);
+			SetTouchState(touch, State.Pressing, Vector2D.Zero);
+			SetTouchState(touch, State.Pressed, Vector2D.One);
+			SetTouchState(touch, State.Releasing, Vector2D.One);
 			Assert.IsTrue(isFinished);
 		}
 
-		private void SetTouchState(int index, State state, Vector2D position)
+		private void SetTouchState(MockTouch touch, State state, Vector2D position)
 		{
-			if (touch == null)
-				return; //ncrunch: no coverage
-			touch.SetTouchState(index, state, position);
+			touch.SetTouchState(0, state, position);
+			touch.SetTouchState(1, state, position);
 			AdvanceTimeAndUpdateEntities();
 		}
 

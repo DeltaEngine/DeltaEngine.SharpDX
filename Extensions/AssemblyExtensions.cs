@@ -35,9 +35,9 @@ namespace DeltaEngine.Extensions
 			return !(IsMicrosoftAssembly(name) || IsIdeHelperTool(name) || IsThirdPartyLibrary(name));
 		}
 
-		private static bool IsMicrosoftAssembly(string name)
+		public static bool IsMicrosoftAssembly(string name)
 		{
-			return name.StartsWith("System") || name.StartsWith("mscorlib") ||
+			return name == "mscorlib" || name == "System" || name.StartsWith("System.") ||
 				name.StartsWith("Microsoft.") || name.StartsWith("WindowsBase") ||
 				name.StartsWith("PresentationFramework") || name.StartsWith("PresentationCore") ||
 				name.StartsWith("WindowsFormsIntegration");
@@ -45,9 +45,9 @@ namespace DeltaEngine.Extensions
 
 		private static bool IsIdeHelperTool(string name)
 		{
-			return name.StartsWith("NUnit.") || name.StartsWith("nunit.") || name.StartsWith("JetBrains.") ||
-				name.StartsWith("NCrunch.") || name.StartsWith("nCrunch.") || name.StartsWith("ReSharper.") ||
-				name.StartsWith("vshost32");
+			return name.StartsWith("NUnit.") || name.StartsWith("nunit.") || name.StartsWith("pnunit.") ||
+				name.StartsWith("JetBrains.") || name.StartsWith("NCrunch.") ||
+				name.StartsWith("nCrunch.") || name.StartsWith("ReSharper.") || name.StartsWith("vshost32");
 		}
 
 		private static bool IsThirdPartyLibrary(string name)
@@ -58,13 +58,15 @@ namespace DeltaEngine.Extensions
 
 		private static readonly string[] ThirdPartyLibsFullNames = { "OpenAL32", "wrap_oal",
 			"libEGL", "libgles", "libGLESv2", "csogg", "csvorbis", "Autofac", "Moq", "OpenTK",
-			"Newtonsoft.Json", "NVorbis", "Ionic.Zip" };
+			"Newtonsoft.Json", "NVorbis", "NAudio", "DotNetZip.Reduced", "Ionic.Zip",
+			"UIAutomationTypes" };
 
 		private static readonly string[] ThirdPartyLibsPartialNames = { "libvlc",
 			"DynamicProxyGen", "Anonymously Hosted", "Pencil.Gaming", "AvalonDock", "Farseer",
 			"MvvmLight", "SharpDX", "SlimDX", "ToyMp3", "EntityFramework", "NHibernate", "Approval",
-			"System.IO.Abstractions", "AsfMojo", "SharpCompress", "WPFLocalizeExtension",
-			"XAMLMarkupExtensions", "Glfw", "MonoGame" };
+			"System.IO.Abstractions", "System.Windows.Interactivity", "AsfMojo", "Ionic.",	"Xceed",
+			"WPFLocalizeExtension", "XAMLMarkupExtensions", "Glfw", "MonoGame", "GalaSoft.MvvmLight",
+			"AurelienRibon." };
 
 		public static bool IsAllowed(this Assembly assembly)
 		{
@@ -115,6 +117,11 @@ namespace DeltaEngine.Extensions
 			fs.Position = reader.ReadUInt32();
 			reader.ReadBytes(24);
 			fs.Position = Convert.ToUInt16(Convert.ToUInt16(fs.Position) + 0x60);
+		}
+
+		public static bool IsEditorAssembly(string assemblyName)
+		{
+			return assemblyName.StartsWith("DeltaEngine.Editor");
 		}
 	}
 }

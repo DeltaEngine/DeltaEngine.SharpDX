@@ -56,12 +56,17 @@ namespace DeltaEngine.Logging
 		{
 			try
 			{
-				Process.Start(filePath);
+				TryOpenLogFileInEditor();
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine("Failed to open engine log file in text editor: " + ex.Message);
 			}
+		}
+
+		private void TryOpenLogFileInEditor()
+		{
+			Process.Start(filePath);
 		}
 	}
 }

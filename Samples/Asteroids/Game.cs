@@ -1,10 +1,7 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
+﻿using System.Globalization;
 using DeltaEngine.Core;
 using DeltaEngine.Extensions;
 using DeltaEngine.Scenes;
-using DeltaEngine.ScreenSpaces;
 
 namespace Asteroids
 {
@@ -144,6 +141,7 @@ namespace Asteroids
 			 */
 		}
 
+		//ncrunch: no coverage start
 		private string CreateHighscoreString()
 		{
 			var stringOfScores = highScores[0].ToString(CultureInfo.InvariantCulture);
@@ -152,7 +150,6 @@ namespace Asteroids
 			return stringOfScores;
 		}
 
-		//ncrunch: no coverage start
 		public void BackToMenu()
 		{
 			Hide();

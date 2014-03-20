@@ -40,15 +40,14 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private void InitializeMouse()
 		{
-			mouse = Resolve<Mouse>() as MockMouse;
-			if (mouse == null)
+			mouse = Resolve<Mouse>();
+			if (!IsMockResolver)
 				return; //ncrunch: no coverage
-
-			mouse.SetPosition(Vector2D.Zero);
+			mouse.SetNativePosition(Vector2D.Zero);
 			AdvanceTimeAndUpdateEntities();
 		}
 
-		private MockMouse mouse;
+		private Mouse mouse;
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void RenderSliderZeroToOneHundred() {}
@@ -72,7 +71,7 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			Assert.IsFalse(slider.Pointer.IsEnabled);
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void RenderDisabledSlider()
 		{
 			slider.IsEnabled = false;
@@ -89,27 +88,11 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			slider.MaxValue = 5;
 		}
 
-		[Test, ApproveFirstFrameScreenshot]
+		[Test]
 		public void RenderGrowingSlider()
 		{
 			slider.Start<Grow>();
 		}
-
-		//ncrunch: no coverage start
-		private class Grow : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (Slider slider in entities)
-				{
-					var center = slider.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
-					var size = slider.DrawArea.Size * (1.0f + Time.Delta / 10);
-					slider.DrawArea = Rectangle.FromCenter(center, size);
-				}
-			}
-		}
-
-		//ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void UpdateValues()
@@ -125,7 +108,9 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void ValidatePointerSize()
 		{
-			var pointer = Theme.Default.SliderPointer;
+			if (!IsMockResolver)
+				return; //ncrunch: no coverage
+			var pointer = new Theme().SliderPointer;
 			var width = pointer.MaterialRenderSize.AspectRatio * 0.1f;
 			var pointerSize = new Size(width, 0.1f);
 			Assert.AreEqual(pointerSize, slider.Pointer.DrawArea.Size);
@@ -134,9 +119,12 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void ValidatePointerCenter()
 		{
+			if (!IsMockResolver)
+				return; //ncrunch: no coverage
 			DragMouse(new Vector2D(0.42f, 0.52f));
 			var pointerCenter = slider.Pointer.DrawArea.Center;
-			Assert.IsTrue(pointerCenter.IsNearlyEqual(new Vector2D(0.419f, 0.5f)), pointerCenter.ToString());
+			Assert.IsTrue(pointerCenter.IsNearlyEqual(new Vector2D(0.424f, 0.5f)),
+				pointerCenter.ToString());
 		}
 
 		private void DragMouse(Vector2D position)
@@ -147,10 +135,8 @@ namespace DeltaEngine.Scenes.Tests.Controls
 
 		private void SetMouseState(State state, Vector2D position)
 		{
-			if (mouse == null)
-				return; //ncrunch: no coverage
-			mouse.SetPosition(position);
-			mouse.SetButtonState(MouseButton.Left, state);
+			mouse.SetNativePosition(position);
+			(mouse as MockMouse).SetButtonState(MouseButton.Left, state);
 			AdvanceTimeAndUpdateEntities();
 		}
 
@@ -172,18 +158,6 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			slider.Start<Spin>();
 		}
 
-		//ncrunch: no coverage start
-		private class Spin : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (Slider slider in entities)
-					slider.Rotation += 20 * Time.Delta;
-			}
-		}
-
-		//ncrunch: no coverage end
-
 		[Test]
 		public void RenderSpinningSliderAttachedToMouse()
 		{
@@ -195,6 +169,8 @@ namespace DeltaEngine.Scenes.Tests.Controls
 		[Test, CloseAfterFirstFrame]
 		public void VerifyValueChangedEvent()
 		{
+			if (!IsMockResolver)
+				return; //ncrunch: no coverage
 			int sliderValue = -1;
 			slider.ValueChanged += value => sliderValue = value;
 			var position = new Vector2D(0.42f, 0.52f);

@@ -50,21 +50,17 @@
       <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
       <Name>DeltaEngine.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Mocks\DeltaEngine.Content.Mocks.csproj">
+    <ProjectReference Include="..\..\..\Content\Mocks\DeltaEngine.Content.Mocks.csproj">
       <Project>{BA0A7803-4A15-416E-BC93-69F5B9DFC4A5}</Project>
       <Name>DeltaEngine.Content.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Xml\DeltaEngine.Content.Xml.csproj">
+    <ProjectReference Include="..\..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
       <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
       <Name>DeltaEngine.Content.Xml</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Content.Disk.csproj">
+    <ProjectReference Include="..\..\..\Content\Disk\DeltaEngine.Content.Disk.csproj">
       <Project>{EE9847E1-9C76-4ACE-B531-D3EA84F7D741}</Project>
       <Name>DeltaEngine.Content.Disk</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ContentDiskTestsExtensions.cs" />
     <Compile Include="HasAlphaPixelsTests.cs" />
     <Compile Include="DiskContentLoaderTests.cs" />
     <Compile Include="MetaDataCreatorTests.cs" />

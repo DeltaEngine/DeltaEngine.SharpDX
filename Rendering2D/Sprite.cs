@@ -15,11 +15,14 @@ namespace DeltaEngine.Rendering2D
 		protected Sprite()
 			: base(Rectangle.Zero) {}
 
+		public Sprite(string imageName, Rectangle drawArea)
+			: this(new Material(ShaderFlags.Position2DColoredTextured, imageName), drawArea) {}
+
+		public Sprite(string imageName, Vector2D position)
+			: this(new Material(ShaderFlags.Position2DColoredTextured, imageName), position) {}
+
 		public Sprite(Material material, Vector2D position)
 			: this(material, Rectangle.FromCenter(position, material.MaterialRenderSize)) {}
-
-		public Sprite(string imageName, Rectangle drawArea)
-			: this(new Material(Shader.Position2DColorUV, imageName), drawArea) {}
 
 		public Sprite(Material material, Rectangle drawArea)
 			: base(drawArea)
@@ -102,7 +105,10 @@ namespace DeltaEngine.Rendering2D
 		public Rectangle UV
 		{
 			get { return renderingData.RequestedUserUV; }
-			set { renderingData = Material.RenderingCalculator.GetUVAndDrawArea(value, DrawArea, FlipMode); }
+			set
+			{
+				renderingData = Material.RenderingCalculator.GetUVAndDrawArea(value, DrawArea, FlipMode);
+			}
 		}
 
 		public Rectangle LastUV

@@ -8,7 +8,7 @@ namespace Blocks.Tests
 {
 	public class BlocksContentTests : TestWithMocksOrVisually
 	{
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DoBricksSplitInHalfOnExit()
 		{
 			var content = new JewelBlocksContent();
@@ -17,7 +17,7 @@ namespace Blocks.Tests
 			Assert.IsTrue(content.DoBricksSplitInHalfWhenRowFull);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void AreFiveBrickBlocksAllowed()
 		{
 			var content = new JewelBlocksContent();
@@ -26,7 +26,7 @@ namespace Blocks.Tests
 			Assert.IsFalse(content.AreFiveBrickBlocksAllowed);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void DoBlocksStartInARandomColumn()
 		{
 			var content = new JewelBlocksContent();
@@ -35,7 +35,7 @@ namespace Blocks.Tests
 			Assert.IsTrue(content.DoBlocksStartInARandomColumn);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void GetFilenameWithoutPrefix()
 		{
 			var content = new JewelBlocksContent { Prefix = "ABC" };
@@ -46,35 +46,34 @@ namespace Blocks.Tests
 				() => content.GetFilenameWithoutPrefix("AAADEF"));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void LoadContentWithNoPrefixSet()
 		{
-			var material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
-			Assert.AreEqual(new Size(128), material.DiffuseMap.PixelSize);
-			new Sprite(material, new Rectangle(0.45f, 0.45f, 0.1f, 0.1f));
+			var material = new Material(ShaderFlags.Position2DColoredTextured, "FruitBlocks_Block1");
+			Assert.IsNotNull(material.DiffuseMap);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void LoadContentWithPrefixSet()
 		{
 			var content = new JewelBlocksContent { Prefix = "Mod1_" };
-			var material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			var material = new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo");
 			new Sprite(material, new Rectangle(0.3f, 0.45f, 0.1f, 0.1f));
 			content.Prefix = "Mod2_";
-			material = new Material(Shader.Position2DColorUV, "DeltaEngineLogo");
+			material = new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo");
 			new Sprite(material, new Rectangle(0.6f, 0.45f, 0.1f, 0.1f));
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ContentWithPrefixSet()
 		{
-			var content = new JewelBlocksContent { Prefix = "Mod1_" };
-			var image = content.Load<Image>("DeltaEngineLogo");
+			var content = new JewelBlocksContent { Prefix = "FruitBlocks_" };
+			var image = content.Load<Image>("Block1");
 			Assert.IsTrue(image.PixelSize == new Size(4) || image.PixelSize == new Size(64) ||
 				image.PixelSize == new Size(128));
-			content.Prefix = "Mod2_";
-			image = content.Load<Image>("DeltaEngineLogo");
-			Assert.IsTrue(image.PixelSize == new Size(4) || image.PixelSize == new Size(256) ||
+			content.Prefix = "JewelBlocks_";
+			image = content.Load<Image>("Block1");
+			Assert.IsTrue(image.PixelSize == new Size(4) || image.PixelSize == new Size(64) ||
 				image.PixelSize == new Size(128));
 		}
 	}

@@ -5,7 +5,7 @@
 	/// </summary>
 	public class ProductData
 	{
-		public ProductData(string id, string title, string description, string price,
+		public ProductData(string id, string title, string description, decimal price,
 			bool isValid)
 		{
 			Id = id;
@@ -18,7 +18,7 @@
 		public string Id { get; private set; }
 		public string Title { get; private set; }
 		public string Description { get; private set; }
-		public string Price { get; private set; }
+		public decimal Price { get; private set; }
 		public bool IsValid { get; private set; }
 	}
 }

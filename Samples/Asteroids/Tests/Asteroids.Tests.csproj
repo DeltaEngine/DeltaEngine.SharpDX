@@ -47,6 +47,10 @@
       <Project>{A5F4EF37-7B5F-4AAE-BFF2-C2D04DB805F7}</Project>
       <Name>DeltaEngine.Mocks</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
+      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
+      <Name>DeltaEngine.TestWithSlimDX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
@@ -59,13 +63,9 @@
       <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
       <Name>DeltaEngine.Scenes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Asteroids.csproj">
+    <ProjectReference Include="..\..\..\Samples\Asteroids\Asteroids.csproj">
       <Project>{6BA7DE2F-0323-428F-9318-6A163B182F0C}</Project>
       <Name>Asteroids</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

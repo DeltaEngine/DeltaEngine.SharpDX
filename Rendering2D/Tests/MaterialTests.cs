@@ -1,6 +1,5 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Core;
-using DeltaEngine.Datatypes;
 using DeltaEngine.Graphics;
 using DeltaEngine.Platforms;
 using NUnit.Framework;
@@ -13,20 +12,6 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void LoadSimpleMaterial()
 		{
 			Assert.IsNotNull(ContentLoader.Load<Material>("Earth"));
-		}
-
-		[Test, CloseAfterFirstFrame]
-		public void ThrowExceptionWithoutShaderName()
-		{
-			Assert.Throws<Material.UnableToCreateMaterialWithoutValidShaderName>(
-				() => new Material("", "AnyImageAnimation"));
-		}
-
-		[Test, CloseAfterFirstFrame]
-		public void ThrowExceptionIfMaterialDataHasNoShaderSpecified()
-		{
-			Assert.Throws<Material.UnableToCreateMaterialWithoutValidShaderName>(
-				() => ContentLoader.Load<Material>("NoShader"));
 		}
 
 		[Test]
@@ -79,23 +64,25 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void SaveAndLoadImageMaterial()
 		{
-			SaveAndLoadMaterialAndCompare(new Material(Shader.Position2DUV, "EarthSpriteSheet"));
+			SaveAndLoadMaterialAndCompare(new Material(ShaderFlags.Position2DTextured, "EarthSpriteSheet"));
 		}
 
 		[Test]
 		public void SaveAndLoadCustomMaterial()
 		{
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DUV);
+			var shader = ContentLoader.Create<Shader>(
+				new ShaderCreationData(ShaderFlags.Position2DTextured));
 			var image = ContentLoader.Load<Image>("EarthImages");
-			SaveAndLoadMaterialAndCompare(new Material(shader, image, image.PixelSize));
+			SaveAndLoadMaterialAndCompare(new Material(shader, image));
 		}
 
 		[Test]
 		public void SaveAndLoadAnimationMaterial()
 		{
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DUV);
+			var shader = ContentLoader.Create<Shader>(
+				new ShaderCreationData(ShaderFlags.Position2DTextured));
 			var animation = ContentLoader.Load<ImageAnimation>("MyImageAnimation");
-			SaveAndLoadMaterialAndCompare(new Material(shader, null, new Size(4))
+			SaveAndLoadMaterialAndCompare(new Material(shader, null)
 			{
 				Animation = animation
 			});
@@ -104,14 +91,15 @@ namespace DeltaEngine.Rendering2D.Tests
 		[Test]
 		public void SaveAndLoadSpriteSheetMaterial()
 		{
-			SaveAndLoadMaterialAndCompare(new Material(Shader.Position2DUV, "MySpriteSheet"));
+			SaveAndLoadMaterialAndCompare(new Material(ShaderFlags.Position2DTextured, "MySpriteSheet"));
 		}
 
 		[Test]
 		public void SaveAndLoadCustomImageMaterial()
 		{
-			var shader = ContentLoader.Load<Shader>(Shader.Position2DUV);
-			SaveAndLoadMaterialAndCompare(new Material(shader, null, new Size(2)));
+			var shader = ContentLoader.Create<Shader>(
+				new ShaderCreationData(ShaderFlags.Position2DTextured));
+			SaveAndLoadMaterialAndCompare(new Material(shader, null));
 		}
 	}
 }

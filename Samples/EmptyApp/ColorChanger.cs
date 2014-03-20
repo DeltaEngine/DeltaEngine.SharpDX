@@ -33,7 +33,5 @@ namespace EmptyApp
 			NextColor = Color.GetRandomColor();
 			ElapsedTimeSinceColorChange = 0;
 		}
-
-		public bool IsPauseable { get { return true; } } //ncrunch: no coverage
 	}
 }

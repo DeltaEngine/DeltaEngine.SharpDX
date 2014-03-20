@@ -42,7 +42,7 @@ namespace DeltaEngine.Rendering2D.Shapes.Tests
 			new Ellipse(Vector2D.Half, 0.4f, 0.2f, new Color(1.0f, 0.0f, 0.0f, 0.5f));
 		}
 
-		[Test, CloseAfterFirstFrame]
+		[Test, CloseAfterFirstFrame, Timeout(2000)]
 		public void ChangeRadius()
 		{
 			var ellipse = new Ellipse(Rectangle.One, Color.Red) { RadiusX = 0.2f, RadiusY = 0.4f };

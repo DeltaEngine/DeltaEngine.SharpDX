@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DeltaEngine.Commands;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -21,45 +22,65 @@ namespace DeltaEngine.Graphics.Tests
 		public void DrawOpaqueImageWithVertexColors()
 		{
 			Resolve<Window>().BackgroundColor = Color.CornflowerBlue;
-			new Sprite(ContentLoader.Load<Image>("DeltaEngineLogoOpaque"));
+			new ColoredSprite(ContentLoader.Load<Image>("DeltaEngineLogoOpaque"));
 			RunAfterFirstFrame(
 				() => Assert.AreEqual(4, Resolve<Drawing>().NumberOfDynamicVerticesDrawnThisFrame));
 		}
 
-		private class Sprite : DrawableEntity
+		private class ColoredSprite : Sprite
 		{
-			public Sprite(Image image)
+			public ColoredSprite(Image image)
+				: base(image) {}
+
+			private readonly Color[] colors = { Color.Yellow, Color.Red, Color.Blue, Color.Teal };
+			public override Color[] Colors { get { return colors; } }
+		}
+
+		private abstract class Sprite : DrawableEntity
+		{
+			protected Sprite(Image image)
 			{
-				material = new Material(ContentLoader.Load<Shader>(Shader.Position2DColorUV), image,
-					image.PixelSize);
+				Material = new Material(ContentLoader.Create<Shader>(
+					new ShaderCreationData(ShaderFlags.Position2DColoredTextured)), image);
 				OnDraw<DrawSprite>();
 			}
 
-			private readonly Material material;
+			public Material Material { get; private set; }
 
-			private class DrawSprite : DrawBehavior
+			private readonly Rectangle pixelDrawArea = new Rectangle(175.0f, 25.0f, 300.0f, 300.0f);
+			public Rectangle PixelDrawArea { get { return pixelDrawArea; } }
+
+			public abstract Color[] Colors { get; }
+		}
+
+		private class DrawSprite : DrawBehavior
+		{
+			public DrawSprite(Drawing drawing)
 			{
-				public DrawSprite(Drawing drawing)
-				{
-					this.drawing = drawing;
-				}
+				this.drawing = drawing;
+			}
 
-				private readonly Drawing drawing;
+			private readonly Drawing drawing;
 
-				public void Draw(List<DrawableEntity> visibleEntities)
-				{
-					foreach (var sprite in visibleEntities.OfType<Sprite>())
-						drawing.Add(sprite.material, QuadVertices, QuadIndices);
-				}
+			public void Draw(List<DrawableEntity> visibleEntities)
+			{
+				foreach (var sprite in visibleEntities.OfType<Sprite>())
+					drawing.Add(sprite.Material, GetQuadVertices(sprite), new short[] { 0, 2, 1, 0, 3, 2 });
+			}
 
-				private static readonly VertexPosition2DColorUV[] QuadVertices =
+			private static VertexPosition2DColorUV[] GetQuadVertices(Sprite sprite)
+			{
+				float left = sprite.PixelDrawArea.Left;
+				float right = sprite.PixelDrawArea.Right;
+				float top = sprite.PixelDrawArea.Top;
+				float bottom = sprite.PixelDrawArea.Bottom;
+				return new[]
 				{
-					new VertexPosition2DColorUV(new Vector2D(175, 25), Color.Yellow, Vector2D.Zero),
-					new VertexPosition2DColorUV(new Vector2D(475, 25), Color.Red, Vector2D.UnitX),
-					new VertexPosition2DColorUV(new Vector2D(475, 325), Color.Blue, Vector2D.One),
-					new VertexPosition2DColorUV(new Vector2D(175, 325), Color.Teal, Vector2D.UnitY)
+					new VertexPosition2DColorUV(new Vector2D(left, top), sprite.Colors[0], Vector2D.Zero),
+					new VertexPosition2DColorUV(new Vector2D(right, top), sprite.Colors[1], Vector2D.UnitX),
+					new VertexPosition2DColorUV(new Vector2D(right, bottom), sprite.Colors[2], Vector2D.One),
+					new VertexPosition2DColorUV(new Vector2D(left, bottom), sprite.Colors[3], Vector2D.UnitY)
 				};
-				private static readonly short[] QuadIndices = { 0, 1, 2, 0, 2, 3 };
 			}
 		}
 
@@ -72,7 +93,7 @@ namespace DeltaEngine.Graphics.Tests
 			Assert.AreEqual(new Size(128, 128), image.PixelSize);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void ShouldThrowIfImageNotLoadedWithDebuggerAttached()
 		{
 			//ncrunch: no coverage start
@@ -80,56 +101,75 @@ namespace DeltaEngine.Graphics.Tests
 				Assert.Throws<ContentLoader.ContentNotFound>(
 					() => ContentLoader.Load<Image>("UnavailableImage"));
 			//ncrunch: no coverage end
-			RunTestAndDisposeResolverWhenDone();
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void DrawDefaultTexture()
 		{
 			Resolve<Window>().BackgroundColor = Color.CornflowerBlue;
-			new Sprite(ContentLoader.Load<Image>("UnavailableImage"));
+			new ColoredSprite(ContentLoader.Load<Image>("UnavailableImage"));
 			RunAfterFirstFrame(
 				() => Assert.AreEqual(4, Resolve<Drawing>().NumberOfDynamicVerticesDrawnThisFrame));
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
-		public void DrawCustomImageFromColors()
+		public void DrawCustomImageFromColorClickToChangeIt()
 		{
 			var customImage = ContentLoader.Create<Image>(new ImageCreationData(new Size(8, 8)));
-			var colors = new Color[8 * 8];
-			for (int i = 0; i < 8 * 8; i++)
-				colors[i] = Color.Purple;
-			customImage.Fill(colors);
-			new Sprite(customImage);
+			customImage.Fill(Color.Purple);
+			new SolidSprite(customImage);
+			new Command(Command.Click, () => customImage.Fill(Color.GetRandomColor()));
+		}
+
+		private class SolidSprite : Sprite
+		{
+			public SolidSprite(Image image)
+				: base(image) {}
+
+			private readonly Color[] colors = { Color.White, Color.White, Color.White, Color.White };
+			public override Color[] Colors { get { return colors; } }
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
 		public void DrawCustomImageFromBytes()
 		{
 			var customImage = ContentLoader.Create<Image>(new ImageCreationData(new Size(8, 8)));
-			var bytes = new byte[8 * 8 * Color.SizeInBytes];
+			var bytes = new byte[8 * 8 * 4];
 			var color = Color.Purple;
 			for (int i = 0; i < 8 * 8; i++)
 			{
-				bytes[i * Color.SizeInBytes] = color.B;
-				bytes[i * Color.SizeInBytes + 1] = color.G;
-				bytes[i * Color.SizeInBytes + 2] = color.R;
-				bytes[i * Color.SizeInBytes + 3] = color.A;
+				bytes[i * 4] = color.B;
+				bytes[i * 4 + 1] = color.G;
+				bytes[i * 4 + 2] = color.R;
 			}
-			customImage.Fill(bytes);
-			new Sprite(customImage);
+			customImage.FillRgbaData(bytes);
+			new SolidSprite(customImage);
 		}
 
+		/// <summary>
+		/// From http://forum.deltaengine.net/yaf_postsm6203_Dynamic-textures---v--0-9-8-2.aspx#post6203
+		/// </summary>
 		[Test, ApproveFirstFrameScreenshot]
+		public void DrawCustomImageHalfRedHalfGold()
+		{
+			var customImage = ContentLoader.Create<Image>(new ImageCreationData(new Size(64, 64)));
+			var colors = new Color[64 * 64];
+			for (int i = 0; i < colors.Length; i++)
+				colors[i] = i < colors.Length / 2 ? Color.Red : Color.Gold;
+			customImage.Fill(colors);
+			new ColoredSprite(customImage);
+		}
+
+		[Test, CloseAfterFirstFrame]
 		public void FillCustomImageWitDifferentSizeThanImageCausesException()
 		{
 			var customImage = ContentLoader.Create<Image>(new ImageCreationData(new Size(8, 9)));
 			var colors = new Color[8 * 8];			
 			Assert.Throws<Image.InvalidNumberOfColors>(() => customImage.Fill(colors));
 			var byteArray = new byte[8 * 8];
-			Assert.Throws<Image.InvalidNumberOfBytes>(() => customImage.Fill(byteArray));
+			Assert.Throws<Image.InvalidNumberOfBytes>(() => customImage.FillRgbaData(byteArray));
 			var goodByteArray = new byte[8 * 9 * 4];
-			customImage.Fill(goodByteArray);
+			customImage.FillRgbaData(goodByteArray);
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
@@ -143,9 +183,9 @@ namespace DeltaEngine.Graphics.Tests
 			public RenderBlendModes(Drawing drawing)
 			{
 				this.drawing = drawing;
-				logoOpaque = new Material(Shader.Position2DUV, "DeltaEngineLogoOpaque");
-				logoAlpha = new Material(Shader.Position2DUV, "DeltaEngineLogoAlpha");
-				additive = new Material(Shader.Position2DUV, "CoronaAdditive");
+				logoOpaque = new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogoOpaque");
+				logoAlpha = new Material(ShaderFlags.Position2DTextured, "DeltaEngineLogoAlpha");
+				additive = new Material(ShaderFlags.Position2DTextured, "CoronaAdditive");
 			}
 
 			private readonly Drawing drawing;

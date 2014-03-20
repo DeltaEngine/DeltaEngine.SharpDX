@@ -35,6 +35,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\packages\Autofac.3.1.5\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -79,18 +82,23 @@
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Platforms.csproj">
+    <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
       <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
       <Name>DeltaEngine.Platforms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mocks\DeltaEngine.Platforms.Mocks.csproj">
+    <ProjectReference Include="..\..\Platforms\Mocks\DeltaEngine.Platforms.Mocks.csproj">
       <Project>{BF968F20-246B-4F86-BB7B-377FD4B47A9F}</Project>
       <Name>DeltaEngine.Platforms.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
+    <ProjectReference Include="..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
+      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
+      <Name>DeltaEngine.TestWithSlimDX</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestCursor.cur">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -99,6 +107,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BehaviorTests.cs" />
+    <Compile Include="DownloadContentTooltipTests.cs" />
     <Compile Include="AppRunnerTests.cs" />
     <Compile Include="AssemblyCheckerTests.cs" />
     <Compile Include="ConsoleCommandManagerTests.cs" />

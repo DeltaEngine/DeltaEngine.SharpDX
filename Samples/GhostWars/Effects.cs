@@ -1,7 +1,7 @@
 ﻿using DeltaEngine.Content;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Particles;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace GhostWars
 {
@@ -12,7 +12,7 @@ namespace GhostWars
 	{
 		public static Sprite CreateArrow(Vector2D start, Vector2D target)
 		{
-			var material = new Material(Shader.Position2DColorUV, "Arrow");
+			var material = new Material(ShaderFlags.Position2DColoredTextured, "Arrow");
 			var newSprite = new Sprite(material, CalculateArrowDrawArea(material, start, target));
 			newSprite.Rotation = target.RotationTo(start);
 			return newSprite;
@@ -29,7 +29,7 @@ namespace GhostWars
 
 		public static ParticleEmitter CreateDeathEffect(Vector2D position)
 		{
-			var material = new Material(Shader.Position2DColorUV, "DeathSkull");
+			var material = new Material(ShaderFlags.Position2DColoredTextured, "DeathSkull");
 			var deathEffect = new ParticleEmitterData
 			{
 				ParticleMaterial = material,
@@ -46,7 +46,7 @@ namespace GhostWars
 
 		public static ParticleEmitter CreateHitEffect(Vector2D position)
 		{
-			var material = new Material(Shader.Position2DColorUV, "Hit");
+			var material = new Material(ShaderFlags.Position2DColoredTextured, "Hit");
 			var deathEffect = new ParticleEmitterData
 			{
 				ParticleMaterial = material,

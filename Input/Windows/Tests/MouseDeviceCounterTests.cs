@@ -27,9 +27,7 @@ namespace DeltaEngine.Input.Windows.Tests
 		private static WindowsMouse GetMouse()
 		{
 			var resolver = new MockResolver();
-			var window = resolver.Window;
-			var positionTranslater = new CursorPositionTranslater(window);
-			return new WindowsMouse(positionTranslater);
+			return new WindowsMouse(resolver.Window);
 		}
 	}
 }

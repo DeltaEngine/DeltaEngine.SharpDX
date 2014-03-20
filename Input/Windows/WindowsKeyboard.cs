@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using DeltaEngine.Extensions;
 
 namespace DeltaEngine.Input.Windows
 {
@@ -10,7 +12,8 @@ namespace DeltaEngine.Input.Windows
 	{
 		public WindowsKeyboard()
 		{
-			hook = new WindowsHook(WindowsHook.KeyboardHookId, HandleProcMessage);
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+				hook = new WindowsHook(WindowsHook.KeyboardHookId, HandleProcMessage);//ncrunch: no coverage
 			pressedKeys = new List<Key>();
 			releasedKeys = new List<Key>();
 			InitializeIsAvailable();
@@ -54,10 +57,11 @@ namespace DeltaEngine.Input.Windows
 				return State.Releasing;
 			return previousState == State.Releasing ? State.Released : previousState;
 		}
-		// ncrunch: no coverage start
+
+		//ncrunch: no coverage start
 		private void HandleProcMessage(IntPtr wParam, IntPtr lParam, int msg)
 		{
-			var keyCode = (Key)wParam.ToInt32();
+			Key keyCode = KeyboardKeyMapper.Translate(wParam.ToInt32());
 			if (IsKeyPressed(lParam.ToInt32()))
 				pressedKeys.Add(keyCode);
 			else
@@ -67,12 +71,22 @@ namespace DeltaEngine.Input.Windows
 		private static bool IsKeyPressed(int lParam)
 		{
 			return ((uint)(lParam & 0x80000000) >> 0xFF) != 1;
-		}
-		// ncrunch: no coverage end
+		} //ncrunch: no coverage end
+
 		public override void Dispose()
 		{
-			hook.Dispose();
+			if (hook != null)
+				hook.Dispose(); //ncrunch: no coverage
 			IsAvailable = false;
 		}
+
+		protected override bool IsCapsLocked
+		{
+			get { return (((ushort)GetKeyState(0x14)) & 0xffff) != 0; } //ncrunch: no coverage
+		}
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true,
+			CallingConvention = CallingConvention.Winapi)]
+		private static extern short GetKeyState(int keyCode);
 	}
 }

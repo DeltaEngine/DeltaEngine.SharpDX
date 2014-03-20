@@ -27,7 +27,7 @@ namespace DeltaEngine.Input
 		public override void Update(IEnumerable<Entity> entities)
 		{
 			if (!IsAvailable)
-				return;
+				return; //ncrunch: no coverage
 			UpdateGamePadStates();
 			foreach (var button in entities.OfType<GamePadButtonTrigger>())
 				if (GetButtonState(button.Button) == button.State)

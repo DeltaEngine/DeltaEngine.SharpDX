@@ -14,7 +14,7 @@ namespace DeltaEngine.Input
 		{
 			if (!String.IsNullOrEmpty(empty))
 				throw new TouchTapTriggerHasNoParameters();
-		}
+		} //ncrunch: no coverage
 
 		public class TouchTapTriggerHasNoParameters : Exception {}
 

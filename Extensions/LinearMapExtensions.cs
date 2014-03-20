@@ -89,14 +89,12 @@ namespace DeltaEngine.Extensions
 				0.0f, 0.0f, -1.0f * (nearPlane + farPlane) * invDepth, 1.0f);
 		}
 
-		// Appears to create a RH LookAt
-		public static Matrix CreateLookAtMatrix
-			(Vector3D cameraPosition, Vector3D cameraTarget, Vector3D cameraUp)
+		public static Matrix CreateLookAtMatrix(Vector3D cameraPosition, Vector3D cameraTarget,
+			Vector3D cameraUp)
 		{
 			var forward = Vector3D.Normalize(cameraPosition - cameraTarget);
-			var up = Vector3D.Normalize(cameraUp);
-			var side = Vector3D.Normalize(Vector3D.Cross(up, forward));
-			up = Vector3D.Cross(forward, side);
+			var side = Vector3D.Normalize(Vector3D.Cross(Vector3D.Normalize(cameraUp), forward));
+			var up = Vector3D.Normalize(Vector3D.Cross(forward, side));
 			return new Matrix(
 				side.X, up.X, forward.X, 0.0f,
 				side.Y, up.Y, forward.Y, 0.0f,

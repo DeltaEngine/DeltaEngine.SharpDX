@@ -1,16 +1,18 @@
-﻿using DeltaEngine.Datatypes;
+﻿using DeltaEngine.Core;
+using DeltaEngine.Datatypes;
 
 namespace DeltaEngine.Scenes.Controls
 {
 	/// <summary>
 	/// Simple UI button which changes appearance based on mouse/touch interaction.
 	/// </summary>
+	[SaveSafely]
 	public class Button : Label
 	{
-		protected Button() {}
+		internal protected Button() {} 
 
 		public Button(Rectangle drawArea, string text = "")
-			: this(Theme.Default, drawArea, text) {}
+			: this(new Theme(), drawArea, text) { }
 
 		public Button(Theme theme, Rectangle drawArea, string text = "")
 			: base(theme, theme.Button, drawArea)

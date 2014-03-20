@@ -22,16 +22,22 @@ namespace DeltaEngine.Tests.Datatypes
 		}
 
 		[Test]
-		public void CreateFromPoints()
+		public void CreateFromFivePoints()
 		{
-			var pointArray = new[]
-			{ Vector2D.Zero, Vector2D.One, Vector2D.One * 1.5f, Vector2D.Half, -Vector2D.One };
-			var points = new List<Vector2D>(pointArray);
+			var points = new List<Vector2D> { Vector2D.Zero, Vector2D.One, Vector2D.One * 1.5f, 
+				Vector2D.Half, -Vector2D.One };
 			var rectangle = Rectangle.FromPoints(points);
-			Assert.AreEqual(-1.0f, rectangle.Left);
-			Assert.AreEqual(-1.0f, rectangle.Top);
-			Assert.AreEqual(1.5f, rectangle.Right);
-			Assert.AreEqual(1.5f, rectangle.Bottom);
+			Assert.AreEqual(-Vector2D.One, rectangle.TopLeft);
+			Assert.AreEqual(Vector2D.One * 1.5f, rectangle.BottomRight);
+		}
+
+		[Test]
+		public void CreateFromTwoPoints()
+		{
+			var points = new List<Vector2D> { new Vector2D(4, 4), new Vector2D(3, 2) };
+			var rectangle = Rectangle.FromPoints(points);
+			Assert.AreEqual(new Vector2D(3, 2), rectangle.TopLeft);
+			Assert.AreEqual(new Vector2D(4, 4), rectangle.BottomRight);
 		}
 
 		[Test]
@@ -289,7 +295,7 @@ namespace DeltaEngine.Tests.Datatypes
 			var points = new Rectangle(1, 1, 1, 1).GetRotatedRectangleCorners(Vector2D.Zero, 0);
 			Assert.AreEqual(4, points.Length);
 			Assert.AreEqual(Vector2D.One, points[0]);
-			Assert.AreEqual(new Vector2D(2, 1), points[1]);
+			Assert.AreEqual(new Vector2D(1, 2), points[1]);
 			Assert.AreEqual(new Vector2D(2, 2), points[2]);
 		}
 
@@ -298,7 +304,7 @@ namespace DeltaEngine.Tests.Datatypes
 		{
 			var points = new Rectangle(1, 1, 1, 1).GetRotatedRectangleCorners(Vector2D.Zero, 180);
 			Assert.IsTrue(points[0].IsNearlyEqual(-Vector2D.One));
-			Assert.IsTrue(points[1].IsNearlyEqual(-new Vector2D(2, 1)));
+			Assert.IsTrue(points[1].IsNearlyEqual(-new Vector2D(1, 2)));
 			Assert.IsTrue(points[2].IsNearlyEqual(-new Vector2D(2, 2)));
 		}
 
@@ -355,6 +361,13 @@ namespace DeltaEngine.Tests.Datatypes
 				});
 			var rectangle = Rectangle.FromPoints(points);
 			Assert.AreEqual(new Rectangle(1.0f, 2.0f, 3.0f, 4.0f), rectangle);
+		}
+
+		[Test]
+		public void RotateBoundingBox()
+		{
+			var boundingBox = new Rectangle(1, 1, 1, 1).GetBoundingBoxAfterRotation(90);
+			Assert.AreEqual(new Rectangle(1, 1, 1, 1), boundingBox);
 		}
 	}
 }

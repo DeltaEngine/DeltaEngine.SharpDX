@@ -27,8 +27,7 @@ namespace DeltaEngine.Input.Tests
 			drawArea.Left = position.X;
 			drawArea.Top = position.Y;
 			ellipse.DrawArea = drawArea;
-		}
-		//ncrunch: no coverage end
+		} //ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void TestPositionAndState()

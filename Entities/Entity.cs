@@ -240,7 +240,7 @@ namespace DeltaEngine.Entities
 
 		private static string GetTypeName<T>(T component)
 		{
-			var type = (component as Type);
+			var type = component as Type;
 			if (typeof(IList).IsAssignableFrom(type) && !type.IsArray)
 				return type.Name.Replace("`1", "") + "<" + GetTypesText(type.GetGenericArguments()) + ">";
 			return type.Name;
@@ -256,5 +256,7 @@ namespace DeltaEngine.Entities
 		{
 			return activeBehaviors;
 		}
+
+		public virtual bool IsPauseable { get { return true; } }
 	}
 }

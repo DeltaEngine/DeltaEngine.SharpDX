@@ -17,34 +17,37 @@ namespace DeltaEngine.Core
 	/// </summary>
 	internal static class BinaryDataLoader
 	{
-		internal static object TryCreateAndLoad(Type typeToCreate, BinaryReader reader,
-			Version dataVersion)
+		internal static object CreateAndLoad(Type typeToCreate, BinaryReader reader,
+			Version typeDataVersion)
 		{
 			try
 			{
-				return CreateAndLoadTopLevelType(typeToCreate, reader);
+				dataVersion = typeDataVersion;
+				return TryCreateAndLoadTopLevelType(typeToCreate, reader);
 			}
 			catch (TypeLoadException ex) //ncrunch: no coverage start
 			{
 				throw new Exception(
 					"Failed to load inner type of '" + typeToCreate + "' (Version " + dataVersion + "). " +
-					"Your data might be outdated '" + subTypeToCreate + "'. Try to delete your local content",
+						"Your data might be outdated '" + subTypeToCreate + "'. Try to delete your local content",
 					ex);
 			} //ncrunch: no coverage end
 			catch (MissingMethodException ex)
 			{
 				throw new MissingMethodException(
 					"Failed to load '" + typeToCreate + "' (Version " + dataVersion + "). " +
-					"Could not create default instance of '" + subTypeToCreate + "'", ex);
+						"Could not create default instance of '" + subTypeToCreate + "'", ex);
 			}
 			catch (Exception ex)
 			{
 				throw new Exception(
-					"Failed to load '" + typeToCreate + "' (Version " + dataVersion + ").", ex);
+					"Failed to load '" + typeToCreate + "' (Version " + dataVersion + ")", ex);
 			}
 		}
 
-		private static object CreateAndLoadTopLevelType(Type typeToCreate, BinaryReader reader)
+		private static Version dataVersion;
+
+		private static object TryCreateAndLoadTopLevelType(Type typeToCreate, BinaryReader reader)
 		{
 			topLevelTypeToCreate = typeToCreate;
 			nestingDepth = 0;
@@ -80,12 +83,46 @@ namespace DeltaEngine.Core
 		private static object GetDefault(Type type)
 		{
 			if (type.IsArray || type == typeof(Type) || type.Name == "RuntimeType" ||
-					typeof(ContentData).IsAssignableFrom(type) || typeof(Entity).IsAssignableFrom(type))
+				typeof(ContentData).IsAssignableFrom(type) || typeof(Entity).IsAssignableFrom(type))
 				return null;
 			return type == typeof(string) ? "" : Activator.CreateInstance(type, true);
 		}
 
 		private static void LoadData(ref object data, Type type, BinaryReader reader)
+		{
+			if (type.NeedToSaveDataLength())
+				LoadDataWithHeader(ref data, type, reader);
+			else
+				TryLoadDataBody(ref data, type, reader);
+		}
+
+		private static void LoadDataWithHeader(ref object data, Type type, BinaryReader reader)
+		{
+			var length = reader.ReadInt32();
+			using (var memoryStream = new MemoryStream())
+			using (var memoryWriter = new BinaryWriter(memoryStream))
+			{
+				memoryWriter.Write(reader.ReadBytes(length));
+				memoryStream.Seek(0, SeekOrigin.Begin);
+				using (var memoryReader = new BinaryReader(memoryStream))
+					LoadDataBody(ref data, type, memoryReader);
+			}
+		}
+
+		private static void LoadDataBody(ref object data, Type type, BinaryReader reader)
+		{
+			try
+			{
+				TryLoadDataBody(ref data, type, reader);
+			}
+			catch (Exception ex) //ncrunch: no coverage start
+			{
+				Logger.Warning("Failed to load '" + type + "' (Version " + dataVersion + ") - " +
+														"some properties will contain default values.\n\n" + ex.Message);
+			}	 //ncrunch: no coverage end
+		}
+
+		private static void TryLoadDataBody(ref object data, Type type, BinaryReader reader)
 		{
 			if (typeof(ContentData).IsAssignableFrom(type))
 			{
@@ -95,8 +132,17 @@ namespace DeltaEngine.Core
 					var contentName = reader.ReadString();
 					if (String.IsNullOrEmpty(contentName))
 						throw new UnableToLoadContentDataWithoutName();
-					data = ContentLoader.Load(type, contentName);
-					return;
+					try
+					{
+						data = ContentLoader.Load(type, contentName);
+						return;
+					}
+					catch (Exception) //ncrunch: no coverage start
+					{
+						Logger.Warning("Failed to load content " + contentName + " for " + topLevelTypeToCreate);
+						data = ContentLoader.Load(type, "<GeneratedLoadedContent>");
+						return;
+					} //ncrunch: no coverage end
 				}
 				data = ContentLoader.Load(type, "<GeneratedLoadedContent>");
 			}
@@ -132,8 +178,9 @@ namespace DeltaEngine.Core
 		private static Object LoadEntity(Type type, BinaryReader reader)
 		{
 			subTypeToCreate = type;
-			var entity = Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
-				CultureInfo.CurrentCulture) as Entity;
+			var entity =
+				Activator.CreateInstance(type, PrivateBindingFlags, Type.DefaultBinder, null,
+					CultureInfo.CurrentCulture) as Entity;
 			var createFromComponents = LoadArray(null, typeof(List<object>), reader) as List<object>;
 			entity.SetComponents(createFromComponents);
 			LoadEntityTags(reader, entity);
@@ -154,7 +201,7 @@ namespace DeltaEngine.Core
 		{
 			var behaviors = LoadArray(null, typeof(List<string>), reader) as List<string>;
 			foreach (string behavior in behaviors)
-				entity.Start(behavior.GetTypeFromShortNameOrFullNameIfNotFound());
+				entity.Start(BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(behavior));
 		}
 
 		private static void LoadDrawableEntityDrawBehaviors(BinaryReader reader,
@@ -162,10 +209,10 @@ namespace DeltaEngine.Core
 		{
 			var drawBehaviors = LoadArray(null, typeof(List<string>), reader) as List<string>;
 			foreach (string behavior in drawBehaviors)
-				drawable.OnDraw(behavior.GetTypeFromShortNameOrFullNameIfNotFound());
+				drawable.OnDraw(BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(behavior));
 		}
 
-		internal class UnableToLoadContentDataWithoutName : Exception {}
+		internal class UnableToLoadContentDataWithoutName : Exception { }
 
 		private const BindingFlags PrivateBindingFlags =
 			BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -174,55 +221,55 @@ namespace DeltaEngine.Core
 		{
 			switch (Type.GetTypeCode(type))
 			{
-			case TypeCode.Boolean:
-				data = reader.ReadBoolean();
-				return true;
-			case TypeCode.Byte:
-				data = reader.ReadByte();
-				return true;
-			case TypeCode.Char:
-				data = reader.ReadChar();
-				return true;
-			case TypeCode.Decimal:
-				data = reader.ReadDecimal();
-				return true;
-			case TypeCode.Double:
-				data = reader.ReadDouble();
-				return true;
-			case TypeCode.Single:
-				data = reader.ReadSingle();
-				return true;
-			case TypeCode.Int16:
-				data = reader.ReadInt16();
-				return true;
-			case TypeCode.Int32:
-				data = reader.ReadInt32();
-				return true;
-			case TypeCode.Int64:
-				data = reader.ReadInt64();
-				return true;
-			case TypeCode.String:
-				data = reader.ReadString();
-				return true;
-			case TypeCode.SByte:
-				data = reader.ReadSByte();
-				return true;
-			case TypeCode.UInt16:
-				data = reader.ReadUInt16();
-				return true;
-			case TypeCode.UInt32:
-				data = reader.ReadUInt32();
-				return true;
-			case TypeCode.UInt64:
-				data = reader.ReadUInt64();
-				return true;
+				case TypeCode.Boolean:
+					data = reader.ReadBoolean();
+					return true;
+				case TypeCode.Byte:
+					data = reader.ReadByte();
+					return true;
+				case TypeCode.Char:
+					data = reader.ReadChar();
+					return true;
+				case TypeCode.Decimal:
+					data = reader.ReadDecimal();
+					return true;
+				case TypeCode.Double:
+					data = reader.ReadDouble();
+					return true;
+				case TypeCode.Single:
+					data = reader.ReadSingle();
+					return true;
+				case TypeCode.Int16:
+					data = reader.ReadInt16();
+					return true;
+				case TypeCode.Int32:
+					data = reader.ReadInt32();
+					return true;
+				case TypeCode.Int64:
+					data = reader.ReadInt64();
+					return true;
+				case TypeCode.String:
+					data = reader.ReadString();
+					return true;
+				case TypeCode.SByte:
+					data = reader.ReadSByte();
+					return true;
+				case TypeCode.UInt16:
+					data = reader.ReadUInt16();
+					return true;
+				case TypeCode.UInt32:
+					data = reader.ReadUInt32();
+					return true;
+				case TypeCode.UInt64:
+					data = reader.ReadUInt64();
+					return true;
 			}
 			return false;
 		}
 
-		private static Material LoadCustomMaterial(BinaryReader reader)
+		internal static Material LoadCustomMaterial(BinaryReader reader)
 		{
-			var shaderName = reader.ReadString();
+			var shaderFlags = (ShaderFlags)reader.ReadInt32();
 			var customImageType = reader.ReadByte();
 			var pixelSize = customImageType > 0
 				? new Size(reader.ReadSingle(), reader.ReadSingle()) : Size.Zero;
@@ -233,8 +280,9 @@ namespace DeltaEngine.Core
 				reader.ReadByte());
 			var duration = reader.ReadSingle();
 			var material = customImageType > 0
-				? new Material(ContentLoader.Load<Shader>(shaderName), customImage, pixelSize)
-				: new Material(shaderName, imageOrAnimationName);
+				? new Material(ContentLoader.Create<Shader>(new ShaderCreationData(shaderFlags)),
+					customImage)
+				: new Material(shaderFlags, imageOrAnimationName);
 			material.DefaultColor = color;
 			material.Duration = duration;
 			return material;
@@ -273,7 +321,8 @@ namespace DeltaEngine.Core
 			else
 			{
 				Type elementType = arrayElementType == BinaryDataSaver.ArrayElementType.AllTypesAreTypes
-					? typeof(Type) : reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
+					? typeof(Type)
+					: BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
 				LoadArrayWhereAllElementsAreTheSameType(list, arrayType, reader, count, elementType);
 			}
 			return list;
@@ -285,19 +334,6 @@ namespace DeltaEngine.Core
 			if (number == 255)
 				number = reader.ReadInt32();
 			return number;
-		}
-
-		private static void LoadArrayWhereAllElementsAreTheSameType(IList list, Type arrayType,
-			BinaryReader reader, int count, Type elementType)
-		{
-			if (!arrayType.IsArray)
-				list.Clear();
-			for (int i = 0; i < count; i++)
-				if (arrayType.IsArray)
-					// If objects cannot be cast to the type here the BinaryDataExtensions.TypeMap is wrong!
-					list[i] = CreateAndLoad(elementType, reader);
-				else
-					list.Add(CreateAndLoad(elementType, reader));
 		}
 
 		private static void LoadArrayWhereAllElementsAreNotTheSameType(IList list, Type arrayType,
@@ -317,7 +353,8 @@ namespace DeltaEngine.Core
 
 		private static void LoadArrayElement(IList list, BinaryReader reader, int i)
 		{
-			Type elementType = reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
+			Type elementType =
+				BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
 			bool isNotNull = reader.ReadBoolean();
 			if (isNotNull)
 				list[i] = CreateAndLoad(elementType, reader);
@@ -332,10 +369,24 @@ namespace DeltaEngine.Core
 
 		private static void LoadListElement(IList list, BinaryReader reader)
 		{
-			Type elementType = reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
+			Type elementType =
+				BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
 			bool isNotNull = reader.ReadBoolean();
 			if (isNotNull)
 				list.Add(CreateAndLoad(elementType, reader));
+		}
+
+		private static void LoadArrayWhereAllElementsAreTheSameType(IList list, Type arrayType,
+			BinaryReader reader, int count, Type elementType)
+		{
+			if (!arrayType.IsArray)
+				list.Clear();
+			for (int i = 0; i < count; i++)
+				if (arrayType.IsArray)
+					// If objects cannot be cast to the type here the BinaryDataExtensions.TypeMap is wrong!
+					list[i] = CreateAndLoad(elementType, reader);
+				else
+					list.Add(CreateAndLoad(elementType, reader));
 		}
 
 		private static IDictionary LoadDictionary(IDictionary data, BinaryReader reader)
@@ -355,10 +406,12 @@ namespace DeltaEngine.Core
 		private static void LoadDictionaryWhereAllValuesAreNotTheSameType(IDictionary data,
 			BinaryReader reader, int count)
 		{
-			Type everyKeyType = reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
+			Type everyKeyType =
+				BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
 			for (int i = 0; i < count; i++)
 			{
-				var thisValueType = reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
+				var thisValueType =
+					BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
 				data.Add(CreateAndLoad(everyKeyType, reader), CreateAndLoad(thisValueType, reader));
 			}
 		}
@@ -366,8 +419,10 @@ namespace DeltaEngine.Core
 		private static void LoadDictionaryWhereAllValuesAreTheSameType(IDictionary data,
 			BinaryReader reader, int count)
 		{
-			Type everyKeyType = reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
-			Type everyValueType = reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
+			Type everyKeyType =
+				BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
+			Type everyValueType =
+				BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
 			for (int i = 0; i < count; i++)
 				data.Add(CreateAndLoad(everyKeyType, reader), CreateAndLoad(everyValueType, reader));
 		}
@@ -385,7 +440,8 @@ namespace DeltaEngine.Core
 					if (isNull)
 						continue;
 					if (fieldType.NeedToSaveTypeName())
-						fieldType = reader.ReadString().GetTypeFromShortNameOrFullNameIfNotFound();
+						fieldType =
+							BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(reader.ReadString());
 				}
 				field.SetValue(data, CreateAndLoad(fieldType, reader));
 			}

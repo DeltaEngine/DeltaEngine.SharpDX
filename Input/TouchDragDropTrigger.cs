@@ -9,6 +9,9 @@ namespace DeltaEngine.Input
 	/// </summary>
 	public class TouchDragDropTrigger : InputTrigger, TouchTrigger
 	{
+		public TouchDragDropTrigger(string startArea)
+			: this(startArea.Convert<Rectangle>()) {}
+
 		public TouchDragDropTrigger(Rectangle startArea)
 		{
 			StartArea = startArea;
@@ -17,12 +20,6 @@ namespace DeltaEngine.Input
 
 		public Rectangle StartArea { get; private set; }
 		public Vector2D StartDragPosition { get; set; }
-
-		public TouchDragDropTrigger(string startArea)
-		{
-			StartArea = startArea.Convert<Rectangle>();
-			StartDragPosition = Vector2D.Unused;
-		}
 
 		protected override void StartInputDevice()
 		{

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DeltaEngine.Extensions
 {
 	/// <summary>
 	/// Based on <see cref="List{T}"/>, but this also checks if elements do already exist. It will
 	/// not add duplicates, they are ignored and no exception is thrown! Each element is unique.
+	/// Unlike <see cref="HashSet{T}"/>, which behaves similarly this one preserves the adding order.
 	/// </summary>
 	public class UniqueList<T> : IList<T>
 	{
@@ -110,7 +112,7 @@ namespace DeltaEngine.Extensions
 
 		public List<T> ToList()
 		{
-			return data;
+			return data.ToList();
 		}
 
 		public bool Exists(Predicate<T> match)

@@ -19,7 +19,7 @@ namespace Blocks.Tests
 			displayMode = ScreenSpace.Current.Viewport.Aspect >= 1.0f
 				? Orientation.Landscape : Orientation.Portrait;
 			content = new JewelBlocksContent();
-			var controller = new Controller(displayMode, content);
+			controller = new Controller(displayMode, content);
 			grid = controller.Get<Grid>();
 			//fixedRandomScope = NUnit.Framework.Randomizer.Use(new FixedRandom());
 		}
@@ -28,6 +28,7 @@ namespace Blocks.Tests
 		//private IDisposable fixedRandomScope;
 		private JewelBlocksContent content;
 		private Grid grid;
+		private Controller controller;
 
 		//ncrunch: no coverage start
 		[Test, Ignore]
@@ -126,11 +127,15 @@ namespace Blocks.Tests
 		[Test]
 		public void IsABrickOnFirstRow()
 		{
+			var lost = false;
+			controller.Lose += () => { lost = true; };
 			Assert.IsFalse(grid.IsABrickOnFirstRow());
 			grid.AffixBlock(new Block(displayMode, content, new Vector2D(1, 1)));
 			Assert.IsFalse(grid.IsABrickOnFirstRow());
 			grid.AffixBlock(new Block(displayMode, content, new Vector2D(2, 0)));
 			Assert.IsTrue(grid.IsABrickOnFirstRow());
+			AdvanceTimeAndUpdateEntities();
+			Assert.IsTrue(lost);
 		}
 
 		//ncrunch: no coverage start

@@ -8,7 +8,7 @@ namespace DeltaEngine.Scenes.Tests.EntityDebugger
 	internal class BouncingLogo : Sprite
 	{
 		public BouncingLogo()
-			: base(new Material(Shader.Position2DColorUV, "DeltaEngineLogo"), Vector2D.Half)
+			: base(new Material(ShaderFlags.Position2DColoredTextured, "DeltaEngineLogo"), Vector2D.Half)
 		{
 			Color = Color.GetRandomColor();
 			Add(new SimplePhysics.Data

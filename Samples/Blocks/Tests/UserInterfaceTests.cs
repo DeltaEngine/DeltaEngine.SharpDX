@@ -15,20 +15,20 @@ namespace Blocks.Tests
 		private JewelBlocksContent content;
 		private UserInterface userInterface;
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UserInterfaceShouldChangeFromLandscapeToPortrait()
 		{
 			userInterface.ShowUserInterfacePortrait();
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void OnLoseScoreShouldBeZero()
 		{
 			userInterface.Lose();
 			Assert.AreEqual(0, userInterface.Score);
 		}
 
-		[Test]
+		[Test, CloseAfterFirstFrame]
 		public void UserInterfaceShouldBeHidden()
 		{
 			userInterface.Dispose();

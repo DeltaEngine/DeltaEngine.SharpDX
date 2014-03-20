@@ -225,7 +225,7 @@ namespace DeltaEngine.Tests.Core
 		{
 			Assert.Throws<Exception>(
 				() =>
-					BinaryDataLoader.TryCreateAndLoad(typeof(Vector2D), new BinaryReader(new MemoryStream()),
+					BinaryDataLoader.CreateAndLoad(typeof(Vector2D), new BinaryReader(new MemoryStream()),
 						new Version(0, 0)));
 		}
 
@@ -234,7 +234,7 @@ namespace DeltaEngine.Tests.Core
 		{
 			Assert.Throws<MissingMethodException>(
 				() =>
-					BinaryDataLoader.TryCreateAndLoad(typeof(ClassThatRequiresConstructorParameter),
+					BinaryDataLoader.CreateAndLoad(typeof(ClassThatRequiresConstructorParameter),
 						new BinaryReader(new MemoryStream()), new Version(0, 0)));
 		}
 
@@ -318,6 +318,23 @@ namespace DeltaEngine.Tests.Core
 			var loadedRange = data.CreateFromMemoryStream() as Range<Vector2D>;
 			Assert.AreEqual(range.Start, loadedRange.Start);
 			Assert.AreEqual(range.End, loadedRange.End);
+		}
+
+		[Test]
+		public void CreateTypeFromShortName()
+		{
+			Assert.IsNotNull(BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound("Int32"));
+			Assert.IsNotNull(BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound("Material"));
+			Assert.Throws<TypeLoadException>(
+				() => BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound("abc535"));
+		}
+
+		[Test]
+		public void CreateTypeFromFullName()
+		{
+			Assert.IsNotNull(
+				BinaryDataExtensions.GetTypeFromShortNameOrFullNameIfNotFound(
+					"DeltaEngine.Content.Material"));
 		}
 	}
 }

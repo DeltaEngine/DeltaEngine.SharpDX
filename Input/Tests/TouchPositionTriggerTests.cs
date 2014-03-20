@@ -35,13 +35,22 @@ namespace DeltaEngine.Input.Tests
 		[Test]
 		public void InvokeTouch()
 		{
-			var touch = Resolve<MockTouch>();
+			var touch = Resolve<Touch>() as MockTouch;
+			if (touch == null)
+				return; //ncrunch: no coverage
 			var trigger = new TouchPositionTrigger(State.Pressed);
 			bool wasInvoked = false;
 			new Command(() => wasInvoked = true).Add(trigger);
 			touch.SetTouchState(0, State.Pressed, Vector2D.Half);
 			AdvanceTimeAndUpdateEntities();
 			Assert.IsTrue(wasInvoked);
+		}
+
+		[Test]
+		public void TouchPositionTriggerState()
+		{
+			var trigger = new TouchPositionTrigger(null);
+			Assert.AreEqual(State.Pressing, trigger.State);
 		}
 	}
 }

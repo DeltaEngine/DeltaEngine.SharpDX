@@ -39,10 +39,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Content\Mocks\DeltaEngine.Content.Mocks.csproj">
-      <Project>{BA0A7803-4A15-416E-BC93-69F5B9DFC4A5}</Project>
-      <Name>DeltaEngine.Content.Mocks</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
       <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
       <Name>DeltaEngine.Content.Xml</Name>
@@ -50,14 +46,6 @@
     <ProjectReference Include="..\..\DeltaEngine.csproj">
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
-      <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
-      <Name>DeltaEngine.Platforms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\Mocks\DeltaEngine.Platforms.Mocks.csproj">
-      <Project>{BF968F20-246B-4F86-BB7B-377FD4B47A9F}</Project>
-      <Name>DeltaEngine.Platforms.Mocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
@@ -71,17 +59,17 @@
       <Project>{BB73D940-CBD2-4F00-B246-2A25CA5ACD7E}</Project>
       <Name>DeltaEngine.Rendering2D.Shapes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DeltaEngine.Input.csproj">
+    <ProjectReference Include="..\..\Input\DeltaEngine.Input.csproj">
       <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
       <Name>DeltaEngine.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mocks\DeltaEngine.Input.Mocks.csproj">
+    <ProjectReference Include="..\..\Input\Mocks\DeltaEngine.Input.Mocks.csproj">
       <Project>{4E4D006D-9C6E-47DB-908D-674E0C8D98AA}</Project>
       <Name>DeltaEngine.Input.Mocks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\TestWithSharpDX\DeltaEngine.TestWithSharpDX.csproj">
-      <Project>{6FC44240-845D-405A-A7F8-0AC465E30703}</Project>
-      <Name>DeltaEngine.TestWithSharpDX</Name>
+    <ProjectReference Include="..\..\Platforms\TestWithSlimDX\DeltaEngine.TestWithSlimDX.csproj">
+      <Project>{A3260916-CC8D-45B3-83BC-F91EBAEDA3FB}</Project>
+      <Name>DeltaEngine.TestWithSlimDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

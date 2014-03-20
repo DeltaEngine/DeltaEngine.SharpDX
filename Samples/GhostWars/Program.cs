@@ -3,7 +3,7 @@ using DeltaEngine.Platforms;
 
 namespace GhostWars
 {
-	public class Program : App
+	internal class Program : App
 	{
 		public Program()
 		{

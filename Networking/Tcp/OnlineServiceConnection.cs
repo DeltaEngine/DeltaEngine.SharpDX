@@ -18,7 +18,8 @@ namespace DeltaEngine.Networking.Tcp
 			rememberIp = settings.OnlineServiceIp;
 			rememberPort = settings.OnlineServicePort;
 			projectName = AssemblyExtensions.GetEntryAssemblyForProjectName();
-			TimedOut += timedOut;
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+				TimedOut += timedOut;
 			DataReceived += OnDataReceived;
 		}
 

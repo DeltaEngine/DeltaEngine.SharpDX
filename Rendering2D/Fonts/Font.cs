@@ -29,7 +29,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 			InitializeDescriptionAndMaterial();
 		}
 
-		protected override void DisposeData() { }
+		protected override void DisposeData() {}
 
 		protected override bool AllowCreationIfContentNotFound
 		{
@@ -44,7 +44,7 @@ namespace DeltaEngine.Rendering2D.Fonts
 				return;
 			}
 			Description = new FontDescription(Data);
-			Material = new Material(Shader.Position2DColorUV, Description.FontMapName);
+			Material = new Material(ShaderFlags.Position2DColoredTextured, Description.FontMapName);
 			WasLoadedOk = true;
 		}
 

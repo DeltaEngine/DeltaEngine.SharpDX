@@ -4,7 +4,7 @@ using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Rendering2D;
-using DeltaEngine.Rendering2D.Particles;
+using DeltaEngine.Rendering3D.Particles;
 
 namespace $safeprojectname$
 {
@@ -12,16 +12,16 @@ namespace $safeprojectname$
 	{
 		public InteractionLogic()
 		{
-			// ParticleSystemData can very well be loaded by a ContentLoader, unused for simplicity in M5
-			//explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEffectEmitter0");
-			explosionData = new ParticleEmitterData
-			{
-				ParticleMaterial = ContentLoader.Load<Material>("ExplosionAnimated2D"),
-				Size = new RangeGraph<Size>(new Size(0.2f, 0.2f), new Size(0.2f,0.2f)),
-				LifeTime = 0,
-				SpawnInterval = 0.001f,
-				MaximumNumberOfParticles = 1
-			};
+			explosionData = ContentLoader.Load<ParticleEmitterData>("ExplosionEffectEmitter0");
+			//Instead of making use of content loading we could create those data dynamically like this:
+			//explosionData = new ParticleEmitterData
+			//{
+			//	ParticleMaterial = ContentLoader.Load<Material>("ExplosionAnimated2D"),
+			//	Size = new RangeGraph<Size>(new Size(0.2f, 0.2f), new Size(0.2f,0.2f)),
+			//	LifeTime = 0,
+			//	SpawnInterval = 0.001f,
+			//	MaximumNumberOfParticles = 1
+			//};
 			IncreaseScore += i => { };
 		}
 
@@ -137,7 +137,5 @@ namespace $safeprojectname$
 		{
 			gameRunning = false;
 		}
-
-		public bool IsPauseable { get { return true; } }
 	}
 }

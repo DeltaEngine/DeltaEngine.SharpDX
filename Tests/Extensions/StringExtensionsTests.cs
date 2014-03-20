@@ -49,6 +49,8 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.AreEqual("1.2", StringExtensions.ToInvariantString(1.2));
 			Assert.AreEqual("1.4", StringExtensions.ToInvariantString(1.4m));
 			Assert.AreEqual("abc", StringExtensions.ToInvariantString("abc"));
+			Assert.AreEqual("01/01/2014 00:00:00",
+				StringExtensions.ToInvariantString(new DateTime(2014, 1, 1)));
 		}
 
 		[Test]
@@ -147,8 +149,22 @@ namespace DeltaEngine.Tests.Extensions
 		public void FromByteArray()
 		{
 			const string TestString = "TestString";
-			Assert.AreEqual(TestString, 
+			Assert.AreEqual(TestString,
 				StringExtensions.FromByteArray(StringExtensions.ToByteArray(TestString)));
+		}
+
+		[Test]
+		public void StartsWith()
+		{
+			Assert.True(StringExtensions.StartsWith("Hi there, whattup?", "Hi"));
+			Assert.False(StringExtensions.StartsWith("Hi there, whattup?", "what"));
+			Assert.True(StringExtensions.StartsWith("bcdeuf", "bc"));
+			Assert.False(StringExtensions.StartsWith("bcdeuf", "abc"));
+			Assert.True("Hi there, whattup?".StartsWith(new[] { "Hi", "there", "what" }));
+			Assert.False("Hi there, whattup?".StartsWith(new[] { "she", "there", "what" }));
+			Assert.True(StringExtensions.StartsWith("ATI Radeon 9500+", "ati"));
+			Assert.False(StringExtensions.StartsWith("A-t-i da gaga", "ati"));
+			Assert.True(StringExtensions.StartsWith("NVidia Geforce3", "nvidia"));
 		}
 
 		[Test]
@@ -191,6 +207,24 @@ namespace DeltaEngine.Tests.Extensions
 			Assert.AreEqual(41, arrayOfStrings.Length);
 			Assert.AreEqual(8, arrayOfStrings.IndexOf(';'));
 			Assert.AreEqual(29, arrayOfStrings.LastIndexOf(';'));
+		}
+
+		[Test]
+		public void CheckForCleanFileName()
+		{
+			Assert.AreEqual("", GetCleanFileName(null));
+			Assert.AreEqual("", GetCleanFileName(""));
+			Assert.AreEqual("", GetCleanFileName("   "));
+			Assert.AreEqual("PureFilename", GetCleanFileName("PureFilename"));
+			Assert.AreEqual("PureFilename", GetCleanFileName("Pure Filename"));
+			Assert.AreEqual("FullFilename.ext", GetCleanFileName("FullFilename.ext"));
+			Assert.AreEqual("File1.ext", GetCleanFileName("File#1.ext"));
+			Assert.AreEqual("FileAB.ext", GetCleanFileName("FileA|B.ext"));
+		}
+
+		private static string GetCleanFileName(string filename)
+		{
+			return StringExtensions.GetFilenameWithoutForbiddenCharactersOrSpaces(filename);
 		}
 	}
 }

@@ -7,12 +7,14 @@ using DeltaEngine.ScreenSpaces;
 namespace DeltaEngine.Rendering2D
 {
 	/// <summary>
-	/// Groups the various physics effects that can be applied to Entities
+	/// Groups various simple "physics" effects that can be applied to Entities.
+	/// These do neither use actual physics functionality nor provide interaction to objects that do,
+	/// but can prove to be a more efficient solution if just aiming for plain movement of sprites.
 	/// </summary>
 	public class SimplePhysics
 	{
 		/// <summary>
-		/// Holds physics related data
+		/// Holds SimplePhysics related data
 		/// </summary>
 		public class Data
 		{
@@ -20,9 +22,9 @@ namespace DeltaEngine.Rendering2D
 			public float Duration { get; set; }
 			public float RotationSpeed { get; set; }
 			public Vector2D Velocity { get; set; }
+			public Vector2D UVVelocity { get; set; }
 			public Vector2D Gravity { get; set; }
 			public Action Bounced { get; set; }
-			public Vector2D UVVelocity { get; set; }
 		}
 
 		/// <summary>
@@ -42,6 +44,7 @@ namespace DeltaEngine.Rendering2D
 
 		/// <summary>
 		/// Causes an Entity2D to move and fall under gravity.
+		/// When the duration is complete it removes the Entity from the Entity System
 		/// </summary>
 		public class Move : UpdateBehavior
 		{
@@ -58,28 +61,9 @@ namespace DeltaEngine.Rendering2D
 			{
 				physics.Velocity += physics.Gravity * Time.Delta;
 				entity.Center += physics.Velocity * Time.Delta;
-			}
-		}
-
-		/// <summary>
-		/// When the duration is complete it removes the Entity from the Entity System.
-		/// </summary>
-		public class KillAfterDurationReached : UpdateBehavior
-		{
-			public KillAfterDurationReached()
-				: base(Priority.First) {}
-
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (Entity2D entity in entities)
-					UpdateDuration(entity, entity.Get<Data>());
-			}
-
-			private static void UpdateDuration(Entity2D entity, Data physics)
-			{
 				physics.Elapsed += Time.Delta;
 				if (physics.Duration > 0.0f && physics.Elapsed >= physics.Duration)
-					entity.Dispose();
+					entity.IsActive = false;
 			}
 		}
 
@@ -122,6 +106,28 @@ namespace DeltaEngine.Rendering2D
 			private static void UpdatePhysics(Sprite sprite, Vector2D velocity)
 			{
 				sprite.UV = sprite.UV.Move(velocity * Time.Delta);
+			}
+		}
+
+		/// <summary>
+		/// When the duration is complete it removes the Entity from the Entity System.
+		/// </summary>
+		public class KillAfterDurationReached : UpdateBehavior
+		{
+			public KillAfterDurationReached()
+				: base(Priority.First) {}
+
+			public override void Update(IEnumerable<Entity> entities)
+			{
+				foreach (Entity2D entity in entities)
+					UpdateDuration(entity, entity.Get<Data>());
+			}
+
+			private static void UpdateDuration(Entity2D entity, Data physics)
+			{
+				physics.Elapsed += Time.Delta;
+				if (physics.Duration > 0.0f && physics.Elapsed >= physics.Duration)
+					entity.Dispose();
 			}
 		}
 	}

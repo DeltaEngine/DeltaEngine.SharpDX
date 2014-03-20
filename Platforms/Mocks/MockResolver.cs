@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using DeltaEngine.Commands;
 using DeltaEngine.Content;
+using DeltaEngine.Content.Json;
 using DeltaEngine.Content.Xml;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Extensions;
 using DeltaEngine.Graphics;
 using DeltaEngine.Input;
-using DeltaEngine.Logging;
 using DeltaEngine.Content.Mocks;
 using DeltaEngine.Entities;
 using DeltaEngine.Graphics.Mocks;
@@ -18,11 +18,17 @@ using DeltaEngine.Multimedia;
 using DeltaEngine.Multimedia.Mocks;
 using DeltaEngine.Networking;
 using DeltaEngine.Networking.Mocks;
+using DeltaEngine.Physics2D;
+using DeltaEngine.Physics2D.Farseer;
+using DeltaEngine.Physics3D;
 using DeltaEngine.Rendering2D;
 using DeltaEngine.Rendering2D.Fonts;
 using DeltaEngine.Rendering2D.Mocks;
-using DeltaEngine.Rendering2D.Particles;
 using DeltaEngine.Rendering2D.Shapes;
+using DeltaEngine.Rendering3D;
+using DeltaEngine.Rendering3D.Cameras;
+using DeltaEngine.Rendering3D.Particles;
+using DeltaEngine.Rendering3D.Shapes;
 using DeltaEngine.Scenes.Controls;
 using DeltaEngine.ScreenSpaces;
 
@@ -44,6 +50,7 @@ namespace DeltaEngine.Platforms.Mocks
 			Window = RegisterMock(new MockWindow());
 			ContentIsReady += CreateDefaultInputCommands;
 			RegisterMediaTypes();
+			RegisterPhysics();
 			RegisterDeviceDrawingScreenSpaceAndCamera();
 		}
 
@@ -109,9 +116,19 @@ namespace DeltaEngine.Platforms.Mocks
 			Register<MockGeometry>();
 			Register<MockSound>();
 			Register<MockMusic>();
+			Register<MockVideo>();
 			Register<XmlContent>();
+			Register<JsonContent>();
 			Register<Font>();
 			Register<ParticleEmitterData>();
+			Register<ModelData>();
+		}
+
+		protected override sealed void RegisterPhysics()
+		{
+			RegisterSingleton<FarseerPhysics>();
+			Register<AffixToPhysics2D>();
+			Register<AffixToPhysics3D>();
 		}
 
 		public T RegisterMock<T>(T instance) where T : class
@@ -149,15 +166,17 @@ namespace DeltaEngine.Platforms.Mocks
 			Register<InputCommands>();
 			device = RegisterMock(new MockDevice(Window));
 			drawing = RegisterMock(new Drawing(device, Window));
-			batchRenderer = RegisterMock(new BatchRenderer(drawing));
+			batchRenderer = RegisterMock(new BatchRenderer2D(drawing));
+			RegisterMock(new BatchRenderer3D(drawing));
 			ScreenSpace.resolver = new AutofacScreenSpaceResolver(this);
+			Camera.resolver = new AutofacCameraResolver(this);
 			Register<RelativeScreenSpace>();
 			Register<PixelScreenSpace>();
 			Register<Camera2DScreenSpace>();
 		}
 
 		private Drawing drawing;
-		private BatchRenderer batchRenderer;
+		private BatchRenderer2D batchRenderer;
 
 		public bool IsInitialized
 		{
@@ -177,6 +196,30 @@ namespace DeltaEngine.Platforms.Mocks
 
 		private object GetRegisteredInstance(Type baseType)
 		{
+			var mockInstance = GetMockInstance(baseType);
+			if (mockInstance != null)
+				return mockInstance;
+			if (baseType == typeof(QuadraticScreenSpace))
+				return AddAndReturn(new QuadraticScreenSpace(Window));
+			if (baseType == typeof(Line2DRenderer))
+				return AddAndReturn(new Line2DRenderer(drawing));
+			if (baseType == typeof(Line3DRenderer))
+				return AddAndReturn(new Line3DRenderer(drawing));
+			if (baseType == typeof(DrawPolygon2D))
+				return AddAndReturn(new DrawPolygon2D(drawing));
+			if (baseType == typeof(SpriteRenderer))
+				return AddAndReturn(new SpriteRenderer(batchRenderer));
+			if (baseType == typeof(VectorText.ProcessText))
+				return AddAndReturn(new VectorText.ProcessText());
+			if (baseType == typeof(VectorText.Render))
+				return AddAndReturn(new VectorText.Render(drawing));
+			if (baseType == typeof(ControlUpdater))
+				return AddAndReturn(new ControlUpdater());
+			return null;
+		}
+
+		private object GetMockInstance(Type baseType)
+		{
 			if (baseType == typeof(SoundDevice) || baseType == typeof(MockSoundDevice))
 				return GetRegisteredMock<MockSoundDevice>();
 			if (baseType == typeof(Keyboard) || baseType == typeof(MockKeyboard))
@@ -188,25 +231,11 @@ namespace DeltaEngine.Platforms.Mocks
 			if (baseType == typeof(GamePad) || baseType == typeof(MockGamePad))
 				return GetRegisteredMock<MockGamePad>();
 			if (baseType == typeof(InAppPurchase) || baseType == typeof(MockInAppPurchase))
-				return GetRegisteredMock<MockInAppPurchase>();
+				return GetRegisteredMock<MockInAppPurchase>(); //ncrunch: no coverage
 			if (baseType == typeof(SystemInformation) || baseType == typeof(MockSystemInformation))
 				return GetRegisteredMock<MockSystemInformation>();
 			if (baseType == typeof(ScreenshotCapturer) || baseType == typeof(MockScreenshotCapturer))
 				return GetRegisteredMock<MockScreenshotCapturer>();
-			if (baseType == typeof(QuadraticScreenSpace))
-				return AddAndReturn(new QuadraticScreenSpace(Window));
-			if (baseType == typeof(Line2DRenderer))
-				return AddAndReturn(new Line2DRenderer(drawing));
-			if (baseType == typeof(DrawPolygon2D))
-				return AddAndReturn(new DrawPolygon2D(drawing));
-			if (baseType == typeof(SpriteRenderer))
-				return AddAndReturn(new SpriteRenderer(batchRenderer));
-			if (baseType == typeof(VectorText.ProcessText))
-				return AddAndReturn(new VectorText.ProcessText());
-			if (baseType == typeof(VectorText.Render))
-				return AddAndReturn(new VectorText.Render(drawing));
-			if (baseType == typeof(ControlUpdater))
-				return AddAndReturn(new ControlUpdater());
 			return null;
 		}
 
@@ -222,17 +251,16 @@ namespace DeltaEngine.Platforms.Mocks
 		{
 			if (baseType == typeof(Shader))
 			{
-				var creationData = customParameter as ShaderCreationData;
-				if (creationData != null)
-					return new MockShader(creationData, device);
-				return new MockShader(customParameter as string, device);
+				var creationData = customParameter as ShaderWithFormatCreationData;
+				return creationData != null
+					? new MockShader(creationData, device)
+					: new MockShader(customParameter as ShaderCreationData, device);
 			}
 			if (baseType == typeof(Image))
 			{
 				var creationData = customParameter as ImageCreationData;
-				if (creationData != null)
-					return new MockImage(creationData);
-				return new MockImage(customParameter as string);
+				return creationData != null
+					? new MockImage(creationData) : new MockImage(customParameter as string);
 			}
 			if (baseType == typeof(Font))
 				return new MockFont(customParameter as string);
@@ -240,13 +268,13 @@ namespace DeltaEngine.Platforms.Mocks
 				return new MockSound(customParameter as string);
 			if (baseType == typeof(Music))
 				return new MockMusic(customParameter as string, Resolve<SoundDevice>());
+			if (baseType == typeof(Video))
+				return new MockVideo(customParameter as string, Resolve<SoundDevice>());
 			foreach (object mock in registeredMocks)
 				if (baseType.IsInstanceOfType(mock))
 					return mock;
 			var instance = GetRegisteredInstance(baseType);
-			if (instance != null)
-				return instance;
-			return base.Resolve(baseType, customParameter);
+			return instance ?? base.Resolve(baseType, customParameter);
 		}
 
 		private object GetRegisteredMock<ConcreteType>()

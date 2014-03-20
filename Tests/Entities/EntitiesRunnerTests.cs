@@ -348,8 +348,6 @@ namespace DeltaEngine.Tests.Entities
 			{
 				Set(GetOrDefault("") + "[HighPriorityUpdate]");
 			}
-
-			public bool IsPauseable { get { return true; } }
 		}
 
 		private class LowPriorityBehavior : UpdateBehavior

@@ -8,7 +8,8 @@ using DeltaEngine.Input;
 namespace DeltaEngine.Scenes.Controls
 {
 	/// <summary>
-	/// Enables a control to respond to mouse and touch input.
+	/// Enables a control to respond to mouse and touch input. Also processes controls anchored to
+	/// other controls or the screen edge
 	/// </summary>
 	public class ControlUpdater : UpdateBehavior
 	{
@@ -44,6 +45,7 @@ namespace DeltaEngine.Scenes.Controls
 				UpdateStateOfControls(entities);
 			ProcessShiftOfFocus(entities);
 			Reset();
+			ProcessAnchoring(entities);
 		}
 
 		private static void ResetDrag(IEnumerable<Entity> entities)
@@ -90,15 +92,13 @@ namespace DeltaEngine.Scenes.Controls
 		{
 			if (leftRelease == Vector2D.Unused)
 				return;
-			if (state.IsPressed && control.RotatedDrawAreaContains(leftRelease))
+			if (state.IsPressed && control.RotatedDrawAreaContains(leftRelease) && control.IsVisible)
 				ClickControl(control, state);
-			else
-				state.IsPressed = false;
+			state.IsPressed = false;
 		}
 
 		private static void ClickControl(Control control, InteractiveState state)
 		{
-			state.IsPressed = false;
 			control.Click();
 			if (state.CanHaveFocus)
 				state.WantsFocus = true;
@@ -144,6 +144,28 @@ namespace DeltaEngine.Scenes.Controls
 			movement = Vector2D.Unused;
 			dragStart = Vector2D.Unused;
 			dragDone = false;
+		}
+
+		internal static void ProcessAnchoring(IEnumerable<Entity> entities)
+		{
+			int level = 0;
+			do { } while (RefreshControlsAtLevel(entities, level++));
+		}
+
+		private static bool RefreshControlsAtLevel(IEnumerable<Entity> entities, int level)
+		{
+			bool wereAnyRefreshed = false;
+			foreach (Control control in entities.OfType<Control>())
+				wereAnyRefreshed |= RefreshControlIfAtCurrentLevel(control, level);
+			return wereAnyRefreshed;
+		}
+
+		private static bool RefreshControlIfAtCurrentLevel(Control control, int level)
+		{
+			if (control.GetLevel() != level)
+				return false;
+			control.RefreshDrawAreaIfAnchored();
+			return true;
 		}
 	}
 }

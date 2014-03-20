@@ -12,7 +12,7 @@ namespace DeltaEngine.Mocks
 		public MockWindow()
 		{
 			Title = "MockWindow";
-			currentSize = new Size(640, 360);
+			currentSize = Settings.DefaultResolution;
 		}
 
 		public void Present() {}
@@ -25,7 +25,7 @@ namespace DeltaEngine.Mocks
 			get { return true; }
 		}
 
-		public object Handle
+		public IntPtr Handle
 		{
 			get { return IntPtr.Zero; }
 		}
@@ -43,6 +43,11 @@ namespace DeltaEngine.Mocks
 				if (OrientationChanged != null)
 					OrientationChanged(Orientation);
 			}
+		}
+
+		public Vector2D ViewportPixelPosition
+		{
+			get { return Vector2D.Zero; } //ncrunch: no coverage
 		}
 
 		public Orientation Orientation
@@ -93,7 +98,10 @@ namespace DeltaEngine.Mocks
 			get { return true; }
 		}
 
+		//ncrunch: no coverage start
 		public bool ShowCursor { get; set; }
+		public bool IsWindowsFormAndNotJustAPanel { get { return true; } }
+		public void SetCursorIcon(string iconFilePath) { }
 
 		public string ShowMessageBox(string title, string message, string[] buttons)
 		{

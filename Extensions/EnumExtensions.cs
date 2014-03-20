@@ -26,6 +26,11 @@ namespace DeltaEngine.Extensions
 			return GetEnumValues(anyEnum).Length;
 		}
 
+		public static int GetCount<EnumType>()
+		{
+			return Enum.GetValues(typeof(EnumType)).Length;
+		}
+
 		/// <summary>
 		/// Tries to convert any text to a enum, if it fails defaultValue is returned. If you know the
 		/// text will be in the correct format use <see cref="StringExtensions.Convert{T}"/>.
@@ -35,7 +40,8 @@ namespace DeltaEngine.Extensions
 			T result;
 			if (Enum.TryParse(text, true, out result))
 				return result;
-			Logger.Warning("Failed to parse enum value " + text + ", using default: " + defaultValue);
+			if (Logger.TotalNumberOfAttachedLoggers > 0)
+				Logger.Warning("Failed to parse enum value " + text + ", using default: " + defaultValue); //ncrunch: no coverage
 			return defaultValue;
 		}
 

@@ -229,8 +229,21 @@ namespace DeltaEngine.Tests.Datatypes
 		public void CreateLookAt()
 		{
 			var createdLookAt = Matrix.CreateLookAt(Vector3D.UnitZ, Vector3D.UnitX, Vector3D.UnitY);
-			var expected = new Matrix(0.7071f, 0.0f, -0.7071f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.7071f,
-				0.0f, 0.7071f, 0.0f, -0.7071f, 0.0f, -0.7071f, 1.0f);
+			var expected = new Matrix(0.7071f, 0.0f, -0.7071f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+				0.7071f, -0.0f, 0.7071f, 0.0f, -0.7071f, 0.0f, -0.7071f, 1.0f);
+			Assert.IsTrue(createdLookAt.IsNearlyEqual(expected));
+		}
+
+		[Test]
+		public void CreateLookAtFiveMetersDistance()
+		{
+			var createdLookAt = Matrix.CreateLookAt(new Vector3D(0.0f, 0.0f, 5.0f), Vector3D.Zero,
+				Vector3D.UnitY);
+			var expected = new Matrix(
+				1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f, 
+				0.0f, 0.0f, -5.0f, 1.0f);
 			Assert.IsTrue(createdLookAt.IsNearlyEqual(expected));
 		}
 

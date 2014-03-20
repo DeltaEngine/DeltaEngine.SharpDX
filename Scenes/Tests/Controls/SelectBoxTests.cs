@@ -2,7 +2,6 @@
 using DeltaEngine.Commands;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
-using DeltaEngine.Entities;
 using DeltaEngine.Input;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
@@ -84,20 +83,6 @@ namespace DeltaEngine.Scenes.Tests.Controls
 			var text = new FontText(Font.Default, "", new Rectangle(0.4f, 0.7f, 0.2f, 0.1f));
 			selectBox.LineClicked += lineNo => text.Text = selectBox.Values[lineNo] + " clicked";
 		}
-
-		//ncrunch: no coverage start
-		private class Grow : UpdateBehavior
-		{
-			public override void Update(IEnumerable<Entity> entities)
-			{
-				foreach (SelectBox selectBox in entities)
-				{
-					var center = selectBox.DrawArea.Center + new Vector2D(0.01f, 0.01f) * Time.Delta;
-					var size = selectBox.DrawArea.Size * (1.0f + Time.Delta / 10);
-					selectBox.DrawArea = Rectangle.FromCenter(center, size);
-				}
-			}
-		} //ncrunch: no coverage end
 
 		[Test, CloseAfterFirstFrame]
 		public void SaveAndLoad()

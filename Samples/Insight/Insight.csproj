@@ -41,37 +41,17 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Content\Xml\DeltaEngine.Content.Xml.csproj">
-      <Project>{138A40B5-3D80-4BA3-BD84-D82C151EE7FE}</Project>
-      <Name>DeltaEngine.Content.Xml</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DeltaEngine.csproj">
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Input\DeltaEngine.Input.csproj">
-      <Project>{CC65E69E-FAFD-4C2B-85EB-5E57FD3AF847}</Project>
-      <Name>DeltaEngine.Input</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\DeltaEngine.Platforms.csproj">
-      <Project>{BAE8830E-5F62-48D6-B772-C4B1E8665FB3}</Project>
-      <Name>DeltaEngine.Platforms</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Rendering2D\DeltaEngine.Rendering2D.csproj">
       <Project>{BDDB4AA4-5D31-43B3-9A3B-BF3030EDE927}</Project>
       <Name>DeltaEngine.Rendering2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rendering2D\Fonts\DeltaEngine.Rendering2D.Fonts.csproj">
-      <Project>{4A00FD90-FF7B-4250-9CBC-B6855130090B}</Project>
-      <Name>DeltaEngine.Rendering2D.Fonts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Scenes\DeltaEngine.Scenes.csproj">
-      <Project>{75BB4C75-DE36-47B3-9910-10EA8E8973B7}</Project>
-      <Name>DeltaEngine.Scenes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platforms\WindowsSharpDX\DeltaEngine.WindowsSharpDX.csproj">
-      <Project>{05569371-855C-4667-8228-20491337C431}</Project>
-      <Name>DeltaEngine.WindowsSharpDX</Name>
+    <ProjectReference Include="..\..\Platforms\WindowsSlimDX\DeltaEngine.WindowsSlimDX.csproj">
+      <Project>{C12EBE75-67B5-4257-8A6E-C844601746E8}</Project>
+      <Name>DeltaEngine.WindowsSlimDX</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

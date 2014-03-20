@@ -84,11 +84,13 @@ namespace DeltaEngine.Content.Xml
 			return this;
 		}
 
-		public void AddChild(string childName, object childValue)
+		public XmlData AddChild(string childName, object childValue = null)
 		{
 			var child = new XmlData(childName);
-			child.Value = StringExtensions.ToInvariantString(childValue);
+			if (childValue != null)
+				child.Value = StringExtensions.ToInvariantString(childValue);
 			AddChild(child);
+			return child;
 		}
 
 		public XmlData AddAttribute(string attribute, object value)

@@ -11,6 +11,7 @@ namespace DeltaEngine.Datatypes
 	/// Holds data for a rectangle by specifying its top left corner and the width and height.
 	/// </summary>
 	[DebuggerDisplay("Rectangle(Left={Left}, Top={Top}, Width={Width}, Height={Height})")]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Rectangle : IEquatable<Rectangle>, Lerp<Rectangle>
 	{
 		public Rectangle(float left, float top, float width, float height)
@@ -38,33 +39,36 @@ namespace DeltaEngine.Datatypes
 				throw new InvalidNumberOfComponents();
 			try
 			{
-				Left = componentStrings[0].Convert<float>();
-				Top = componentStrings[1].Convert<float>();
-				Width = componentStrings[2].Convert<float>();
-				Height = componentStrings[3].Convert<float>();
+				TryConvertToFloat(componentStrings);
 			}
-			catch (System.FormatException)
+			catch (FormatException)
 			{
 				throw new TypeInStringNotEqualToInitializedType();
 			}
 		}
 
+		private void TryConvertToFloat(string[] componentStrings)
+		{
+			Left = componentStrings[0].Convert<float>();
+			Top = componentStrings[1].Convert<float>();
+			Width = componentStrings[2].Convert<float>();
+			Height = componentStrings[3].Convert<float>();
+		}
+
 		public static Rectangle FromPoints(IEnumerable<Vector2D> points)
 		{
-			var leftUpper = new Vector2D(float.MaxValue, float.MaxValue);
-			var rightLower = new Vector2D(float.MinValue, float.MinValue);
+			float left = float.MaxValue;
+			float right = float.MinValue;
+			float top = float.MaxValue;
+			float bottom = float.MinValue;
 			foreach (var point in points)
 			{
-				if (point.X < leftUpper.X)
-					leftUpper.X = point.X;
-				else if (point.X > rightLower.X)
-					rightLower.X = point.X;
-				if (point.Y < leftUpper.Y)
-					leftUpper.Y = point.Y;
-				else if (point.Y > rightLower.Y)
-					rightLower.Y = point.Y;
+				left = MathExtensions.Min(left, point.X);
+				right = MathExtensions.Max(right, point.X);
+				top = MathExtensions.Min(top, point.Y);
+				bottom = MathExtensions.Max(bottom, point.Y);
 			}
-			return FromCorners(leftUpper, rightLower);
+			return new Rectangle(left, top, right - left, bottom - top);
 		}
 
 		[Pure]
@@ -83,7 +87,7 @@ namespace DeltaEngine.Datatypes
 
 		public class TypeInStringNotEqualToInitializedType : Exception {} 
 
-		public static readonly Rectangle Zero = new Rectangle();
+		public static readonly Rectangle Zero;
 		public static readonly Rectangle One = new Rectangle(Vector2D.Zero, Size.One);
 		public static readonly Rectangle HalfCentered = FromCenter(Vector2D.Half, Size.Half);
 		public static readonly Rectangle Unused = new Rectangle(Vector2D.Unused, Size.Unused);
@@ -259,8 +263,8 @@ namespace DeltaEngine.Datatypes
 		{
 			return new[]
 			{
-				TopLeft.RotateAround(center, rotation), TopRight.RotateAround(center, rotation),
-				BottomRight.RotateAround(center, rotation), BottomLeft.RotateAround(center, rotation)
+				TopLeft.RotateAround(center, rotation), BottomLeft.RotateAround(center, rotation),
+				BottomRight.RotateAround(center, rotation), TopRight.RotateAround(center, rotation)
 			};
 		}
 
@@ -341,6 +345,12 @@ namespace DeltaEngine.Datatypes
 			else
 				clampedLocation.Y = center.Y;
 			return clampedLocation.DistanceToSquared(center) <= (radius * radius);
+		}
+
+		public Rectangle GetBoundingBoxAfterRotation(float angle)
+		{
+			var corners = GetRotatedRectangleCorners(Center, angle);
+			return FromPoints(corners);
 		}
 	}
 }

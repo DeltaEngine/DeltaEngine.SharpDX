@@ -8,6 +8,5 @@
 	public interface RapidUpdateable
 	{
 		void RapidUpdate();
-		bool IsPauseable { get; }
 	}
 }

@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TouchBase.cs" />
     <Compile Include="TouchTrigger.cs" />
     <Compile Include="MouseTrigger.cs" />
     <Compile Include="TouchDualDragTrigger.cs" />

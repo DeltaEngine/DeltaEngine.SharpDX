@@ -33,8 +33,8 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\packages\DotNetZip.Reduced.1.9.1.8\lib\net20\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
@@ -43,7 +43,7 @@
       <Project>{20FA8D33-A964-4000-AD82-67BD6900793B}</Project>
       <Name>DeltaEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="Messages\DeltaEngine.Networking.Messages.csproj">
+    <ProjectReference Include="..\Networking\Messages\DeltaEngine.Networking.Messages.csproj">
       <Project>{74863E62-A568-4C0A-A37F-F04BFA8EB9DB}</Project>
       <Name>DeltaEngine.Networking.Messages</Name>
     </ProjectReference>

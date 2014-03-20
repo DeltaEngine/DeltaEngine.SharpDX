@@ -8,6 +8,5 @@
 	public interface Updateable
 	{
 		void Update();
-		bool IsPauseable { get; }
 	}
 }

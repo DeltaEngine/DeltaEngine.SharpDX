@@ -7,14 +7,16 @@
 	{
 		public override bool RequestProductInformationAsync(int[] productIds)
 		{
-			var product = new ProductData("testId", "testTitle", "testDescription", "testPrice", true);
-			InvokeOnReceivedProductInformation(new[] { product });
+			InvokeOnReceivedProductInformation(new[] { TestProductData });
 			return true;
 		}
 
-		public override bool PurchaseProductAsync(string productId)
+		public readonly ProductData TestProductData = new ProductData("testId", "testTitle",
+			"testDescription", 1.99m, true);
+
+		public override bool PurchaseProductAsync(ProductData product)
 		{
-			InvokeOnTransactionFinished(productId, true);
+			InvokeOnTransactionFinished(product, true);
 			return true;
 		}
 	}

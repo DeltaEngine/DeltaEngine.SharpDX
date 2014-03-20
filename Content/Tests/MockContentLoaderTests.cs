@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
-using DeltaEngine.Mocks;
 using DeltaEngine.Content.Mocks;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Extensions;
+using DeltaEngine.Mocks;
 using NUnit.Framework;
 
 namespace DeltaEngine.Content.Tests
@@ -59,7 +60,8 @@ namespace DeltaEngine.Content.Tests
 		public void ValidPath()
 		{
 			var contentLoader = new MockContentLoader();
-			Assert.AreEqual("Content\\ContentMetaData.xml", contentLoader.GetContentMetaDataFilePath());
+			Assert.AreEqual(Path.Combine(contentLoader.ContentProjectPath, "ContentMetaData.xml"),
+				contentLoader.GetContentMetaDataFilePath());
 		}
 
 		[Test]
@@ -167,8 +169,10 @@ namespace DeltaEngine.Content.Tests
 			Assert.AreNotEqual(testXmlContent.MetaData.Type, WrongMetaDataType);
 			testXmlContent.MetaData.Type = WrongMetaDataType;
 			Func<ContentData, Stream> fakeGetDataStreamMethod = data => Stream.Null;
+#if DEBUG
 			Assert.Throws<ContentData.DoesNotMatchMetaDataType>(
 				() => testXmlContent.InternalLoad(fakeGetDataStreamMethod));
+#endif
 		}
 
 		[Test]
@@ -189,12 +193,15 @@ namespace DeltaEngine.Content.Tests
 				() => ContentLoader.Load<MockXmlContent>("UnavailableXmlContent"));
 		}
 
+#if DEBUG
 		//ncrunch: no coverage start
 		[Test, Category("Slow")]
 		public void ExceptionOnInstancingFromOutsideContentLoader()
 		{
-			Assert.Throws<ContentData.MustBeCalledFromContentLoader>(
-				() => new MockXmlContent("VectorText"));
+			if (!StackTraceExtensions.StartedFromNCrunchOrNunitConsole)
+				Assert.Throws<ContentData.MustBeCalledFromContentLoader>(
+					() => new MockXmlContent("VectorText"));
 		}
+#endif
 	}
 }

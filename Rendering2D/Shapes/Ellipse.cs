@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DeltaEngine.Datatypes;
 using DeltaEngine.Entities;
 using DeltaEngine.Extensions;
@@ -16,7 +17,7 @@ namespace DeltaEngine.Rendering2D.Shapes
 		public Ellipse(Rectangle drawArea, Color color)
 			: base(drawArea, color)
 		{
-			Start<UpdatePoints>();
+			Start<UpdatePointsIfRadiusChanges>();
 		}
 
 		public float RadiusX
@@ -49,32 +50,32 @@ namespace DeltaEngine.Rendering2D.Shapes
 			}
 		}
 
-		/// <summary>
-		/// This recalculates the points of an Ellipse if they change
-		/// </summary>
-		public class UpdatePoints : UpdateBehavior
+		private float lastRadius;
+
+		public class UpdatePointsIfRadiusChanges : UpdateBehavior
 		{
 			public override void Update(IEnumerable<Entity> entities)
 			{
-				foreach (var entity in entities)
-				{
-					InitializeVariables((Entity2D)entity);
-					FormEllipsePoints(entity);
-				}
+				foreach (var ellipse in entities.OfType<Ellipse>())
+					if (!ellipse.lastRadius.IsNearlyEqual(ellipse.Radius))
+					{
+						ellipse.lastRadius = ellipse.Radius;
+						InitializeVariables(ellipse);
+						FormEllipsePoints(ellipse);
+					}
 			}
 
-			private void InitializeVariables(Entity2D entity)
+			private void InitializeVariables(Ellipse entity)
 			{
 				var rotation = entity.Rotation;
 				rotationSin = MathExtensions.Sin(rotation);
 				rotationCos = MathExtensions.Cos(rotation);
-				var drawArea = entity.DrawArea;
 				rotationCenter = entity.RotationCenter;
 				center = entity.DrawArea.Center;
 				if (center != rotationCenter)
 					center = center.RotateAround(rotationCenter, rotationSin, rotationCos);
-				radiusX = drawArea.Width / 2.0f;
-				radiusY = drawArea.Height / 2.0f;
+				radiusX = entity.RadiusX;
+				radiusY = entity.RadiusY;
 				float maxRadius = MathExtensions.Max(radiusX, radiusY);
 				pointsCount = GetPointsCount(maxRadius);
 				theta = -360.0f / (pointsCount - 1);
@@ -87,7 +88,6 @@ namespace DeltaEngine.Rendering2D.Shapes
 			private float radiusX;
 			private float radiusY;
 			private int pointsCount;
-			private float theta;
 
 			private static int GetPointsCount(float maxRadius)
 			{
@@ -97,15 +97,16 @@ namespace DeltaEngine.Rendering2D.Shapes
 
 			private const int MinPoints = 5;
 			private const int MaxPoints = 96;
+			private float theta;
 
-			private void FormEllipsePoints(Entity entity)
+			private void FormEllipsePoints(DrawableEntity entity)
 			{
 				ellipsePoints = entity.Get<List<Vector2D>>();
 				ellipsePoints.Clear();
 				ellipsePoints.Add(center);
-				for (int i = 0; i < pointsCount; i++)
+				for (int i = pointsCount - 1; i >= 0; i--)
 					FormRotatedEllipsePoint(i);
-				entity.Set(ellipsePoints);
+				entity.SetWithoutInterpolation(ellipsePoints);
 			}
 
 			private List<Vector2D> ellipsePoints;

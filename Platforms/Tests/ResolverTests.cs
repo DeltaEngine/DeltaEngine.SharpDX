@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Autofac.Core;
 using DeltaEngine.Content;
 using DeltaEngine.Core;
 using DeltaEngine.Datatypes;
@@ -82,7 +83,8 @@ namespace DeltaEngine.Platforms.Tests
 		public void TryResolveWithInvalidParameter()
 		{
 			resolver.Register(typeof(DummyClassWithString));
-			Assert.Throws<Resolver.ResolvingFailed>(() => resolver.Resolve(typeof(DummyClassWithString)));
+			Assert.Throws<DependencyResolutionException>(
+				() => resolver.Resolve(typeof(DummyClassWithString)));
 		}
 
 		[Test]
@@ -111,9 +113,13 @@ namespace DeltaEngine.Platforms.Tests
 				Console.SetOut(writer);
 				resolver.RegisterInstance(new A());
 				resolver.RegisterInstance(new A());
+#if DEBUG
 				Assert.AreEqual(
 					"Warning: Type DeltaEngine.Platforms.Tests.ResolverTests+A " +
 						"already exists in alreadyRegisteredTypes" + writer.NewLine, text.ToString());
+#else
+				Assert.AreEqual(string.Empty, text.ToString()); 
+#endif
 			}
 			Console.SetOut(previousOut);
 		}

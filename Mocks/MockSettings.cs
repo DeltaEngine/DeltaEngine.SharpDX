@@ -15,6 +15,7 @@ namespace DeltaEngine.Mocks
 			Current = this;
 			SetRapidUpdatesPerSecondToUpdatesPerSecondForBetterPerformance();
 			wasChanged = false;
+			UseOnlineLogging = true;
 		}
 
 		private void SetRapidUpdatesPerSecondToUpdatesPerSecondForBetterPerformance()

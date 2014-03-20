@@ -14,7 +14,7 @@ namespace DeltaEngine.Rendering2D.Tests
 		[SetUp]
 		public void CreateMaterial()
 		{
-			material = new Material(Shader.Position2DUV, "EarthSpriteSheet");
+			material = new Material(ShaderFlags.Position2DTextured, "EarthSpriteSheet");
 			Assert.IsNotNull(material.SpriteSheet);
 			Assert.AreEqual(12, material.SpriteSheet.UVs.Count);
 			Assert.AreEqual(new Size(107, 80), material.SpriteSheet.SubImageSize);
@@ -56,7 +56,8 @@ namespace DeltaEngine.Rendering2D.Tests
 			var image = ContentLoader.Create<Image>(data);
 			FillImage(image);
 			var animationData = new SpriteSheetAnimationCreationData(image, 2, new Size(2, 2));
-			var texturedShader = ContentLoader.Load<Shader>(Shader.Position2DUV);
+			var texturedShader = ContentLoader.Create<Shader>(
+				new ShaderCreationData(ShaderFlags.Position2DTextured));
 			var newMaterial = new SpriteSheetAnimation(animationData).CreateMaterial(texturedShader);
 			new Sprite(newMaterial, Rectangle.HalfCentered);
 		}

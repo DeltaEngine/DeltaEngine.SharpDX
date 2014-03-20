@@ -25,10 +25,10 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test, ApproveFirstFrameScreenshot]
-		public void SetFullscreenModeAndShowRedBackground()
+		public void SetFullscreenModeToJustWindowWithoutDeviceAndShowRedBackground()
 		{
 			var settings = Resolve<Settings>();
-			settings.StartInFullscreen = true;
+			settings.StartInFullscreen = true; // does not mean we really go fullscreen without device!
 			Resolve<Window>().BackgroundColor = Color.Red;
 			settings.StartInFullscreen = false;
 		}
@@ -46,7 +46,7 @@ namespace DeltaEngine.Graphics.Tests
 		}
 
 		[Test]
-		public void ToggleFullscreenMode()
+		public void ToggleFullscreenModeWithSpaceKey()
 		{
 			var window = Resolve<Window>();
 			window.BackgroundColor = Color.Red;

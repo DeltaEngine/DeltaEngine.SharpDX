@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DeltaEngine.Commands;
 using DeltaEngine.Datatypes;
+using DeltaEngine.Entities;
 using DeltaEngine.Input.Mocks;
 using DeltaEngine.Platforms;
 using DeltaEngine.Rendering2D.Fonts;
@@ -18,10 +19,10 @@ namespace DeltaEngine.Input.Tests
 			mockKeyboard = keyboard as MockKeyboard;
 		}
 
-		private Keyboard keyboard;
+		private static Keyboard keyboard;
 		private MockKeyboard mockKeyboard;
 
-		[TearDown]
+		[TestFixtureTearDown]
 		public void Dispose()
 		{
 			keyboard.Dispose();
@@ -66,10 +67,12 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void HandleInput()
 		{
+			if (mockKeyboard == null)
+				return; //ncrunch: no coverage
 			Assert.AreEqual("", keyboard.HandleInput(""));
 			mockKeyboard.SetKeyboardState(Key.A, State.Pressing);
 			mockKeyboard.SetKeyboardState(Key.Z, State.Pressing);
-			Assert.AreEqual("AZ", keyboard.HandleInput(""));
+			Assert.AreEqual("az", keyboard.HandleInput(""));
 			mockKeyboard.SetKeyboardState(Key.A, State.Pressing);
 			mockKeyboard.SetKeyboardState(Key.Backspace, State.Pressing);
 			Assert.AreEqual("", keyboard.HandleInput(""));
@@ -84,8 +87,17 @@ namespace DeltaEngine.Input.Tests
 		public void HandleInputVisually()
 		{
 			var text = new FontText(Font.Default, "Type some text", Rectangle.One);
-			new Command(() => text.Text = keyboard.HandleInput(text.Text)).Add(new KeyTrigger(Key.None,
-				State.Released));
+			text.Start<ContinousInputHandler>();
+		}
+
+		private class ContinousInputHandler : UpdateBehavior
+		{
+			public override void Update(IEnumerable<Entity> entities)
+			{
+				foreach (FontText text in entities)
+					if (text != null)
+						text.Text = keyboard.HandleInput(text.Text);
+			}
 		}
 
 		[Test, CloseAfterFirstFrame]
@@ -118,8 +130,14 @@ namespace DeltaEngine.Input.Tests
 		[Test, CloseAfterFirstFrame]
 		public void VerifyLetterKeyPress()
 		{
-			VerifyKeyPressesAreHandled("12AZ", "12", new List<Key> { Key.A, Key.Z });
-			VerifyKeyPressIsHandled("AB", "A", Key.B);
+			if (mockKeyboard == null)
+				return; //ncrunch: no coverage
+			VerifyKeyPressesAreHandled("12az", "12", new List<Key> { Key.A, Key.Z });
+			VerifyKeyPressesAreHandled("12AZ", "12", new List<Key> { Key.LeftShift, Key.A, Key.Z });
+			mockKeyboard.SetKeyboardState(Key.LeftShift, State.Releasing);
+			VerifyKeyPressesAreHandled("12AZ", "12", new List<Key> { Key.RightShift, Key.A, Key.Z });
+			mockKeyboard.SetKeyboardState(Key.RightShift, State.Releasing);
+			VerifyKeyPressIsHandled("Ab", "A", Key.B);
 		}
 
 		[Test, CloseAfterFirstFrame]

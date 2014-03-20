@@ -173,9 +173,8 @@ namespace DeltaEngine.Rendering2D.Tests
 		public void RotatedDrawAreaContainsRotatedAroundItsCenter()
 		{
 			var entity = new Entity2D(new Rectangle(0.4f, 0.4f, 0.2f, 0.1f)) { Rotation = 90 };
-			Assert.IsTrue(entity.RotatedDrawAreaContains(new Vector2D(0.5f, 0.45f)));
-			Assert.IsTrue(entity.RotatedDrawAreaContains(new Vector2D(0.55f, 0.55f)));
-			Assert.IsFalse(entity.RotatedDrawAreaContains(new Vector2D(0.45f, 0.45f)));
+			Assert.IsTrue(entity.RotatedDrawAreaContains(new Rectangle(0.4f, 0.4f, 0.2f, 0.1f).Center));
+			Assert.IsFalse(entity.RotatedDrawAreaContains(new Vector2D(0.4f, 0.4f)));
 		}
 
 		[Test]
